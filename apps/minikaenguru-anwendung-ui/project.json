@@ -1,20 +1,23 @@
 {
-    "name": "portal-shell",
+    "name": "minikaenguru-anwendung-ui",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "projectType": "application",
-    "prefix": "portal",
-    "sourceRoot": "apps/portal-shell/src",
+    "prefix": "mka",
+    "sourceRoot": "apps/minikaenguru-anwendung-ui/src",
     "tags": [],
     "targets": {
         "build": {
             "executor": "@angular-architects/native-federation:build",
-            "options": {},
+            "options": {
+                "baseHref": "/minikaenguru-anwendung/",
+                "output-hashing": "all"
+            },
             "configurations": {
                 "production": {
-                    "target": "portal-shell:esbuild:production"
+                    "target": "minikaenguru-anwendung-ui:esbuild:production"
                 },
                 "development": {
-                    "target": "portal-shell:esbuild:development",
+                    "target": "minikaenguru-anwendung-ui:esbuild:development",
                     "dev": true
                 }
             },
@@ -23,7 +26,7 @@
         "serve": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "target": "portal-shell:serve-original:development",
+                "target": "minikaenguru-anwendung-ui:serve-original:development",
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
@@ -34,13 +37,17 @@
         "lint": {
             "executor": "@nx/eslint:lint"
         },
+        "test": {
+            "executor": "@angular/build:unit-test",
+            "options": {}
+        },
         "serve-static": {
             "continuous": true,
             "executor": "@nx/web:file-server",
             "options": {
-                "buildTarget": "portal-shell:build",
+                "buildTarget": "minikaenguru-anwendung-ui:build",
                 "port": 4200,
-                "staticFilePath": "dist/apps/portal-shell/browser",
+                "staticFilePath": "dist/apps/minikaenguru-anwendung-ui/browser",
                 "spa": true
             }
         },
@@ -48,17 +55,17 @@
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
-                "outputPath": "dist/apps/portal-shell",
-                "browser": "apps/portal-shell/src/main.ts",
-                "tsConfig": "apps/portal-shell/tsconfig.app.json",
+                "outputPath": "dist/apps/minikaenguru-anwendung-ui",
+                "browser": "apps/minikaenguru-anwendung-ui/src/main.ts",
+                "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "assets": [
                     {
                         "glob": "**/*",
-                        "input": "apps/portal-shell/public"
+                        "input": "apps/minikaenguru-anwendung-ui/public"
                     }
                 ],
-                "styles": ["apps/portal-shell/src/styles.scss"],
+                "styles": ["apps/minikaenguru-anwendung-ui/src/styles.scss"],
                 "polyfills": ["es-module-shims"]
             },
             "configurations": {
@@ -90,15 +97,15 @@
             "executor": "@angular/build:dev-server",
             "configurations": {
                 "production": {
-                    "buildTarget": "portal-shell:esbuild:production"
+                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:production"
                 },
                 "development": {
-                    "buildTarget": "portal-shell:esbuild:development"
+                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:development"
                 }
             },
             "defaultConfiguration": "development",
             "options": {
-                "port": 4200
+                "port": 4201
             }
         }
     }
