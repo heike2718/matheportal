@@ -8,7 +8,11 @@
     "pnpm": ">=10 <11"
   },
   "private": true,
+  "dependencies": {
+    "@angular-architects/native-federation": "^21.2.3"
+  },
   "devDependencies": {
+    "22.6.3": "link:@nx/angular/22.6.3",
     "@nx/angular": "22.6.3",
     "@nx/js": "22.6.3",
     "@nx/workspace": "22.6.3",
