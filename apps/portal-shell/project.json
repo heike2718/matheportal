@@ -7,8 +7,48 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "target": "portal-shell:esbuild:production"
+        },
+        "development": {
+          "target": "portal-shell:esbuild:development",
+          "dev": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {
+        "target": "portal-shell:serve-original:development",
+        "rebuildDelay": 500,
+        "dev": true,
+        "cacheExternalArtifacts": false,
+        "port": 0
+      },
+      "continuous": true
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "portal-shell:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/portal-shell/browser",
+        "spa": true
+      }
+    },
+    "esbuild": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/portal-shell",
         "browser": "apps/portal-shell/src/main.ts",
@@ -20,7 +60,12 @@
             "input": "apps/portal-shell/public"
           }
         ],
-        "styles": ["apps/portal-shell/src/styles.scss"]
+        "styles": [
+          "apps/portal-shell/src/styles.scss"
+        ],
+        "polyfills": [
+          "es-module-shims"
+        ]
       },
       "configurations": {
         "production": {
@@ -46,30 +91,20 @@
       },
       "defaultConfiguration": "production"
     },
-    "serve": {
+    "serve-original": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "portal-shell:build:production"
+          "buildTarget": "portal-shell:esbuild:production"
         },
         "development": {
-          "buildTarget": "portal-shell:build:development"
+          "buildTarget": "portal-shell:esbuild:development"
         }
       },
-      "defaultConfiguration": "development"
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "serve-static": {
-      "continuous": true,
-      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "portal-shell:build",
-        "port": 4200,
-        "staticFilePath": "dist/apps/portal-shell/browser",
-        "spa": true
+        "port": 4200
       }
     }
   }
