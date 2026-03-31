@@ -1,0 +1,62 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#5470de",
+    "activityBar.activeBorder": "#fa45d4",
+    "activityBar.background": "#5470de",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#fa45d4",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#5470de",
+    "statusBar.background": "#5470de",
+    "statusBar.foreground": "#ffffff",
+    "statusBarItem.hoverBackground": "#f4ca42",
+    "statusBarItem.remoteBackground": "#5470de",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#f4ca42",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#fcf47f",
+    "titleBar.inactiveForeground": "#15202b99",
+    "commandCenter.border": "#15202b99"
+  },
+  "peacock.color": "#61dafb",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/target": true,
+    "**/node_modules": true
+  },
+  "files.associations": {
+    ".nxignore": "ignore"
+  },
+  "hide-files.files": [],
+  "exportall.config.relExclusion": [],
+
+  /* --- Terminal Profile für dein Monorepo --- */
+  "terminal.integrated.profiles.linux": {
+    "Kaeuzchenlager-Backend": {
+      "path": "/bin/bash",
+      "cwd": "${workspaceFolder}/backend/kaeuzchenlager",
+      "icon": "server",
+      "color": "terminal.ansiBlue"
+    },
+    "Kaeuzchenlager-Frontend": {
+      "path": "/bin/bash",
+      "cwd": "${workspaceFolder}/frontend/kaeuzchen-workspace",
+      "icon": "globe",
+      "color": "terminal.ansiMagenta"
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "bash",
+
+  /* --- Java Minimalismus (kein automatischer Build-Stress) --- */
+  "java.jdt.ls.vmargs": "-javaagent:${userHome}/.m2/repository/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar -Xms512m -Xmx2G",
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.autobuild.enabled": false,
+  "java.import.maven.enabled": true,
+  "java.compile.nullAnalysis.mode": "automatic"
+}
