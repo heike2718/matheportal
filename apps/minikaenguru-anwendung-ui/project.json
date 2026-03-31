@@ -30,7 +30,7 @@
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
-                "port": 0
+                "port": 4201
             },
             "continuous": true
         },
