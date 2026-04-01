@@ -1,9 +1,9 @@
 {
-    "name": "portal-shell",
+    "name": "matheportal-shell-ui",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "projectType": "application",
     "prefix": "portal",
-    "sourceRoot": "apps/portal-shell/src",
+    "sourceRoot": "apps/matheportal-shell-ui/src",
     "tags": [],
     "targets": {
         "build": {
@@ -11,10 +11,10 @@
             "options": {},
             "configurations": {
                 "production": {
-                    "target": "portal-shell:esbuild:production"
+                    "target": "matheportal-shell-ui:esbuild:production"
                 },
                 "development": {
-                    "target": "portal-shell:esbuild:development",
+                    "target": "matheportal-shell-ui:esbuild:development",
                     "dev": true
                 }
             },
@@ -23,7 +23,7 @@
         "serve": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "target": "portal-shell:serve-original:development",
+                "target": "matheportal-shell-ui:serve-original:development",
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
@@ -38,9 +38,9 @@
             "continuous": true,
             "executor": "@nx/web:file-server",
             "options": {
-                "buildTarget": "portal-shell:build",
+                "buildTarget": "matheportal-shell-ui:build",
                 "port": 4200,
-                "staticFilePath": "dist/apps/portal-shell/browser",
+                "staticFilePath": "dist/apps/matheportal-shell-ui/browser",
                 "spa": true
             }
         },
@@ -48,17 +48,17 @@
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
-                "outputPath": "dist/apps/portal-shell",
-                "browser": "apps/portal-shell/src/main.ts",
-                "tsConfig": "apps/portal-shell/tsconfig.app.json",
+                "outputPath": "dist/apps/matheportal-shell-ui",
+                "browser": "apps/matheportal-shell-ui/src/main.ts",
+                "tsConfig": "apps/matheportal-shell-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "assets": [
                     {
                         "glob": "**/*",
-                        "input": "apps/portal-shell/public"
+                        "input": "apps/matheportal-shell-ui/public"
                     }
                 ],
-                "styles": ["apps/portal-shell/src/styles.scss"],
+                "styles": ["apps/matheportal-shell-ui/src/styles.scss"],
                 "polyfills": ["es-module-shims"]
             },
             "configurations": {
@@ -90,10 +90,10 @@
             "executor": "@angular/build:dev-server",
             "configurations": {
                 "production": {
-                    "buildTarget": "portal-shell:esbuild:production"
+                    "buildTarget": "matheportal-shell-ui:esbuild:production"
                 },
                 "development": {
-                    "buildTarget": "portal-shell:esbuild:development"
+                    "buildTarget": "matheportal-shell-ui:esbuild:development"
                 }
             },
             "defaultConfiguration": "development",
