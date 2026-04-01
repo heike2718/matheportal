@@ -1,4 +1,4 @@
 {
-    "minikaenguru-anwendung-ui": "http://localhost:4201/remoteEntry.json",
+    "minikaenguru-anwendung-ui": "http://localhost:9101/minikaenguru-anwendung/remoteEntry.json",
     "raetselbaukasten-ui": "http://localhost:4202/remoteEntry.json"
 }

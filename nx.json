@@ -4,7 +4,7 @@
     "namedInputs": {
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "production": ["default", "!{projectRoot}/.eslintrc.json", "!{projectRoot}/eslint.config.mjs"],
-        "sharedGlobals": []
+        "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/package.json", "{workspaceRoot}/pnpm-lock.yaml"]
     },
     "targetDefaults": {
         "@angular/build:application": {
@@ -24,6 +24,29 @@
         "@angular/build:unit-test": {
             "cache": true,
             "inputs": ["default", "^production"]
+        },
+        "dev": {
+            "cache": false
+        },
+        "debug": {
+            "cache": false
+        },
+        "test": {
+            "cache": true,
+            "inputs": ["default", "^production"]
+        },
+        "cleanup": {
+            "cache": false
+        },
+        "stage-frontend": {
+            "cache": false
+        },
+        "package": {
+            "cache": true,
+            "inputs": ["production", "^production"]
+        },
+        "prepare-deploy": {
+            "cache": false
         }
     },
     "plugins": [

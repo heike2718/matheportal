@@ -1,0 +1,1 @@
+QUARKUS_HTTP_CORS_ORIGINS=http://localhost:4200
