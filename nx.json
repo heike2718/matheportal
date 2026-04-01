@@ -53,13 +53,19 @@
             "style": "scss",
             "displayBlock": true,
             "changeDetection": "OnPush",
-            "flat": false
+            "flat": false,
+            "type": "component",
+            "typeSeparator": "."
         },
         "@nx/angular:directive": {
-            "flat": false
+            "flat": false,
+            "type": "directive",
+            "typeSeparator": "."
         },
         "@nx/angular:pipe": {
-            "flat": false
+            "flat": false,
+            "type": "pipe",
+            "typeSeparator": "."
         }
     }
 }
