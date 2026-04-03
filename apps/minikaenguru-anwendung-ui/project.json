@@ -14,7 +14,26 @@
             },
             "configurations": {
                 "production": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:production"
+                    "target": "minikaenguru-anwendung-ui:esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "dev": true
                 },
                 "development": {
                     "target": "minikaenguru-anwendung-ui:esbuild:development",

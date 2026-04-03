@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.infrastructure.cdi;
+package de.mathejungalt.raetselbaukasten.infrastructure.cdi;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 
 /**
- * StartupListener
+ * StartupListener.
  */
 @ApplicationScoped
 public class StartupListener {
@@ -33,4 +33,5 @@ public class StartupListener {
         LOGGER.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
 
     }
+
 }

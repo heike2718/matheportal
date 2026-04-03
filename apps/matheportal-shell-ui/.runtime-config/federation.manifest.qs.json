@@ -1,4 +1,4 @@
 {
-    "minikaenguru-anwendung-ui": "http://heikeqs:9101/minikaenguru-anwendung/remoteEntry.json",
-    "raetselbaukasten-ui": "http://localhost:4202/remoteEntry.json"
+    "minikaenguru-anwendung-ui": "http://heikeqs/minikaenguru-anwendung/remoteEntry.json",
+    "raetselbaukasten-ui": "http://heikeqs/raetselbaukasten/remoteEntry.json"
 }

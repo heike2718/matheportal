@@ -11,7 +11,26 @@
             "options": {},
             "configurations": {
                 "production": {
-                    "target": "raetselbaukasten-ui:esbuild:production"
+                    "target": "raetselbaukasten-ui:esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "raetselbaukasten-ui:esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "raetselbaukasten-ui:esbuild:development",
+                    "dev": true
                 },
                 "development": {
                     "target": "raetselbaukasten-ui:esbuild:development",

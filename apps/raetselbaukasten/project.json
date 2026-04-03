@@ -1,36 +1,36 @@
 {
-    "name": "minikaenguru-anwendung",
+    "name": "raetselbaukasten",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "projectType": "application",
-    "sourceRoot": "apps/minikaenguru-anwendung/src",
+    "sourceRoot": "apps/raetselbaukasten/src",
     "tags": ["platform:backend", "type:bff"],
 
     "targets": {
         "dev": {
             "executor": "nx:run-commands",
             "options": {
-                "cwd": "apps/minikaenguru-anwendung",
+                "cwd": "apps/raetselbaukasten",
                 "command": "mvn clean quarkus:dev"
             }
         },
         "debug": {
             "executor": "nx:run-commands",
             "options": {
-                "cwd": "apps/minikaenguru-anwendung",
+                "cwd": "apps/raetselbaukasten",
                 "command": "mvn quarkus:dev -Ddebug=5005"
             }
         },
         "test": {
             "executor": "nx:run-commands",
             "options": {
-                "cwd": "apps/minikaenguru-anwendung",
+                "cwd": "apps/raetselbaukasten",
                 "command": "mvn test"
             }
         },
         "cleanup": {
             "executor": "nx:run-commands",
             "options": {
-                "cwd": "apps/minikaenguru-anwendung",
+                "cwd": "apps/raetselbaukasten",
                 "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
             }
         },
@@ -38,7 +38,7 @@
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
-                    "projects": ["minikaenguru-anwendung-ui"],
+                    "projects": ["raetselbaukasten-ui"],
                     "target": "build",
                     "params": "forward"
                 }
@@ -46,9 +46,9 @@
             "options": {
                 "parallel": false,
                 "commands": [
-                    "rm -rf apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung",
-                    "mkdir -p apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung",
-                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/minikaenguru-anwendung-ui/browser/ apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung/"
+                    "rm -rf apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten",
+                    "mkdir -p apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten",
+                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/raetselbaukasten-ui/browser/ apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten/"
                 ]
             },
             "configurations": {
@@ -66,9 +66,9 @@
                     "params": "forward"
                 }
             ],
-            "outputs": ["{workspaceRoot}/apps/minikaenguru-anwendung/target"],
+            "outputs": ["{workspaceRoot}/apps/raetselbaukasten/target"],
             "options": {
-                "cwd": "apps/minikaenguru-anwendung",
+                "cwd": "apps/raetselbaukasten",
                 "command": "mvn clean package -DskipTests"
             }
         },
@@ -84,16 +84,21 @@
             "options": {
                 "parallel": false,
                 "commands": [
-                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung/quarkus-app",
-                    "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung"
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/raetselbaukasten/quarkus-app",
+                    "mv apps/raetselbaukasten/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/raetselbaukasten"
                 ]
             },
             "configurations": {
-                "qs": {},
+                "qs": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/raetselbaukasten/quarkus-app",
+                        "mv apps/raetselbaukasten/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/raetselbaukasten"
+                    ]
+                },
                 "production": {
                     "commands": [
-                        "rm -rf /home/heike/deployments/vserver1/matheportal/minikaenguru-anwendung/quarkus-app",
-                        "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/vserver1/matheportal/minikaenguru-anwendung"
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/raetselbaukasten/quarkus-app",
+                        "mv apps/raetselbaukasten/target/quarkus-app /home/heike/deployments/vserver1/matheportal/raetselbaukasten"
                     ]
                 }
             }
