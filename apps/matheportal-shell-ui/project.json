@@ -8,17 +8,74 @@
     "targets": {
         "build": {
             "executor": "@angular-architects/native-federation:build",
-            "options": {},
+            "options": {
+                "baseHref": "/matheportal-shell/",
+                "output-hashing": "all"
+            },
             "configurations": {
                 "production": {
-                    "target": "matheportal-shell-ui:esbuild:production"
+                    "target": "matheportal-shell-ui:esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "matheportal-shell-ui:esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "matheportal-shell-ui:esbuild:development",
+                    "dev": true
                 },
                 "development": {
                     "target": "matheportal-shell-ui:esbuild:development",
                     "dev": true
                 }
             },
-            "defaultConfiguration": "production"
+            "defaultConfiguration": "development"
+        },
+        "prepare-runtime-config": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false
+            },
+            "configurations": {
+                "development": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.development.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "local": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.local.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "qs": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.qs.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "production": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.production.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                }
+            },
+            "defaultConfiguration": "development"
         },
         "serve": {
             "executor": "@angular-architects/native-federation:build",
@@ -83,7 +140,7 @@
                     "sourceMap": true
                 }
             },
-            "defaultConfiguration": "production"
+            "defaultConfiguration": "development"
         },
         "serve-original": {
             "continuous": true,

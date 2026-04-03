@@ -21,7 +21,7 @@
                     "dev": true
                 }
             },
-            "defaultConfiguration": "production"
+            "defaultConfiguration": "development"
         },
         "serve": {
             "executor": "@angular-architects/native-federation:build",
@@ -90,7 +90,7 @@
                     "sourceMap": true
                 }
             },
-            "defaultConfiguration": "production"
+            "defaultConfiguration": "development"
         },
         "serve-original": {
             "continuous": true,

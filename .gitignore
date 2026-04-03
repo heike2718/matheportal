@@ -48,3 +48,8 @@ Thumbs.db
 __screenshots__/
 
 .secrets
+*.env
+
+# generierte souren
+apps/matheportal-shell/src/main/resources/META-INF/resources/matheportal-shell
+apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung

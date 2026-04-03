@@ -45,7 +45,7 @@
             "cache": true,
             "inputs": ["production", "^production"]
         },
-        "prepare-deploy": {
+        "prepare-deployment": {
             "cache": false
         }
     },
