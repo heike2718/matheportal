@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Project rules"
+  xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    Projektweites PMD-Regelset: Standardkategorien plus gezielte Anpassungen.
+    - Code Style: Regel 'LongVariable' deaktiviert (lange, sprechende Namen erlaubt).
+    - Lombok: 'UnusedPrivateField' wird unterdrückt, wenn Lombok Getter/Setter/Data/Value/Builder
+    verwendet.
+  </description>
+
+  <!-- Basisregeln -->
+  <rule ref="category/java/bestpractices.xml">
+    <exclude name="GuardLogStatement"/>
+    <exclude name="ExhaustiveSwitchHasDefault"/>
+  </rule>
+
+  <rule ref="category/java/errorprone.xml"/>
+
+  <!-- Code Style: Kategorie laden, aber einzelne Regel ausschließen -->
+  <rule ref="category/java/codestyle.xml">
+    <exclude name="LongVariable"/>
+    <exclude name="OnlyOneReturn"/>
+    <exclude name="AtLeastOneConstructor"/>
+    <exclude name="UnnecessaryConstructor"/>
+    <!-- CDI und Transactional erwarten etwas anderes als private. -->
+    <!--  Entweder rule deaktivieren, oder vor package-private members ein /* default */  setzen. -->
+    <exclude name="CommentDefaultAccessModifier"/>
+  </rule>
+
+  <!-- UnusedPrivateField nur melden, wenn kein Lombok beteiligt ist -->
+  <rule ref="category/java/bestpractices.xml/UnusedPrivateField">
+    <properties>
+      <property name="violationSuppressXPath">
+        <value>
+          //FieldDeclaration
+          [ ./Annotation/MarkerAnnotation/Name[
+          matches(@Image,'^(lombok\.)?(Getter|Setter|Data|Value|Builder)$')
+          ]
+          or
+          ../../ClassOrInterfaceDeclaration/Annotation/MarkerAnnotation/Name[
+          matches(@Image,'^(lombok\.)?(Getter|Setter|Data|Value|Builder)$')
+          ]
+          ]
+        </value>
+      </property>
+    </properties>
+  </rule>
+
+</ruleset>

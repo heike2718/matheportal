@@ -1,0 +1,160 @@
+{
+    "name": "raetselbaukasten-ui",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "rbk",
+    "sourceRoot": "apps/raetselbaukasten-ui/src",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "baseHref": "/minikaenguru-anwendung/",
+                "output-hashing": "all"
+            },
+            "configurations": {
+                "production": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "dev": true
+                },
+                "development": {
+                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "dev": true
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "target": "minikaenguru-anwendung-ui:serve-original:development",
+                "rebuildDelay": 500,
+                "dev": true,
+                "cacheExternalArtifacts": false,
+                "port": 0
+            },
+            "continuous": true
+        },
+        "serve-static": {
+            "continuous": true,
+            "executor": "@nx/web:file-server",
+            "options": {
+                "buildTarget": "minikaenguru-anwendung-ui:build",
+                "port": 4200,
+                "staticFilePath": "dist/apps/minikaenguru-anwendung-ui/browser",
+                "spa": true
+            }
+        },
+        "esbuild": {
+            "executor": "@angular/build:application",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/apps/minikaenguru-anwendung-ui",
+                "browser": "apps/minikaenguru-anwendung-ui/src/main.ts",
+                "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": [
+                    {
+                        "glob": "**/*",
+                        "input": "apps/minikaenguru-anwendung-ui/public"
+                    }
+                ],
+                "styles": ["apps/minikaenguru-anwendung-ui/src/styles.scss"],
+                "polyfills": ["es-module-shims"]
+            },
+            "configurations": {
+                "production": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "1mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "4kb",
+                            "maximumError": "8kb"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": true
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve-original": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "configurations": {
+                "production": {
+                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:production"
+                },
+                "development": {
+                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:development"
+                }
+            },
+            "defaultConfiguration": "development",
+            "options": {
+                "port": 4201
+            }
+        },
+        "test": {
+            "executor": "@angular/build:unit-test",
+            "options": {}
+        },
+        "format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
+            }
+        },
+        "lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["lint-fix", "format"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

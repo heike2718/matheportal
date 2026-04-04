@@ -1,0 +1,9 @@
+{
+    "name": "minikaenguru-anwendung-ui-e2e",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/minikaenguru-anwendung-ui-e2e/src",
+    "implicitDependencies": ["minikaenguru-anwendung-ui"],
+    "// targets": "to see all targets run: nx show project minikaenguru-anwendung-ui-e2e --web",
+    "targets": {}
+}

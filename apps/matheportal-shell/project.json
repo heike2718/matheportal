@@ -1,0 +1,107 @@
+{
+    "name": "matheportal-shell",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/matheportal-shell/src",
+    "tags": ["platform:backend", "type:bff"],
+
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn clean quarkus:dev"
+            }
+        },
+        "debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn quarkus:dev -Ddebug=5005"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn test"
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "stage-frontend": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": ["matheportal-shell-ui"],
+                    "target": "prepare-runtime-config",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf apps/matheportal-shell/src/main/resources/META-INF/resources/matheportal-shell",
+                    "mkdir -p apps/matheportal-shell/src/main/resources/META-INF/resources/matheportal-shell",
+                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/matheportal-shell-ui/browser/ apps/matheportal-shell/src/main/resources/META-INF/resources/matheportal-shell/"
+                ]
+            },
+            "configurations": {
+                "local": {},
+                "qs": {},
+                "production": {}
+            }
+        },
+        "package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "stage-frontend",
+                    "params": "forward"
+                }
+            ],
+            "outputs": ["{workspaceRoot}/apps/matheportal-shell/target"],
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn clean package -DskipTests"
+            }
+        },
+        "prepare-deployment": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "package",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/matheportal-shell/quarkus-app",
+                    "mv apps/matheportal-shell/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/matheportal-shell"
+                ]
+            },
+            "configurations": {
+                "qs": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/matheportal-shell/quarkus-app",
+                        "mv apps/matheportal-shell/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/matheportal-shell"
+                    ]
+                },
+                "production": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/matheportal-shell/quarkus-app",
+                        "mv apps/matheportal-shell/target/quarkus-app /home/heike/deployments/vserver1/matheportal/matheportal-shell"
+                    ]
+                }
+            }
+        }
+    }
+}

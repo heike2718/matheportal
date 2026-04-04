@@ -1,0 +1,102 @@
+{
+    "name": "minikaenguru-anwendung",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/minikaenguru-anwendung/src",
+    "tags": ["platform:backend", "type:bff"],
+
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn clean quarkus:dev"
+            }
+        },
+        "debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn quarkus:dev -Ddebug=5005"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn test"
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "stage-frontend": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": ["minikaenguru-anwendung-ui"],
+                    "target": "build",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung",
+                    "mkdir -p apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung",
+                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/minikaenguru-anwendung-ui/browser/ apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung/"
+                ]
+            },
+            "configurations": {
+                "local": {},
+                "qs": {},
+                "production": {}
+            }
+        },
+        "package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "stage-frontend",
+                    "params": "forward"
+                }
+            ],
+            "outputs": ["{workspaceRoot}/apps/minikaenguru-anwendung/target"],
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn clean package -DskipTests"
+            }
+        },
+        "prepare-deployment": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "package",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung/quarkus-app",
+                    "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung"
+                ]
+            },
+            "configurations": {
+                "qs": {},
+                "production": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/minikaenguru-anwendung/quarkus-app",
+                        "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/vserver1/matheportal/minikaenguru-anwendung"
+                    ]
+                }
+            }
+        }
+    }
+}

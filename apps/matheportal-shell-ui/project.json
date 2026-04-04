@@ -1,0 +1,195 @@
+{
+    "name": "matheportal-shell-ui",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "portal",
+    "sourceRoot": "apps/matheportal-shell-ui/src",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "baseHref": "/matheportal-shell/",
+                "output-hashing": "all"
+            },
+            "configurations": {
+                "production": {
+                    "target": "matheportal-shell-ui:esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "matheportal-shell-ui:esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "matheportal-shell-ui:esbuild:development",
+                    "dev": true
+                },
+                "development": {
+                    "target": "matheportal-shell-ui:esbuild:development",
+                    "dev": true
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "prepare-runtime-config": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false
+            },
+            "configurations": {
+                "development": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.development.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "local": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.local.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "qs": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.qs.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                },
+                "production": {
+                    "commands": [
+                        "cp apps/matheportal-shell-ui/.runtime-config/federation.manifest.production.json dist/apps/matheportal-shell-ui/browser/federation.manifest.json"
+                    ]
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "target": "matheportal-shell-ui:serve-original:development",
+                "rebuildDelay": 500,
+                "dev": true,
+                "cacheExternalArtifacts": false,
+                "port": 0
+            },
+            "continuous": true
+        },
+        "serve-static": {
+            "continuous": true,
+            "executor": "@nx/web:file-server",
+            "options": {
+                "buildTarget": "matheportal-shell-ui:build",
+                "port": 4200,
+                "staticFilePath": "dist/apps/matheportal-shell-ui/browser",
+                "spa": true
+            }
+        },
+        "esbuild": {
+            "executor": "@angular/build:application",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/apps/matheportal-shell-ui",
+                "browser": "apps/matheportal-shell-ui/src/main.ts",
+                "tsConfig": "apps/matheportal-shell-ui/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": [
+                    {
+                        "glob": "**/*",
+                        "input": "apps/matheportal-shell-ui/public"
+                    }
+                ],
+                "styles": ["apps/matheportal-shell-ui/src/styles.scss"],
+                "polyfills": ["es-module-shims"]
+            },
+            "configurations": {
+                "production": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "1mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "4kb",
+                            "maximumError": "8kb"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": true
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve-original": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "configurations": {
+                "production": {
+                    "buildTarget": "matheportal-shell-ui:esbuild:production"
+                },
+                "development": {
+                    "buildTarget": "matheportal-shell-ui:esbuild:development"
+                }
+            },
+            "defaultConfiguration": "development",
+            "options": {
+                "port": 4200
+            }
+        },
+        "test": {
+            "executor": "@angular/build:unit-test",
+            "options": {}
+        },
+        "format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
+            }
+        },
+        "lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["lint-fix", "format"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

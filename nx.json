@@ -1,0 +1,94 @@
+{
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "analytics": false,
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": ["default", "!{projectRoot}/.eslintrc.json", "!{projectRoot}/eslint.config.mjs"],
+        "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/package.json", "{workspaceRoot}/pnpm-lock.yaml"]
+    },
+    "targetDefaults": {
+        "@angular/build:application": {
+            "cache": true,
+            "dependsOn": ["^build"],
+            "inputs": ["production", "^production"]
+        },
+        "@nx/eslint:lint": {
+            "cache": true,
+            "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json",
+                "{workspaceRoot}/.eslintignore",
+                "{workspaceRoot}/eslint.config.mjs"
+            ]
+        },
+        "@angular/build:unit-test": {
+            "cache": true,
+            "inputs": ["default", "^production"]
+        },
+        "dev": {
+            "cache": false
+        },
+        "debug": {
+            "cache": false
+        },
+        "test": {
+            "cache": true,
+            "inputs": ["default", "^production"]
+        },
+        "cleanup": {
+            "cache": false
+        },
+        "stage-frontend": {
+            "cache": false
+        },
+        "package": {
+            "cache": true,
+            "inputs": ["production", "^production"]
+        },
+        "prepare-deployment": {
+            "cache": false
+        }
+    },
+    "plugins": [
+        {
+            "plugin": "@nx/playwright/plugin",
+            "options": {
+                "targetName": "e2e"
+            }
+        },
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
+        }
+    ],
+    "generators": {
+        "@nx/angular:application": {
+            "e2eTestRunner": "playwright",
+            "linter": "eslint",
+            "style": "scss",
+            "unitTestRunner": "vitest-angular",
+            "bundler": "esbuild",
+            "ssr": false
+        },
+        "@nx/angular:component": {
+            "style": "scss",
+            "displayBlock": true,
+            "changeDetection": "OnPush",
+            "flat": false,
+            "type": "component",
+            "typeSeparator": "."
+        },
+        "@nx/angular:directive": {
+            "flat": false,
+            "type": "directive",
+            "typeSeparator": "."
+        },
+        "@nx/angular:pipe": {
+            "flat": false,
+            "type": "pipe",
+            "typeSeparator": "."
+        }
+    }
+}
