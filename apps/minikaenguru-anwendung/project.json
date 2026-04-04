@@ -85,7 +85,7 @@
                 "parallel": false,
                 "commands": [
                     "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung/quarkus-app",
-                    "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung"
+                    "mv apps/minikaenguru-anwendung/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-anwendung/"
                 ]
             },
             "configurations": {

@@ -131,6 +131,12 @@
                     ],
                     "outputHashing": "all"
                 },
+                "qs": {
+                    "optimization": true,
+                    "extractLicenses": true,
+                    "sourceMap": false,
+                    "outputHashing": "all"
+                },
                 "development": {
                     "optimization": false,
                     "extractLicenses": false,
