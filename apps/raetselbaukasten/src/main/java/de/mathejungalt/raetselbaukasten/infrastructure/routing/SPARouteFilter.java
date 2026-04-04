@@ -6,10 +6,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.quarkus.vertx.web.RouteFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.vertx.web.RouteFilter;
 import io.vertx.ext.web.RoutingContext;
 
 /**
