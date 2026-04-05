@@ -92,14 +92,10 @@
             "style": "scss",
             "displayBlock": true,
             "changeDetection": "OnPush",
-            "flat": false,
-            "type": "component",
-            "typeSeparator": "."
+            "type": "component"
         },
         "@nx/angular:directive": {
-            "flat": false,
-            "type": "directive",
-            "typeSeparator": "."
+            "type": "directive"
         },
         "@nx/angular:pipe": {
             "flat": false,
