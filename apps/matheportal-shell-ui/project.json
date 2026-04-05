@@ -106,6 +106,7 @@
                 "browser": "apps/matheportal-shell-ui/src/main.ts",
                 "tsConfig": "apps/matheportal-shell-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",

@@ -71,6 +71,7 @@
                 "browser": "apps/minikaenguru-anwendung-ui/src/main.ts",
                 "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",

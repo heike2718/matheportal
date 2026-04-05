@@ -3,7 +3,13 @@
     "analytics": false,
     "namedInputs": {
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
-        "production": ["default", "!{projectRoot}/.eslintrc.json", "!{projectRoot}/eslint.config.mjs"],
+        "production": [
+            "default",
+            "!{projectRoot}/.eslintrc.json",
+            "!{projectRoot}/eslint.config.mjs",
+            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+            "!{projectRoot}/tsconfig.spec.json"
+        ],
         "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/package.json", "{workspaceRoot}/pnpm-lock.yaml"]
     },
     "targetDefaults": {
@@ -47,6 +53,10 @@
         },
         "prepare-deployment": {
             "cache": false
+        },
+        "@nx/vitest:test": {
+            "cache": true,
+            "inputs": ["default", "^production"]
         }
     },
     "plugins": [
@@ -71,6 +81,12 @@
             "unitTestRunner": "vitest-angular",
             "bundler": "esbuild",
             "ssr": false
+        },
+        "@nx/angular:library": {
+            "linter": "eslint",
+            "unitTestRunner": "vitest-analog",
+            "style": "scss",
+            "prefix": "mp"
         },
         "@nx/angular:component": {
             "style": "scss",
