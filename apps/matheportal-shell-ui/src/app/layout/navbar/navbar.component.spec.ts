@@ -7,18 +7,12 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 describe('NavbarComponent', () => {
     let component: NavbarComponent;
     let fixture: ComponentFixture<NavbarComponent>;
-    let activatedRouteStub: Partial<ActivatedRoute> = {};
+    const activatedRouteStub: Partial<ActivatedRoute> = {};
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [NavbarComponent,
-                AppComponent,
-                RouterModule.forRoot([{ path: '', component: AppComponent }]),
-            ],
-            providers: [
-                { provide: ActivatedRoute, useFactory: () => activatedRouteStub },
-            ]
-
+            imports: [NavbarComponent, AppComponent, RouterModule.forRoot([{ path: '', component: AppComponent }])],
+            providers: [{ provide: ActivatedRoute, useFactory: () => activatedRouteStub }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(NavbarComponent);

@@ -1,11 +1,11 @@
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { Route } from '@angular/router';
-import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
 
 export const appRoutes: Route[] = [
     {
         path: 'home',
-        component: AppComponent,
+        component: HomeComponent,
     },
     {
         path: 'minikaenguru-anwendung',
