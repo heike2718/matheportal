@@ -1,6 +1,6 @@
 import { RaetselbaukastenConfiguration } from './raetselbaukasten.configuration';
 
-export const matheporalShellConfiguration: RaetselbaukastenConfiguration = {
+export const raetselbaukastenConfiguration: RaetselbaukastenConfiguration = {
     apiUrl: '',
     environment: 'production',
     production: true,

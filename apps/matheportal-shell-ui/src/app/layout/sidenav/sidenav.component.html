@@ -1,1 +1,42 @@
-<p>sidenav works!</p>
+<div class="sidenav">
+    <div class="sidenav__header">
+        <div class="sidenav__title">Matheportal</div>
+    </div>
+
+    <nav class="sidenav__nav" aria-label="Seitennavigation">
+        <a
+            mat-list-item
+            class="sidenav__link sidenav__link--portal"
+            routerLink="/home"
+            routerLinkActive="sidenav__link--active"
+            (click)="onSidenavClose()">
+            <mat-icon class="sidenav__icon" aria-hidden="true">home</mat-icon>
+            <span class="sidenav__label">Startseite</span>
+        </a>
+    </nav>
+
+    <div class="sidenav__footer">
+        <a
+            class="sidenav__secondary-link"
+            href="https://mathe-jung-alt.de/datenschutz.html"
+            target="_blank"
+            rel="noopener noreferrer">
+            <mat-icon class="sidenav__icon" aria-hidden="true">privacy_tip</mat-icon>
+            <span>Datenschutz</span>
+        </a>
+
+        @if (isLoggedIn) {
+            <button mat-stroked-button type="button" class="sidenav__logout" (click)="onLogout()">
+                <mat-icon class="sidenav__icon" aria-hidden="true">logout</mat-icon>
+                <span>Logout</span>
+            </button>
+        } @else {
+            <button mat-stroked-button type="button" class="sidenav__logout" (click)="onLogin()">
+                <mat-icon class="sidenav__icon" aria-hidden="true">login</mat-icon>
+                <span>Login</span>
+            </button>
+        }
+
+        <div class="sidenav__version">Version {{ version }}</div>
+    </div>
+</div>

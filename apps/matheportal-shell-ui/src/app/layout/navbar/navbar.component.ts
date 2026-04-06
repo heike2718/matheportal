@@ -1,46 +1,48 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatMenuModule } from '@angular/material/menu';
-import { Router, RouterLinkWithHref } from '@angular/router';
-import { map, shareReplay } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { AsyncPipe } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { map, shareReplay } from 'rxjs';
+
+import { MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
 
 @Component({
     selector: 'portal-navbar',
-    imports: [
-        MatMenuModule,
-        MatIconModule,
-        MatListModule,
-        MatToolbarModule,
-        MatTooltipModule,
-        RouterLinkWithHref,
-        AsyncPipe,
-    ],
+    imports: [MatButtonModule, MatIconModule, MatToolbarModule, RouterLink, RouterLinkActive, AsyncPipe],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent {
     @Output()
-    sidenavToggle = new EventEmitter();
+    sidenavToggle = new EventEmitter<void>();
 
-    #breakpointObserver = inject(BreakpointObserver);
-    #router = inject(Router);
+    readonly #breakpointObserver = inject(BreakpointObserver);
+    readonly #config = inject(MATHEPORTAL_SHELL_CONFIGURATION);
+
+    readonly version = this.#config.version;
+
+    // Platzhalter bis Auth angebunden ist
+    readonly isLoggedIn = false;
+    readonly displayName = 'Gast';
 
     isHandset$ = this.#breakpointObserver.observe(Breakpoints.Handset).pipe(
         map(result => result.matches),
-        shareReplay()
+        shareReplay(1)
     );
 
     onToggleSidenav(): void {
         this.sidenavToggle.emit();
     }
 
-    onMenuItemClick(id: number): void {
-        this.#router.navigate(['/home', id]);
+    onLogin(): void {
+        // folgt später
+    }
+
+    onLogout(): void {
+        // folgt später
     }
 }
