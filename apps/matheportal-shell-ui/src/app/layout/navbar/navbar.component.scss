@@ -1,3 +1,72 @@
+@use 'mp-theme' as mp-theme;
+
 :host {
     display: block;
+}
+
+$nav-bg: mp-theme.mp-primary(700);
+$nav-fg: mp-theme.mp-primary-contrast(700);
+
+.nav {
+    background-color: $nav-bg;
+    color: $nav-fg;
+    display: flex;
+    align-items: center;
+    padding: mp-theme.$mp-space-3 mp-theme.$mp-space-5;
+    gap: mp-theme.$mp-space-2;
+
+    &__menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__link,
+    &__toggle,
+    &__login-logout {
+        display: inline-flex;
+        align-items: center;
+        gap: mp-theme.$mp-space-2;
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+        margin-right: 1rem;
+        border-radius: mp-theme.$mp-radius-m;
+        text-decoration: none;
+        cursor: pointer;
+
+        color: $nav-bg;
+        background-color: $nav-fg;
+
+        transition:
+            background-color 0.3s,
+            color 0.3s,
+            filter 0.15s;
+    }
+
+    &__icon {
+        inline-size: 24px;
+        block-size: 24px;
+        color: inherit;
+    }
+
+    &__caption {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    &__spacer {
+        flex: 1 1 auto;
+    }
+}
+
+.nav__link:hover,
+.nav__toggle:hover,
+.nav__login-logout:hover {
+    filter: brightness(0.9);
+}
+
+.nav__link:focus-visible,
+.nav__toggle:focus-visible,
+.nav__login-logout:focus-visible {
+    outline: 2px solid $nav-fg;
+    outline-offset: 2px;
 }

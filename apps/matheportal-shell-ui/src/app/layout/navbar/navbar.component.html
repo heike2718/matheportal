@@ -1,1 +1,12 @@
-<p>navbar works!</p>
+<mat-toolbar class="nav">
+    @if (isHandset$ | async) {
+        <button mat-icon-button class="nav__menu-btn" (click)="onToggleSidenav()" aria-label="Menü öffnen">
+            <mat-icon class="nav__icon">menu</mat-icon>
+        </button>
+    } @else {
+        <a mat-button class="nav__link" routerLink="/home">
+            <mat-icon class="nav__icon">home</mat-icon>
+            <span class="nav__caption">Startseite</span>
+        </a>
+    }
+</mat-toolbar>

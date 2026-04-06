@@ -113,7 +113,10 @@
                         "input": "apps/matheportal-shell-ui/public"
                     }
                 ],
-                "styles": ["apps/matheportal-shell-ui/src/styles.scss"],
+                "styles": [
+                    "apps/matheportal-shell-ui/src/styles.scss",
+                    "node_modules/material-icons/iconfont/material-icons.css"
+                ],
                 "polyfills": ["es-module-shims"]
             },
             "configurations": {
@@ -142,6 +145,11 @@
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true
+                },
+                "test": {
+                    "sourceMap": true,
+                    "optimization": false,
+                    "polyfills": []
                 }
             },
             "defaultConfiguration": "development"
@@ -164,7 +172,11 @@
         },
         "test": {
             "executor": "@angular/build:unit-test",
-            "options": {}
+            "options": {
+                "tsConfig": "apps/matheportal-shell-ui/tsconfig.spec.json",
+                "buildTarget": "matheportal-shell-ui:esbuild:test",
+                "runner": "vitest"
+            }
         },
         "format": {
             "executor": "nx:run-commands",

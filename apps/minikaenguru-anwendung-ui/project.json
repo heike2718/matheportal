@@ -78,7 +78,10 @@
                         "input": "apps/minikaenguru-anwendung-ui/public"
                     }
                 ],
-                "styles": ["apps/minikaenguru-anwendung-ui/src/styles.scss"],
+                "styles": [
+                    "apps/minikaenguru-anwendung-ui/src/styles.scss",
+                    "node_modules/material-icons/iconfont/material-icons.css"
+                ],
                 "polyfills": ["es-module-shims"]
             },
             "configurations": {
@@ -107,6 +110,11 @@
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true
+                },
+                "test": {
+                    "sourceMap": true,
+                    "optimization": false,
+                    "polyfills": []
                 }
             },
             "defaultConfiguration": "development"
@@ -129,7 +137,11 @@
         },
         "test": {
             "executor": "@angular/build:unit-test",
-            "options": {}
+            "options": {
+                "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.spec.json",
+                "buildTarget": "minikaenguru-anwendung-ui:esbuild:test",
+                "runner": "vitest"
+            }
         },
         "format": {
             "executor": "nx:run-commands",
