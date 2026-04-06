@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockRuntimeConfig } from '@matheportal/testing';
 import { NavbarComponent } from './navbar.component';
 import { HomeComponent } from '../../home/home.component';
-import { MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
+import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { Component } from '@angular/core';
 
 describe('NavbarComponent', () => {

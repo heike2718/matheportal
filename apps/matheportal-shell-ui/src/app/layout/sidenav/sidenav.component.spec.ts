@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { SidenavComponent } from './sidenav.component';
 import { mockRuntimeConfig } from '@matheportal/testing';
-import { MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
+import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { HomeComponent } from '../../home/home.component';
 
 describe('SidenavComponent', () => {

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { ActivatedRoute } from '@angular/router';
 import { mockRuntimeConfig } from '@matheportal/testing';
-import { MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
+import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
 
 describe('AppComponent', () => {
     const activatedRouteStub: Partial<ActivatedRoute> = {};

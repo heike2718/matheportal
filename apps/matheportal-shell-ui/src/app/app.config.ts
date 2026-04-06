@@ -1,7 +1,8 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { matheporalShellConfiguration, MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
+import { matheporalShellConfiguration } from './config/configuration';
+import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
 
 // Environment-spezifische Provider
 function getEnvironmentSpecificProviders() {

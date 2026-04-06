@@ -7,7 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
 
-import { MATHEPORTAL_SHELL_CONFIGURATION } from '@mp-shell-config';
+import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 
 @Component({
     selector: 'portal-navbar',

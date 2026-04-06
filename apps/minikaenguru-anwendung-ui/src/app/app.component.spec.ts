@@ -12,6 +12,6 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         await fixture.whenStable();
         const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.querySelector('h1')?.textContent).toBe('Minikänguru- Anwendung');
+        expect(compiled.querySelector('h1')?.textContent).toBe('Minikänguru-Wettbewerb');
     });
 });
