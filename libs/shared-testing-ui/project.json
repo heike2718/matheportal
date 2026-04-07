@@ -1,16 +1,16 @@
 {
-    "name": "configuration",
+    "name": "shared-testing-ui",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/configuration/src",
+    "sourceRoot": "libs/shared-testing-ui/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": [],
+    "tags": ["domain:shared", "type:testing"],
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
             "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "reportsDirectory": "coverage/libs/configuration"
+                "reportsDirectory": "coverage/libs/shared-testing-ui"
             }
         },
         "lint": {

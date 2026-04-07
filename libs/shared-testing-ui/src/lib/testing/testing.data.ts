@@ -1,4 +1,4 @@
-import { MatheportalRuntimeConfiguration } from '@matheportal/configuration';
+import { MatheportalRuntimeConfiguration } from '@matheportal/shared-runtime-config';
 
 export const mockRuntimeConfig: MatheportalRuntimeConfiguration = {
     environment: 'dev',

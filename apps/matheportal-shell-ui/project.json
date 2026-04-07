@@ -4,7 +4,7 @@
     "projectType": "application",
     "prefix": "portal",
     "sourceRoot": "apps/matheportal-shell-ui/src",
-    "tags": [],
+    "tags": ["type:app", "scope:portal", "layer:host"],
     "targets": {
         "build": {
             "executor": "@angular-architects/native-federation:build",
@@ -106,7 +106,7 @@
                 "browser": "apps/matheportal-shell-ui/src/main.ts",
                 "tsConfig": "apps/matheportal-shell-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
+                "stylePreprocessorOptions": { "includePaths": ["libs/shared-ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",

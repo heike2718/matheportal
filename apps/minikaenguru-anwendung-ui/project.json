@@ -4,7 +4,7 @@
     "projectType": "application",
     "prefix": "mka",
     "sourceRoot": "apps/minikaenguru-anwendung-ui/src",
-    "tags": [],
+    "tags": ["type:app", "scope:minikaenguru", "layer:remote"],
     "targets": {
         "build": {
             "executor": "@angular-architects/native-federation:build",
@@ -71,7 +71,7 @@
                 "browser": "apps/minikaenguru-anwendung-ui/src/main.ts",
                 "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
+                "stylePreprocessorOptions": { "includePaths": ["libs/shared-ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",

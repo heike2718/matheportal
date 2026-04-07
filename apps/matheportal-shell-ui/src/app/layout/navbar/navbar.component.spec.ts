@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockRuntimeConfig } from '@matheportal/testing';
+import { mockRuntimeConfig } from '@matheportal/shared-testing-ui';
 import { NavbarComponent } from './navbar.component';
 import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';

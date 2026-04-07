@@ -1,16 +1,16 @@
 {
-    "name": "ui-theme",
+    "name": "shared-runtime-config",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/ui-theme/src",
+    "sourceRoot": "libs/shared-runtime-config/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": [],
+    "tags": ["domain:shared", "type:config"],
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
             "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "reportsDirectory": "coverage/libs/ui-theme"
+                "reportsDirectory": "coverage/libs/shared-runtime-config"
             }
         },
         "lint": {

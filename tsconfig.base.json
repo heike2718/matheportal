@@ -16,8 +16,8 @@
         "baseUrl": ".",
         "paths": {
             "@mp-shell-config": ["./apps/matheportal-shell-ui/src/app/config/index.ts"],
-            "@matheportal/configuration": ["libs/configuration/src/index.ts"],
-            "@matheportal/testing": ["libs/testing/src/index.ts"]
+            "@matheportal/shared-runtime-config": ["libs/shared-runtime-config/src/index.ts"],
+            "@matheportal/shared-testing-ui": ["libs/shared-testing-ui/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

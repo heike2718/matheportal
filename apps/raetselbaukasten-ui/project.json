@@ -4,12 +4,12 @@
     "projectType": "application",
     "prefix": "rbk",
     "sourceRoot": "apps/raetselbaukasten-ui/src",
-    "tags": [],
+    "tags": ["type:app", "scope:raetselbaukasten", "layer:remote"],
     "targets": {
         "build": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "baseHref": "/minikaenguru-anwendung/",
+                "baseHref": "/raetselbaukasten/",
                 "output-hashing": "all"
             },
             "configurations": {
@@ -71,7 +71,7 @@
                 "browser": "apps/raetselbaukasten-ui/src/main.ts",
                 "tsConfig": "apps/raetselbaukasten-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
+                "stylePreprocessorOptions": { "includePaths": ["libs/shared-ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",
