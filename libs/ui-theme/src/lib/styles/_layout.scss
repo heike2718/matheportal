@@ -1,0 +1,52 @@
+@use './tokens' as tokens;
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-m;
+    line-height: tokens.$mp-line-height-normal;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.mat-app-background {
+    min-height: 100dvh;
+}
+
+.mp-page {
+    min-height: 100dvh;
+    padding: tokens.$mp-space-5;
+}
+
+.mp-page__content {
+    max-width: tokens.$mp-content-max-width;
+    margin: 0 auto;
+}
+
+.mp-page__content--narrow {
+    max-width: tokens.$mp-content-max-width-narrow;
+}
+
+.mp-section {
+    margin-block: tokens.$mp-space-6;
+}
+
+.mp-section__title {
+    margin: 0 0 tokens.$mp-space-4;
+    font-size: tokens.$mp-font-size-xl;
+    line-height: tokens.$mp-line-height-tight;
+}
+
+.mp-section__subtitle {
+    margin: 0 0 tokens.$mp-space-5;
+    font-size: tokens.$mp-font-size-m;
+}

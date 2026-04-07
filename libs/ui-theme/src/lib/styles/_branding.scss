@@ -1,0 +1,13 @@
+@use 'sass:color';
+
+// Kontextfarben der Portal-Bewohner
+$mp-brand-minikaenguru: #2a588c;
+$mp-brand-raetselbaukasten: #3f6657;
+
+// Dezente Hover-Flächen
+$mp-brand-minikaenguru-hover: color.scale($mp-brand-minikaenguru, $lightness: 94%);
+$mp-brand-raetselbaukasten-hover: color.scale($mp-brand-raetselbaukasten, $lightness: 94%);
+
+// Optional für spätere Erweiterungen
+$mp-brand-minikaenguru-soft: color.scale($mp-brand-minikaenguru, $lightness: 88%);
+$mp-brand-raetselbaukasten-soft: color.scale($mp-brand-raetselbaukasten, $lightness: 88%);

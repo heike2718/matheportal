@@ -1,9 +1,7 @@
 import { InjectionToken } from '@angular/core';
+import { MatheportalRuntimeConfiguration } from '@matheportal/configuration';
 
-export interface MatheportalShellConfiguration {
-    readonly production: boolean;
-    readonly version: string;
-    readonly environment: string;
+export interface MatheportalShellConfiguration extends MatheportalRuntimeConfiguration {
     readonly apiUrl: string;
 }
 

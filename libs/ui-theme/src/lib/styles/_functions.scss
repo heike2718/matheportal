@@ -1,0 +1,51 @@
+@use '@angular/material' as mat;
+@use './material-theme' as theme;
+@use './branding' as branding;
+
+@function mp-primary($hue: 500) {
+    @return mat.m2-get-color-from-palette(theme.$mp-primary, $hue);
+}
+
+@function mp-primary-contrast($hue: 500) {
+    @return mat.m2-get-contrast-color-from-palette(theme.$mp-primary, $hue);
+}
+
+@function mp-accent($hue: 500) {
+    @return mat.m2-get-color-from-palette(theme.$mp-accent, $hue);
+}
+
+@function mp-accent-contrast($hue: 500) {
+    @return mat.m2-get-contrast-color-from-palette(theme.$mp-accent, $hue);
+}
+
+@function mp-warn($hue: 500) {
+    @return mat.m2-get-color-from-palette(theme.$mp-warn, $hue);
+}
+
+@function mp-warn-contrast($hue: 500) {
+    @return mat.m2-get-contrast-color-from-palette(theme.$mp-warn, $hue);
+}
+
+@function mp-brand($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten;
+    }
+
+    @error 'Unbekannter Branding-Kontext: #{$context}';
+}
+
+@function mp-brand-hover($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru-hover;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten-hover;
+    }
+
+    @error 'Unbekannter Branding-Kontext: #{$context}';
+}

@@ -14,7 +14,7 @@
             },
             "configurations": {
                 "production": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:production",
+                    "target": "raetselbaukasten-ui:esbuild:production",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -23,7 +23,7 @@
                     ]
                 },
                 "qs": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:qs",
+                    "target": "raetselbaukasten-ui:esbuild:qs",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -32,11 +32,11 @@
                     ]
                 },
                 "local": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "target": "raetselbaukasten-ui:esbuild:development",
                     "dev": true
                 },
                 "development": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "target": "raetselbaukasten-ui:esbuild:development",
                     "dev": true
                 }
             },
@@ -45,7 +45,7 @@
         "serve": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "target": "minikaenguru-anwendung-ui:serve-original:development",
+                "target": "raetselbaukasten-ui:serve-original:development",
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
@@ -57,9 +57,9 @@
             "continuous": true,
             "executor": "@nx/web:file-server",
             "options": {
-                "buildTarget": "minikaenguru-anwendung-ui:build",
+                "buildTarget": "raetselbaukasten-ui:build",
                 "port": 4200,
-                "staticFilePath": "dist/apps/minikaenguru-anwendung-ui/browser",
+                "staticFilePath": "dist/apps/raetselbaukasten-ui/browser",
                 "spa": true
             }
         },
@@ -67,17 +67,21 @@
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
-                "outputPath": "dist/apps/minikaenguru-anwendung-ui",
-                "browser": "apps/minikaenguru-anwendung-ui/src/main.ts",
-                "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.app.json",
+                "outputPath": "dist/apps/raetselbaukasten-ui",
+                "browser": "apps/raetselbaukasten-ui/src/main.ts",
+                "tsConfig": "apps/raetselbaukasten-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",
-                        "input": "apps/minikaenguru-anwendung-ui/public"
+                        "input": "apps/raetselbaukasten-ui/public"
                     }
                 ],
-                "styles": ["apps/minikaenguru-anwendung-ui/src/styles.scss"],
+                "styles": [
+                    "apps/raetselbaukasten-ui/src/styles.scss",
+                    "node_modules/material-icons/iconfont/material-icons.css"
+                ],
                 "polyfills": ["es-module-shims"]
             },
             "configurations": {
@@ -96,10 +100,21 @@
                     ],
                     "outputHashing": "all"
                 },
+                "qs": {
+                    "optimization": true,
+                    "extractLicenses": true,
+                    "sourceMap": false,
+                    "outputHashing": "all"
+                },
                 "development": {
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true
+                },
+                "test": {
+                    "sourceMap": true,
+                    "optimization": false,
+                    "polyfills": []
                 }
             },
             "defaultConfiguration": "development"
@@ -109,20 +124,24 @@
             "executor": "@angular/build:dev-server",
             "configurations": {
                 "production": {
-                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:production"
+                    "buildTarget": "raetselbaukasten-ui:esbuild:production"
                 },
                 "development": {
-                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:development"
+                    "buildTarget": "raetselbaukasten-ui:esbuild:development"
                 }
             },
             "defaultConfiguration": "development",
             "options": {
-                "port": 4201
+                "port": 4202
             }
         },
         "test": {
             "executor": "@angular/build:unit-test",
-            "options": {}
+            "options": {
+                "tsConfig": "apps/raetselbaukasten-ui/tsconfig.spec.json",
+                "buildTarget": "raetselbaukasten-ui:esbuild:test",
+                "runner": "vitest"
+            }
         },
         "format": {
             "executor": "nx:run-commands",

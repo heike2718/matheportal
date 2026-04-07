@@ -1,9 +1,7 @@
 import { InjectionToken } from '@angular/core';
+import { MatheportalRuntimeConfiguration } from '@matheportal/configuration';
 
-export interface RaetselbaukastenConfiguration {
-    readonly production: boolean;
-    readonly version: string;
-    readonly environment: string;
+export interface RaetselbaukastenConfiguration extends MatheportalRuntimeConfiguration {
     readonly apiUrl: string;
 }
 

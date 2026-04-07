@@ -1,0 +1,26 @@
+@use '@angular/material' as mat;
+@use './palettes' as palettes;
+@use './typography' as typography;
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+$mp-primary: mat.m2-define-palette(palettes.$mp-primary-palette, 700, 300, 900);
+$mp-accent: mat.m2-define-palette(palettes.$mp-secondary-palette, 700, 300, 900);
+$mp-warn: mat.m2-define-palette(palettes.$mp-warn-palette, 700);
+
+$mp-theme: mat.m2-define-light-theme(
+    (
+        color: (
+            primary: $mp-primary,
+            accent: $mp-accent,
+            warn: $mp-warn,
+        ),
+        typography: typography.$mp-typography,
+        density: 0,
+    )
+);
+
+@mixin mp-material-theme() {
+    @include mat.all-component-themes($mp-theme);
+}

@@ -1,0 +1,53 @@
+@use './tokens' as tokens;
+@use '@angular/material' as mat;
+@use './palettes' as palettes;
+
+$mp-card-accent: mat.m2-get-color-from-palette(palettes.$mp-secondary-palette, 700);
+$mp-card-border: rgba(0, 0, 0, 0.08);
+
+.mp-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: tokens.$mp-space-5;
+}
+
+.mp-card {
+    border: tokens.$mp-border-width solid $mp-card-border;
+    border-radius: tokens.$mp-radius-l;
+    box-shadow: tokens.$mp-shadow-1;
+    overflow: hidden;
+}
+
+.mp-card--accented {
+    border-top: 4px solid $mp-card-accent;
+}
+
+.mp-card__header {
+    padding: tokens.$mp-space-5 tokens.$mp-space-5 tokens.$mp-space-3;
+}
+
+.mp-card__title {
+    margin: 0;
+    font-size: tokens.$mp-font-size-l;
+    line-height: tokens.$mp-line-height-tight;
+}
+
+.mp-card__subtitle {
+    margin: tokens.$mp-space-2 0 0;
+    font-size: tokens.$mp-font-size-s;
+}
+
+.mp-card__content {
+    padding: 0 tokens.$mp-space-5 tokens.$mp-space-4;
+}
+
+.mp-card__actions {
+    display: flex;
+    gap: tokens.$mp-space-3;
+    flex-wrap: wrap;
+    padding: 0 tokens.$mp-space-5 tokens.$mp-space-5;
+}
+
+.mp-toolbar-spacer {
+    flex: 1 1 auto;
+}

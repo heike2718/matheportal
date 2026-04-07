@@ -1,6 +1,6 @@
 import { MinikaenguruAnwendungConfiguration } from './minikaenguru-anwendung.configuration';
 
-export const matheporalShellConfiguration: MinikaenguruAnwendungConfiguration = {
+export const minikaenguruAnwendungConfiguration: MinikaenguruAnwendungConfiguration = {
     apiUrl: '',
     environment: 'production',
     production: true,

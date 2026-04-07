@@ -1,0 +1,60 @@
+@use '@angular/material' as mat;
+@use './tokens' as tokens;
+
+$mp-typography: mat.m2-define-typography-config(
+    $font-family: tokens.$mp-font-family,
+    $headline-1: mat.m2-define-typography-level(2rem, 2.5rem, 700),
+    $headline-2: mat.m2-define-typography-level(1.75rem, 2.25rem, 700),
+    $headline-3: mat.m2-define-typography-level(1.5rem, 2rem, 600),
+    $headline-4: mat.m2-define-typography-level(1.25rem, 1.75rem, 600),
+    $headline-5: mat.m2-define-typography-level(1.125rem, 1.5rem, 600),
+    $headline-6: mat.m2-define-typography-level(1rem, 1.5rem, 600),
+    $body-1: mat.m2-define-typography-level(1rem, 1.5rem, 400),
+    $body-2: mat.m2-define-typography-level(0.875rem, 1.25rem, 400),
+    $button: mat.m2-define-typography-level(0.95rem, 0.95rem, 600),
+    $caption: mat.m2-define-typography-level(0.75rem, 1rem, 400),
+);
+
+// Semantische Typography-Mixins für Components
+
+@mixin mp-headline-large {
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-xl;
+    line-height: 2rem;
+    font-weight: 600;
+}
+
+@mixin mp-headline-medium {
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-l;
+    line-height: 1.75rem;
+    font-weight: 600;
+}
+
+@mixin mp-headline-small {
+    font-family: tokens.$mp-font-family;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+}
+
+@mixin mp-body-default {
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-m;
+    line-height: 1.5rem;
+    font-weight: 400;
+}
+
+@mixin mp-body-small {
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-s;
+    line-height: 1.25rem;
+    font-weight: 400;
+}
+
+@mixin mp-caption {
+    font-family: tokens.$mp-font-family;
+    font-size: tokens.$mp-font-size-xs;
+    line-height: 1rem;
+    font-weight: 400;
+}

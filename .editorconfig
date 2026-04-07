@@ -7,30 +7,5 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
-indent_size = 2
-
-# Markdown
-[*.md]
-max_line_length = off
-
-# Java – entspricht eclipse-java-formatter.xml
-[*.java]
 indent_size = 4
-
-# XML (pom.xml, formatter.xml etc.)
-[*.xml]
-indent_size = 2
-
-# JSON / YAML
-[*.json]
-indent_size = 2
-
-[*.yml]
-indent_size = 2
-
-[*.yaml]
-indent_size = 2
-
-# Shell
-[*.sh]
-indent_size = 2
+tab_width = 4

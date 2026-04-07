@@ -1,0 +1,172 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    min-height: 4rem;
+    padding-inline: mp-theme.$mp-space-4;
+    gap: mp-theme.$mp-space-3;
+
+    background-color: white;
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
+    box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 8%);
+
+    // --- Layout Sections ---
+
+    &__section {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+
+        &--left {
+            flex: 0 1 auto;
+        }
+
+        &--right {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: mp-theme.$mp-space-5; // Abstand zwischen User- und Meta-Gruppe
+        }
+    }
+
+    &__spacer {
+        flex: 1 1 auto;
+    }
+
+    // --- Left Navigation ---
+
+    &__links {
+        display: flex;
+        align-items: center;
+        gap: mp-theme.$mp-space-2;
+    }
+
+    &__menu-btn {
+        flex: 0 0 auto;
+    }
+
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: mp-theme.$mp-space-2;
+        min-height: 2.5rem;
+        padding-inline: mp-theme.$mp-space-3;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        color: inherit;
+        text-decoration: none;
+        transition:
+            background-color 150ms ease-in-out,
+            border-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+        &:hover,
+        &:focus-visible {
+            background-color: rgb(0 0 0 / 4%);
+            border-color: rgb(0 0 0 / 8%);
+        }
+
+        &--portal {
+            &.nav__link--active {
+                background-color: rgb(0 0 0 / 5%);
+                border-color: rgb(0 0 0 / 12%);
+                color: mp-theme.mp-primary(500);
+            }
+        }
+
+        &--minikaenguru {
+            &:hover,
+            &:focus-visible {
+                background-color: mp-theme.mp-brand-hover(minikaenguru);
+                border-color: rgb(42 88 140 / 20%);
+            }
+
+            &.nav__link--active {
+                background-color: mp-theme.mp-brand-hover(minikaenguru);
+                border-color: mp-theme.mp-brand(minikaenguru);
+                color: mp-theme.mp-brand(minikaenguru);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru);
+            }
+        }
+
+        &--raetselbaukasten {
+            &:hover,
+            &:focus-visible {
+                background-color: mp-theme.mp-brand-hover(raetselbaukasten);
+                border-color: rgb(63 102 87 / 20%);
+            }
+
+            &.nav__link--active {
+                background-color: mp-theme.mp-brand-hover(raetselbaukasten);
+                border-color: mp-theme.mp-brand(raetselbaukasten);
+                color: mp-theme.mp-brand(raetselbaukasten);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(raetselbaukasten);
+            }
+        }
+    }
+
+    // --- Right Side: User Group ---
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: mp-theme.$mp-space-3;
+    }
+
+    &__greeting {
+        @include mp-theme.mp-body-default;
+        color: rgb(0 0 0 / 80%);
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    &__auth-btn {
+        white-space: nowrap;
+    }
+
+    // --- Right Side: Meta Group ---
+
+    &__meta-group {
+        display: flex;
+        align-items: center;
+        gap: mp-theme.$mp-space-3;
+        padding-left: mp-theme.$mp-space-4;
+        border-left: 1px solid rgb(0 0 0 / 10%);
+    }
+
+    &__meta {
+        @include mp-theme.mp-body-small;
+        color: rgb(0 0 0 / 65%);
+        white-space: nowrap;
+    }
+
+    &__meta-link {
+        @include mp-theme.mp-body-small;
+        color: rgb(0 0 0 / 75%);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 150ms ease-in-out;
+
+        &:hover,
+        &:focus-visible {
+            color: mp-theme.mp-primary(500);
+            text-decoration: underline;
+        }
+    }
+
+    // --- Icons & Text ---
+
+    &__icon {
+        margin-right: 0;
+    }
+
+    &__caption {
+        white-space: nowrap;
+    }
+}
