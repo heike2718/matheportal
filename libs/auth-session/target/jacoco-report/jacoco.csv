@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+auth-session,de.mathejungalt.authsessions.internal.jwt,JWTService,40,0,2,0,12,0,4,0,3,0
+auth-session,de.mathejungalt.authsessions.internal,ClockProducer,10,0,0,0,3,0,3,0,3,0
+auth-session,de.mathejungalt.authsessions.api,UserDto,12,0,0,0,1,0,1,0,1,0
+auth-session,de.mathejungalt.authsessions.api,SessionFacade,26,0,0,0,6,0,4,0,4,0
+auth-session,de.mathejungalt.authsessions.api.exceptions,InvalidTokenException,5,0,0,0,2,0,1,0,1,0
+auth-session,de.mathejungalt.authsessions.api.exceptions,SessionExpiredException,4,0,0,0,2,0,1,0,1,0
+auth-session,de.mathejungalt.authsessions.api.exceptions,AuthSessionException,5,0,0,0,2,0,1,0,1,0
+auth-session,de.mathejungalt.authsessions.internal.session,SessionRepository,45,0,6,0,16,0,7,0,4,0
+auth-session,de.mathejungalt.authsessions.internal.session,SessionService,240,0,18,0,62,0,19,0,10,0
+auth-session,de.mathejungalt.authsessions.internal.session,SessionStateEvaluator,26,0,4,0,7,0,4,0,2,0

@@ -6,11 +6,11 @@
         "check-node": "node -e \"if(!process.version.startsWith('v22.')){console.error('\\n❌ Node 22 required. Current:',process.version,'\\n');process.exit(1)}\"",
         "preinstall": "pnpm run -s check-node",
         "shell:dev:be": "nx run matheportal-shell:dev",
-        "cleanup:all": "nx run-many -t cleanup --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,matheportal-shell,raetselbaukasten,minikaenguru-anwendung",
+        "cleanup:all": "nx run-many -t cleanup --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session",
         "format-check:fe:all": "pnpm nx run-many -t format-check --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui",
         "lint:fe:all": "pnpm nx run-many -t lint --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui",
         "test:fe:all": "pnpm nx run-many -t test --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui --watch=false",
-        "test:be:all": "pnpm nx run-many -t test --projects=matheportal-shell,raetselbaukasten,minikaenguru-anwendung",
+        "test:be:all": "pnpm nx run-many -t test --projects=matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session",
         "check:all": "pnpm run format-check:fe:all && pnpm run lint:fe:all && pnpm run test:fe:all && pnpm run test:be:all"
     },
     "engines": {

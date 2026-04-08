@@ -50,12 +50,20 @@
 
     /* --- Java Minimalismus (kein automatischer Build-Stress) --- */
     "java.jdt.ls.vmargs": "-javaagent:${userHome}/.m2/repository/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar -Xms2g -Xmx12g -XX:+UseG1GC -XX:+UseStringDeduplication",
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.autobuild.enabled": false,
-    "java.compile.nullAnalysis.mode": "automatic",
+    "java.compile.nullAnalysis.mode": "disabled",
     "java.import.maven.enabled": true,
     "java.import.maven.offline.enabled": true,
     "java.import.maven.disableTestClasspathFlag": true,
     "java.format.settings.url": "${workspaceFolder}/.vscode/eclipse-java-formatter.xml",
-    "java.format.settings.profile": "egladil"
+    "java.format.settings.profile": "egladil",
+    "xml.validation.enabled": false,
+    "xml.format.enabled": true,
+    "java.saveActions.cleanup": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.cleanup.actions": ["addFinalModifier"]
 }

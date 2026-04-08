@@ -1,0 +1,1 @@
+/home/heike/git/matheportal/libs/auth-session/src/main/java

@@ -1,0 +1,71 @@
+-------------------------------------------------------------------------------
+Test set: de.mathejungalt.authsessions.internal.session.SessionServiceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.246 s <<< FAILURE! -- in de.mathejungalt.authsessions.internal.session.SessionServiceTest
+de.mathejungalt.authsessions.internal.session.SessionServiceTest.should_create_and_persist_a_session -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.RuntimeException: java.lang.RuntimeException: Failed to start quarkus
+	at io.quarkus.test.junit.QuarkusTestExtension.throwBootFailureException(QuarkusTestExtension.java:667)
+	at io.quarkus.test.junit.QuarkusTestExtension.interceptTestClassConstructor(QuarkusTestExtension.java:762)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.RuntimeException: Failed to start quarkus
+	at io.quarkus.runner.ApplicationImpl.doStart(Unknown Source)
+	at io.quarkus.runtime.Application.start(Application.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at io.quarkus.runner.bootstrap.StartupActionImpl.run(StartupActionImpl.java:352)
+	at io.quarkus.test.junit.QuarkusTestExtension.doJavaStart(QuarkusTestExtension.java:232)
+	at io.quarkus.test.junit.QuarkusTestExtension.ensureStarted(QuarkusTestExtension.java:641)
+	at io.quarkus.test.junit.QuarkusTestExtension.beforeAll(QuarkusTestExtension.java:686)
+	... 1 more
+Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: sessions] Unable to build Hibernate SessionFactory
+	at io.quarkus.hibernate.orm.runtime.boot.FastBootEntityManagerFactoryBuilder.persistenceException(FastBootEntityManagerFactoryBuilder.java:132)
+	at io.quarkus.hibernate.orm.runtime.boot.FastBootEntityManagerFactoryBuilder.build(FastBootEntityManagerFactoryBuilder.java:99)
+	at io.quarkus.hibernate.orm.runtime.FastBootHibernatePersistenceProvider.createEntityManagerFactory(FastBootHibernatePersistenceProvider.java:90)
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:90)
+	at io.quarkus.hibernate.orm.runtime.JPAConfig$LazyPersistenceUnit.get(JPAConfig.java:178)
+	at io.quarkus.hibernate.orm.runtime.JPAConfig$1.run(JPAConfig.java:65)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.hibernate.query.NamedQueryValidationException: Errors in named queries: 
+  [1] Error in query named 'SessionEntity.findBySessionId': Could not interpret path expression 's'
+	at org.hibernate.query.internal.NamedObjectRepositoryImpl.validateNamedQueries(NamedObjectRepositoryImpl.java:302)
+	at org.hibernate.query.internal.QueryEngineImpl.validateNamedQueries(QueryEngineImpl.java:211)
+	at io.quarkus.hibernate.orm.runtime.observers.SessionFactoryObserverForNamedQueryValidation.sessionFactoryCreated(SessionFactoryObserverForNamedQueryValidation.java:27)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:323)
+	at io.quarkus.hibernate.orm.runtime.boot.FastBootEntityManagerFactoryBuilder.build(FastBootEntityManagerFactoryBuilder.java:97)
+	... 5 more
+	Suppressed: org.hibernate.query.SemanticException: Could not interpret path expression 's'
+		at org.hibernate.query.hql.internal.BasicDotIdentifierConsumer$BaseLocalSequencePart.resolveTerminal(BasicDotIdentifierConsumer.java:180)
+		at org.hibernate.query.hql.internal.BasicDotIdentifierConsumer$BaseLocalSequencePart.resolvePathPart(BasicDotIdentifierConsumer.java:153)
+		at org.hibernate.query.hql.internal.BasicDotIdentifierConsumer.consumeIdentifier(BasicDotIdentifierConsumer.java:90)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitSimplePath(SemanticQueryBuilder.java:5787)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitGeneralPathFragment(SemanticQueryBuilder.java:5652)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitGeneralPathExpression(SemanticQueryBuilder.java:1822)
+		at org.hibernate.grammars.hql.HqlParser$GeneralPathExpressionContext.accept(HqlParser.java:7847)
+		at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(AbstractParseTreeVisitor.java:46)
+		at org.hibernate.grammars.hql.HqlParserBaseVisitor.visitBarePrimaryExpression(HqlParserBaseVisitor.java:761)
+		at org.hibernate.grammars.hql.HqlParser$BarePrimaryExpressionContext.accept(HqlParser.java:7296)
+		at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(AbstractParseTreeVisitor.java:46)
+		at org.hibernate.grammars.hql.HqlParserBaseVisitor.visitExpressionOrPredicate(HqlParserBaseVisitor.java:894)
+		at org.hibernate.grammars.hql.HqlParser$ExpressionOrPredicateContext.accept(HqlParser.java:8079)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitSelectableNode(SemanticQueryBuilder.java:1384)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitSelection(SemanticQueryBuilder.java:1361)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitSelectClause(SemanticQueryBuilder.java:1354)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitQuery(SemanticQueryBuilder.java:1158)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitQuerySpecExpression(SemanticQueryBuilder.java:956)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitQuerySpecExpression(SemanticQueryBuilder.java:247)
+		at org.hibernate.grammars.hql.HqlParser$QuerySpecExpressionContext.accept(HqlParser.java:2113)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitQueryExpression(SemanticQueryBuilder.java:985)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitQueryExpression(SemanticQueryBuilder.java:247)
+		at org.hibernate.grammars.hql.HqlParser$QueryExpressionContext.accept(HqlParser.java:2003)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitSelectStatement(SemanticQueryBuilder.java:472)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.visitStatement(SemanticQueryBuilder.java:431)
+		at org.hibernate.query.hql.internal.SemanticQueryBuilder.buildSemanticModel(SemanticQueryBuilder.java:292)
+		at org.hibernate.query.hql.internal.StandardHqlTranslator.translate(StandardHqlTranslator.java:64)
+		at org.hibernate.query.internal.QueryInterpretationCacheStandardImpl.createHqlInterpretation(QueryInterpretationCacheStandardImpl.java:165)
+		at org.hibernate.query.internal.QueryInterpretationCacheStandardImpl.resolveHqlInterpretation(QueryInterpretationCacheStandardImpl.java:147)
+		at org.hibernate.query.internal.NamedObjectRepositoryImpl.checkNamedQueries(NamedObjectRepositoryImpl.java:322)
+		at org.hibernate.query.internal.NamedObjectRepositoryImpl.validateNamedQueries(NamedObjectRepositoryImpl.java:292)
+		... 10 more
+
