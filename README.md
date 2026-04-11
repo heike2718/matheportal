@@ -58,3 +58,12 @@ Dies führt aus:
 
 - qs
 - production
+
+## Clients
+
+### matheportal-shell (dev)
+
+ClientID dev: matheportal-shell-client
+Passwort dev: start123
+
+ClientID und Client-Secret qs / prod in keypass

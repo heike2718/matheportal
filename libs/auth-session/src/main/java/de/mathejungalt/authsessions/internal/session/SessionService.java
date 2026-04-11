@@ -1,24 +1,25 @@
 package de.mathejungalt.authsessions.internal.session;
 
-import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
-
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.UserDto;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
 import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.PersistenceException;
-import jakarta.transaction.Transactional;
 
 /**
  * SessionService.
@@ -41,13 +42,12 @@ public class SessionService {
 
     /**
      * Erzeugt und persistiert eine Session.
-     * 
+     *
      * @param authenticatedUser  AuthenticatedUser
      * @param idleTimeoutMinutes int
      * @return SessionDto
-     * @throws AuthSessionException wenn es einen unerwarteten
-     *                              Implementierungsfehler oder einen Fehler beim
-     *                              Speichern gibt.
+     * @throws AuthSessionException wenn es einen unerwarteten Implementierungsfehler oder einen Fehler beim Speichern
+     *                              gibt.
      */
     @Transactional
     public SessionDto createSession(final AuthenticatedUser authenticatedUser, final int idleTimeoutMinutes)
@@ -87,18 +87,15 @@ public class SessionService {
     /**
      * Läd die Session und verlängert sie, falls möglich.<br>
      * <br>
-     * Die Session kann nicht verlängert werden, wenn sie bereits abgelaufen ist (zu
-     * lange idle) oder ihre maximale Lebensspanne überschritten hat.
-     * 
+     * Die Session kann nicht verlängert werden, wenn sie bereits abgelaufen ist (zu lange idle) oder ihre maximale
+     * Lebensspanne überschritten hat.
+     *
      * @param sessionId          String
      * @param idleTimeoutMinutes int Anzahl Minuten der Untätigkeit.
-     * @param maxLifetimeMinutes int maximal mögliche Lebensdauer einer Session in
-     *                           Minuten.
+     * @param maxLifetimeMinutes int maximal mögliche Lebensdauer einer Session in Minuten.
      * @return SessionDto
-     * @throws SessionExpiredException wenn die Session abgelaufen ist oder sich
-     *                                 nicht mehr verlängern lässt
-     * @throws AuthSessionException    wenn es beim Speichern der Session zu einem
-     *                                 Fehler kam.
+     * @throws SessionExpiredException wenn die Session abgelaufen ist oder sich nicht mehr verlängern lässt
+     * @throws AuthSessionException    wenn es beim Speichern der Session zu einem Fehler kam.
      */
     public SessionDto reloadSession(final String sessionId, final int idleTimeoutMinutes, final int maxLifetimeMinutes)
             throws SessionExpiredException, AuthSessionException {
@@ -133,7 +130,7 @@ public class SessionService {
 
     /**
      * Entfernt die Session aus dem Store.
-     * 
+     *
      * @param sessionId String
      */
     public void invalidateSession(final String sessionId) {

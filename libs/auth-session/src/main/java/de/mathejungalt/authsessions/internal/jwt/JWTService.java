@@ -2,13 +2,15 @@ package de.mathejungalt.authsessions.internal.jwt;
 
 import java.util.Set;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
+
+import io.smallrye.jwt.auth.principal.JWTParser;
 
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.exceptions.InvalidTokenException;
-import io.smallrye.jwt.auth.principal.JWTParser;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 /**
  * JwtService.
@@ -23,7 +25,7 @@ public class JWTService {
 
     /**
      * Mapped das JWT auf einen AuthenticatedUser.
-     * 
+     *
      * @param rawJwt String
      * @return
      * @throws InvalidTokenException wenn das JWT ungültig ist.

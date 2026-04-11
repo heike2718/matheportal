@@ -15,6 +15,9 @@
 
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
 
+        <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+        <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
+
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
         <spotbugs.failOnError>true</spotbugs.failOnError>
@@ -42,6 +45,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>de.mathe-jung-alt</groupId>
+                <artifactId>matheportal-bom</artifactId>
+                <version>${matheportal-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -51,6 +61,12 @@
             <groupId>de.egladil.web</groupId>
             <artifactId>egladil-secure-tokens</artifactId>
             <version>${egladil-secure-tokens.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.mathe-jung-alt</groupId>
+            <artifactId>auth-session</artifactId>
+            <version>${auth-session.version}</version>
         </dependency>
 
         <dependency>

@@ -3,14 +3,16 @@ package de.mathejungalt.authsessions.internal.session;
 import java.util.List;
 import java.util.Optional;
 
-import org.jspecify.annotations.NonNull;
-
-import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+
+import io.quarkus.hibernate.orm.PersistenceUnit;
+
+import org.jspecify.annotations.NonNull;
+
+import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
 /**
  * SessionRepository
@@ -24,7 +26,7 @@ public class SessionRepository {
 
     /**
      * Sucht das Objekt mit der gegebenen sessionId.
-     * 
+     *
      * @param sessionId String
      * @return Optional
      */
@@ -44,7 +46,7 @@ public class SessionRepository {
 
     /**
      * Insert oder Update.
-     * 
+     *
      * @param sessionEntity SessionEntity
      */
     @Transactional
@@ -59,7 +61,7 @@ public class SessionRepository {
 
     /**
      * Löscht die Session.
-     * 
+     *
      * @param sessionEntity SessionEntity
      */
     @Transactional

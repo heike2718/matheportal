@@ -3,9 +3,10 @@ package de.mathejungalt.authsessions.internal.session;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
-import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
 /**
  * SessionStateEvaluator.
