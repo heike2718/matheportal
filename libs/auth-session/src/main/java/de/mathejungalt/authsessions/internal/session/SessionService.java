@@ -74,7 +74,7 @@ public class SessionService {
             return SessionDto
                     .builder()
                     .sessionId(sessionId)
-                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles()), false))
+                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles())))
                     .build();
 
         } catch (final Exception e) {
@@ -120,7 +120,7 @@ public class SessionService {
             return SessionDto
                     .builder()
                     .sessionId(sessionId)
-                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles()), false))
+                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles())))
                     .build();
 
         } catch (final PersistenceException e) {

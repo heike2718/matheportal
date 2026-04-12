@@ -6,6 +6,13 @@
     "tags": ["platform:backend", "type:bff"],
 
     "targets": {
+        "generate-sources": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn clean generate-sources"
+            }
+        },
         "dev": {
             "executor": "nx:run-commands",
             "options": {

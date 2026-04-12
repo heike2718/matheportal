@@ -5,5 +5,5 @@ import java.util.Set;
 /**
  * UserDto.
  */
-public record UserDto(String fullName, Set<String> roles, boolean anonym) {
+public record UserDto(String fullName, Set<String> roles) {
 }

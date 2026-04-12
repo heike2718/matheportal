@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+    title: matheportal-shell API
+    version: 1.0.0
+    description: API der matheportal-shell für Session-Handling und Login.
+
+paths:
+    /api/session:
+        get:
+            tags:
+                - Session
+            summary: Prüft bzw. lädt die Session neu
+            description: >
+                Dient dem Frontend dazu, beim Reload der Anwendung die Session im Backend
+                anhand des Session-Cookies erneut prüfen oder initialisieren zu lassen.
+                Es wird kein Response-Body zurückgegeben.
+            operationId: reloadSession
+            responses:
+                '200':
+                    description: Session wurde erfolgreich geprüft oder geladen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '401':
+                    description: Keine gültige Session vorhanden
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+        post:
+            tags:
+                - Session
+            summary: Legt eine Session anhand eines Access-Tokens an
+            description: >
+                Nimmt ein Access-Token entgegen, erzeugt im Backend eine Session und
+                liefert die Informationen des angemeldeten Benutzers zurück.
+            operationId: createSession
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AccessTokenRequest'
+            responses:
+                '200':
+                    description: Session erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Access-Token ist ungültig oder abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        delete:
+            tags:
+                - Session
+            summary: Loggt den Benutzer aus
+            description: Beendet die Session im Backend.
+            operationId: deleteSession
+            responses:
+                '204':
+                    description: Erfolgreich ausgeloggt
+
+    /api/session/authurls/login:
+        get:
+            tags:
+                - Session
+            summary: Liefert die Login-URL des IAM
+            description: Liefert die URL, an die das Frontend für den Login weiterleiten kann.
+            operationId: getLoginUrl
+            responses:
+                '200':
+                    description: Login-URL erfolgreich ermittelt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthUrlResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+    schemas:
+        AccessTokenRequest:
+            type: object
+            required:
+                - idToken
+                - expiresAt
+            properties:
+                idToken:
+                    type: string
+                    description: Der Access-Token-String
+                    example: eyJhbGciOi...
+                expiresAt:
+                    type: integer
+                    format: int64
+                    description: Ablaufzeitpunkt als Unix-Timestamp in Millisekunden (Date.getTime())
+                    example: 1712831400000
+
+        AuthUrlResponse:
+            type: object
+            required:
+                - pfad
+            properties:
+                pfad:
+                    type: string
+                    description: Pfad oder URL zum IAM-Login
+                    example: https://iam.example.org/login
+
+        User:
+            type: object
+            required:
+                - fullName
+                - roles
+            properties:
+                fullName:
+                    type: string
+                    minLength: 1
+                    maxLength: 201
+                    pattern: "^[\\p{IsLatin}\\d]+(?:[ '\\-.’][\\p{IsLatin}\\d]+)*$"
+                    description: Vollständiger Anzeigename (lateinische Buchstaben, Ziffern, Leerzeichen, Bindestrich, Apostroph)
+                    example: María del Carmen 2
+                roles:
+                    type: array
+                    uniqueItems: true
+                    pattern: '^[A-Z]+(_[A-Z]+)*$'
+                    description: Rollen des Benutzers
+                    items:
+                        type: string
+                    example:
+                        - STANDARD
+                        - ADMIN
+
+        ErrorResponse:
+            type: object
+            required:
+                - code
+                - message
+            properties:
+                code:
+                    type: string
+                    example: SESSION_401
+                message:
+                    type: string
+                    example: Keine gültige Session vorhanden

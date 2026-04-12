@@ -6,12 +6,13 @@
         "check-node": "node -e \"if(!process.version.startsWith('v22.')){console.error('\\n❌ Node 22 required. Current:',process.version,'\\n');process.exit(1)}\"",
         "preinstall": "pnpm run -s check-node",
         "shell:dev:be": "nx run matheportal-shell:dev",
-        "cleanup:all": "nx run-many -t cleanup --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session",
-        "format-check:fe:all": "pnpm nx run-many -t format-check --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui",
-        "lint:fe:all": "pnpm nx run-many -t lint --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui",
-        "test:fe:all": "pnpm nx run-many -t test --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui --watch=false",
+        "cleanup:all": "nx run-many -t cleanup --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session,auth-model,aut-data,auth-api",
+        "format-check:fe:all": "pnpm nx run-many -t format-check --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api",
+        "lint:fe:all": "pnpm nx run-many -t lint --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api",
+        "test:fe:all": "pnpm nx run-many -t test --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api --watch=false",
         "test:be:all": "pnpm nx run-many -t test --projects=matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session",
-        "check:all": "pnpm run format-check:fe:all && pnpm run lint:fe:all && pnpm run test:fe:all && pnpm run test:be:all"
+        "check:all": "pnpm run format-check:fe:all && pnpm run lint:fe:all && pnpm run test:fe:all && pnpm run test:be:all",
+        "generate-sources:be:all": "pnpm nx run-many -t generate-sources --projects=matheportal-shell"
     },
     "engines": {
         "node": ">=22.17.0 <23",
@@ -29,9 +30,11 @@
         "@angular/material": "21.2.5",
         "@angular/platform-browser": "21.2.7",
         "@angular/router": "21.2.7",
+        "@ngrx/effects": "21.1.0",
+        "@ngrx/store": "21.1.0",
         "@softarc/native-federation-node": "^3.3.4",
-        "material-icons": "^1.13.14",
         "es-module-shims": "^1.5.12",
+        "material-icons": "^1.13.14",
         "rxjs": "~7.8.0"
     },
     "devDependencies": {
@@ -46,6 +49,7 @@
         "@angular/compiler-cli": "~21.2.0",
         "@angular/language-service": "~21.2.0",
         "@eslint/js": "^9.8.0",
+        "@ngrx/store-devtools": "21.1.0",
         "@nx/angular": "22.6.3",
         "@nx/devkit": "22.6.3",
         "@nx/eslint": "22.6.3",

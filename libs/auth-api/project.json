@@ -1,0 +1,20 @@
+{
+    "name": "auth-api",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/auth-api/src",
+    "prefix": "mp",
+    "projectType": "library",
+    "tags": ["domain:auth", "type:api"],
+    "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
+            "options": {
+                "reportsDirectory": "coverage/libs/auth-api"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint"
+        }
+    }
+}
