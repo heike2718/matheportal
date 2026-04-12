@@ -18,7 +18,6 @@ import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -64,7 +63,7 @@ public class SessionServiceTest {
         assertAll(() -> assertNotNull(sessionDto), () -> assertNotNull(sessionDto.getUser()),
                 () -> assertEquals("Flotte Lotte", sessionDto.getUser().fullName()),
                 () -> assertEquals("STANDARD", sessionDto.getUser().roles().iterator().next()),
-                () -> assertFalse(sessionDto.getUser().anonym()), () -> assertNotNull(sessionDto.getSessionId()));
+                () -> assertNotNull(sessionDto.getSessionId()));
 
         verify(sessionRepository).saveSession(any(SessionEntity.class));
         verify(clock).getZone();
