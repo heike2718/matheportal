@@ -1,8 +1,8 @@
 package de.mathejungalt.matheportal.shell.domain.oauth;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import jakarta.enterprise.context.ApplicationScoped;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * OAuthClientCredentialsProvider.

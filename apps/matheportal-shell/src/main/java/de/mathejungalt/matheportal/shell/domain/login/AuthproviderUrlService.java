@@ -1,10 +1,11 @@
 package de.mathejungalt.matheportal.shell.domain.login;
 
+import jakarta.enterprise.context.RequestScoped;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.enterprise.context.RequestScoped;
 
 /**
  * AuthproviderUrlService.

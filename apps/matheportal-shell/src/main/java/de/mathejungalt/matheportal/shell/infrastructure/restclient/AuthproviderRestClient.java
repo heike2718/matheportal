@@ -2,19 +2,20 @@ package de.mathejungalt.matheportal.shell.infrastructure.restclient;
 
 import java.time.temporal.ChronoUnit;
 
-import org.eclipse.microprofile.faulttolerance.Retry;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.eclipse.microprofile.faulttolerance.Timeout;
-
-import de.mathejungalt.matheportal.shell.domain.oauth.OAuthClientCredentials;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+import de.mathejungalt.matheportal.shell.domain.oauth.OAuthClientCredentials;
 
 /**
  * AuthproviderRestClient

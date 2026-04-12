@@ -1,10 +1,10 @@
 package de.mathejungalt.matheportal.shell.domain.oauth;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ClientAccessTokenService.

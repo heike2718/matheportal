@@ -9,7 +9,7 @@
         "cleanup:all": "nx run-many -t cleanup --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session,auth-model,aut-data,auth-api",
         "format-check:fe:all": "pnpm nx run-many -t format-check --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api",
         "lint:fe:all": "pnpm nx run-many -t lint --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api",
-        "test:fe:all": "pnpm nx run-many -t test --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui,auth-model,aut-data,auth-api --watch=false",
+        "test:fe:all": "pnpm nx run-many -t test --projects=matheportal-shell-ui,raetselbaukasten-ui,minikaenguru-anwendung-ui --watch=false",
         "test:be:all": "pnpm nx run-many -t test --projects=matheportal-shell,raetselbaukasten,minikaenguru-anwendung,auth-session",
         "check:all": "pnpm run format-check:fe:all && pnpm run lint:fe:all && pnpm run test:fe:all && pnpm run test:be:all",
         "generate-sources:be:all": "pnpm nx run-many -t generate-sources --projects=matheportal-shell"

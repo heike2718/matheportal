@@ -1,10 +1,11 @@
 package de.mathejungalt.matheportal.shell.infrastructure.resources;
 
-import de.mathejungalt.matheportal.shell.domain.model.AccessTokenRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
+
+import de.mathejungalt.matheportal.shell.domain.model.AccessTokenRequest;
 
 /**
  * SessionResource
