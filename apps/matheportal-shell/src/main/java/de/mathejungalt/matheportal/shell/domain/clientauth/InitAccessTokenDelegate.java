@@ -81,7 +81,7 @@ public class InitAccessTokenDelegate {
             return payload;
         } catch (final ProcessingException e) {
             throw new IamClientException("IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
-                            e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+                    e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
         }
     }
 }
