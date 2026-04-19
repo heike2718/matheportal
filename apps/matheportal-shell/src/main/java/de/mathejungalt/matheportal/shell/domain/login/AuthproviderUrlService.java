@@ -1,9 +1,9 @@
 package de.mathejungalt.matheportal.shell.domain.login;
 
+import java.util.UUID;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-
-import java.util.UUID;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -31,7 +31,7 @@ public class AuthproviderUrlService {
 
     /**
      * Gib die redirect url zum Login zurück.
-     * 
+     *
      * @return UrlResponse
      */
     public UrlResponse getLoginUrl() {

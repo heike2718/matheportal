@@ -1,21 +1,24 @@
 package de.mathejungalt.matheportal.shell.domain.login;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenService;
 import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 public class AuthproviderUrlServiceTest {

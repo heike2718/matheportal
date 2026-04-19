@@ -1,5 +1,8 @@
 package de.mathejungalt.matheportal.shell.domain.clientauth;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -20,9 +23,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 @QuarkusTest
 public class ClientAccessTokenServiceTest {
@@ -68,9 +68,8 @@ public class ClientAccessTokenServiceTest {
         final IamClientException exeption = assertThrows(IamClientException.class,
                 () -> clientAccessTokenService.orderAccessToken("test-nonce"));
 
-        assertAll(
-                () -> assertEquals(IamClientErrorType.SECURITY_VIOLATION, exeption.getErrorType()),
-                        () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
+        assertAll(() -> assertEquals(IamClientErrorType.SECURITY_VIOLATION, exeption.getErrorType()),
+                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
     }
 
@@ -79,7 +78,8 @@ public class ClientAccessTokenServiceTest {
     void shouldPropagateIamClientException(final IamClientErrorType errorType) {
 
         // arrange
-        final IamClientException iamClientException = new IamClientException("message", new RuntimeException(), errorType);
+        final IamClientException iamClientException = new IamClientException("message", new RuntimeException(),
+                errorType);
         when(clientCredentialsProvider.getClientCredentials("test-nonce"))
                 .thenReturn(OAuthClientCredentials.builder().build());
         when(initAccessTokenDelegate.authenticateClient(any(OAuthClientCredentials.class)))
@@ -89,11 +89,10 @@ public class ClientAccessTokenServiceTest {
         final IamClientException exeption = assertThrows(IamClientException.class,
                 () -> clientAccessTokenService.orderAccessToken("test-nonce"));
 
-        assertAll(
-                () -> assertEquals(errorType, exeption.getErrorType()),
+        assertAll(() -> assertEquals(errorType, exeption.getErrorType()),
                 () -> assertEquals("message", exeption.getMessage()),
                 () -> assertInstanceOf(RuntimeException.class, exeption.getCause()),
-                        () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),                        
+                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
 
     }
@@ -105,8 +104,6 @@ public class ClientAccessTokenServiceTest {
                 .filter(t -> IamClientErrorType.IAM_CONTRACT_VIOLATION == t
                         || IamClientErrorType.IAM_ERROR_RESPONSE == t);
 
-
     }
-
 
 }

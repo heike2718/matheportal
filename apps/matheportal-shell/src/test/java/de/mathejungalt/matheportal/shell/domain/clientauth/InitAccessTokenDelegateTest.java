@@ -88,12 +88,12 @@ class InitAccessTokenDelegateTest {
 
         // act
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         // assert
         assertAll(() -> assertEquals(IamClientErrorType.IAM_ERROR_RESPONSE, exception.getErrorType()),
-            () -> assertEquals("IAM antwortet mit Status 401 - Unauthorized", exception.getMessage()),
-            () -> assertInstanceOf(WebApplicationException.class, exception.getCause()));
+                () -> assertEquals("IAM antwortet mit Status 401 - Unauthorized", exception.getMessage()),
+                () -> assertInstanceOf(WebApplicationException.class, exception.getCause()));
     }
 
     @Test
@@ -118,12 +118,12 @@ class InitAccessTokenDelegateTest {
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
                 () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
                         exception.getMessage()),
-                    () -> assertNull(exception.getCause()));
+                () -> assertNull(exception.getCause()));
     }
 
     @Test
@@ -142,12 +142,12 @@ class InitAccessTokenDelegateTest {
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
                 () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
                         exception.getMessage()),
-                    () -> assertNull(exception.getCause()));
+                () -> assertNull(exception.getCause()));
 
     }
 
@@ -167,12 +167,12 @@ class InitAccessTokenDelegateTest {
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
                 () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
                         exception.getMessage()),
-                    () -> assertNull(exception.getCause()));
+                () -> assertNull(exception.getCause()));
 
     }
 
@@ -186,10 +186,10 @@ class InitAccessTokenDelegateTest {
                                 .withBody("{ ungültiges json <<")));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
-                        () -> assertEquals("IAM-Antwort ist invalides json", exception.getMessage()),
+                () -> assertEquals("IAM-Antwort ist invalides json", exception.getMessage()),
                 () -> assertInstanceOf(JsonParseException.class, exception.getCause()));
 
     }
@@ -215,12 +215,12 @@ class InitAccessTokenDelegateTest {
                                                 """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                        () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> initAccessTokenDelegate.authenticateClient(credentials));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
-                () -> assertEquals("IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)", exception.getMessage()),
+                () -> assertEquals("IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)",
+                        exception.getMessage()),
                 () -> assertInstanceOf(ProcessingException.class, exception.getCause()));
 
-        
     }
 }

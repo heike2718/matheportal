@@ -2,15 +2,14 @@ package de.mathejungalt.matheportal.shell.domain.clientauth;
 
 import java.util.Map;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * OauthClientAccessToken. Wrapped das generische ResponsePayload, um den Code
- * im ClientAccessTokenService klarer zu machen.
+ * OauthClientAccessToken. Wrapped das generische ResponsePayload, um den Code im ClientAccessTokenService klarer zu
+ * machen.
  */
 @Getter
 @Builder
