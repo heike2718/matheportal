@@ -2,10 +2,10 @@ package de.mathejungalt.matheportal.shell.test;
 
 import java.util.Map;
 
+import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-
-import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class WireMockAuthprovider implements QuarkusTestResourceLifecycleManager {
 

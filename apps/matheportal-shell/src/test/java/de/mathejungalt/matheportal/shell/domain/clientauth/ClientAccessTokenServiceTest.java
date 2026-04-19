@@ -1,24 +1,28 @@
 package de.mathejungalt.matheportal.shell.domain.clientauth;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import jakarta.inject.Inject;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+
+import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import de.mathejungalt.matheportal.shell.domain.exception.ClientAuthException;
-import de.mathejungalt.matheportal.shell.domain.exception.IamResponseException;
-import de.mathejungalt.matheportal.shell.domain.exception.RestCommunicationFailedException;
-import de.mathejungalt.matheportal.shell.domain.exception.RestResponseProcessingException;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 @QuarkusTest
 public class ClientAccessTokenServiceTest {
@@ -52,7 +56,7 @@ public class ClientAccessTokenServiceTest {
     }
 
     @Test
-    void shouldThrowClientAuthException_whenNonceMismatch() {
+    void shouldThrowSECURITY_VIOLATION_whenNonceMismatch() {
 
         // arrange
         when(clientCredentialsProvider.getClientCredentials("test-nonce"))
@@ -61,63 +65,48 @@ public class ClientAccessTokenServiceTest {
                 .thenReturn(new OauthClientAccessToken("anderes-nonce", "test-access-token"));
 
         // act + assert
+        final IamClientException exeption = assertThrows(IamClientException.class,
+                () -> clientAccessTokenService.orderAccessToken("test-nonce"));
+
         assertAll(
-                () -> assertThrows(ClientAuthException.class,
-                        () -> clientAccessTokenService.orderAccessToken("test-nonce")),
-                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
+                () -> assertEquals(IamClientErrorType.SECURITY_VIOLATION, exeption.getErrorType()),
+                        () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
     }
 
-    @Test
-    void shouldPropagateIamResponseException() {
+    @ParameterizedTest
+    @MethodSource("getIamErrorTypes")
+    void shouldPropagateIamClientException(final IamClientErrorType errorType) {
 
         // arrange
-        when(clientCredentialsProvider.getClientCredentials(anyString()))
+        final IamClientException iamClientException = new IamClientException("message", new RuntimeException(), errorType);
+        when(clientCredentialsProvider.getClientCredentials("test-nonce"))
                 .thenReturn(OAuthClientCredentials.builder().build());
         when(initAccessTokenDelegate.authenticateClient(any(OAuthClientCredentials.class)))
-                .thenThrow(new IamResponseException("IAM antwortete mit Status 401", 401, null));
+                .thenThrow(iamClientException);
 
         // act + assert
-        assertAll(
-                () -> assertThrows(IamResponseException.class,
-                        () -> clientAccessTokenService.orderAccessToken("test-nonce")),
-                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
-                () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
-    }
-
-    @Test
-    void shouldPropagateRestResponseProcessingException() {
-
-        // arrange
-        when(clientCredentialsProvider.getClientCredentials(anyString()))
-                .thenReturn(OAuthClientCredentials.builder().build());
-        when(initAccessTokenDelegate.authenticateClient(any(OAuthClientCredentials.class)))
-                .thenThrow(new RestResponseProcessingException("invalides JSON", new RuntimeException()));
-
-        // act + assert
+        final IamClientException exeption = assertThrows(IamClientException.class,
+                () -> clientAccessTokenService.orderAccessToken("test-nonce"));
 
         assertAll(
-                () -> assertThrows(RestResponseProcessingException.class,
-                        () -> clientAccessTokenService.orderAccessToken("test-nonce")),
-                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
+                () -> assertEquals(errorType, exeption.getErrorType()),
+                () -> assertEquals("message", exeption.getMessage()),
+                () -> assertInstanceOf(RuntimeException.class, exeption.getCause()),
+                        () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),                        
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
+
     }
 
-    @Test
-    void shouldPropagateRestCommunicationFailedException() {
+    private static Stream<IamClientErrorType> getIamErrorTypes() {
 
-        // arrange
-        when(clientCredentialsProvider.getClientCredentials(anyString()))
-                .thenReturn(OAuthClientCredentials.builder().build());
-        when(initAccessTokenDelegate.authenticateClient(any(OAuthClientCredentials.class)))
-                .thenThrow(new RestCommunicationFailedException("Kommunikationsfehler", new RuntimeException()));
+        return Arrays
+                .stream(IamClientErrorType.values())
+                .filter(t -> IamClientErrorType.IAM_CONTRACT_VIOLATION == t
+                        || IamClientErrorType.IAM_ERROR_RESPONSE == t);
 
-        // act + assert
 
-        assertAll(
-                () -> assertThrows(RestCommunicationFailedException.class,
-                        () -> clientAccessTokenService.orderAccessToken("test-nonce")),
-                () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
-                () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
     }
+
+
 }

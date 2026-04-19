@@ -10,9 +10,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import de.mathejungalt.matheportal.shell.domain.exception.IamResponseException;
-import de.mathejungalt.matheportal.shell.domain.exception.RestCommunicationFailedException;
-import de.mathejungalt.matheportal.shell.domain.exception.RestResponseProcessingException;
+import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
+import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
 import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderRestClient;
 
 /**
@@ -27,42 +26,47 @@ public class InitAccessTokenDelegate {
 
     /**
      * Holt sich ein accessToken vom IAM.
-     * 
+     *
      * @param credentials OAuthClientCredentials
      * @return OauthClientAccessToken
-     * @throws IamResponseException             wenn IAM mit einem Statuscode 4xx
-     *                                          oder 5xx antwortet.
-     * @throws RestResponseProcessingException  wenn die Entity in der Response
-     *                                          anders als erwartet aussieht.
-     * @throws RestCommunicationFailedException wenn IAM nicht erreichbar ist.
+     * @throws IamClientException wenn irgendetwas schief lief.
      */
     public OauthClientAccessToken authenticateClient(final OAuthClientCredentials credentials)
-            throws IamResponseException, RestResponseProcessingException, RestCommunicationFailedException {
+            throws IamClientException {
 
         try (Response authResponse = authproviderRestClient.authenticateClient(credentials)) {
             final OauthClientAccessToken token = OauthClientAccessToken
                     .from(authResponse.readEntity(ResponsePayload.class));
             if (token.getNonce() == null || token.getAccessToken() == null) {
-                throw new RestResponseProcessingException(
-                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen");
+                throw new IamClientException(
+                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
+                        IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
             return token;
         } catch (final WebApplicationException e) {
 
             if (e.getCause() instanceof JsonParseException) {
-                final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens (response payload ist invalides json): "
-                        + e.getMessage();
-                throw new RestResponseProcessingException(msg, e.getCause());
+                final String msg = "IAM-Antwort ist invalides json";
+                throw new IamClientException(msg, e.getCause(), IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
 
             final Response errorResponse = e.getResponse();
             final int status = errorResponse.getStatus();
             final ResponsePayload responsePayload = errorResponse.readEntity(ResponsePayload.class);
-            final String msg = "IAM antwortete mit Status " + status;
-            throw new IamResponseException(msg, status, responsePayload);
+            final String msg = "IAM antwortet mit Status " + status + " - "
+                    + responsePayload.getMessagePayload().getMessage();
+            throw new IamClientException(msg, e, IamClientErrorType.IAM_ERROR_RESPONSE);
         } catch (final ProcessingException e) {
-            final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens: " + e.getMessage();
-            throw new RestCommunicationFailedException(msg, e);
+
+            final Throwable cause = e.getCause();
+
+            if (cause == null) {
+                final String message = "IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)";
+                throw new IamClientException(message, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            }
+
+            final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens";
+            throw new IamUnreachableException(msg, e);
         }
     }
 }

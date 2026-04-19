@@ -1,7 +1,5 @@
 package de.mathejungalt.matheportal.shell.domain.clientauth;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

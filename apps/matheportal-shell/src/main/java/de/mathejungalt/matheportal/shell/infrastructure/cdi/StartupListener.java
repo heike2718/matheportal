@@ -2,6 +2,7 @@ package de.mathejungalt.matheportal.shell.infrastructure.cdi;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+
 import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 
@@ -27,7 +28,6 @@ public class StartupListener {
 
     @ConfigProperty(name = "quarkus.http.port")
     String port;
-
 
     /**
      * On startup.
