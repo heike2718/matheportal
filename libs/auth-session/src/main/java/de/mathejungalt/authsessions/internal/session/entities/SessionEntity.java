@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "matheportal_sessions", schema = "matheportal_sessions")
 @NamedQueries({ @NamedQuery(
         name = SessionEntity.FIND_BY_SESSION_ID,
-        query = "select s from SessionEntity where s.sessionId = :sessionId") })
+        query = "select s from SessionEntity s where s.sessionId = :sessionId") })
 public class SessionEntity {
 
     public static final String FIND_BY_SESSION_ID = "SessionEntity.findBySessionId";

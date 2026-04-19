@@ -15,7 +15,7 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import de.mathejungalt.matheportal.shell.domain.oauth.OAuthClientCredentials;
+import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
 
 /**
  * AuthproviderRestClient

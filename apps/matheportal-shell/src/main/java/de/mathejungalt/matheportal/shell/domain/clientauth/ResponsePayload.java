@@ -1,6 +1,4 @@
-package de.mathejungalt.matheportal.shell.domain.oauth;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package de.mathejungalt.matheportal.shell.domain.clientauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponsePayload {
 
-    @JsonProperty
     MessagePayload messagePayload;
 
+    Object data;
 }

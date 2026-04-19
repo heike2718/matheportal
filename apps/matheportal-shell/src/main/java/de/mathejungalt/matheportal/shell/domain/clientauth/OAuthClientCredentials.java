@@ -1,4 +1,4 @@
-package de.mathejungalt.matheportal.shell.domain.oauth;
+package de.mathejungalt.matheportal.shell.domain.clientauth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
