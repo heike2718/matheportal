@@ -54,7 +54,7 @@ public class InitAccessTokenDelegate {
             final int status = errorResponse.getStatus();
             final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
             throw new IamClientException(
-                    "IAM antwortete mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(),
+                    "IAM antwortet mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(), e,
                     IamClientErrorType.IAM_ERROR_RESPONSE);
         } catch (final ProcessingException e) {
 
@@ -75,13 +75,13 @@ public class InitAccessTokenDelegate {
             final ResponsePayload payload = response.readEntity(ResponsePayload.class);
             if (payload == null || payload.getMessagePayload() == null) {
                 throw new IamClientException(
-                        "IAM antwortete mit Status " + response.getStatus() + " ohne lesbaren Payload",
+                        "IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
                         IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
             return payload;
         } catch (final ProcessingException e) {
-            throw new IamClientException("IAM antwortete mit Status " + response.getStatus() + " ohne lesbaren Payload",
-                    e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            throw new IamClientException("IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
+                            e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
         }
     }
 }

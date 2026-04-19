@@ -1,14 +1,15 @@
 package de.mathejungalt.matheportal.shell.infrastructure.resources;
 
-import de.mathejungalt.matheportal.shell.domain.generated.AccessTokenRequest;
-import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
-import de.mathejungalt.matheportal.shell.domain.login.AuthproviderUrlService;
-import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
+
+import de.mathejungalt.matheportal.shell.domain.generated.AccessTokenRequest;
+import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
+import de.mathejungalt.matheportal.shell.domain.login.AuthproviderUrlService;
+import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 
 /**
  * SessionResource
