@@ -303,8 +303,8 @@
                                 <sourceFolder>src/main/java</sourceFolder>
                                 <basePackage>de.mathejungalt.matheportal.shell</basePackage>
                                 <apiPackage>
-                                    de.mathejungalt.matheportal.shell.infrastructure.resources</apiPackage>
-                                <modelPackage>de.mathejungalt.matheportal.shell.domain.model</modelPackage>
+                                    de.mathejungalt.matheportal.shell.infrastructure.generated</apiPackage>
+                                <modelPackage>de.mathejungalt.matheportal.shell.domain.generated</modelPackage>
                                 <generateConstructors>false</generateConstructors>
                                 <generateBuilders>false</generateBuilders>
                                 <openApiNullable>false</openApiNullable>

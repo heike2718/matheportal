@@ -1,17 +1,23 @@
 package de.mathejungalt.matheportal.shell.infrastructure.resources;
 
+import de.mathejungalt.matheportal.shell.domain.generated.AccessTokenRequest;
+import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
+import de.mathejungalt.matheportal.shell.domain.login.AuthproviderUrlService;
+import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-
-import de.mathejungalt.matheportal.shell.domain.model.AccessTokenRequest;
 
 /**
  * SessionResource
  */
 @Path("/api/session")
 public class SessionResource implements SessionApi {
+
+    @Inject
+    AuthproviderUrlService authproviderUrlService;
 
     @Override
     public Response createSession(@Valid @NotNull final AccessTokenRequest accessTokenRequest) {
@@ -27,8 +33,8 @@ public class SessionResource implements SessionApi {
 
     @Override
     public Response getLoginUrl() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLoginUrl'");
+        final AuthUrlResponse payload = authproviderUrlService.getLoginUrl();
+        return Response.ok(payload).build();
     }
 
     @Override
@@ -36,5 +42,4 @@ public class SessionResource implements SessionApi {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'reloadSession'");
     }
-
 }

@@ -1,15 +1,16 @@
 package de.mathejungalt.matheportal.shell.infrastructure.error;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.mathejungalt.matheportal.shell.domain.ErrorResponse;
-import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
+import de.mathejungalt.matheportal.shell.domain.generated.ErrorResponse;
 
 /**
  * IamClientExceptionMapper
@@ -36,7 +37,7 @@ public class IamClientExceptionMapper implements ExceptionMapper<IamClientExcept
         case IAM_ERROR_RESPONSE, IAM_CONTRACT_VIOLATION, SECURITY_VIOLATION -> Status.INTERNAL_SERVER_ERROR;
         };
 
-        return Response.status(status).entity(ErrorResponse.builder().message(MESSAGE).build()).build();
+        return Response.status(status).entity(new ErrorResponse(MESSAGE)).build();
 
     }
 

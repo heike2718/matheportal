@@ -17,10 +17,10 @@ public class OAuthClientCredentialsProviderTest {
     @Inject
     OAuthClientCredentialsProvider oAuthClientCredentialsProvider;
 
-    @ConfigProperty(name = "public-client-id")
+    @ConfigProperty(name = "client.id")
     String publicClientId;
 
-    @ConfigProperty(name = "public-client-secret")
+    @ConfigProperty(name = "client.secret")
     String publicClientSecret;
 
     @Test

@@ -1,0 +1,2 @@
+### loginUrl
+GET http://localhost:9100/api/session/authurls/login

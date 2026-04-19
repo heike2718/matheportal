@@ -10,10 +10,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class OAuthClientCredentialsProvider {
 
-    @ConfigProperty(name = "public-client-id")
+    @ConfigProperty(name = "client.id")
     String publicClientId;
 
-    @ConfigProperty(name = "public-client-secret")
+    @ConfigProperty(name = "client.secret")
     String publicClientSecret;
 
     /**

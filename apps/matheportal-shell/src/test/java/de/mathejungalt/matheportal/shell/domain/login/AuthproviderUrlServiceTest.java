@@ -11,6 +11,7 @@ import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenServ
 import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
+import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,7 +38,7 @@ public class AuthproviderUrlServiceTest {
         when(clientAccessTokenService.orderAccessToken(anyString())).thenReturn(accessToken);
 
         // act
-        final UrlResponse result = service.getLoginUrl();
+        final AuthUrlResponse result = service.getLoginUrl();
 
         // assert
         assertAll(() -> assertEquals(

@@ -1,21 +1,23 @@
 package de.mathejungalt.matheportal.shell.infrastructure.error;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.Arrays;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import de.mathejungalt.matheportal.shell.domain.ErrorResponse;
+import io.quarkus.test.junit.QuarkusTest;
+
 import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.core.Response;
+import de.mathejungalt.matheportal.shell.domain.generated.ErrorResponse;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 public class IamClientExceptionMapperTest {

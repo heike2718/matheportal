@@ -52,10 +52,10 @@ public class InitAccessTokenDelegate {
 
             final Response errorResponse = e.getResponse();
             final int status = errorResponse.getStatus();
-            final ResponsePayload responsePayload = errorResponse.readEntity(ResponsePayload.class);
-            final String msg = "IAM antwortet mit Status " + status + " - "
-                    + responsePayload.getMessagePayload().getMessage();
-            throw new IamClientException(msg, e, IamClientErrorType.IAM_ERROR_RESPONSE);
+            final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
+            throw new IamClientException(
+                    "IAM antwortete mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(),
+                    IamClientErrorType.IAM_ERROR_RESPONSE);
         } catch (final ProcessingException e) {
 
             final Throwable cause = e.getCause();
@@ -67,6 +67,21 @@ public class InitAccessTokenDelegate {
 
             final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens";
             throw new IamUnreachableException(msg, e);
+        }
+    }
+
+    private ResponsePayload readPayloadOrThrow(final Response response) {
+        try {
+            final ResponsePayload payload = response.readEntity(ResponsePayload.class);
+            if (payload == null || payload.getMessagePayload() == null) {
+                throw new IamClientException(
+                        "IAM antwortete mit Status " + response.getStatus() + " ohne lesbaren Payload",
+                        IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            }
+            return payload;
+        } catch (final ProcessingException e) {
+            throw new IamClientException("IAM antwortete mit Status " + response.getStatus() + " ohne lesbaren Payload",
+                    e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
         }
     }
 }

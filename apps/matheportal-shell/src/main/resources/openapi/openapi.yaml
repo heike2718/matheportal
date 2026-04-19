@@ -101,6 +101,12 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+                '503':
+                    description: IAM nicht erreichbar
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
 components:
     schemas:
@@ -123,11 +129,11 @@ components:
         AuthUrlResponse:
             type: object
             required:
-                - pfad
+                - url
             properties:
-                pfad:
+                url:
                     type: string
-                    description: Pfad oder URL zum IAM-Login
+                    description: URL zum IAM-Login
                     example: https://iam.example.org/login
 
         User:
@@ -153,16 +159,26 @@ components:
                     example:
                         - STANDARD
                         - ADMIN
-
+        ConstraintViolationDetail:
+            type: object
+            properties:
+                field:
+                    type: string
+                    description: Feldname der verletzten Constraint.
+                    example: clientId
+                message:
+                    type: string
+                    description: Fehlermeldung zur verletzten Constraint.
+                    example: clientId ist ungueltig.
         ErrorResponse:
             type: object
             required:
-                - code
                 - message
             properties:
-                code:
-                    type: string
-                    example: SESSION_401
                 message:
                     type: string
                     example: Keine gültige Session vorhanden
+                connstraintViolations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ConstraintViolationDetail'

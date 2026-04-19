@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenService;
+import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
 
 /**
  * AuthproviderUrlService.
@@ -32,9 +33,9 @@ public class AuthproviderUrlService {
     /**
      * Gib die redirect url zum Login zurück.
      *
-     * @return UrlResponse
+     * @return AuthUrlResponse
      */
-    public UrlResponse getLoginUrl() {
+    public AuthUrlResponse getLoginUrl() {
 
         final String nonce = UUID.randomUUID().toString();
         final String accessToken = clientAccessTokenService.orderAccessToken(nonce);
@@ -44,7 +45,7 @@ public class AuthproviderUrlService {
 
         LOGGER.info("loginUrl={}", url);
 
-        return UrlResponse.builder().url(url).build();
+        return new AuthUrlResponse(url);
     }
 
 }

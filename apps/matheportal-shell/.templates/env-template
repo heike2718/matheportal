@@ -1,5 +1,7 @@
 QUARKUS_HTTP_CORS_ORIGINS=http://localhost:4200,http://localhost:4201,http://localhost:4202,http://localhost:9100,http://localhost:9101,http://localhost:9102
 
+MP_JWT_VERIFY_PUBLICKEY_LOCATION=classpath:keys/authprov_public_key.pem
+
 #=================================================================#
 
 # authprovider, Redirect URLs, REST-Client, CORS
@@ -15,8 +17,8 @@ QUARKUS_HTTP_CORS_ORIGINS=http://localhost:4200,http://localhost:4201,http://loc
 #
 
 #=================================================================#
-PUBLIC-CLIENT-ID=matheportal-shell-client
-PUBLIC-CLIENT-SECRET=start123
+CLIENT_ID=matheportalShellClient
+CLIENT_SECRET=start123
 
 # ---- lokale Entwicklung (authprovider in docker, matheportal-shell mit npm gestartet) ----
 
