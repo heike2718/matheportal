@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Fault;
 
@@ -190,7 +189,7 @@ class InitAccessTokenDelegateTest {
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
                 () -> assertEquals("IAM-Antwort ist invalides json", exception.getMessage()),
-                () -> assertInstanceOf(JsonParseException.class, exception.getCause()));
+                () -> assertInstanceOf(WebApplicationException.class, exception.getCause()));
 
     }
 

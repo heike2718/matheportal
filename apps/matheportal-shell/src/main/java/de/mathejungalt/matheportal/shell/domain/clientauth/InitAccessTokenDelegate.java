@@ -50,12 +50,7 @@ public class InitAccessTokenDelegate {
                 throw new IamClientException(msg, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
 
-            final ResponsePayloadWithHttpStatus responsePayoadWithStatus = this.readPayloadOrThrow(e);
-
-            throw new IamClientException(
-                    "IAM antwortet mit Status " + responsePayoadWithStatus.getHttpStatus() + " - "
-                            + responsePayoadWithStatus.getResponsePayload().getMessagePayload().getMessage(),
-                    e, IamClientErrorType.IAM_ERROR_RESPONSE);
+            throw mapToIamClientException(e);
 
         } catch (final ProcessingException e) {
 
@@ -71,48 +66,18 @@ public class InitAccessTokenDelegate {
         }
     }
 
-    private ResponsePayloadWithHttpStatus readPayloadOrThrow(final WebApplicationException webApplicationException) {
+    private IamClientException mapToIamClientException(final WebApplicationException webApplicationException) {
+        int status = 0;
+        try (Response errorResponse = webApplicationException.getResponse();) {
+            status = errorResponse.getStatus();
+            final ResponsePayload responsePayload = errorResponse.readEntity(ResponsePayload.class);
 
-        try (final Response errorResponse = webApplicationException.getResponse();) {
-
-            final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
-            return new ResponsePayloadWithHttpStatus(responsePayload, errorResponse.getStatus());
-        }
-    }
-
-    private ResponsePayload readPayloadOrThrow(final Response response) {
-        try {
-            final ResponsePayload payload = response.readEntity(ResponsePayload.class);
-            if (payload == null || payload.getMessagePayload() == null) {
-                throw new IamClientException(
-                        "IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
-                        IamClientErrorType.IAM_CONTRACT_VIOLATION);
-            }
-            return payload;
+            return new IamClientException(
+                    "IAM antwortet mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(),
+                    webApplicationException, IamClientErrorType.IAM_ERROR_RESPONSE);
         } catch (final ProcessingException e) {
-            throw new IamClientException("IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
-                    e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            throw new IamClientException("IAM antwortet mit Status " + status + " ohne lesbaren Payload", e,
+                    IamClientErrorType.IAM_CONTRACT_VIOLATION);
         }
-    }
-
-    private final class ResponsePayloadWithHttpStatus {
-
-        private final ResponsePayload responsePayload;
-
-        private final int httpStatus;
-
-        public ResponsePayloadWithHttpStatus(final ResponsePayload responsePayload, final int httpStatus) {
-            this.responsePayload = responsePayload;
-            this.httpStatus = httpStatus;
-        }
-
-        public ResponsePayload getResponsePayload() {
-            return responsePayload;
-        }
-
-        public int getHttpStatus() {
-            return httpStatus;
-        }
-
     }
 }

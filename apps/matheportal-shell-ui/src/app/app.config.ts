@@ -1,14 +1,14 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { matheporalShellConfiguration } from './config/configuration';
+import { matheportalShellConfiguration } from './config/configuration';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
 
 // Environment-spezifische Provider
 function getEnvironmentSpecificProviders() {
     // const providers = [];
 
-    // if (!matheporalShellConfiguration.production) {
+    // if (!matheportalShellConfiguration.production) {
     //     providers.push(
     //         provideStoreDevtools({
     //             maxAge: 25,
@@ -26,6 +26,6 @@ export const appConfig: ApplicationConfig = {
         provideBrowserGlobalErrorListeners(),
         provideRouter(appRoutes),
         ...getEnvironmentSpecificProviders(),
-        { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheporalShellConfiguration },
+        { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheportalShellConfiguration },
     ],
 };

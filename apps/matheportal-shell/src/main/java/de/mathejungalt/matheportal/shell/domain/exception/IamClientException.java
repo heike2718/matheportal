@@ -22,11 +22,11 @@ public class IamClientException extends RuntimeException {
 
     /**
      * @param message   String
-     * @param cause     Throwable
+     * @param exception Throwable
      * @param errorType IamClientErrorType
      */
-    public IamClientException(final String message, final Throwable cause, final IamClientErrorType errorType) {
-        super(message, cause);
+    public IamClientException(final String message, final Throwable exception, final IamClientErrorType errorType) {
+        super(message, exception);
         this.errorType = errorType;
     }
 

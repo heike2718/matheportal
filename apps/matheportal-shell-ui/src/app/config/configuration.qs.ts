@@ -1,6 +1,6 @@
 import { MatheportalShellConfiguration } from './matheportal-shell.configuration';
 
-export const matheporalShellConfiguration: MatheportalShellConfiguration = {
+export const matheportalShellConfiguration: MatheportalShellConfiguration = {
     apiUrl: '',
     environment: 'qs',
     production: false,

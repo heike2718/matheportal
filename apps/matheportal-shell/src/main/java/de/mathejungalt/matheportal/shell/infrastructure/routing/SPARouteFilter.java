@@ -89,7 +89,7 @@ public final class SPARouteFilter {
 
     private boolean doesNotNeedRedirect(final String path) {
 
-        if ("/".equals(path)) {
+        if (isRootPath(path)) {
 
             log.debug("(3-1) kein Umleiten von /");
             return true;
@@ -110,6 +110,10 @@ public final class SPARouteFilter {
 
         log.debug("(3-4)");
         return false;
+    }
+
+    private boolean isRootPath(final String path) {
+        return "/".equals(path);
     }
 
     private String getQueryParameters(final RoutingContext routingContext) {
