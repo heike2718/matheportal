@@ -97,7 +97,10 @@
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
-        <module name="VisibilityModifier" />
+        <module name="VisibilityModifier">
+            <property name="ignoreAnnotationCanonicalNames"
+                value="jakarta.inject.Inject,org.eclipse.microprofile.config.inject.ConfigProperty" />
+        </module>
         <module name="ArrayTypeStyle" />
         <module name="FinalParameters" />
         <module name="TodoComment">

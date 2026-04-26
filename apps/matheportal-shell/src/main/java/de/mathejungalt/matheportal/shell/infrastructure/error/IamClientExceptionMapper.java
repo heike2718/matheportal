@@ -17,7 +17,7 @@ import de.mathejungalt.matheportal.shell.domain.generated.ErrorResponse;
  */
 @Provider
 @Priority(ExceptionMapperPriorities.IAM_CLIENT)
-public class IamClientExceptionMapper implements ExceptionMapper<IamClientException> {
+public final class IamClientExceptionMapper implements ExceptionMapper<IamClientException> {
 
     private static final String MESSAGE = """
             Login oder Anlegen eines Benutzerkontos sind zur Zeit leider \

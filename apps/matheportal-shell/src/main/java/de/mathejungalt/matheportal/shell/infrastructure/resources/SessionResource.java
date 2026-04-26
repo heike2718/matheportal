@@ -12,7 +12,7 @@ import de.mathejungalt.matheportal.shell.domain.login.AuthproviderUrlService;
 import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 
 /**
- * SessionResource
+ * SessionResource.
  */
 @Path("/api/session")
 public class SessionResource implements SessionApi {

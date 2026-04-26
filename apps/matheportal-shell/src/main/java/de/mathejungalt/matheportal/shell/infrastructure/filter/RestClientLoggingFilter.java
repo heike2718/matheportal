@@ -10,7 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RestClientLoggingFilter implements ClientRequestFilter {
+public final class RestClientLoggingFilter implements ClientRequestFilter {
 
     @ConfigProperty(name = "quarkus.rest-client.authprovider.url")
     String authproviderUrl;

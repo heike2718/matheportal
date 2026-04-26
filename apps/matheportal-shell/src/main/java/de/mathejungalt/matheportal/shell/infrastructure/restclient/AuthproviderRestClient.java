@@ -20,7 +20,7 @@ import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredential
 import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLoggingFilter;
 
 /**
- * AuthproviderRestClient
+ * AuthproviderRestClient.
  */
 @RegisterRestClient(configKey = "authprovider")
 @RegisterProvider(RestClientLoggingFilter.class)
@@ -29,16 +29,22 @@ import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLogging
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AuthproviderRestClient {
 
+    int MAX_RETRIES = 3;
+
+    int DELAY_SECONDS = 1000;
+
+    int TIMEOUT_SECONDS = 10;
+
     @POST
     @Path("clients/client/accesstoken")
-    @Retry(maxRetries = 3, delay = 1000)
-    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
+    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
+    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     Response authenticateClient(OAuthClientCredentials clientSecrets);
 
     @PUT
     @Path("token/exchange/{oneTimeToken}")
-    @Retry(maxRetries = 3, delay = 1000)
-    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
+    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
+    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     public Response exchangeOneTimeTokenWithJwt(@PathParam(value = "oneTimeToken") final String oneTimeToken,
             final OAuthClientCredentials clientCredentials);
 

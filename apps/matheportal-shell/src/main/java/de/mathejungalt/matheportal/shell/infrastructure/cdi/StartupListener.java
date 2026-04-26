@@ -2,23 +2,19 @@ package de.mathejungalt.matheportal.shell.infrastructure.cdi;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-
+import lombok.extern.slf4j.Slf4j;
 import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * StartupListener.
  */
 @Startup
 @ApplicationScoped
-public class StartupListener {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartupListener.class);
+@Slf4j
+public final class StartupListener {
 
     @ConfigProperty(name = "quarkus.datasource.sessions.jdbc.url")
     String jdbcUrl;
@@ -36,9 +32,9 @@ public class StartupListener {
      */
     void onStartup(@Observes final StartupEvent startupEvent) {
 
-        LOGGER.info(" ===========>  jdbcUrl={}", jdbcUrl);
-        LOGGER.info(" ===========>  port={}", port);
-        LOGGER.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
+        log.info(" ===========>  jdbcUrl={}", jdbcUrl);
+        log.info(" ===========>  port={}", port);
+        log.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
 
     }
 

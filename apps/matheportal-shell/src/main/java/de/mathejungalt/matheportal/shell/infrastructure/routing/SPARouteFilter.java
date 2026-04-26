@@ -8,17 +8,14 @@ import java.util.stream.Stream;
 
 import io.quarkus.vertx.web.RouteFilter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.ext.web.RoutingContext;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SPARouteFilter.
  */
-public class SPARouteFilter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SPARouteFilter.class);
+@Slf4j
+public final class SPARouteFilter {
 
     private static final Predicate<String> FILE_NAME_PREDICATE = Pattern
             .compile(".*[.][a-zA-Z\\d]+")
@@ -33,28 +30,28 @@ public class SPARouteFilter {
     private static final String[] PATH_PREFIXES = { DEFAULT_APP };
 
     @RouteFilter(100)
-    void apiFilter(RoutingContext routingContext) {
+    void apiFilter(final RoutingContext routingContext) {
 
         final String path = routingContext.normalizedPath();
-        LOGGER.debug("Check reroute with path: " + path);
+        log.debug("Check reroute with path: " + path);
 
         if (path.startsWith(APP_PLUS_API_PREFIX)) {
 
             // reroute to REST-API
-            String rerouted = path.replaceFirst(DEFAULT_APP, "/") + getQueryParameters(routingContext);
-            LOGGER.debug("(2) rc.reroute: " + rerouted);
+            final String rerouted = path.replaceFirst(DEFAULT_APP, "/") + getQueryParameters(routingContext);
+            log.debug("(2) rc.reroute: " + rerouted);
             routingContext.reroute(rerouted);
         } else {
 
-            LOGGER.debug("(3)");
+            log.debug("(3)");
 
             if (this.doesNotNeedRedirect(path)) {
 
-                LOGGER.debug("(4)");
+                log.debug("(4)");
                 routingContext.next();
             } else {
 
-                LOGGER.debug("(5)");
+                log.debug("(5)");
 
                 if (path.startsWith(DEFAULT_APP)) {
 
@@ -64,24 +61,24 @@ public class SPARouteFilter {
                     // Angular-Routing
                     // Jetzt funktionieren Bookmarking, Back-Button sowie F5 ohne dass es ein 404
                     // gibt.
-                    String[] tokens = path.split("/");
-                    LOGGER.debug("(6) Anzahl token = {}", tokens.length);
+                    final String[] tokens = path.split("/");
+                    log.debug("(6) Anzahl token = {}", tokens.length);
 
                     if (tokens.length > 2) {
 
                         // /raetselbaukasten/ => 2 tokens!
-                        String rerouted = "/" + tokens[1] + "/";
-                        LOGGER.debug("(7) Umleiten von deep Angular router links: {} nach {} ", path, rerouted);
+                        final String rerouted = "/" + tokens[1] + "/";
+                        log.debug("(7) Umleiten von deep Angular router links: {} nach {} ", path, rerouted);
                         routingContext.reroute(rerouted);
                     } else {
 
-                        LOGGER.debug("(8) kein Umleiten der SPA-Grund-URL {} ", path);
+                        log.debug("(8) kein Umleiten der SPA-Grund-URL {} ", path);
                         routingContext.next();
                     }
 
                 } else {
 
-                    LOGGER.debug("(9) global else => rc.next()");
+                    log.debug("(9) global else => rc.next()");
                     routingContext.next();
                 }
             }
@@ -93,30 +90,30 @@ public class SPARouteFilter {
 
         if (path.equals("/")) {
 
-            LOGGER.debug("(3-1) kein Umleiten von /");
+            log.debug("(3-1) kein Umleiten von /");
             return true;
         }
 
         if (FILE_NAME_PREDICATE.test(path)) {
 
-            LOGGER
+            log
                     .debug("(3-2) kein Umleiten von statischen files aus src/main/resources/META-INF/resources/raetselbaukasten/");
             return true;
         }
 
         if (Stream.of(PATH_PREFIXES).noneMatch(path::startsWith)) {
 
-            LOGGER.debug("(3-3) kein Umleiten von Pfaden, die nicht mit {} beginnen", DEFAULT_APP);
+            log.debug("(3-3) kein Umleiten von Pfaden, die nicht mit {} beginnen", DEFAULT_APP);
             return true;
         }
 
-        LOGGER.debug("(3-4)");
+        log.debug("(3-4)");
         return false;
     }
 
     private String getQueryParameters(final RoutingContext routingContext) {
 
-        Map<String, String> queryParams = routingContext
+        final Map<String, String> queryParams = routingContext
                 .queryParams()
                 .entries()
                 .stream()
@@ -127,7 +124,7 @@ public class SPARouteFilter {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer("?");
+        final StringBuffer sb = new StringBuffer("?");
         queryParams.forEach((key, value) -> sb.append(key).append("=").append(value).append("&"));
 
         sb.deleteCharAt(sb.length() - 1);

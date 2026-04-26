@@ -19,7 +19,7 @@ import de.mathejungalt.matheportal.shell.domain.generated.ErrorResponse;
  */
 @Provider
 @Priority(ExceptionMapperPriorities.VALIDATION)
-public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
+public final class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
 
     @Override
     public Response toResponse(final ConstraintViolationException exception) {
