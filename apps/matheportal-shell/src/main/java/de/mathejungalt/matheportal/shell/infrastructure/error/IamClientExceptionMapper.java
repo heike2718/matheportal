@@ -13,7 +13,7 @@ import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.generated.ErrorResponse;
 
 /**
- * IamClientExceptionMapper
+ * IamClientExceptionMapper.
  */
 @Provider
 @Priority(ExceptionMapperPriorities.IAM_CLIENT)

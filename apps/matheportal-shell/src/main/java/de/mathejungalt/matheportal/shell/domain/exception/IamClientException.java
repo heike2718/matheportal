@@ -28,6 +28,11 @@ public class IamClientException extends RuntimeException {
         this.errorType = errorType;
     }
 
+    /**
+     * Getter.
+     * 
+     * @return IamClientErrorType
+     */
     public IamClientErrorType getErrorType() {
         return errorType;
     }

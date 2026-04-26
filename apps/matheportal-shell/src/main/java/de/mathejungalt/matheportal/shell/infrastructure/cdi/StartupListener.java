@@ -2,11 +2,13 @@ package de.mathejungalt.matheportal.shell.infrastructure.cdi;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import lombok.extern.slf4j.Slf4j;
+
 import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * StartupListener.

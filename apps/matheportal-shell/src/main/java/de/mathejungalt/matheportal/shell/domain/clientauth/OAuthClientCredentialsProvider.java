@@ -18,7 +18,7 @@ public class OAuthClientCredentialsProvider {
 
     /**
      * @param nonce String, darf manchmal null sein.
-     * @return
+     * @return OAuthClientCredentials
      */
     public OAuthClientCredentials getClientCredentials(final String nonce) {
         return OAuthClientCredentials

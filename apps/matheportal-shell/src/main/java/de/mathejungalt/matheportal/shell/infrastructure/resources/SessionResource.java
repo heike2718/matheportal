@@ -15,7 +15,7 @@ import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
  * SessionResource.
  */
 @Path("/api/session")
-public class SessionResource implements SessionApi {
+public final class SessionResource implements SessionApi {
 
     @Inject
     AuthproviderUrlService authproviderUrlService;

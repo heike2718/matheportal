@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * MessagePayload
+ * MessagePayload.
  */
 @Getter
 @AllArgsConstructor

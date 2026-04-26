@@ -29,18 +29,41 @@ import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLogging
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AuthproviderRestClient {
 
+    /**
+     * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
+     */
     int MAX_RETRIES = 3;
 
+    /**
+     * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
+     */
     int DELAY_SECONDS = 1000;
 
+    /**
+     * Timeout.
+     */
     int TIMEOUT_SECONDS = 10;
 
+    /**
+     * accesstoken-API des IAM.
+     * 
+     * @param clientSecrets OAuthClientCredentials
+     * @return Response
+     */
     @POST
     @Path("clients/client/accesstoken")
     @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     Response authenticateClient(OAuthClientCredentials clientSecrets);
 
+    /**
+     * Tauscht das oneTimeToken gegen ein JWT für den sich authentifizierenden
+     * Benutzer.
+     * 
+     * @param oneTimeToken      String
+     * @param clientCredentials OAuthClientCredentials
+     * @return Response
+     */
     @PUT
     @Path("token/exchange/{oneTimeToken}")
     @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
