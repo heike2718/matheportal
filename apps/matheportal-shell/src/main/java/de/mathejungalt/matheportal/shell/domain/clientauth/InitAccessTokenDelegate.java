@@ -50,13 +50,13 @@ public class InitAccessTokenDelegate {
                 throw new IamClientException(msg, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
 
-            try (final Response errorResponse = e.getResponse();) {
-                final int status = errorResponse.getStatus();
-                final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
-                throw new IamClientException(
-                        "IAM antwortet mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(),
-                        e, IamClientErrorType.IAM_ERROR_RESPONSE);
-            }
+            final ResponsePayloadWithHttpStatus responsePayoadWithStatus = this.readPayloadOrThrow(e);
+
+            throw new IamClientException(
+                    "IAM antwortet mit Status " + responsePayoadWithStatus.getHttpStatus() + " - "
+                            + responsePayoadWithStatus.getResponsePayload().getMessagePayload().getMessage(),
+                    e, IamClientErrorType.IAM_ERROR_RESPONSE);
+
         } catch (final ProcessingException e) {
 
             final Throwable cause = e.getCause();
@@ -68,6 +68,15 @@ public class InitAccessTokenDelegate {
 
             final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens";
             throw new IamUnreachableException(msg, e);
+        }
+    }
+
+    private ResponsePayloadWithHttpStatus readPayloadOrThrow(final WebApplicationException webApplicationException) {
+
+        try (final Response errorResponse = webApplicationException.getResponse();) {
+
+            final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
+            return new ResponsePayloadWithHttpStatus(responsePayload, errorResponse.getStatus());
         }
     }
 
@@ -84,5 +93,26 @@ public class InitAccessTokenDelegate {
             throw new IamClientException("IAM antwortet mit Status " + response.getStatus() + " ohne lesbaren Payload",
                     e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
         }
+    }
+
+    private final class ResponsePayloadWithHttpStatus {
+
+        private final ResponsePayload responsePayload;
+
+        private final int httpStatus;
+
+        public ResponsePayloadWithHttpStatus(final ResponsePayload responsePayload, final int httpStatus) {
+            this.responsePayload = responsePayload;
+            this.httpStatus = httpStatus;
+        }
+
+        public ResponsePayload getResponsePayload() {
+            return responsePayload;
+        }
+
+        public int getHttpStatus() {
+            return httpStatus;
+        }
+
     }
 }
