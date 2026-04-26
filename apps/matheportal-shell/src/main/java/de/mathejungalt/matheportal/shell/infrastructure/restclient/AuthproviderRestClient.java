@@ -10,17 +10,21 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
+import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLoggingFilter;
 
 /**
  * AuthproviderRestClient
  */
 @RegisterRestClient(configKey = "authprovider")
+@RegisterProvider(RestClientLoggingFilter.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

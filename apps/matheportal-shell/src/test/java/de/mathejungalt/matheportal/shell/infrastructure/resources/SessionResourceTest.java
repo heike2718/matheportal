@@ -2,20 +2,23 @@ package de.mathejungalt.matheportal.shell.infrastructure.resources;
 
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-
+import io.quarkus.test.junit.TestProfile;
 import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
-
+import de.mathejungalt.matheportal.shell.test.IamIntegrationTestProfile;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(SessionResource.class)
+@TestProfile(IamIntegrationTestProfile.class)
 public class SessionResourceTest {
 
-    // @Test
+    @Test
     void test_loginUrl() {
 
         // act
@@ -32,8 +35,10 @@ public class SessionResourceTest {
                 .as(AuthUrlResponse.class);
 
         // assert
-        assertTrue(authUrlResponse.getUrl().startsWith("http://localhost:9000/authprovider/login"));
+        final String authUrl = authUrlResponse.getUrl();
 
+        assertAll(() -> assertTrue(authUrl.startsWith("http://localhost:9000/authprovider/login?accessToken=")),
+                () -> assertTrue(authUrl.endsWith("&state=login&redirectUrl=http://localhost:4200")));
     }
 
 }

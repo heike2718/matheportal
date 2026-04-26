@@ -35,7 +35,7 @@ public class OAuthClientCredentialsProviderTest {
         // assert
         assertAll(() -> assertEquals("test-nonce", credentials.getNonce()),
                 () -> assertEquals("matheportalShellClient", credentials.getClientId()),
-                        () -> assertEquals("start123", credentials.getClientSecret()));
+                () -> assertEquals("start123", credentials.getClientSecret()));
 
     }
 
