@@ -30,7 +30,7 @@ public class IamClientException extends RuntimeException {
 
     /**
      * Getter.
-     * 
+     *
      * @return IamClientErrorType
      */
     public IamClientErrorType getErrorType() {

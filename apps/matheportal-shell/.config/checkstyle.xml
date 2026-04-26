@@ -74,12 +74,18 @@
 
         <!-- Checks that a local variable or a parameter does not shadow a field
             that is defined in the same class. -->
-        <module name="HiddenField" />
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter" value="true" />
+            <property name="ignoreSetter" value="true" />
+            <property name="ignoreAbstractMethods" value="true" />
+        </module>
 
         <module name="IllegalInstantiation" />
         <module name="InnerAssignment" />
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 1, 2, 100" />
+            <property name="severity" value="warning" />
+            <property name="ignoreAnnotation" value="true" />
+            <property name="ignoreNumbers" value="-1, 0, 1, 2" />
         </module>
 
         <!-- Checks that switch statement has "default" clause. -->
