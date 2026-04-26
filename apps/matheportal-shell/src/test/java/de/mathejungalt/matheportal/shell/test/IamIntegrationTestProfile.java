@@ -1,8 +1,8 @@
 package de.mathejungalt.matheportal.shell.test;
 
-import io.quarkus.test.junit.QuarkusTestProfile;
-
 import java.util.Map;
+
+import io.quarkus.test.junit.QuarkusTestProfile;
 
 public class IamIntegrationTestProfile implements QuarkusTestProfile {
 

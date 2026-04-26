@@ -18,6 +18,9 @@
         <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
         <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
 
+        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+        <egladil-maven-mixins.version>1.1.0</egladil-maven-mixins.version>
+
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
         <spotbugs.failOnError>true</spotbugs.failOnError>
@@ -26,8 +29,7 @@
         <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
         <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
 
-        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-        <egladil-maven-mixins.version>1.0.0</egladil-maven-mixins.version>
+        <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
@@ -233,6 +235,11 @@
                         <mixin>
                             <groupId>de.egladil</groupId>
                             <artifactId>java-code-quality-mixin</artifactId>
+                            <version>${egladil-maven-mixins.version}</version>
+                        </mixin>
+                        <mixin>
+                            <groupId>de.egladil</groupId>
+                            <artifactId>java-unittest-mixin</artifactId>
                             <version>${egladil-maven-mixins.version}</version>
                         </mixin>
                         <mixin>

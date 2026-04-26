@@ -15,6 +15,10 @@
         <quarkus.platform.version>3.34.1</quarkus.platform.version>
 
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
+        <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+
+        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+        <egladil-maven-mixins.version>1.1.0</egladil-maven-mixins.version>
 
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
@@ -24,8 +28,7 @@
         <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
         <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
 
-        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-        <egladil-maven-mixins.version>1.0.0</egladil-maven-mixins.version>
+        <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
@@ -40,6 +43,13 @@
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
                 <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.mathe-jung-alt</groupId>
+                <artifactId>matheportal-bom</artifactId>
+                <version>${matheportal-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -177,6 +187,11 @@
                         <mixin>
                             <groupId>de.egladil</groupId>
                             <artifactId>java-code-quality-mixin</artifactId>
+                            <version>${egladil-maven-mixins.version}</version>
+                        </mixin>
+                        <mixin>
+                            <groupId>de.egladil</groupId>
+                            <artifactId>java-unittest-mixin</artifactId>
                             <version>${egladil-maven-mixins.version}</version>
                         </mixin>
                         <mixin>

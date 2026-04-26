@@ -31,7 +31,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn test"
+                "command": "mvn test -Ptesting-coverage-reportOnly"
             }
         },
         "cleanup": {

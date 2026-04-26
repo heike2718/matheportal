@@ -1,15 +1,16 @@
 package de.mathejungalt.matheportal.shell.domain.clientauth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import jakarta.inject.Inject;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import de.mathejungalt.matheportal.shell.test.IamIntegrationTestProfile;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import jakarta.inject.Inject;
+
+import de.mathejungalt.matheportal.shell.test.IamIntegrationTestProfile;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestProfile(IamIntegrationTestProfile.class)

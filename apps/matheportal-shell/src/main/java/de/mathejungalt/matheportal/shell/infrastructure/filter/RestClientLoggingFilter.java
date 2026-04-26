@@ -2,10 +2,11 @@ package de.mathejungalt.matheportal.shell.infrastructure.filter;
 
 import java.io.IOException;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

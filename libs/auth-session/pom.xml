@@ -14,12 +14,17 @@
   <properties>
     <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
 
-    <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-    <egladil-maven-mixins.version>1.0.0</egladil-maven-mixins.version>
-
     <git-build-hook-maven-plugin.version>3.6.0</git-build-hook-maven-plugin.version>
 
     <jandex-maven-plugin.version>3.5.0</jandex-maven-plugin.version>
+
+    <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+    <egladil-maven-mixins.version>1.1.0</egladil-maven-mixins.version>
+
+    <!-- Start mixin-properties -->
+    <pmd.failOnViolation>true</pmd.failOnViolation>
+    <spotbugs.failOnError>true</spotbugs.failOnError>
+    <!-- Ende mixin-propetries -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>21</maven.compiler.release>
