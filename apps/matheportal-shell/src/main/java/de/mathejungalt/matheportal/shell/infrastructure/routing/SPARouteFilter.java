@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class SPARouteFilter {
 
+    private static final int MAX_TOKEN_COUNT = 2;
+
     private static final Predicate<String> FILE_NAME_PREDICATE = Pattern
             .compile(".*[.][a-zA-Z\\d]+")
             .asMatchPredicate();
@@ -64,9 +66,8 @@ public final class SPARouteFilter {
                     final String[] tokens = path.split("/");
                     log.debug("(6) Anzahl token = {}", tokens.length);
 
-                    if (tokens.length > 2) {
+                    if (tokens.length > MAX_TOKEN_COUNT) {
 
-                        // /raetselbaukasten/ => 2 tokens!
                         final String rerouted = "/" + tokens[1] + "/";
                         log.debug("(7) Umleiten von deep Angular router links: {} nach {} ", path, rerouted);
                         routingContext.reroute(rerouted);
@@ -88,7 +89,7 @@ public final class SPARouteFilter {
 
     private boolean doesNotNeedRedirect(final String path) {
 
-        if (path.equals("/")) {
+        if ("/".equals(path)) {
 
             log.debug("(3-1) kein Umleiten von /");
             return true;
@@ -124,12 +125,12 @@ public final class SPARouteFilter {
             return "";
         }
 
-        final StringBuffer sb = new StringBuffer("?");
-        queryParams.forEach((key, value) -> sb.append(key).append("=").append(value).append("&"));
+        final StringBuffer stringBuffer = new StringBuffer("?");
+        queryParams.forEach((key, value) -> stringBuffer.append(key).append("=").append(value).append("&"));
 
-        sb.deleteCharAt(sb.length() - 1);
+        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
 
-        return sb.toString();
+        return stringBuffer.toString();
 
     }
 

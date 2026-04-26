@@ -57,8 +57,7 @@ public interface AuthproviderRestClient {
     Response authenticateClient(OAuthClientCredentials clientSecrets);
 
     /**
-     * Tauscht das oneTimeToken gegen ein JWT für den sich authentifizierenden
-     * Benutzer.
+     * Tauscht das oneTimeToken gegen ein JWT für den sich authentifizierenden Benutzer.
      *
      * @param oneTimeToken      String
      * @param clientCredentials OAuthClientCredentials
@@ -68,7 +67,7 @@ public interface AuthproviderRestClient {
     @Path("token/exchange/{oneTimeToken}")
     @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
-    Response exchangeOneTimeTokenWithJwt(@PathParam(value = "oneTimeToken") String oneTimeToken,
+    Response exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
             OAuthClientCredentials clientCredentials);
 
 }

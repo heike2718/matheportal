@@ -7,6 +7,8 @@ import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
  */
 public class IamClientException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     private final IamClientErrorType errorType;
 
     /**

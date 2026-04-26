@@ -47,15 +47,16 @@ public class InitAccessTokenDelegate {
 
             if (e.getCause() instanceof JsonParseException) {
                 final String msg = "IAM-Antwort ist invalides json";
-                throw new IamClientException(msg, e.getCause(), IamClientErrorType.IAM_CONTRACT_VIOLATION);
+                throw new IamClientException(msg, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
 
-            final Response errorResponse = e.getResponse();
-            final int status = errorResponse.getStatus();
-            final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
-            throw new IamClientException(
-                    "IAM antwortet mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(), e,
-                    IamClientErrorType.IAM_ERROR_RESPONSE);
+            try (final Response errorResponse = e.getResponse();) {
+                final int status = errorResponse.getStatus();
+                final ResponsePayload responsePayload = readPayloadOrThrow(errorResponse);
+                throw new IamClientException(
+                        "IAM antwortet mit Status " + status + " - " + responsePayload.getMessagePayload().getMessage(),
+                        e, IamClientErrorType.IAM_ERROR_RESPONSE);
+            }
         } catch (final ProcessingException e) {
 
             final Throwable cause = e.getCause();

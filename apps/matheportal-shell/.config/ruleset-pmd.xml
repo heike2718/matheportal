@@ -11,23 +11,26 @@
     verwendet.
   </description>
 
+  <exclude-pattern>.*/generated-sources/.*</exclude-pattern>
+  <exclude-pattern>.*/target/.*</exclude-pattern>
+
   <!-- Basisregeln -->
   <rule ref="category/java/bestpractices.xml">
-    <exclude name="GuardLogStatement"/>
-    <exclude name="ExhaustiveSwitchHasDefault"/>
+    <exclude name="GuardLogStatement" />
+    <exclude name="ExhaustiveSwitchHasDefault" />
   </rule>
 
-  <rule ref="category/java/errorprone.xml"/>
+  <rule ref="category/java/errorprone.xml" />
 
   <!-- Code Style: Kategorie laden, aber einzelne Regel ausschließen -->
   <rule ref="category/java/codestyle.xml">
-    <exclude name="LongVariable"/>
-    <exclude name="OnlyOneReturn"/>
-    <exclude name="AtLeastOneConstructor"/>
-    <exclude name="UnnecessaryConstructor"/>
+    <exclude name="LongVariable" />
+    <exclude name="OnlyOneReturn" />
+    <exclude name="AtLeastOneConstructor" />
+    <exclude name="UnnecessaryConstructor" />
     <!-- CDI und Transactional erwarten etwas anderes als private. -->
     <!--  Entweder rule deaktivieren, oder vor package-private members ein /* default */  setzen. -->
-    <exclude name="CommentDefaultAccessModifier"/>
+    <exclude name="CommentDefaultAccessModifier" />
   </rule>
 
   <!-- UnusedPrivateField nur melden, wenn kein Lombok beteiligt ist -->

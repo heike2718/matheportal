@@ -27,7 +27,7 @@ public final class ConstraintViolationExceptionMapper implements ExceptionMapper
         final List<ConstraintViolationDetail> details = exception
                 .getConstraintViolations()
                 .stream()
-                .map(v -> map(v))
+                .map(this::map)
                 .collect(Collectors.toList());
 
         final ErrorResponse errorResponse = new ErrorResponse("Die Anfrage ist nicht valide");

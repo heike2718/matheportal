@@ -28,8 +28,6 @@
         <jacoco.exclusion-2>**/*Application*.class</jacoco.exclusion-2>
         <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
         <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
-
-        <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
