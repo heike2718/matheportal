@@ -6,7 +6,7 @@
     "sourceRoot": "apps/raetselbaukasten-ui/src",
     "tags": ["type:app", "scope:raetselbaukasten", "layer:remote"],
     "targets": {
-        "build": {
+        "tech-build": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
                 "baseHref": "/raetselbaukasten/",
@@ -14,7 +14,7 @@
             },
             "configurations": {
                 "production": {
-                    "target": "raetselbaukasten-ui:esbuild:production",
+                    "target": "raetselbaukasten-ui:tech-esbuild:production",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -23,7 +23,7 @@
                     ]
                 },
                 "qs": {
-                    "target": "raetselbaukasten-ui:esbuild:qs",
+                    "target": "raetselbaukasten-ui:tech-esbuild:qs",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -32,20 +32,28 @@
                     ]
                 },
                 "local": {
-                    "target": "raetselbaukasten-ui:esbuild:development",
+                    "target": "raetselbaukasten-ui:tech-esbuild:development",
                     "dev": true
                 },
                 "development": {
-                    "target": "raetselbaukasten-ui:esbuild:development",
+                    "target": "raetselbaukasten-ui:tech-esbuild:development",
                     "dev": true
                 }
             },
             "defaultConfiguration": "development"
         },
-        "serve": {
+        "tech-serve-angular-dev": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "options": {
+                "buildTarget": "raetselbaukasten-ui:tech-esbuild:development",
+                "port": 4202
+            }
+        },
+        "tech-serve-federation-dev": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "target": "raetselbaukasten-ui:serve-original:development",
+                "target": "raetselbaukasten-ui:tech-serve-angular-dev",
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
@@ -53,17 +61,7 @@
             },
             "continuous": true
         },
-        "serve-static": {
-            "continuous": true,
-            "executor": "@nx/web:file-server",
-            "options": {
-                "buildTarget": "raetselbaukasten-ui:build",
-                "port": 4200,
-                "staticFilePath": "dist/apps/raetselbaukasten-ui/browser",
-                "spa": true
-            }
-        },
-        "esbuild": {
+        "tech-esbuild": {
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -119,49 +117,34 @@
             },
             "defaultConfiguration": "development"
         },
-        "serve-original": {
-            "continuous": true,
-            "executor": "@angular/build:dev-server",
-            "configurations": {
-                "production": {
-                    "buildTarget": "raetselbaukasten-ui:esbuild:production"
-                },
-                "development": {
-                    "buildTarget": "raetselbaukasten-ui:esbuild:development"
-                }
-            },
-            "defaultConfiguration": "development",
-            "options": {
-                "port": 4202
-            }
-        },
         "test": {
             "executor": "@angular/build:unit-test",
             "options": {
                 "tsConfig": "apps/raetselbaukasten-ui/tsconfig.spec.json",
-                "buildTarget": "raetselbaukasten-ui:esbuild:test",
-                "runner": "vitest"
+                "buildTarget": "raetselbaukasten-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false
             }
         },
-        "format": {
+        "tech-format": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "format-check": {
+        "tech-format-check": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "lint": {
+        "tech-lint": {
             "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
             }
         },
-        "lint-fix": {
+        "tech-lint-fix": {
             "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
@@ -170,7 +153,14 @@
         },
         "cleanup": {
             "executor": "nx:run-commands",
-            "dependsOn": ["lint-fix", "format"],
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
             "options": {
                 "command": "true"
             }

@@ -6,6 +6,13 @@
     "tags": ["platform:backend", "type:bff"],
 
     "targets": {
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/auth-session",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
         "test": {
             "executor": "nx:run-commands",
             "options": {
@@ -13,11 +20,18 @@
                 "command": "mvn test"
             }
         },
-        "cleanup": {
+        "analyze-quality": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "libs/auth-session",
-                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/auth-session",
+                "command": "mvn -DskipTests -Dnvd.api.key=$NVD_API_KEY -DnvdApiDelay=8000 -Panalyze-securityScan verify"
             }
         },
         "install": {

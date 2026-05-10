@@ -6,7 +6,7 @@
     "sourceRoot": "apps/minikaenguru-anwendung-ui/src",
     "tags": ["type:app", "scope:minikaenguru", "layer:remote"],
     "targets": {
-        "build": {
+        "tech-build": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
                 "baseHref": "/minikaenguru-anwendung/",
@@ -14,7 +14,7 @@
             },
             "configurations": {
                 "production": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:production",
+                    "target": "minikaenguru-anwendung-ui:tech-esbuild:production",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -23,7 +23,7 @@
                     ]
                 },
                 "qs": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:qs",
+                    "target": "minikaenguru-anwendung-ui:tech-esbuild:qs",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -32,38 +32,17 @@
                     ]
                 },
                 "local": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "target": "minikaenguru-anwendung-ui:tech-esbuild:development",
                     "dev": true
                 },
                 "development": {
-                    "target": "minikaenguru-anwendung-ui:esbuild:development",
+                    "target": "minikaenguru-anwendung-ui:tech-esbuild:development",
                     "dev": true
                 }
             },
             "defaultConfiguration": "development"
         },
-        "serve": {
-            "executor": "@angular-architects/native-federation:build",
-            "options": {
-                "target": "minikaenguru-anwendung-ui:serve-original:development",
-                "rebuildDelay": 500,
-                "dev": true,
-                "cacheExternalArtifacts": false,
-                "port": 0
-            },
-            "continuous": true
-        },
-        "serve-static": {
-            "continuous": true,
-            "executor": "@nx/web:file-server",
-            "options": {
-                "buildTarget": "minikaenguru-anwendung-ui:build",
-                "port": 4200,
-                "staticFilePath": "dist/apps/minikaenguru-anwendung-ui/browser",
-                "spa": true
-            }
-        },
-        "esbuild": {
+        "tech-esbuild": {
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -119,49 +98,53 @@
             },
             "defaultConfiguration": "development"
         },
-        "serve-original": {
+        "tech-serve-angular-dev": {
             "continuous": true,
             "executor": "@angular/build:dev-server",
-            "configurations": {
-                "production": {
-                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:production"
-                },
-                "development": {
-                    "buildTarget": "minikaenguru-anwendung-ui:esbuild:development"
-                }
-            },
-            "defaultConfiguration": "development",
             "options": {
+                "buildTarget": "minikaenguru-anwendung-ui:tech-esbuild:development",
                 "port": 4201
             }
+        },
+        "tech-serve-federation-dev": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "target": "minikaenguru-anwendung-ui:tech-serve-angular-dev",
+                "rebuildDelay": 500,
+                "dev": true,
+                "cacheExternalArtifacts": false,
+                "port": 0
+            },
+            "continuous": true
         },
         "test": {
             "executor": "@angular/build:unit-test",
             "options": {
                 "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.spec.json",
-                "buildTarget": "minikaenguru-anwendung-ui:esbuild:test",
-                "runner": "vitest"
+                "buildTarget": "minikaenguru-anwendung-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false
             }
         },
-        "format": {
+        "tech-format": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "format-check": {
+        "tech-format-check": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "lint": {
+        "tech-lint": {
             "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
             }
         },
-        "lint-fix": {
+        "tech-lint-fix": {
             "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
@@ -170,7 +153,14 @@
         },
         "cleanup": {
             "executor": "nx:run-commands",
-            "dependsOn": ["lint-fix", "format"],
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
             "options": {
                 "command": "true"
             }

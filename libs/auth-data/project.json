@@ -6,15 +6,44 @@
     "projectType": "library",
     "tags": ["domain:auth", "type:data"],
     "targets": {
-        "test": {
-            "executor": "@nx/vitest:test",
-            "outputs": ["{options.reportsDirectory}"],
+        "tech-format": {
+            "executor": "nx:run-commands",
             "options": {
-                "reportsDirectory": "coverage/libs/auth-data"
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "lint": {
-            "executor": "@nx/eslint:lint"
+        "tech-format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-lint": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
+            }
+        },
+        "tech-lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
+            "options": {
+                "command": "true"
+            }
         }
     }
 }

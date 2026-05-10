@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -euo pipefail
-pnpm run -s check:all
+pnpm nx affected -t analyze-quality --base=develop --head=HEAD

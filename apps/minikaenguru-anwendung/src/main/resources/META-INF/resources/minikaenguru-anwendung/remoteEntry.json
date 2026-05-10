@@ -3,63 +3,63 @@
   "shared": [
     {
       "packageName": "@angular/common",
-      "outFileName": "_angular_common.lOBIukmLkU.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_common.XGFMnvhveR-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/common/http",
-      "outFileName": "_angular_common_http.iwtWfUUB3S.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_common_http.WsvobaYVK3-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/core",
-      "outFileName": "_angular_core.DoNE3CYP4Y.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_core.JXmBGTfJXs-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/core/primitives/di",
-      "outFileName": "_angular_core_primitives_di.dQve_RtHqT.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_core_primitives_di.rLy0kee0kq-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/core/primitives/signals",
-      "outFileName": "_angular_core_primitives_signals.LSIi58m3sl.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_core_primitives_signals.MGHq27Meh--dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/platform-browser",
-      "outFileName": "_angular_platform_browser.bo8KvLxe8a.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_platform_browser.9tNvD77_i_-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "@angular/router",
-      "outFileName": "_angular_router.prKS_JzJMt.js",
-      "requiredVersion": "~21.2.0",
+      "outFileName": "_angular_router.8TYx1w6Zl5-dev.js",
+      "requiredVersion": "21.2.7",
       "singleton": true,
       "strictVersion": true,
-      "version": "21.2.6"
+      "version": "21.2.7"
     },
     {
       "packageName": "rxjs",
-      "outFileName": "rxjs.P4K_6Racgx.js",
+      "outFileName": "rxjs.sPSVgTh7a3-dev.js",
       "requiredVersion": "~7.8.0",
       "singleton": true,
       "strictVersion": true,
@@ -67,7 +67,7 @@
     },
     {
       "packageName": "rxjs/operators",
-      "outFileName": "rxjs_operators.P55Bn2eyra.js",
+      "outFileName": "rxjs_operators.1TIMmjw9Ne-dev.js",
       "requiredVersion": "~7.8.0",
       "singleton": true,
       "strictVersion": true,
@@ -78,46 +78,50 @@
       "strictVersion": false,
       "version": "0.0.0",
       "requiredVersion": "0.0.0",
-      "packageName": "@nf-internal/chunk-5YWYRBPA",
-      "outFileName": "chunk-5YWYRBPA.js"
+      "packageName": "@nf-internal/chunk-LJVIDQYJ",
+      "outFileName": "chunk-LJVIDQYJ.js"
     },
     {
       "singleton": false,
       "strictVersion": false,
       "version": "0.0.0",
       "requiredVersion": "0.0.0",
-      "packageName": "@nf-internal/chunk-6XNIWKD6",
-      "outFileName": "chunk-6XNIWKD6.js"
+      "packageName": "@nf-internal/chunk-PYAJNAY7",
+      "outFileName": "chunk-PYAJNAY7.js"
     },
     {
       "singleton": false,
       "strictVersion": false,
       "version": "0.0.0",
       "requiredVersion": "0.0.0",
-      "packageName": "@nf-internal/chunk-GR3R5SHV",
-      "outFileName": "chunk-GR3R5SHV.js"
+      "packageName": "@nf-internal/chunk-QIONUYXN",
+      "outFileName": "chunk-QIONUYXN.js"
     },
     {
       "singleton": false,
       "strictVersion": false,
       "version": "0.0.0",
       "requiredVersion": "0.0.0",
-      "packageName": "@nf-internal/chunk-JGSDUOUY",
-      "outFileName": "chunk-JGSDUOUY.js"
+      "packageName": "@nf-internal/chunk-NKFRXPZJ",
+      "outFileName": "chunk-NKFRXPZJ.js"
     },
     {
       "singleton": false,
       "strictVersion": false,
       "version": "0.0.0",
       "requiredVersion": "0.0.0",
-      "packageName": "@nf-internal/chunk-4CLCTAJ7",
-      "outFileName": "chunk-4CLCTAJ7.js"
+      "packageName": "@nf-internal/chunk-WDMUDEB6",
+      "outFileName": "chunk-WDMUDEB6.js"
     }
   ],
   "exposes": [
     {
       "key": "./Component",
-      "outFileName": "Component-4OYU6ITN.js"
+      "outFileName": "Component.js",
+      "dev": {
+        "entryPoint": "/home/heike/git/matheportal/apps/minikaenguru-anwendung-ui/src/app/app.component.ts"
+      }
     }
-  ]
+  ],
+  "buildNotificationsEndpoint": "/@angular-architects/native-federation:build-notifications"
 }

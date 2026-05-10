@@ -31,31 +31,34 @@
             "cache": true,
             "inputs": ["default", "^production"]
         },
-        "dev": {
+        "tech-dev": {
             "cache": false
         },
-        "debug": {
+        "tech-debug": {
             "cache": false
         },
         "test": {
-            "cache": true,
+            "cache": false,
             "inputs": ["default", "^production"]
         },
         "cleanup": {
             "cache": false
         },
-        "stage-frontend": {
+        "tech-embed-frontend": {
             "cache": false
         },
-        "package": {
-            "cache": true,
+        "tech-package": {
+            "cache": false,
             "inputs": ["production", "^production"]
+        },
+        "install": {
+            "cache": false
         },
         "prepare-deployment": {
             "cache": false
         },
         "@nx/vitest:test": {
-            "cache": true,
+            "cache": false,
             "inputs": ["default", "^production"]
         }
     },
