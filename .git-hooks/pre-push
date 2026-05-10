@@ -1,3 +1,18 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
-pnpm nx affected -t analyze-quality --base=develop --head=HEAD
+
+CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR develop...HEAD)
+
+if [ -z "$CHANGED_FILES" ]; then
+  echo "No changed files against develop."
+  exit 0
+fi
+
+echo "Running analyze-quality on affected projects..."
+
+pnpm nx affected -t analyze-quality --files="$CHANGED_FILES"
+
+echo "Running tests on affected projects..."
+
+pnpm nx affected -t test --files="$CHANGED_FILES" --skip-nx-cache
