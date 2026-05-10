@@ -11,14 +11,16 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn clean quarkus:dev"
+                "command": "mvn clean quarkus:dev",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev"
             }
         },
         "tech-debug": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn quarkus:dev -Ddebug=5005"
+                "command": "mvn quarkus:dev -Ddebug=5005",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev"
             }
         },
         "serve-dev": {
@@ -45,7 +47,8 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn test"
+                "command": "mvn test",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.test"
             }
         },
         "cleanup": {
@@ -66,7 +69,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn -DskipTests -Dnvd.api.key=$NVD_API_KEY -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
             }
         },
         "tech-embed-frontend": {
@@ -91,6 +94,26 @@
                 "qs": {},
                 "production": {}
             }
+        },
+        "serve-embedded": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
         },
         "tech-package": {
             "executor": "nx:run-commands",

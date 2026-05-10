@@ -31,7 +31,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "libs/auth-session",
-                "command": "mvn -DskipTests -Dnvd.api.key=$NVD_API_KEY -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
             }
         },
         "install": {
