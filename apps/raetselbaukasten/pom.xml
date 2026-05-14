@@ -204,33 +204,6 @@
                     </mixins>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>com.rudikershaw.gitbuildhook</groupId>
-                <artifactId>git-build-hook-maven-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <gitConfig>
-                        <!-- The location of the directory you are using to store the Git hooks in
-                        your project. -->
-                        <core.hooksPath>.git-hooks/</core.hooksPath>
-                        <core.autocrlf>false</core.autocrlf>
-                        <core.eol>lf</core.eol>
-                        <core.safecrlf>true</core.safecrlf>
-                        <!-- Optional, oft praktisch -->
-                        <pull.rebase>false</pull.rebase>
-                        <fetch.prune>true</fetch.prune>
-                    </gitConfig>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>configure</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

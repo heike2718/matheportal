@@ -6,7 +6,7 @@ Das Matheportal ist eine modulare Webanwendung zur Bereitstellung interaktiver m
 
 Das Projekt basiert auf einem Nx-Monorepo und verwendet eine Microfrontend-Architektur mit native-federation:
 
-- **matheportal-shell-ui (Host)**: Einstiegspunkt und Navigation
+- **matheportal-bash-ui (Host)**: Einstiegspunkt und Navigation
 - **Remotes**: Fachliche Anwendungen (z. B. Rätselbaukasten, Minikänguru)
 - **BFFs**: Backend-for-Frontend-Services zur Auslieferung der jeweiligen Frontends
 
@@ -31,39 +31,49 @@ Das Projekt basiert auf einem Nx-Monorepo und verwendet eine Microfrontend-Archi
 pnpm install
 ```
 
-### starten der shell
+### environments
 
-```bash
-pnpm nx serve matheportal-shell-ui
-```
+Jedes backend-project hat in einem .config-Verzeichnis verschiedene ausprägungen von .env-Files für Quarkus. Diese werden mit einer passenden configuration als envFile eingebunden.
 
-## build und deployment
-
-```bash
-pnpm nx build projekt
-```
-
-```bash
-pnpm nx prepare-deployment projectName --configuration=qs
-```
-
-Dies führt aus:
-
-- Bauen des Frontends mit der passenden Konfiguration
-- Kopieren des Ergebnisses nach BFF/src/main/resources/META-INF/resources/projectName
-- package BFF
-- move quarkus-app in das Verzeichnis, auf das das Ansible-Playbook zeigt.
-
-### Konfigurationen
-
-- qs
-- production
-
-## Clients
-
-### matheportal-shell (dev)
-
-ClientID dev: matheportal-shell-client
-Passwort dev: start123
+## IAM-Clients
 
 ClientID und Client-Secret qs / prod in keypass
+
+Für dev in .config/.env.dev
+
+## workspace-tools
+
+tools/workspace-tools/project.json
+
+### Git- Targets
+
+```bash
+pnpm nx run workspace-tools:configure-git
+
+pnpm nx run workspace-tools:show-git-config
+```
+
+### Starten der Anwendungen
+
+```bash
+pnpm nx run workspace-tools:serve-all-dev
+```
+
+oder
+
+```bash
+pnpm nx run workspace-tools:serve-all-debug
+```
+
+## Diagnostische Targets
+
+```bash
+# Welche Projekte weisen Änderungen gegenüber develop auf?
+pnpm nx run workspace-tools:show-affected
+
+# Welche Tests würde Nx aktuell wirklich ausführen? Und warum?
+pnpm nx run workspace-tools:graph-affected-tests
+
+# Wie orchestriert Nx den vollständigen Deployment-Build?
+pnpm nx run workspace-tools:graph-tasks-deploy-qs
+```
