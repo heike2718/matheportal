@@ -1,8 +1,16 @@
+import { InjectionToken } from '@angular/core';
+
 export const AUTH_FEATURE_KEY = 'mpAuth';
 
-export type LOGGED_OUT_REASON = 'technical' | 'expired' | 'unauthorized' | 'useraction';
+export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'unauthorized' | 'useraction';
 
 export type AUTHORIZATION_STATE = 'loggedOut' | 'unauthorized' | 'authorized';
+
+export interface AuthConfiguration {
+    readonly apiUrl: string;
+}
+
+export const AUTH_CONFIGURATION = new InjectionToken<AuthConfiguration>('auth-configuration');
 
 export interface User {
     readonly fullName: string;
@@ -15,3 +23,7 @@ export const anonymousUser: User = {
     roles: [],
     anonym: true,
 };
+
+export interface AuthUrlResponse {
+    readonly url: string;
+}
