@@ -129,12 +129,12 @@ public final class SPARouteFilter {
             return "";
         }
 
-        final StringBuffer stringBuffer = new StringBuffer("?");
-        queryParams.forEach((key, value) -> stringBuffer.append(key).append("=").append(value).append("&"));
+        final StringBuilder stringBuilder = new StringBuilder("?");
+        queryParams.forEach((key, value) -> stringBuilder.append(key).append("=").append(value).append("&"));
 
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
-        return stringBuffer.toString();
+        return stringBuilder.toString();
 
     }
 

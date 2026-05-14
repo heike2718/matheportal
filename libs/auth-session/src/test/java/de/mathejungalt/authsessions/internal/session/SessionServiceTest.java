@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
+import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -1,6 +1,4 @@
-package de.mathejungalt.authsessions.internal.session;
-
-import de.mathejungalt.authsessions.api.UserDto;
+package de.mathejungalt.authsessions.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

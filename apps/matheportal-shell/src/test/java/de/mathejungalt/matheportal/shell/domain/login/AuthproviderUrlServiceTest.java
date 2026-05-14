@@ -42,7 +42,7 @@ public class AuthproviderUrlServiceTest {
 
         // assert
         assertAll(() -> assertEquals(
-                "http://localhost:9000/authprovider/login?accessToken=abc123&state=login&redirectUrl=http://localhost:4200",
+                "http://localhost:9000/authprovider/login?accessToken=abc123&state=login&redirectUrl=http://localhost:9100/matheportal/",
                 result.getUrl()), () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
 
     }

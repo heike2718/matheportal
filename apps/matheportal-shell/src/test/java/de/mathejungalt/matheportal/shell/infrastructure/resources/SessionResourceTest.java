@@ -41,7 +41,7 @@ public class SessionResourceTest {
         final String authUrl = authUrlResponse.getUrl();
 
         assertAll(() -> assertTrue(authUrl.startsWith("http://localhost:9000/authprovider/login?accessToken=")),
-                () -> assertTrue(authUrl.endsWith("&state=login&redirectUrl=http://localhost:4200")));
+                () -> assertTrue(authUrl.endsWith("&state=login&redirectUrl=http://localhost:9100/matheportal/")));
     }
 
 }

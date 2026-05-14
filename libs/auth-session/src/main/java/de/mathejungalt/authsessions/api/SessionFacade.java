@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import de.mathejungalt.authsessions.api.exceptions.InvalidTokenException;
 import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
 import de.mathejungalt.authsessions.internal.jwt.JWTService;
-import de.mathejungalt.authsessions.internal.session.SessionDto;
 import de.mathejungalt.authsessions.internal.session.SessionService;
 
 /**

@@ -13,7 +13,7 @@
         <module name="JavadocMethod" />
         <module name="JavadocType" />
         <module name="JavadocVariable">
-            <property name="scope" value="protected" />
+            <property name="scope" value="public" />
         </module>
         <module name="JavadocStyle" />
         <module name="ConstantName" />
@@ -74,18 +74,12 @@
 
         <!-- Checks that a local variable or a parameter does not shadow a field
             that is defined in the same class. -->
-        <module name="HiddenField">
-            <property name="ignoreConstructorParameter" value="true" />
-            <property name="ignoreSetter" value="true" />
-            <property name="ignoreAbstractMethods" value="true" />
-        </module>
+        <module name="HiddenField" />
 
         <module name="IllegalInstantiation" />
         <module name="InnerAssignment" />
         <module name="MagicNumber">
-            <property name="severity" value="warning" />
-            <property name="ignoreAnnotation" value="true" />
-            <property name="ignoreNumbers" value="-1, 0, 1, 2" />
+            <property name="ignoreNumbers" value="-1, 0, 1, 2, 100" />
         </module>
 
         <!-- Checks that switch statement has "default" clause. -->
@@ -101,13 +95,18 @@
 
         <module name="SimplifyBooleanExpression" />
         <module name="SimplifyBooleanReturn" />
-        <module name="DesignForExtension" />
+        <module name="DesignForExtension">
+            <property name="ignoredAnnotations"
+                value="RouteFilter,Override,Inject,ApplicationScoped,RequestScoped,Singleton,Dependent" />
+        </module>
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
         <module name="VisibilityModifier">
             <property name="ignoreAnnotationCanonicalNames"
-                value="jakarta.inject.Inject,org.eclipse.microprofile.config.inject.ConfigProperty" />
+                value="org.eclipse.microprofile.config.inject.ConfigProperty,
+                     jakarta.inject.Inject,
+                     io.quarkus.arc.Unremovable" />
         </module>
         <module name="ArrayTypeStyle" />
         <module name="FinalParameters" />

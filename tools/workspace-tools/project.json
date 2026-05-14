@@ -36,7 +36,25 @@
                 ]
             }
         },
-        "show-affected": {
+        "show-affected-last-commit": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx show projects --affected --base=HEAD~1 --head=HEAD"
+            }
+        },
+        "test-affected-last-commit": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx affected -t test --base=HEAD~1 --head=HEAD --skip-nx-cache"
+            }
+        },
+        "analyze-affected-last-commit": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx affected -t analyze-quality --base=HEAD~1 --head=HEAD"
+            }
+        },
+        "show-affected-develop": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "pnpm nx show projects --affected --base=develop --head=HEAD"

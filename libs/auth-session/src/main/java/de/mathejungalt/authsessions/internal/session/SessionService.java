@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
+import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.UserDto;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
 import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
