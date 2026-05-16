@@ -36,6 +36,24 @@
                 ]
             }
         },
+        "show-affected-upstream": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx show projects --affected --base=@{u} --head=HEAD"
+            }
+        },
+        "test-affected-upstream": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx affected -t test --base=@{u} --head=HEAD --skip-nx-cache"
+            }
+        },
+        "analyze-affected-upstream": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx affected -t analyze-quality --base=@{u} --head=HEAD"
+            }
+        },
         "show-affected-last-commit": {
             "executor": "nx:run-commands",
             "options": {

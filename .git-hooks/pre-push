@@ -2,17 +2,20 @@
 
 set -euo pipefail
 
-CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR develop...HEAD)
-
-if [ -z "$CHANGED_FILES" ]; then
-  echo "No changed files against develop."
-  exit 0
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
+  BASE="@{u}"
+else
+  echo "No upstream branch configured. Falling back to develop."
+  BASE="develop"
 fi
 
-echo "Running analyze-quality on affected projects..."
+HEAD="HEAD"
 
-pnpm nx affected -t analyze-quality --files="$CHANGED_FILES"
+echo "Affected projects since $BASE:"
+pnpm nx show projects --affected --base="$BASE" --head="$HEAD"
 
-echo "Running tests on affected projects..."
+echo "Running analyze-quality for affected projects..."
+pnpm nx affected -t analyze-quality --base="$BASE" --head="$HEAD"
 
-pnpm nx affected -t test --files="$CHANGED_FILES" --skip-nx-cache
+echo "Running tests for affected projects..."
+pnpm nx affected -t test --base="$BASE" --head="$HEAD" --skip-nx-cache

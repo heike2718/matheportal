@@ -32,7 +32,8 @@
             "options": {
                 "cwd": "libs/auth-session",
                 "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
-            }
+            },
+            "outputs": ["{projectRoot}/backend/target/dependency-check-report.html"]
         },
         "install": {
             "executor": "nx:run-commands",

@@ -63,5 +63,6 @@
         "source.fixAll": "explicit"
     },
     "java.debug.settings.onBuildFailureProceed": true,
-    "java.cleanup.actions": ["addFinalModifier"]
+    "java.cleanup.actions": ["addFinalModifier"],
+    "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
