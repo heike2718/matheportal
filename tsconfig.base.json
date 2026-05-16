@@ -17,10 +17,12 @@
         "paths": {
             "@mp-shell-config": ["./apps/matheportal-shell-ui/src/app/config/index.ts"],
             "@matheportal/shared-runtime-config": ["libs/shared-runtime-config/src/index.ts"],
-            "@matheportal/shared-testing-ui": ["libs/shared-testing-ui/src/index.ts"],
+            "@matheportal/shared-testing-ui": ["libs/testing/src/index.ts"],
             "@matheportal/auth-model": ["libs/auth/auth-model/src/index.ts"],
             "@matheportal/auth-data": ["libs/auth/auth-data/src/index.ts"],
-            "@matheportal/auth-api": ["libs/auth/auth-api/src/index.ts"]
+            "@matheportal/auth-api": ["libs/auth/auth-api/src/index.ts"],
+            "@matheportal/feedback-api": ["libs/feedback/feedback-api/src/index.ts"],
+            "@matheportal/feedback-ui": ["libs/feedback/feedback-ui/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

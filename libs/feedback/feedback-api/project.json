@@ -1,11 +1,18 @@
 {
-    "name": "shared-runtime-config",
-    "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/shared-runtime-config/src",
+    "name": "feedback-api",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/feedback/feedback-api/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:shared", "type:config"],
+    "tags": ["domain:shared", "type:api"],
     "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
+            "options": {
+                "reportsDirectory": "coverage/libs/feedback/feedback-api"
+            }
+        },
         "tech-format": {
             "executor": "nx:run-commands",
             "options": {

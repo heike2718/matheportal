@@ -8,9 +8,9 @@
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
-            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "config": "libs/auth/auth-data/vite.config.mts"
+                "reportsDirectory": "coverage/libs/auth/auth-data"
             }
         },
         "tech-format": {
@@ -26,15 +26,11 @@
             }
         },
         "tech-lint": {
-            "executor": "@nx/eslint:lint",
-            "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
-            }
+            "executor": "@nx/eslint:lint"
         },
         "tech-lint-fix": {
             "executor": "@nx/eslint:lint",
             "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
                 "fix": true
             }
         },

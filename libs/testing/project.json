@@ -1,10 +1,10 @@
 {
-    "name": "shared-runtime-config",
+    "name": "shared-testing-ui",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/shared-runtime-config/src",
+    "sourceRoot": "libs/testing/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:shared", "type:config"],
+    "tags": ["domain:shared", "type:testing"],
     "targets": {
         "tech-format": {
             "executor": "nx:run-commands",

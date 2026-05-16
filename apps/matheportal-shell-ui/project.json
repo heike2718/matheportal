@@ -174,15 +174,11 @@
             }
         },
         "tech-lint": {
-            "executor": "@nx/eslint:lint",
-            "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
-            }
+            "executor": "@nx/eslint:lint"
         },
         "tech-lint-fix": {
             "executor": "@nx/eslint:lint",
             "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
                 "fix": true
             }
         },
