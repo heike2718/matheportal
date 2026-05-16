@@ -1,10 +1,10 @@
 {
-    "name": "auth-data",
-    "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/auth-data/src",
+    "name": "auth-model",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/auth/auth-model/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:auth", "type:data"],
+    "tags": ["domain:auth", "type:model"],
     "targets": {
         "tech-format": {
             "executor": "nx:run-commands",

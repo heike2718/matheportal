@@ -1,18 +1,11 @@
 {
     "name": "auth-data",
-    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "libs/auth-data/src",
     "prefix": "mp",
     "projectType": "library",
     "tags": ["domain:auth", "type:data"],
     "targets": {
-        "test": {
-            "executor": "@nx/vitest:test",
-            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-            "options": {
-                "config": "libs/auth-data/vite.config.mts"
-            }
-        },
         "tech-format": {
             "executor": "nx:run-commands",
             "options": {
