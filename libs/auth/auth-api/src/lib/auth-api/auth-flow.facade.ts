@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AuthSessionFacade } from './auth-session.facade';
+import { authActions } from '@matheportal/auth-data';
 
 @Injectable({
     providedIn: 'root',
@@ -10,11 +11,14 @@ export class AuthFlowFacade {
     #authSessionFacade = inject(AuthSessionFacade);
 
     login(): void {
-        // hier die requestLoginUrl-Action triggern
+        this.#store.dispatch(authActions.requestLoginUrl());
     }
 
     initClearOrRestoreSession(): void {
-        // hier dann ggf
-        this.#authSessionFacade.reloadSession();
+        this.#authSessionFacade.validateSession();
+    }
+
+    handleSessionExpired(): void {
+        this.#store.dispatch(authActions.sessionValidationFailed({ reason: 'expired' }));
     }
 }

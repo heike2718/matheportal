@@ -4,6 +4,7 @@
     "projectType": "application",
     "sourceRoot": "libs/auth-session/src",
     "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom"],
 
     "targets": {
         "cleanup": {

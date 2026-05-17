@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 export const AUTH_FEATURE_KEY = 'mpAuth';
 
-export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'unauthorized' | 'useraction';
+export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'useraction';
 
 export type AUTHORIZATION_STATE = 'loggedOut' | 'unauthorized' | 'authorized';
 

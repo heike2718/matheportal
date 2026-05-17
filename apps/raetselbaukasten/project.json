@@ -4,7 +4,7 @@
     "projectType": "application",
     "sourceRoot": "apps/raetselbaukasten/src",
     "tags": ["platform:backend", "type:bff"],
-    "implicitDependencies": ["auth-session"],
+    "implicitDependencies": ["matheportal-bom", "auth-session"],
 
     "targets": {
         "tech-dev": {

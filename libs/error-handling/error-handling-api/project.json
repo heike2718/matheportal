@@ -1,16 +1,16 @@
 {
-    "name": "auth-api",
+    "name": "error-handling-api",
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/auth/auth-api/src",
+    "sourceRoot": "libs/error-handling/error-handling-api/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:auth", "type:api"],
+    "tags": [],
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
             "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "reportsDirectory": "coverage/libs/auth/auth-api"
+                "reportsDirectory": "coverage/libs/error-handling/error-handling-api"
             }
         },
         "tech-format": {
