@@ -3,9 +3,15 @@ import { AppComponent } from './app.component';
 import { ActivatedRoute } from '@angular/router';
 import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
+import { AuthFlowFacade } from '@matheportal/auth-api';
 
 describe('AppComponent', () => {
     const activatedRouteStub: Partial<ActivatedRoute> = {};
+    const authFlowFacadeMock = {
+        login: vi.fn(),
+        initClearOrRestoreSession: vi.fn(),
+        handleSessionExpired: vi.fn(),
+    };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -16,6 +22,7 @@ describe('AppComponent', () => {
                     useValue: { ...mockRuntimeConfig, apiUrl: '' },
                 },
                 { provide: ActivatedRoute, useFactory: () => activatedRouteStub },
+                { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
             ],
         }).compileComponents();
     });

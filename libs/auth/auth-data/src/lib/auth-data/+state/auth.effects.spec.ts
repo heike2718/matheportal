@@ -202,7 +202,7 @@ describe('AuthEffects', () => {
 
     describe('sessionValidationFailed$', () => {
         it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut',
+            'should call logOut and map to loggedOut, reason %i',
             async reason => {
                 httpServiceMock.logOut.mockReturnValue(of(undefined));
                 action$.next(authActions.sessionValidationFailed({ reason: reason }));
@@ -220,7 +220,7 @@ describe('AuthEffects', () => {
         );
 
         it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut when HttpErrorResponse',
+            'should call logOut and map to loggedOut when HttpErrorResponse, reason %i',
             async reason => {
                 httpServiceMock.logOut.mockReturnValue(throwError(() => httpErrorResponse));
                 action$.next(authActions.sessionValidationFailed({ reason: reason }));
@@ -238,7 +238,7 @@ describe('AuthEffects', () => {
         );
 
         it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut when general Error',
+            'should call logOut and map to loggedOut when general Error, reason %i',
             async reason => {
                 httpServiceMock.logOut.mockReturnValue(throwError(() => new Error('boom!')));
                 action$.next(authActions.sessionValidationFailed({ reason: reason }));
