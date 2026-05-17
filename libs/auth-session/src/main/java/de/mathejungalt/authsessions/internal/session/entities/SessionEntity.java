@@ -36,7 +36,7 @@ public class SessionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "session_id", nullable = false, length = 128, unique = true)
     private String sessionId;
