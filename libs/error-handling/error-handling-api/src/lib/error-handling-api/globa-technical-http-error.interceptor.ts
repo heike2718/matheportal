@@ -20,7 +20,6 @@ export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next
             }
 
             // Fehler anderen Typs werden vom GlobalErrorHandler übernommen.
-
             return throwError(() => error);
         })
     );

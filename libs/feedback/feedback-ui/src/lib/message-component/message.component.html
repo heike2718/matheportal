@@ -1,1 +1,23 @@
-<p>message works!</p>
+@if (messageService.message(); as msg) {
+    <div [class]="messageClasses(msg.type)" role="status" aria-live="polite">
+        <div class="message__icon" aria-hidden="true">
+            {{ messageIcon(msg.type) }}
+        </div>
+
+        <div class="message__content">
+            <p class="message__text">
+                {{ msg.text }}
+            </p>
+        </div>
+
+        @if (msg.type !== 'info') {
+            <button
+                type="button"
+                class="message__close"
+                (click)="messageService.clearMessage()"
+                aria-label="Meldung schließen">
+                ✕
+            </button>
+        }
+    </div>
+}

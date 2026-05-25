@@ -1,3 +1,106 @@
-:host {
-    display: block;
+$color-info-bg: #e3f2fd;
+$color-info-border: #2196f3;
+
+$color-warn-bg: #fff3e0;
+$color-warn-border: #fb8c00;
+
+$color-error-bg: #ffebee;
+$color-error-border: #e53935;
+
+$color-text: #1f2933;
+$color-close-hover-bg: rgba(0, 0, 0, 0.06);
+
+$message-max-width: 42rem;
+$message-padding-block: 0.75rem;
+$message-padding-inline: 1rem;
+
+.message {
+    position: fixed;
+    inset-block-start: 1rem;
+    inset-inline-start: 50%;
+    z-index: 2000;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    width: min($message-max-width, calc(100vw - 2rem));
+    padding: $message-padding-block $message-padding-inline;
+
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+
+    background-color: $color-info-bg;
+    color: $color-text;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+
+    &--info {
+        background-color: $color-info-bg;
+        border-color: $color-info-border;
+    }
+
+    &--warn {
+        background-color: $color-warn-bg;
+        border-color: $color-warn-border;
+    }
+
+    &--error {
+        background-color: $color-error-bg;
+        border-color: $color-error-border;
+    }
+
+    &__icon {
+        flex: 0 0 auto;
+
+        margin-block-start: 0.1rem;
+
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+
+    &__content {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    &__text {
+        margin: 0;
+        overflow-wrap: break-word;
+    }
+
+    &__close {
+        flex: 0 0 auto;
+
+        margin-inline-start: 0.5rem;
+        margin-block-start: -0.15rem;
+
+        border: none;
+        padding: 0.15rem 0.4rem;
+        border-radius: 999px;
+
+        background: transparent;
+        cursor: pointer;
+
+        font: inherit;
+        line-height: 1;
+
+        &:hover,
+        &:focus-visible {
+            background-color: $color-close-hover-bg;
+            outline: none;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .message {
+        inset-block-start: 0.75rem;
+
+        width: calc(100vw - 1rem);
+    }
 }

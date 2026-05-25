@@ -10,6 +10,7 @@ import { provideStore } from '@ngrx/store';
 import { authDataProvider, authExpiredInterceptor } from '@matheportal/auth-api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
+import { loadingInterceptor } from '@matheportal/feedback-api';
 
 function getEnvironmentSpecificProviders() {
     const providers = [];
@@ -37,6 +38,8 @@ export const appConfig: ApplicationConfig = {
         authDataProvider,
         { provide: AUTH_CONFIGURATION, useValue: { apiUrl: matheportalShellConfiguration.apiUrl } },
         { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheportalShellConfiguration },
-        provideHttpClient(withInterceptors([globalTechnicalHttpErrorInterceptor, authExpiredInterceptor])),
+        provideHttpClient(
+            withInterceptors([loadingInterceptor, globalTechnicalHttpErrorInterceptor, authExpiredInterceptor])
+        ),
     ],
 };

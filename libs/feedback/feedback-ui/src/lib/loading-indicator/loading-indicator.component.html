@@ -1,1 +1,5 @@
-<p>loading-indicator works!</p>
+@if (loadingService.loading()) {
+    <div class="loading-indicator">
+        <mat-spinner class="loading-indicator__spinner" color="accent" />
+    </div>
+}

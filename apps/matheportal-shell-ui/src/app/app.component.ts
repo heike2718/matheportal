@@ -5,9 +5,18 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './layout/sidenav/sidenav.component';
 import { AuthFlowFacade } from '@matheportal/auth-api';
+import { MessageComponent, LoadingIndicatorComponent } from '@matheportal/feedback-ui';
 
 @Component({
-    imports: [RouterModule, MatToolbarModule, MatSidenavModule, NavbarComponent, SidenavComponent],
+    imports: [
+        RouterModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        NavbarComponent,
+        SidenavComponent,
+        MessageComponent,
+        LoadingIndicatorComponent,
+    ],
     selector: 'portal-root',
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',

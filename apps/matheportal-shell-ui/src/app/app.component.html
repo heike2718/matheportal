@@ -5,7 +5,9 @@
     <mat-sidenav-content>
         <portal-navbar #navbar (sidenavToggle)="sidenav.toggle()"></portal-navbar>
         <main>
-            <router-outlet></router-outlet>
+            <mp-message />
+            <mp-loading-indicator />
+            <router-outlet />
         </main>
     </mat-sidenav-content>
 </mat-sidenav-container>
