@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | paste -sd, -)
 
 if [ -z "$STAGED_FILES" ]; then
   echo "No staged files."
@@ -10,7 +10,8 @@ if [ -z "$STAGED_FILES" ]; then
 fi
 
 echo "Running cleanup on affected projects..."
+echo "$STAGED_FILES"
 
 pnpm nx affected -t cleanup --files="$STAGED_FILES"
 
-git add $STAGED_FILES
+git diff --cached --name-only --diff-filter=ACMR | xargs -r git add

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageComponent } from './message.component';
 import { MessageService } from '@matheportal/feedback-api';
 import { signal } from '@angular/core';
-import { AppMessage } from 'libs/feedback/feedback-api/src/lib/feedback-api/feedback.model';
+import { AppMessage } from '@matheportal/feedback-api';
 
 type MessageServiceMock = Pick<MessageService, 'clearMessage' | 'message'>;
 
