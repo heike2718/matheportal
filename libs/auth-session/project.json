@@ -21,6 +21,13 @@
                 "command": "mvn test"
             }
         },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/auth-session",
+                "command": "mvn -Ptesting-coverage-reportOnly clean verify"
+            }
+        },
         "analyze-quality": {
             "executor": "nx:run-commands",
             "options": {

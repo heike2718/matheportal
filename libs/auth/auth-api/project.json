@@ -8,8 +8,16 @@
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
-            "outputs": ["{options.reportsDirectory}"],
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-api"],
             "options": {
+                "reportsDirectory": "coverage/libs/auth/auth-api"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-api"],
+            "options": {
+                "coverage": true,
                 "reportsDirectory": "coverage/libs/auth/auth-api"
             }
         },

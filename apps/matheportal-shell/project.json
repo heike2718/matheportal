@@ -54,7 +54,15 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn test -Ptesting-coverage-reportOnly",
+                "command": "mvn test",
+                "envFile": "apps/matheportal-shell/.config/.env.test"
+            }
+        },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn -Ptesting-coverage-strict clean verify",
                 "envFile": "apps/matheportal-shell/.config/.env.test"
             }
         },

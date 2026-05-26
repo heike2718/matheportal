@@ -24,10 +24,12 @@
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
         <spotbugs.failOnError>true</spotbugs.failOnError>
-        <jacoco.exclusion-1>**/*Dto*.class</jacoco.exclusion-1>
-        <jacoco.exclusion-2>**/*Application*.class</jacoco.exclusion-2>
-        <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
-        <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
+
+        <jacoco.exclusion-1>**/SPARouteFilter.class</jacoco.exclusion-1>
+        <jacoco.exclusion-2>de/mathejungalt/matheportal/shell/domain/generated/**</jacoco.exclusion-2>
+        <jacoco.exclusion-3>de/mathejungalt/matheportal/shell/infrastructure/generated/**</jacoco.exclusion-3>
+
+        <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
@@ -163,6 +165,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
@@ -286,6 +294,7 @@
                                 <generateConstructors>false</generateConstructors>
                                 <generateBuilders>false</generateBuilders>
                                 <openApiNullable>false</openApiNullable>
+                                <generatedAnnotation>jakarta.annotation.Generated</generatedAnnotation>
                             </configOptions>
                         </configuration>
                     </execution>

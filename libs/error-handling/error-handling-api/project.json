@@ -8,8 +8,16 @@
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
-            "outputs": ["{options.reportsDirectory}"],
+            "outputs": ["{workspaceRoot}/coverage/libs/error-handling/error-handling-api"],
             "options": {
+                "reportsDirectory": "coverage/libs/error-handling/error-handling-api"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/error-handling/error-handling-api"],
+            "options": {
+                "coverage": true,
                 "reportsDirectory": "coverage/libs/error-handling/error-handling-api"
             }
         },

@@ -8,8 +8,16 @@
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",
-            "outputs": ["{options.reportsDirectory}"],
+            "outputs": ["{workspaceRoot}/coverage/libs/feedback/feedback-ui"],
             "options": {
+                "reportsDirectory": "coverage/libs/feedback/feedback-ui"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/feedback/feedback-ui"],
+            "options": {
+                "coverage": true,
                 "reportsDirectory": "coverage/libs/feedback/feedback-ui"
             }
         },

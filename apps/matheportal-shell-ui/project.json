@@ -154,11 +154,23 @@
         },
         "test": {
             "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/matheportal-shell-ui"],
             "options": {
                 "tsConfig": "apps/matheportal-shell-ui/tsconfig.spec.json",
                 "buildTarget": "matheportal-shell-ui:tech-esbuild:test",
                 "runner": "vitest",
                 "watch": false
+            }
+        },
+        "test-coverage": {
+            "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/matheportal-shell-ui"],
+            "options": {
+                "tsConfig": "apps/matheportal-shell-ui/tsconfig.spec.json",
+                "buildTarget": "matheportal-shell-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false,
+                "coverage": true
             }
         },
         "tech-format": {

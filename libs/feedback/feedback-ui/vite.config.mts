@@ -21,8 +21,10 @@ export default defineConfig(() => ({
         setupFiles: ['src/test-setup.ts'],
         reporters: ['default'],
         coverage: {
+            enabled: true,
             reportsDirectory: '../../../coverage/libs/feedback/feedback-ui',
             provider: 'v8' as const,
+            reporter: ['text', 'html', 'lcov'],
         },
     },
 }));

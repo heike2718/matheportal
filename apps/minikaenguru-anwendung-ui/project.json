@@ -119,11 +119,23 @@
         },
         "test": {
             "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/minikaenguru-anwendung-ui"],
             "options": {
                 "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.spec.json",
                 "buildTarget": "minikaenguru-anwendung-ui:tech-esbuild:test",
                 "runner": "vitest",
                 "watch": false
+            }
+        },
+        "test-coverage": {
+            "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/minikaenguru-anwendung-ui"],
+            "options": {
+                "tsConfig": "apps/minikaenguru-anwendung-ui/tsconfig.spec.json",
+                "buildTarget": "minikaenguru-anwendung-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false,
+                "coverage": true
             }
         },
         "tech-format": {

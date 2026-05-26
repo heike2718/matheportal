@@ -42,6 +42,18 @@
                 "command": "pnpm nx show projects --affected --base=@{u} --head=HEAD"
             }
         },
+        "verify-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm exec nx run-many -t test-coverage --all --output-style=stream --skip-nx-cache"
+            }
+        },
+        "verify-coverage-affected-upstream": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "pnpm nx affected -t test-coverage --base=@{u} --head=HEAD --output-style=stream --skip-nx-cache"
+            }
+        },
         "test-affected-upstream": {
             "executor": "nx:run-commands",
             "options": {
