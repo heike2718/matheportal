@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.SessionDto;
-import de.mathejungalt.authsessions.api.UserDto;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
 import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
@@ -72,11 +71,7 @@ public class SessionService {
 
             sessionRepository.saveSession(sessionEntity);
 
-            return SessionDto
-                    .builder()
-                    .sessionId(sessionId)
-                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles())))
-                    .build();
+            return SessionDto.builder().sessionId(sessionId).authenticatedUser(authenticatedUser).build();
 
         } catch (final Exception e) {
 
@@ -121,7 +116,12 @@ public class SessionService {
             return SessionDto
                     .builder()
                     .sessionId(sessionId)
-                    .user(new UserDto(sessionEntity.getFullName(), parseRoles(sessionEntity.getRoles())))
+                    .authenticatedUser(AuthenticatedUser
+                            .builder()
+                            .uuid(sessionEntity.getUserUuid())
+                            .fullName(sessionEntity.getFullName())
+                            .roles(parseRoles(sessionEntity.getRoles()))
+                            .build())
                     .build();
 
         } catch (final PersistenceException e) {

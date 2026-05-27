@@ -16,6 +16,12 @@ export const authFeature = createFeature({
     name: AUTH_FEATURE_KEY,
     reducer: createReducer<AuthState>(
         initialAuthState,
+        on(authActions.sessionCreated, (state, action) => {
+            return { ...state, user: action.user, isSessionValidated: true };
+        }),
+        on(authActions.createSessionFailed, (state, action) => {
+            return { ...state, user: anonymousUser, isSessionValidated: false };
+        }),
         on(authActions.sessionValidated, (state, action) => {
             return { ...state, user: action.user, isSessionValidated: true };
         }),

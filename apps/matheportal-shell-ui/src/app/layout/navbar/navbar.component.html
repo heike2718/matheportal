@@ -37,9 +37,11 @@
 
         <div class="nav__section nav__section--right">
             <div class="nav__user">
-                <span class="nav__greeting"> Hallo, {{ displayName }} </span>
+                @if (authSessionFacade.user$ | async; as user) {
+                    <span class="nav__greeting">Hallo, {{ user.fullName }}</span>
+                }
 
-                @if (isLoggedIn) {
+                @if (authSessionFacade.isSessionValidated$ | async) {
                     <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogout()">Logout</button>
                 } @else {
                     <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogin()">Login</button>

@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
 import { authActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthUrlResponse } from '@matheportal/auth-model';
+import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { MessageService } from '@matheportal/feedback-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 
@@ -45,6 +45,28 @@ export class AuthEffects {
         () =>
             this.#actions.pipe(
                 ofType(authActions.requestLoginUrlFailed),
+                tap(() => {
+                    this.#messageService.publishError(
+                        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+                    );
+                })
+            ),
+        { dispatch: false }
+    );
+
+    createSession$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(authActions.createSession),
+            switchMap(({ idToken }) => this.#authHttpService.createSession(idToken)),
+            map((user: User) => authActions.sessionCreated({ user })),
+            catchError(() => of(authActions.createSessionFailed()))
+        );
+    });
+
+    createSessionFailed$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.createSessionFailed),
                 tap(() => {
                     this.#messageService.publishError(
                         'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'

@@ -16,6 +16,6 @@ public class SessionDto {
 
     private String sessionId;
 
-    private UserDto user;
+    private AuthenticatedUser authenticatedUser;
 
 }

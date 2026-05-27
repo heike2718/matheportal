@@ -1,7 +1,5 @@
 package de.mathejungalt.matheportal.shell.domain.login;
 
-import java.util.UUID;
-
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
@@ -12,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenService;
 import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
+import de.mathejungalt.matheportal.shell.domain.restclientutils.NonceGenerator;
 
 /**
  * AuthproviderUrlService.
@@ -30,6 +29,9 @@ public class AuthproviderUrlService {
     @Inject
     ClientAccessTokenService clientAccessTokenService;
 
+    @Inject
+    NonceGenerator nonceGenerator;
+
     /**
      * Gib die redirect url zum Login zurück.
      *
@@ -37,7 +39,7 @@ public class AuthproviderUrlService {
      */
     public AuthUrlResponse getLoginUrl() {
 
-        final String nonce = UUID.randomUUID().toString();
+        final String nonce = nonceGenerator.generateNonce();
         final String accessToken = clientAccessTokenService.orderAccessToken(nonce);
 
         final String url = authAppUrl + "login?accessToken=" + accessToken + "&state=login&redirectUrl="

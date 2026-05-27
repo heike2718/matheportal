@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, EnvironmentProviders, provideBrowserGlobalErrorListeners, Provider } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { matheportalShellConfiguration } from './config/configuration';
@@ -12,8 +12,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
 import { loadingInterceptor } from '@matheportal/feedback-api';
 
-function getEnvironmentSpecificProviders() {
-    const providers = [];
+function getEnvironmentSpecificProviders(): Array<Provider | EnvironmentProviders> {
+    const providers: Array<Provider | EnvironmentProviders> = [];
 
     if (!matheportalShellConfiguration.production) {
         providers.push(
@@ -25,7 +25,7 @@ function getEnvironmentSpecificProviders() {
         );
     }
 
-    return [];
+    return providers;
 }
 
 export const appConfig: ApplicationConfig = {

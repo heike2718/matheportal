@@ -10,7 +10,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import io.smallrye.jwt.auth.principal.JWTParser;
 
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
-import de.mathejungalt.authsessions.api.exceptions.InvalidTokenException;
+import de.mathejungalt.authsessions.api.exceptions.InvalidJWTException;
 
 /**
  * JwtService.
@@ -28,9 +28,9 @@ public class JWTService {
      *
      * @param rawJwt String
      * @return
-     * @throws InvalidTokenException wenn das JWT ungültig ist.
+     * @throws InvalidJWTException wenn das JWT ungültig ist.
      */
-    public AuthenticatedUser mapJWT(final String rawJwt) throws InvalidTokenException {
+    public AuthenticatedUser mapJWT(final String rawJwt) throws InvalidJWTException {
 
         try {
             final JsonWebToken token = jwtParser.parse(rawJwt);
@@ -43,7 +43,7 @@ public class JWTService {
                     .build();
 
         } catch (final Exception e) {
-            throw new InvalidTokenException("JWT konnte nicht geparst werden", e);
+            throw new InvalidJWTException("JWT konnte nicht geparst werden", e);
         }
 
     }

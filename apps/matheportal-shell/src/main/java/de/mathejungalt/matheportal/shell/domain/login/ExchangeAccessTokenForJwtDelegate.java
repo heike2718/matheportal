@@ -1,4 +1,4 @@
-package de.mathejungalt.matheportal.shell.domain.clientauth;
+package de.mathejungalt.matheportal.shell.domain.login;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -10,40 +10,59 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
+import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
+import de.mathejungalt.matheportal.shell.domain.clientauth.ResponsePayload;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
 import de.mathejungalt.matheportal.shell.domain.restclientutils.RestClientUtils;
 import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderRestClient;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * InitAccessTokenDelegate.
+ * ExchangeAccessTokenForJwtDelegate.
  */
 @ApplicationScoped
-public class InitAccessTokenDelegate {
+@Slf4j
+public class ExchangeAccessTokenForJwtDelegate {
 
     @Inject
     @RestClient
     AuthproviderRestClient authproviderRestClient;
 
     /**
-     * Holt sich ein accessToken vom IAM.
-     *
-     * @param credentials OAuthClientCredentials
-     * @return OauthClientAccessToken
-     * @throws IamClientException wenn irgendetwas schief lief.
+     * ExchangeAccessTokenForJwtDelegate.
      */
-    public OauthClientAccessToken authenticateClient(final OAuthClientCredentials credentials)
-            throws IamClientException {
+    public ExchangeAccessTokenForJwtDelegate() {
+        super();
+        // wegen JavaDoc strict
+    }
 
-        try (Response authResponse = authproviderRestClient.authenticateClient(credentials)) {
-            final OauthClientAccessToken token = OauthClientAccessToken
+    /**
+     * Holt sich mit dem accessToken das JWT.
+     *
+     * @param clientCredentials OAuthClientCredentials
+     * @param accessToken       String
+     * @return ExchangeTokenResponse
+     */
+    public ExchangeTokenResponse exchangeTheAccessToken(final OAuthClientCredentials clientCredentials,
+            final String accessToken) {
+
+        try (final Response authResponse = authproviderRestClient
+                .exchangeOneTimeTokenWithJwt(accessToken, clientCredentials)) {
+
+            final ExchangeTokenResponse responsePayload = ExchangeTokenResponse
                     .from(authResponse.readEntity(ResponsePayload.class));
-            if (token.getNonce() == null || token.getAccessToken() == null) {
+
+            if (responsePayload.getNonce() == null || responsePayload.getJwt() == null) {
                 throw new IamClientException(
-                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
+                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder jwt fehlen",
                         IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
-            return token;
+
+            return responsePayload;
+
         } catch (final WebApplicationException e) {
 
             if (e.getCause() instanceof JsonParseException) {
@@ -52,7 +71,6 @@ public class InitAccessTokenDelegate {
             }
 
             throw RestClientUtils.mapToIamClientException(e);
-
         } catch (final ProcessingException e) {
 
             final Throwable cause = e.getCause();
@@ -66,4 +84,5 @@ public class InitAccessTokenDelegate {
             throw new IamUnreachableException(msg, e);
         }
     }
+
 }

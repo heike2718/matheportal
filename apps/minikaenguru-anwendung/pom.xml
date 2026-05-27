@@ -14,8 +14,9 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.34.1</quarkus.platform.version>
 
-        <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
         <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+        <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
+        <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
 
         <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
         <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
@@ -62,6 +63,12 @@
             <groupId>de.egladil.web</groupId>
             <artifactId>egladil-secure-tokens</artifactId>
             <version>${egladil-secure-tokens.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.mathe-jung-alt</groupId>
+            <artifactId>auth-session</artifactId>
+            <version>${auth-session.version}</version>
         </dependency>
 
         <dependency>

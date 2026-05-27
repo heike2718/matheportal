@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { AUTH_CONFIGURATION, AuthUrlResponse } from '@matheportal/auth-model';
+import { AUTH_CONFIGURATION, AuthUrlResponse, User } from '@matheportal/auth-model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class AuthHttpService {
      * @returns Observable
      */
     getLoginUrl(): Observable<AuthUrlResponse> {
-        return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/authurls/login');
+        return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/api/session/authurls/login');
     }
 
     /**
@@ -23,6 +23,15 @@ export class AuthHttpService {
      * @returns Observable
      */
     logOut(): Observable<void> {
-        return this.#http.delete<void>(this.#config.apiUrl + '/session');
+        return this.#http.delete<void>(this.#config.apiUrl + '/api/session');
+    }
+
+    /**
+     * erzegt die session.
+     * @param idToken string
+     * @returns Observable
+     */
+    createSession(idToken: string): Observable<User> {
+        return this.#http.post<User>(this.#config.apiUrl + '/api/session', { idToken });
     }
 }

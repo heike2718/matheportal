@@ -61,9 +61,10 @@ public class SessionServiceTest {
         final SessionDto sessionDto = sessionService.createSession(user, 0);
 
         // assert
-        assertAll(() -> assertNotNull(sessionDto), () -> assertNotNull(sessionDto.getUser()),
-                () -> assertEquals("Flotte Lotte", sessionDto.getUser().fullName()),
-                () -> assertEquals("STANDARD", sessionDto.getUser().roles().iterator().next()),
+        assertAll(() -> assertNotNull(sessionDto), () -> assertNotNull(sessionDto.getAuthenticatedUser()),
+                () -> assertEquals("Flotte Lotte", sessionDto.getAuthenticatedUser().getFullName()),
+                () -> assertEquals(uuid, sessionDto.getAuthenticatedUser().getUuid()),
+                () -> assertEquals("STANDARD", sessionDto.getAuthenticatedUser().getRoles().iterator().next()),
                 () -> assertNotNull(sessionDto.getSessionId()));
 
         verify(sessionRepository).saveSession(any(SessionEntity.class));

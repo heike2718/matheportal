@@ -3,7 +3,7 @@ package de.mathejungalt.authsessions.api;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import de.mathejungalt.authsessions.api.exceptions.InvalidTokenException;
+import de.mathejungalt.authsessions.api.exceptions.InvalidJWTException;
 import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
 import de.mathejungalt.authsessions.internal.jwt.JWTService;
 import de.mathejungalt.authsessions.internal.session.SessionService;
@@ -25,9 +25,9 @@ public class SessionFacade {
      *
      * @param rawJwt String das JWT
      * @return SessionDto
-     * @throws InvalidTokenException wenn das token ungültig ist.
+     * @throws InvalidJWTException wenn das JWT ungültig ist.
      */
-    public SessionDto createSession(final String rawJwt, final int idleTimeoutMinutes) throws InvalidTokenException {
+    public SessionDto createSession(final String rawJwt, final int idleTimeoutMinutes) throws InvalidJWTException {
 
         final AuthenticatedUser authenticatedUser = jwtService.mapJWT(rawJwt);
 

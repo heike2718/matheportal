@@ -114,18 +114,11 @@ components:
             type: object
             required:
                 - idToken
-                - expiresAt
             properties:
                 idToken:
                     type: string
                     description: Der Access-Token-String
                     example: eyJhbGciOi...
-                expiresAt:
-                    type: integer
-                    format: int64
-                    description: Ablaufzeitpunkt als Unix-Timestamp in Millisekunden (Date.getTime())
-                    example: 1712831400000
-
         AuthUrlResponse:
             type: object
             required:
@@ -177,7 +170,7 @@ components:
             properties:
                 message:
                     type: string
-                    example: Keine gültige Session vorhanden
+                    example: Irgendein Fehler ist aufgetreten
                 connstraintViolations:
                     type: array
                     items:

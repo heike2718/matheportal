@@ -1,4 +1,4 @@
-package de.mathejungalt.matheportal.shell.domain.clientauth;
+package de.mathejungalt.matheportal.shell.domain.login;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
@@ -13,6 +13,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Fault;
 
+import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
+import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
 import de.mathejungalt.matheportal.shell.test.InjectWireMock;
@@ -25,20 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 @QuarkusTest
 @QuarkusTestResource(WireMockAuthprovider.class)
-class InitAccessTokenDelegateTest {
+public class ExchangeAccessTokenForJwtDelegateTest {
 
-    private static final String URL = "/api/clients/client/accesstoken";
+    private static final String ACCESS_TOKEN = "hlsahhasokqhsauoh";
+
+    private static final String URL = "/api/token/exchange/" + ACCESS_TOKEN;
 
     @InjectWireMock
     WireMockServer wireMockServer;
 
     @Inject
-    InitAccessTokenDelegate initAccessTokenDelegate;
+    ExchangeAccessTokenForJwtDelegate delegate;
 
     OAuthClientCredentials credentials;
 
@@ -49,29 +53,33 @@ class InitAccessTokenDelegateTest {
     }
 
     @Test
-    void shouldReturnOauthClientAccessToken_whenSuccess() {
-
+    void should_getTheJwt_returnTheExchangeTokenResponse_when_success() {
         // arrange
+
+        final String expectedJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
+
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
-                        .willReturn(
-                                aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("""
-                                            {
-                                                "messagePayload": {"level":"INFO","message":"ok"},
-                                                "data": {
-                                                    "nonce": "test-nonce-123",
-                                                    "accessToken": "test-access-token-abc"
-                                                }
-                                            }
-                                        """)));
+                .stubFor(put(urlEqualTo(URL))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody(
+                                        """
+                                                    {
+                                                        "messagePayload": {"level":"INFO","message":"ok"},
+                                                        "data": {
+                                                            "nonce": "test-nonce-123",
+                                                            "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+                                                        }
+                                                    }
+                                                """)));
 
         // act
-        final OauthClientAccessToken result = initAccessTokenDelegate.authenticateClient(credentials);
+        final ExchangeTokenResponse result = delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN);
 
         // assert
-        assertAll(() -> assertEquals("test-nonce-123", result.getNonce()),
-                () -> assertEquals("test-access-token-abc", result.getAccessToken()));
-
+        assertAll(() -> assertEquals(expectedJwt, result.getJwt()),
+                () -> assertEquals("test-nonce-123", result.getNonce()));
     }
 
     @Test
@@ -79,7 +87,7 @@ class InitAccessTokenDelegateTest {
 
         // arrange
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(
                                 aResponse().withStatus(401).withHeader("Content-Type", "application/json").withBody("""
                                             {"messagePayload":{"level":"ERROR","message":"Unauthorized"},"data":null}
@@ -87,7 +95,7 @@ class InitAccessTokenDelegateTest {
 
         // act
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         // assert
         assertAll(() -> assertEquals(IamClientErrorType.IAM_ERROR_RESPONSE, exception.getErrorType()),
@@ -97,15 +105,15 @@ class InitAccessTokenDelegateTest {
 
     @Test
     void shouldThrowIamUnreachableException_whenConnectionReset() {
-        wireMockServer.stubFor(post(urlEqualTo(URL)).willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
+        wireMockServer.stubFor(put(urlEqualTo(URL)).willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
 
-        assertThrows(IamUnreachableException.class, () -> initAccessTokenDelegate.authenticateClient(credentials));
+        assertThrows(IamUnreachableException.class, () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
     }
 
     @Test
     void shouldThrowOfTypeIAM_CONTRACT_VIOLATION_whenDataMapIncomplete_both_missing() {
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(
                                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("""
                                             {
@@ -117,10 +125,10 @@ class InitAccessTokenDelegateTest {
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
-                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
+                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder jwt fehlen",
                         exception.getMessage()),
                 () -> assertNull(exception.getCause()));
     }
@@ -128,51 +136,49 @@ class InitAccessTokenDelegateTest {
     @Test
     void shouldThrowOfTypeIAM_CONTRACT_VIOLATION_whenDataMapIncomplete_nonce_missing() {
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(
                                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("""
                                             {
                                                 "messagePayload": {"level":"INFO","message":"ok"},
                                                 "data": {
                                                     "someOtherKey": "someValue",
-                                                    "accessToken": "test-access-token-abc"
+                                                    "jwt": "eyZoadlwidgwo"
                                                 }
                                             }
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
-                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
+                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder jwt fehlen",
                         exception.getMessage()),
                 () -> assertNull(exception.getCause()));
-
     }
 
     @Test
-    void shouldThrowOfTypeIAM_CONTRACT_VIOLATION_whenDataMapIncomplete_accessToken_missing() {
+    void shouldThrowOfTypeIAM_CONTRACT_VIOLATION_whenDataMapIncomplete_jwt_missing() {
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(
                                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("""
                                             {
                                                 "messagePayload": {"level":"INFO","message":"ok"},
                                                 "data": {
                                                     "someOtherKey": "someValue",
-                                                    "nonce": "test-nonce-123"
+                                                    "nonce": "test-nonce"
                                                 }
                                             }
                                         """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
-                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
+                () -> assertEquals("IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder jwt fehlen",
                         exception.getMessage()),
                 () -> assertNull(exception.getCause()));
-
     }
 
     @Test
@@ -180,7 +186,7 @@ class InitAccessTokenDelegateTest {
 
         // arrange
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json")
@@ -188,7 +194,7 @@ class InitAccessTokenDelegateTest {
 
         // act
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         // assert
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
@@ -201,7 +207,7 @@ class InitAccessTokenDelegateTest {
     void shouldThrowOfTypeIAM_CONTRACT_VIOLATION_whenNotJson() {
         // arrange
         wireMockServer
-                .stubFor(post(urlEqualTo(URL))
+                .stubFor(put(urlEqualTo(URL))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "text/html")
@@ -218,7 +224,7 @@ class InitAccessTokenDelegateTest {
                                                 """)));
 
         final IamClientException exception = assertThrows(IamClientException.class,
-                () -> initAccessTokenDelegate.authenticateClient(credentials));
+                () -> delegate.exchangeTheAccessToken(credentials, ACCESS_TOKEN));
 
         assertAll(() -> assertEquals(IamClientErrorType.IAM_CONTRACT_VIOLATION, exception.getErrorType()),
                 () -> assertEquals("IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)",
@@ -226,4 +232,5 @@ class InitAccessTokenDelegateTest {
                 () -> assertInstanceOf(ProcessingException.class, exception.getCause()));
 
     }
+
 }
