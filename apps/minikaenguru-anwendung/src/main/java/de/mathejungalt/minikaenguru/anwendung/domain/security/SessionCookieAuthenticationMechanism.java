@@ -27,7 +27,6 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
     private static final String AUTH_HEADER_NAME = "WWW-Authenticate";
     private static final String AUTH_SCHEME = "Session";
     private static final String AUTH_REALM = "matheportal";
-    private static final String COOKIE_NAME = "MPSESSIONID";
 
     @Override
     public Uni<SecurityIdentity> authenticate(final RoutingContext context,
@@ -58,7 +57,10 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
 
     @Override
     public Uni<HttpCredentialTransport> getCredentialTransport(final RoutingContext context) {
-        return Uni.createFrom().item(new HttpCredentialTransport(HttpCredentialTransport.Type.COOKIE, COOKIE_NAME));
+        return Uni
+                .createFrom()
+                .item(new HttpCredentialTransport(HttpCredentialTransport.Type.COOKIE,
+                        SessionConstants.SESSION_COOKIE_NAME));
     }
 
 }

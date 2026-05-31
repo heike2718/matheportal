@@ -2,46 +2,43 @@ package de.mathejungalt.matheportal.shell.infrastructure.resources;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 
-import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
+import de.mathejungalt.authsessions.api.SessionConstants;
+import de.mathejungalt.matheportal.shell.domain.logout.LogoutService;
 import de.mathejungalt.matheportal.shell.test.IamIntegrationTestProfile;
 
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 @TestHTTPEndpoint(SessionResource.class)
 @TestProfile(IamIntegrationTestProfile.class)
-public class SessionResourceTest {
+class SessionResourceTest {
+
+    @InjectMock
+    LogoutService logoutService;
 
     @Test
-    void test_loginUrl() {
+    void testDeleteSesssion() {
 
-        // act
-        final AuthUrlResponse authUrlResponse = given()
+        doNothing().when(logoutService).logout();
+
+        given()
                 .accept(ContentType.JSON)
-                .get("/authurls/login")
+                .delete("/")
                 .then()
-                .statusCode(200)
+                .statusCode(204)
                 .and()
-                .assertThat()
-                .contentType(ContentType.JSON)
-                .and()
-                .extract()
-                .as(AuthUrlResponse.class);
+                .cookie(SessionConstants.SESSION_COOKIE_NAME);
 
-        // assert
-        final String authUrl = authUrlResponse.getUrl();
-
-        assertAll(() -> assertTrue(authUrl.startsWith("http://localhost:9000/authprovider/login?accessToken=")),
-                () -> assertTrue(authUrl.endsWith("&state=login&redirectUrl=http://localhost:9100/matheportal/")));
     }
 
 }

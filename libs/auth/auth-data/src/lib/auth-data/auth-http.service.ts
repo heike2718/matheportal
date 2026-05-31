@@ -15,7 +15,7 @@ export class AuthHttpService {
      * @returns Observable
      */
     getLoginUrl(): Observable<AuthUrlResponse> {
-        return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/api/session/authurls/login');
+        return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/api/authurls/login');
     }
 
     /**
@@ -33,5 +33,13 @@ export class AuthHttpService {
      */
     createSession(idToken: string): Observable<User> {
         return this.#http.post<User>(this.#config.apiUrl + '/api/session', { idToken });
+    }
+
+    /**
+     * läd die Session neu, sofern es eine gibt
+     * @returns Observable
+     */
+    reloadSession(): Observable<User> {
+        return this.#http.put<User>(this.#config.apiUrl + '/api/session', {});
     }
 }

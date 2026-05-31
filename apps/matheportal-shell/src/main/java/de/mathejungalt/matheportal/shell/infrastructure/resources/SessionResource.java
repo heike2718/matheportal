@@ -6,14 +6,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
-import de.mathejungalt.authsessions.api.SessionConstants;
 import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.UserDto;
 import de.mathejungalt.matheportal.shell.domain.generated.AccessTokenRequest;
-import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
-import de.mathejungalt.matheportal.shell.domain.login.AuthproviderUrlService;
 import de.mathejungalt.matheportal.shell.domain.login.LoginService;
+import de.mathejungalt.matheportal.shell.domain.logout.LogoutService;
+import de.mathejungalt.matheportal.shell.domain.session.ReloadSessionService;
+import de.mathejungalt.matheportal.shell.domain.session.SessionCookieAdapter;
 import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 
 /**
@@ -23,10 +24,16 @@ import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 public final class SessionResource implements SessionApi {
 
     @Inject
-    AuthproviderUrlService authproviderUrlService;
+    SessionCookieAdapter sessionCookieAdapter;
 
     @Inject
     LoginService loginService;
+
+    @Inject
+    ReloadSessionService reloadSessionService;
+
+    @Inject
+    LogoutService logoutService;
 
     @Override
     public Response createSession(@Valid @NotNull final AccessTokenRequest accessTokenRequest) {
@@ -35,33 +42,26 @@ public final class SessionResource implements SessionApi {
         final UserDto user = new UserDto(sessionDto.getAuthenticatedUser().getFullName(),
                 sessionDto.getAuthenticatedUser().getRoles());
 
-        final NewCookie sessionCookie = new NewCookie.Builder(SessionConstants.SESSION_COOKIE_NAME)
-                .value(sessionDto.getSessionId())
-                .path("/matheportal")
-                .httpOnly(true)
-                .secure(true)
-                .sameSite(NewCookie.SameSite.LAX)
-                .maxAge(-1)
-                .build();
+        final NewCookie sessionCookie = sessionCookieAdapter.createSessionCookie(sessionDto.getSessionId());
 
         return Response.ok(user).cookie(sessionCookie).build();
     }
 
     @Override
     public Response deleteSession() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteSession'");
-    }
 
-    @Override
-    public Response getLoginUrl() {
-        final AuthUrlResponse payload = authproviderUrlService.getLoginUrl();
-        return Response.ok(payload).build();
+        logoutService.logout();
+
+        final NewCookie invalidatedCookie = sessionCookieAdapter.createExpiredSessionCookie();
+
+        return Response.status(Status.NO_CONTENT).cookie(invalidatedCookie).build();
+
     }
 
     @Override
     public Response reloadSession() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'reloadSession'");
+        final UserDto userDto = reloadSessionService.reloadSession();
+
+        return Response.ok(userDto).build();
     }
 }

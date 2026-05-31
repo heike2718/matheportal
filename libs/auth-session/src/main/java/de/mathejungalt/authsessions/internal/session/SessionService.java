@@ -130,7 +130,7 @@ public class SessionService {
     }
 
     /**
-     * Entfernt die Session aus dem Store.
+     * Entfernt die Session aus dem Store. Eine PersistenceException wird nur geloggt.
      *
      * @param sessionId String
      */

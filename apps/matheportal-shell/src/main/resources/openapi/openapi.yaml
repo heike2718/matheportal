@@ -6,15 +6,15 @@ info:
 
 paths:
     /api/session:
-        get:
+        put:
             tags:
                 - Session
             summary: Prüft bzw. lädt die Session neu
             description: >
-                Dient dem Frontend dazu, beim Reload der Anwendung die Session im Backend
-                anhand des Session-Cookies erneut prüfen oder initialisieren zu lassen.
-                Es wird kein Response-Body zurückgegeben.
+                Prüft die bestehende Session anhand des Session-Cookies und lädt die Sessiondaten neu. Ist die Session noch gültig und die maximale Lebensdauer noch nicht erreicht, wird die Gültigkeit der Session um das konfigurierte Idle-Timeout verlängert. Ist die Session abgelaufen oder wurde die maximale Lebensdauer erreicht, wird der Request mit 401 beantwortet und das Session-Cookie gelöscht.
             operationId: reloadSession
+            security:
+                - mpSession: []
             responses:
                 '200':
                     description: Session wurde erfolgreich geprüft oder geladen
@@ -23,7 +23,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/User'
                 '401':
-                    description: Keine gültige Session vorhanden
+                    description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
                 '500':
                     description: Serverfehler
                     content:
@@ -75,16 +75,15 @@ paths:
             tags:
                 - Session
             summary: Loggt den Benutzer aus
-            description: Beendet die Session im Backend.
+            description: Beendet eine eventuell vorhandene Session im Backend und löscht das Session-Cookie. Dabei auftretende Exceptions werden nicht weitergereicht.
             operationId: deleteSession
             responses:
                 '204':
-                    description: Erfolgreich ausgeloggt
-
-    /api/session/authurls/login:
+                    description: Logout wurde verarbeitet.
+    /api/authurls/login:
         get:
             tags:
-                - Session
+                - Authurls
             summary: Liefert die Login-URL des IAM
             description: Liefert die URL, an die das Frontend für den Login weiterleiten kann.
             operationId: getLoginUrl
@@ -109,6 +108,12 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+    securitySchemes:
+        mpSession:
+            type: apiKey
+            in: cookie
+            name: MPSESSIONID
+            description: Session-Cookie der Matheportal-Sitzung
     schemas:
         AccessTokenRequest:
             type: object
@@ -145,10 +150,10 @@ components:
                 roles:
                     type: array
                     uniqueItems: true
-                    pattern: '^[A-Z]+(_[A-Z]+)*$'
                     description: Rollen des Benutzers
                     items:
                         type: string
+                        pattern: '^[A-Z]+(_[A-Z]+)*$'
                     example:
                         - STANDARD
                         - ADMIN

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-public class IamClientExceptionMapperTest {
+class IamClientExceptionMapperTest {
 
     private static final String EXPECTED_MESSAGE = """
             Login oder Anlegen eines Benutzerkontos sind zur Zeit leider \

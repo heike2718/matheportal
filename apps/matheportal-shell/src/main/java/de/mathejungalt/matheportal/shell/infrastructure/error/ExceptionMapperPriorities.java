@@ -21,6 +21,11 @@ public final class ExceptionMapperPriorities {
     public static final int LOGIN = 200;
 
     /**
+     * für abgelaufene oder ungültige Sessions.
+     */
+    public static final int SESSION = 300;
+
+    /**
      * für alle anderen RuntimeExceptions.
      */
     public static final int FALLBACK = 1000;

@@ -15,15 +15,14 @@ import static org.mockito.Mockito.when;
 
 class SPARouteFilterTest {
 
+    final RoutingContext routingContext = mock(RoutingContext.class);
+
     private final SPARouteFilter filter = new SPARouteFilter();
 
     @Test
     void apiFilter_apiPath_reroutesToApiWithoutAppPrefix() {
 
-        final RoutingContext routingContext = mock(RoutingContext.class);
-
         when(routingContext.normalizedPath()).thenReturn("/minikaenguru-anwendung/api/session");
-
         when(routingContext.queryParams()).thenReturn(MultiMap.caseInsensitiveMultiMap());
 
         filter.apiFilter(routingContext);
@@ -35,10 +34,7 @@ class SPARouteFilterTest {
     @Test
     void apiFilter_apiPathWithQueryParams_reroutesToApiWithQueryParams() {
 
-        final RoutingContext routingContext = mock(RoutingContext.class);
-
         when(routingContext.normalizedPath()).thenReturn("/minikaenguru-anwendung/api/session");
-
         when(routingContext.queryParams())
                 .thenReturn(MultiMap.caseInsensitiveMultiMap().add("foo", "bar").add("x", "1"));
 
@@ -51,8 +47,6 @@ class SPARouteFilterTest {
     @Test
     void apiFilter_rootPath_callsNext() {
 
-        final RoutingContext routingContext = mock(RoutingContext.class);
-
         when(routingContext.normalizedPath()).thenReturn("/");
 
         filter.apiFilter(routingContext);
@@ -63,8 +57,6 @@ class SPARouteFilterTest {
 
     @Test
     void apiFilter_staticFile_callsNext() {
-
-        final RoutingContext routingContext = mock(RoutingContext.class);
 
         when(routingContext.normalizedPath()).thenReturn("/minikaenguru-anwendung/assets/logo.png");
 
@@ -77,8 +69,6 @@ class SPARouteFilterTest {
     @Test
     void apiFilter_spaRoot_callsNext() {
 
-        final RoutingContext routingContext = mock(RoutingContext.class);
-
         when(routingContext.normalizedPath()).thenReturn("/minikaenguru-anwendung/");
 
         filter.apiFilter(routingContext);
@@ -89,8 +79,6 @@ class SPARouteFilterTest {
 
     @Test
     void apiFilter_otherPath_callsNext() {
-
-        final RoutingContext routingContext = mock(RoutingContext.class);
 
         when(routingContext.normalizedPath()).thenReturn("/other/path");
 
@@ -108,8 +96,6 @@ class SPARouteFilterTest {
                     "/minikaenguru-anwendung/foo/bar/baz" })
     void apiFilter_spaDeepLink_reroutesToIndexHtml(final String path) {
 
-        final RoutingContext routingContext = mock(RoutingContext.class);
-
         when(routingContext.normalizedPath()).thenReturn(path);
 
         filter.apiFilter(routingContext);
@@ -126,8 +112,6 @@ class SPARouteFilterTest {
                     "/minikaenguru-anwendung/assets/styles.css", "/minikaenguru-anwendung/assets/logo.png",
                     "/other/path" })
     void apiFilter_noSpaDeepLink_callsNext(final String path) {
-
-        final RoutingContext routingContext = mock(RoutingContext.class);
 
         when(routingContext.normalizedPath()).thenReturn(path);
 
