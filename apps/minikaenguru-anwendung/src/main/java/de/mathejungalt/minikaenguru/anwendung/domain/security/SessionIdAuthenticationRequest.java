@@ -18,10 +18,6 @@ public final class SessionIdAuthenticationRequest implements AuthenticationReque
         this.sessionId = sessionId;
     }
 
-    public String sessionId() {
-        return sessionId;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(final String name) {

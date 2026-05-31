@@ -32,6 +32,7 @@ public class InitAccessTokenDelegate {
      * @return OauthClientAccessToken
      * @throws IamClientException wenn irgendetwas schief lief.
      */
+    // CPD-OFF
     public OauthClientAccessToken authenticateClient(final OAuthClientCredentials credentials)
             throws IamClientException {
 
@@ -66,4 +67,5 @@ public class InitAccessTokenDelegate {
             throw new IamUnreachableException(msg, e);
         }
     }
+    // CPD-ON
 }

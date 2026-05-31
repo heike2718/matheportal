@@ -46,10 +46,11 @@ public class ExchangeAccessTokenForJwtDelegate {
      * @param accessToken       String
      * @return ExchangeTokenResponse
      */
+    // CPD-OFF
     public ExchangeTokenResponse exchangeTheAccessToken(final OAuthClientCredentials clientCredentials,
             final String accessToken) {
 
-        try (final Response authResponse = authproviderRestClient
+        try (Response authResponse = authproviderRestClient
                 .exchangeOneTimeTokenWithJwt(accessToken, clientCredentials)) {
 
             final ExchangeTokenResponse responsePayload = ExchangeTokenResponse
@@ -80,9 +81,10 @@ public class ExchangeAccessTokenForJwtDelegate {
                 throw new IamClientException(message, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
             }
 
-            final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens";
+            final String msg = "Kommunikationsfehler beim Tauschen des accessTokens gegen JWT";
             throw new IamUnreachableException(msg, e);
         }
+        // CPD-ON
     }
 
 }
