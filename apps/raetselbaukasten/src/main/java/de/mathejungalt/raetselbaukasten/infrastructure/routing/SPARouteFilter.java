@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.quarkus.vertx.web.RouteFilter;
 
@@ -12,12 +11,10 @@ import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * SPARouteFilter
+ * SPARouteFilter.
  */
 @Slf4j
 public final class SPARouteFilter {
-
-    private static final int MAX_TOKEN_COUNT = 2;
 
     private static final Predicate<String> FILE_NAME_PREDICATE = Pattern
             .compile(".*[.][a-zA-Z\\d]+")
@@ -25,11 +22,11 @@ public final class SPARouteFilter {
 
     private static final String API_PREFIX = "/api/";
 
-    private static final String APP_PLUS_API_PREFIX = "/raetselbaukasten" + API_PREFIX;
+    private static final String SPA_ROOT_PATH = "/raetselbaukasten/";
 
-    private static final String DEFAULT_APP = "/raetselbaukasten/";
+    private static final String SPA_API_PREFIX = "/raetselbaukasten" + API_PREFIX;
 
-    private static final String[] PATH_PREFIXES = { DEFAULT_APP };
+    private static final String SPA_INDEX_HTML = SPA_ROOT_PATH + "index.html";
 
     @RouteFilter(100)
     void apiFilter(final RoutingContext routingContext) {
@@ -37,83 +34,35 @@ public final class SPARouteFilter {
         final String path = routingContext.normalizedPath();
         log.debug("Check reroute with path: " + path);
 
-        if (path.startsWith(APP_PLUS_API_PREFIX)) {
+        if (isApiRequest(path)) {
 
             // reroute to REST-API
-            final String rerouted = path.replaceFirst(DEFAULT_APP, "/") + getQueryParameters(routingContext);
-            log.debug("(2) rc.reroute: " + rerouted);
+            final String rerouted = path.replaceFirst(SPA_ROOT_PATH, "/") + getQueryParameters(routingContext);
+            log.debug("(1) rc.reroute: " + rerouted);
             routingContext.reroute(rerouted);
-        } else {
-
-            log.debug("(3)");
-
-            if (this.doesNotNeedRedirect(path)) {
-
-                log.debug("(4)");
-                routingContext.next();
-            } else {
-
-                log.debug("(5)");
-
-                if (path.startsWith(DEFAULT_APP)) {
-
-                    // I0094: deep-Angular-Router-Links (z.B. /raetselbaukasten/xxx/)
-                    // müssen zur SPA Grund-URL
-                    // (/raetselbaukasten/) umgeleitet werden. Danach übernimmt wieder das
-                    // Angular-Routing
-                    // Jetzt funktionieren Bookmarking, Back-Button sowie F5 ohne dass es ein 404
-                    // gibt.
-                    final String[] tokens = path.split("/");
-                    log.debug("(6) Anzahl token = {}", tokens.length);
-
-                    if (tokens.length > MAX_TOKEN_COUNT) {
-
-                        final String rerouted = "/" + tokens[1] + "/";
-                        log.debug("(7) Umleiten von deep Angular router links: {} nach {} ", path, rerouted);
-                        routingContext.reroute(rerouted);
-                    } else {
-
-                        log.debug("(8) kein Umleiten der SPA-Grund-URL {} ", path);
-                        routingContext.next();
-                    }
-
-                } else {
-
-                    log.debug("(9) global else => rc.next()");
-                    routingContext.next();
-                }
-            }
+            return;
         }
 
+        if (isSpaDeepLink(path)) {
+            log.debug("(2) Reroute SPA deep link: {} nach {}", path, SPA_INDEX_HTML);
+            routingContext.reroute(SPA_INDEX_HTML);
+            return;
+        }
+
+        log.debug("(3) global else => rc.next()");
+        routingContext.next();
     }
 
-    private boolean doesNotNeedRedirect(final String path) {
-
-        if (isRootPath(path)) {
-
-            log.debug("(3-1) kein Umleiten von /");
-            return true;
-        }
-
-        if (FILE_NAME_PREDICATE.test(path)) {
-
-            log
-                    .debug("(3-2) kein Umleiten von statischen files aus src/main/resources/META-INF/resources/raetselbaukasten/");
-            return true;
-        }
-
-        if (Stream.of(PATH_PREFIXES).noneMatch(path::startsWith)) {
-
-            log.debug("(3-3) kein Umleiten von Pfaden, die nicht mit {} beginnen", DEFAULT_APP);
-            return true;
-        }
-
-        log.debug("(3-4)");
-        return false;
+    private boolean isApiRequest(final String path) {
+        return path.startsWith(SPA_API_PREFIX);
     }
 
-    private boolean isRootPath(final String path) {
-        return "/".equals(path);
+    private boolean isSpaDeepLink(final String path) {
+        return path.startsWith(SPA_ROOT_PATH) && !SPA_ROOT_PATH.equals(path) && !isStaticFile(path);
+    }
+
+    private boolean isStaticFile(final String path) {
+        return FILE_NAME_PREDICATE.test(path);
     }
 
     private String getQueryParameters(final RoutingContext routingContext) {
@@ -135,7 +84,5 @@ public final class SPARouteFilter {
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
         return stringBuilder.toString();
-
     }
-
 }

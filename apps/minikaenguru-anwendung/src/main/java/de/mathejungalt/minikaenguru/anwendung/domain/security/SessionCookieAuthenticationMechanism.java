@@ -27,6 +27,7 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
     private static final String AUTH_HEADER_NAME = "WWW-Authenticate";
     private static final String AUTH_SCHEME = "Session";
     private static final String AUTH_REALM = "matheportal";
+    private static final String COOKIE_NAME = "MPSESSIONID";
 
     @Override
     public Uni<SecurityIdentity> authenticate(final RoutingContext context,

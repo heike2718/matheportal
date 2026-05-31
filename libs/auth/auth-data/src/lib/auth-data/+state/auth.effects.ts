@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
 import { authActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthUrlResponse, User } from '@matheportal/auth-model';
+import { AuthUrlResponse, CLEAR_AUTH_LOCATION_HASH, User } from '@matheportal/auth-model';
 import { MessageService } from '@matheportal/feedback-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 
@@ -17,6 +17,9 @@ export class AuthEffects {
     #authHttpService = inject(AuthHttpService);
     #messageService = inject(MessageService);
     #browserNavigationService = inject(BrowserNavigationService);
+    #clearAuthLocationHash = inject(CLEAR_AUTH_LOCATION_HASH);
+
+    #technischerFehler = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
 
     requestLogInUrl$ = createEffect(() => {
         return this.#actions.pipe(
@@ -46,9 +49,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.requestLoginUrlFailed),
                 tap(() => {
-                    this.#messageService.publishError(
-                        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-                    );
+                    this.#messageService.publishError(this.#technischerFehler);
                 })
             ),
         { dispatch: false }
@@ -63,14 +64,32 @@ export class AuthEffects {
         );
     });
 
+    clearAuthCallbackHash$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.sessionCreated, authActions.createSessionFailed, authActions.invalidOAuthFlowHash),
+                tap(() => this.#clearAuthLocationHash())
+            ),
+        { dispatch: false }
+    );
+
     createSessionFailed$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(authActions.createSessionFailed),
                 tap(() => {
-                    this.#messageService.publishError(
-                        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-                    );
+                    this.#messageService.publishError(this.#technischerFehler);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    invalidOAuthFlowHash$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.invalidOAuthFlowHash),
+                tap(() => {
+                    this.#messageService.publishError(this.#technischerFehler);
                 })
             ),
         { dispatch: false }
@@ -110,9 +129,7 @@ export class AuthEffects {
                             break;
                         }
                         case 'technical': {
-                            this.#messageService.publishError(
-                                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-                            );
+                            this.#messageService.publishError(this.#technischerFehler);
                             break;
                         }
                         case 'useraction':

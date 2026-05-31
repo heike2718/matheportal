@@ -6,6 +6,21 @@
     "projectType": "library",
     "tags": ["domain:auth", "type:model"],
     "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-model"],
+            "options": {
+                "reportsDirectory": "coverage/libs/auth/auth-model"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-model"],
+            "options": {
+                "coverage": true,
+                "reportsDirectory": "coverage/libs/auth/auth-model"
+            }
+        },
         "tech-format": {
             "executor": "nx:run-commands",
             "options": {

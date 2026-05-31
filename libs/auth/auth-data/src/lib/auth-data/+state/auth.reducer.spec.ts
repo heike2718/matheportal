@@ -25,6 +25,24 @@ describe('authFeature tests', () => {
         });
     });
 
+    describe('sessionCreated', () => {
+        it('returns the expected state, when initialState and sessionCreated', () => {
+            const actualState: AuthState = { user: anonymousUser, isSessionValidated: false };
+            const state = authFeature.reducer(actualState, authActions.sessionCreated({ user: user }));
+            expect(state.user).toEqual(user);
+            expect(state.isSessionValidated).toBeTruthy();
+        });
+    });
+
+    describe('createSessionFailed', () => {
+        it('returns the expected state, when initialState and createSessionFailed', () => {
+            const actualState: AuthState = { user: anonymousUser, isSessionValidated: false };
+            const state = authFeature.reducer(actualState, authActions.createSessionFailed());
+            expect(state.user).toEqual(anonymousUser);
+            expect(state.isSessionValidated).toBeFalsy();
+        });
+    });
+
     describe('sessionValidated', () => {
         it('returns the expected state, when initialState and sessionValidated', () => {
             const actualState: AuthState = { user: anonymousUser, isSessionValidated: false };

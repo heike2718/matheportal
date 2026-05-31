@@ -7,13 +7,30 @@ import { AuthHttpService } from '../auth-http.service';
 import { Router } from '@angular/router';
 import { MessageService } from '@matheportal/feedback-api';
 import { authActions } from './auth.actions';
-import { AuthUrlResponse, SESSION_VALIDATION_FAILED_REASON } from '@matheportal/auth-model';
+import {
+    AuthUrlResponse,
+    CLEAR_AUTH_LOCATION_HASH,
+    SESSION_VALIDATION_FAILED_REASON,
+    User,
+} from '@matheportal/auth-model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserNavigationService } from '../browser-navigation.service';
 
 describe('AuthEffects', () => {
     let action$: ReplaySubject<unknown>;
     let effects: AuthEffects;
+
+    const user: User = {
+        anonym: false,
+        fullName: 'Checki',
+        roles: ['ADMIN'],
+    };
+
+    const clearAuthLocationHashMock = vi.fn();
+
+    TestBed.overrideProvider(CLEAR_AUTH_LOCATION_HASH, {
+        useValue: clearAuthLocationHashMock,
+    });
 
     const httpErrorResponse = new HttpErrorResponse({
         status: 500,
@@ -24,6 +41,7 @@ describe('AuthEffects', () => {
 
     const httpServiceMock = {
         getLoginUrl: vi.fn(),
+        createSession: vi.fn(),
         logOut: vi.fn(),
     };
 
@@ -53,6 +71,7 @@ describe('AuthEffects', () => {
                 { provide: Router, useValue: routerMock },
                 { provide: MessageService, useValue: messageServiceMock },
                 { provide: BrowserNavigationService, useValue: browserNavigationServiceMock },
+                { provide: CLEAR_AUTH_LOCATION_HASH, useValue: clearAuthLocationHashMock },
             ],
         });
 
@@ -73,6 +92,7 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.redirectToIam({ iamUrl: urlResponse.url }));
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messageServiceMock.publishError).not.toHaveBeenCalled();
             expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
@@ -88,6 +108,7 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.requestLoginUrlFailed());
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messageServiceMock.publishError).not.toHaveBeenCalled();
             expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
@@ -103,6 +124,7 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.requestLoginUrlFailed());
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messageServiceMock.publishError).not.toHaveBeenCalled();
             expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
@@ -144,6 +166,132 @@ describe('AuthEffects', () => {
             expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('createSession$', () => {
+        it('should call AuthHttpService and map to sessionCreated', async () => {
+            const userResponse: User = {
+                anonym: false,
+                fullName: 'Checki',
+                roles: ['ADMIN', 'LEHRER'],
+            };
+
+            const idToken = 'test-id-token';
+
+            httpServiceMock.createSession.mockReturnValue(of(userResponse));
+
+            action$.next(authActions.createSession({ idToken }));
+            const emitted = await firstValueFrom(effects.createSession$);
+
+            expect(emitted).toEqual(authActions.sessionCreated({ user: userResponse }));
+            expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
+            expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
+
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishError).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call AuthHttpService and map to createSessionFailed when HttpErrorResponse', async () => {
+            const idToken = 'test-id-token';
+
+            httpServiceMock.createSession.mockReturnValue(throwError(() => httpErrorResponse));
+
+            action$.next(authActions.createSession({ idToken }));
+            const emitted = await firstValueFrom(effects.createSession$);
+
+            expect(emitted).toEqual(authActions.createSessionFailed());
+            expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
+            expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
+
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishError).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call AuthHttpService and map to createSessionFailed when other Error', async () => {
+            const idToken = 'test-id-token';
+
+            httpServiceMock.createSession.mockReturnValue(throwError(() => new Error('boom')));
+
+            action$.next(authActions.createSession({ idToken }));
+            const emitted = await firstValueFrom(effects.createSession$);
+
+            expect(emitted).toEqual(authActions.createSessionFailed());
+            expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
+            expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
+
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishError).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('createSessionFailed$', () => {
+        it('should publish error message when createSessionFailed is dispatched', async () => {
+            const resultPromise = firstValueFrom(effects.createSessionFailed$);
+            action$.next(authActions.createSessionFailed());
+
+            await resultPromise;
+
+            expect(messageServiceMock.publishError).toHaveBeenCalledTimes(1);
+            expect(messageServiceMock.publishError).toHaveBeenCalledWith(
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+            );
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('invalidOAuthFlowHash$', () => {
+        it('should publish error message when invalidOAuthFlowHash is dispatched', async () => {
+            const resultPromise = firstValueFrom(effects.invalidOAuthFlowHash$);
+            action$.next(authActions.invalidOAuthFlowHash());
+
+            await resultPromise;
+
+            expect(messageServiceMock.publishError).toHaveBeenCalledTimes(1);
+            expect(messageServiceMock.publishError).toHaveBeenCalledWith(
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+            );
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(messageServiceMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('clearAuthCallbackHash$', () => {
+        it.each([
+            authActions.sessionCreated({
+                user: {
+                    anonym: false,
+                    fullName: 'Checki',
+                    roles: ['ADMIN'],
+                },
+            }),
+            authActions.createSessionFailed(),
+            authActions.invalidOAuthFlowHash(),
+        ])('should clear auth location hash for %s', async action => {
+            action$.next(action);
+
+            await firstValueFrom(effects.clearAuthCallbackHash$);
+
+            expect(clearAuthLocationHashMock).toHaveBeenCalledTimes(1);
         });
     });
 

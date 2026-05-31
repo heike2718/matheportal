@@ -8,10 +8,20 @@ import { NavbarComponent } from './navbar.component';
 import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { Component } from '@angular/core';
+import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('NavbarComponent', () => {
     let fixture: ComponentFixture<NavbarComponent>;
     let component: NavbarComponent;
+
+    const authSessionFacadeMock = {
+        validateSession: vi.fn(),
+        isSessionValidated$: of(false),
+    };
+    const authFlowFacadeMock = {
+        login: vi.fn(),
+        logout: vi.fn(),
+    };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -21,6 +31,8 @@ describe('NavbarComponent', () => {
                     provide: MATHEPORTAL_SHELL_CONFIGURATION,
                     useValue: { ...mockRuntimeConfig, apiUrl: '' },
                 },
+                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideRouter([
                     { path: 'home', component: HomeComponent },
                     { path: 'minikaenguru-anwendung', component: DummyRouteComponent },

@@ -8,6 +8,7 @@ export const authActions = createActionGroup({
         requestLoginUrlFailed: emptyProps(),
         redirectToIam: props<{ iamUrl: string }>(),
         createSession: props<{ idToken: string }>(),
+        invalidOAuthFlowHash: emptyProps(),
         createSessionFailed: emptyProps(),
         sessionCreated: props<{ user: User }>(),
         validateSession: emptyProps(),

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AuthSessionFacade } from './auth-session.facade';
 import { authActions } from '@matheportal/auth-data';
-import { mapHashToAuthResult } from '@matheportal/auth-model';
+import { AUTH_LOCATION_HASH, mapHashToAuthResult } from '@matheportal/auth-model';
 
 @Injectable({
     providedIn: 'root',
@@ -10,6 +10,7 @@ import { mapHashToAuthResult } from '@matheportal/auth-model';
 export class AuthFlowFacade {
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
+    #authLocationHash = inject(AUTH_LOCATION_HASH);
 
     login(): void {
         this.#store.dispatch(authActions.requestLoginUrl());
@@ -20,17 +21,30 @@ export class AuthFlowFacade {
     }
 
     initClearOrRestoreSession(): void {
-        const hash = window.location.hash;
+        const hash = this.#authLocationHash();
         const authResult = mapHashToAuthResult(hash);
 
-        if (authResult.state === 'login') {
-            if (authResult.idToken) {
-                this.#store.dispatch(authActions.createSession({ idToken: authResult.idToken }));
-            } else {
-                this.#store.dispatch(authActions.createSessionFailed());
-            }
-        } else {
+        if (authResult === null) {
             this.#authSessionFacade.validateSession();
+            return;
+        }
+
+        switch (authResult.state) {
+            case 'invalid': {
+                this.#handleInvalidOAuthFlowHash();
+                break;
+            }
+            case 'login': {
+                if (!authResult.idToken) {
+                    this.#handleLoginMissingIdToken();
+                } else {
+                    this.#store.dispatch(authActions.createSession({ idToken: authResult.idToken }));
+                }
+                break;
+            }
+            case 'signup':
+                // hier erstmal noch nicht klar, was passieren soll.
+                break;
         }
     }
 
@@ -39,5 +53,16 @@ export class AuthFlowFacade {
      */
     handleSessionExpired(): void {
         this.#store.dispatch(authActions.sessionValidationFailed({ reason: 'expired' }));
+    }
+
+    #handleLoginMissingIdToken(): void {
+        // TODO: exception handling - also das hier ans backend senden.
+        console.error('initClearOrRestoreSession: login with missing idToken');
+        this.#store.dispatch(authActions.createSessionFailed());
+    }
+
+    #handleInvalidOAuthFlowHash(): void {
+        // TODO: exception handling - also das hier ans backend senden.
+        this.#store.dispatch(authActions.invalidOAuthFlowHash());
     }
 }
