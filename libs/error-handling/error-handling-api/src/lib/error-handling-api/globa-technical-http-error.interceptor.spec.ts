@@ -1,11 +1,11 @@
 import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, throwError } from 'rxjs';
-import { MessageService } from '@matheportal/feedback-api';
 import { globalTechnicalHttpErrorInterceptor } from './globa-technical-http-error.interceptor';
+import { ERROR_PUBLISHER } from './error.publisher';
 
 describe('globalTechnicalHttpErrorInterceptor', () => {
-    const messageService = {
+    const errorPublisherMock = {
         publishError: vi.fn(),
     };
 
@@ -13,7 +13,12 @@ describe('globalTechnicalHttpErrorInterceptor', () => {
         vi.clearAllMocks();
 
         TestBed.configureTestingModule({
-            providers: [{ provide: MessageService, useValue: messageService }],
+            providers: [
+                {
+                    provide: ERROR_PUBLISHER,
+                    useValue: errorPublisherMock,
+                },
+            ],
         });
     });
 
@@ -28,7 +33,7 @@ describe('globalTechnicalHttpErrorInterceptor', () => {
                 lastValueFrom(TestBed.runInInjectionContext(() => globalTechnicalHttpErrorInterceptor(request, next)))
             ).rejects.toBe(error);
 
-            expect(messageService.publishError).toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).toHaveBeenCalled();
         }
     );
 
@@ -42,6 +47,6 @@ describe('globalTechnicalHttpErrorInterceptor', () => {
             lastValueFrom(TestBed.runInInjectionContext(() => globalTechnicalHttpErrorInterceptor(request, next)))
         ).rejects.toBe(error);
 
-        expect(messageService.publishError).not.toHaveBeenCalled();
+        expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
     });
 });

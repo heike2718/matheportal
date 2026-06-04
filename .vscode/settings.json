@@ -64,5 +64,8 @@
     },
     "java.debug.settings.onBuildFailureProceed": true,
     "java.cleanup.actions": ["addFinalModifier"],
-    "js/ts.tsdk.path": "node_modules/typescript/lib"
+    "js/ts.tsdk.path": "node_modules/typescript/lib",
+    "eslint.workingDirectories": [{ "mode": "auto" }],
+    "eslint.run": "onSave",
+    "eslint.probe": ["typescript", "typescriptreact", "javascript", "javascriptreact"]
 }

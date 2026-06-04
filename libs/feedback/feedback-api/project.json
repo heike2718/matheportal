@@ -4,7 +4,7 @@
     "sourceRoot": "libs/feedback/feedback-api/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:shared", "type:api"],
+    "tags": ["domain:feedback", "type:api"],
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",

@@ -4,7 +4,7 @@
     "projectType": "application",
     "prefix": "rbk",
     "sourceRoot": "apps/raetselbaukasten-ui/src",
-    "tags": ["type:app", "scope:raetselbaukasten", "layer:remote"],
+    "tags": ["domain:raetselbaukasten", "type:app", "layer:remote"],
     "targets": {
         "tech-build": {
             "executor": "@angular-architects/native-federation:build",

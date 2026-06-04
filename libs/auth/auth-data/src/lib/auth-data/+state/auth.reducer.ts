@@ -19,7 +19,7 @@ export const authFeature = createFeature({
         on(authActions.sessionCreated, (state, action) => {
             return { ...state, user: action.user, isSessionValidated: true };
         }),
-        on(authActions.createSessionFailed, (state, action) => {
+        on(authActions.createSessionFailed, state => {
             return { ...state, user: anonymousUser, isSessionValidated: false };
         }),
         on(authActions.sessionValidated, (state, action) => {

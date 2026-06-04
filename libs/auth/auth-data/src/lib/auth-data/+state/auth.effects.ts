@@ -5,7 +5,7 @@ import { AuthHttpService } from '../auth-http.service';
 import { authActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthUrlResponse, CLEAR_AUTH_LOCATION_HASH, User } from '@matheportal/auth-model';
-import { MessageService } from '@matheportal/feedback-api';
+import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 
 @Injectable({
@@ -15,9 +15,9 @@ export class AuthEffects {
     #actions = inject(Actions);
     #router = inject(Router);
     #authHttpService = inject(AuthHttpService);
-    #messageService = inject(MessageService);
     #browserNavigationService = inject(BrowserNavigationService);
     #clearAuthLocationHash = inject(CLEAR_AUTH_LOCATION_HASH);
+    #errorPublisher = inject(ERROR_PUBLISHER);
 
     #technischerFehler = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
 
@@ -49,7 +49,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.requestLoginUrlFailed),
                 tap(() => {
-                    this.#messageService.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(this.#technischerFehler);
                 })
             ),
         { dispatch: false }
@@ -78,7 +78,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.createSessionFailed),
                 tap(() => {
-                    this.#messageService.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(this.#technischerFehler);
                 })
             ),
         { dispatch: false }
@@ -89,7 +89,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.invalidOAuthFlowHash),
                 tap(() => {
-                    this.#messageService.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(this.#technischerFehler);
                 })
             ),
         { dispatch: false }
@@ -123,13 +123,13 @@ export class AuthEffects {
                 tap(({ reason }) => {
                     switch (reason) {
                         case 'expired': {
-                            this.#messageService.publishWarning(
+                            this.#errorPublisher.publishWarning(
                                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
                             );
                             break;
                         }
                         case 'technical': {
-                            this.#messageService.publishError(this.#technischerFehler);
+                            this.#errorPublisher.publishError(this.#technischerFehler);
                             break;
                         }
                         case 'useraction':

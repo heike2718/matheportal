@@ -4,7 +4,7 @@
     "sourceRoot": "libs/error-handling/error-handling-api/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": [],
+    "tags": ["domain:error-handling", "type:api"],
     "targets": {
         "test": {
             "executor": "@nx/vitest:test",

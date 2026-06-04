@@ -4,7 +4,7 @@
     "projectType": "application",
     "prefix": "portal",
     "sourceRoot": "apps/matheportal-shell-ui/src",
-    "tags": ["type:app", "scope:portal", "layer:host"],
+    "tags": ["domain:portal", "type:app", "layer:host"],
     "targets": {
         "tech-build": {
             "executor": "@angular-architects/native-federation:build",

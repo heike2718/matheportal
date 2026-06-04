@@ -4,7 +4,7 @@
     "projectType": "application",
     "prefix": "mka",
     "sourceRoot": "apps/minikaenguru-anwendung-ui/src",
-    "tags": ["type:app", "scope:minikaenguru", "layer:remote"],
+    "tags": ["domain:minikaenguru-app", "type:app", "layer:remote"],
     "targets": {
         "tech-build": {
             "executor": "@angular-architects/native-federation:build",

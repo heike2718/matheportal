@@ -4,7 +4,7 @@
     "sourceRoot": "libs/shared-ui-theme/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:shared", "type:ui"],
+    "tags": ["scope:shared"],
     "targets": {
         "tech-format": {
             "executor": "nx:run-commands",
