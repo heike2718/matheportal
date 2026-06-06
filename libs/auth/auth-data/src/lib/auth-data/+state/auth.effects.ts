@@ -7,6 +7,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthUrlResponse, CLEAR_AUTH_LOCATION_HASH, User } from '@matheportal/auth-model';
 import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root',
@@ -101,6 +102,24 @@ export class AuthEffects {
             switchMap(() => this.#authHttpService.logOut()),
             map(() => authActions.loggedOut({ reason: 'useraction' })),
             catchError(() => of(authActions.loggedOut({ reason: 'useraction' })))
+        );
+    });
+
+    validateSession$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(authActions.validateSession),
+            switchMap(() =>
+                this.#authHttpService.reloadSession().pipe(
+                    map((user: User) => authActions.sessionValidated({ user })),
+                    catchError((error: unknown) => {
+                        if (error instanceof HttpErrorResponse && error.status === 401) {
+                            return of(authActions.sessionValidationFailed({ reason: 'expired' }));
+                        }
+
+                        return of(authActions.sessionValidationFailed({ reason: 'technical' }));
+                    })
+                )
+            )
         );
     });
 

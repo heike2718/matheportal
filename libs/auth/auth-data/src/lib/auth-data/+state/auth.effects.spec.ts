@@ -26,7 +26,14 @@ describe('AuthEffects', () => {
         useValue: clearAuthLocationHashMock,
     });
 
-    const httpErrorResponse = new HttpErrorResponse({
+    const httpUnauthorizedErrorResponse = new HttpErrorResponse({
+        status: 401,
+        statusText: 'unauthorized',
+        error: 'boom',
+        url: '/session',
+    });
+
+    const httpServerErrorResponse = new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
         error: 'boom',
@@ -36,6 +43,7 @@ describe('AuthEffects', () => {
     const httpServiceMock = {
         getLoginUrl: vi.fn(),
         createSession: vi.fn(),
+        reloadSession: vi.fn(),
         logOut: vi.fn(),
     };
 
@@ -90,6 +98,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -98,7 +107,7 @@ describe('AuthEffects', () => {
         });
 
         it('should call AuthHttpService and map to requestLoginUrlFailed when HttpErrorResponse', async () => {
-            httpServiceMock.getLoginUrl.mockReturnValue(throwError(() => httpErrorResponse));
+            httpServiceMock.getLoginUrl.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             action$.next(authActions.requestLoginUrl());
             const emitted = await firstValueFrom(effects.requestLogInUrl$);
@@ -106,6 +115,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -122,6 +132,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -140,6 +151,8 @@ describe('AuthEffects', () => {
 
             expect(browserNavigationServiceMock.redirectToUrl).toHaveBeenCalledWith(iamUrl);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
@@ -158,6 +171,8 @@ describe('AuthEffects', () => {
                 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
             );
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -185,6 +200,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
 
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
@@ -196,7 +212,7 @@ describe('AuthEffects', () => {
         it('should call AuthHttpService and map to createSessionFailed when HttpErrorResponse', async () => {
             const idToken = 'test-id-token';
 
-            httpServiceMock.createSession.mockReturnValue(throwError(() => httpErrorResponse));
+            httpServiceMock.createSession.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             action$.next(authActions.createSession({ idToken }));
             const emitted = await firstValueFrom(effects.createSession$);
@@ -205,6 +221,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
 
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
@@ -225,6 +242,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
 
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
@@ -245,6 +263,9 @@ describe('AuthEffects', () => {
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
                 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
             );
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -264,6 +285,8 @@ describe('AuthEffects', () => {
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
                 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
             );
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -303,6 +326,8 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -311,7 +336,7 @@ describe('AuthEffects', () => {
         });
 
         it('should call logOut and map to loggedOut, when HttpErrorResponse', async () => {
-            httpServiceMock.logOut.mockReturnValue(throwError(() => httpErrorResponse));
+            httpServiceMock.logOut.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             action$.next(authActions.logOut());
 
@@ -320,6 +345,8 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -337,6 +364,8 @@ describe('AuthEffects', () => {
             expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -356,6 +385,8 @@ describe('AuthEffects', () => {
                 expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
                 expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
 
+                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
                 expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -367,13 +398,15 @@ describe('AuthEffects', () => {
         it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
             'should call logOut and map to loggedOut when HttpErrorResponse, reason %i',
             async reason => {
-                httpServiceMock.logOut.mockReturnValue(throwError(() => httpErrorResponse));
+                httpServiceMock.logOut.mockReturnValue(throwError(() => httpServerErrorResponse));
                 action$.next(authActions.sessionValidationFailed({ reason: reason }));
                 const emitted = await firstValueFrom(effects.sessionValidationFailed$);
 
                 expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
                 expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
 
+                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
                 expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -391,7 +424,8 @@ describe('AuthEffects', () => {
 
                 expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
                 expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
+                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
                 expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
                 expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -411,6 +445,8 @@ describe('AuthEffects', () => {
             );
             expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
@@ -426,6 +462,8 @@ describe('AuthEffects', () => {
             );
             expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
@@ -438,10 +476,92 @@ describe('AuthEffects', () => {
 
             expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
 
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('validateSession$', () => {
+        it('should call reloadSession and map to sessionValidated', async () => {
+            const userResponse: User = {
+                anonym: false,
+                fullName: 'Checki',
+                roles: ['ADMIN', 'LEHRER'],
+            };
+
+            httpServiceMock.reloadSession.mockReturnValue(of(userResponse));
+
+            action$.next(authActions.validateSession());
+            const emitted = await firstValueFrom(effects.validateSession$);
+
+            expect(emitted).toEqual(authActions.sessionValidated({ user: userResponse }));
+            expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call reloadSession and map to sessionValidationFailed with expired when http-status 401', async () => {
+            httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpUnauthorizedErrorResponse));
+
+            action$.next(authActions.validateSession());
+            const emitted = await firstValueFrom(effects.validateSession$);
+
+            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'expired' }));
+            expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call reloadSession and map to sessionValidationFailed with technical when http-status 500', async () => {
+            httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpServerErrorResponse));
+
+            action$.next(authActions.validateSession());
+            const emitted = await firstValueFrom(effects.validateSession$);
+
+            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'technical' }));
+            expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call reloadSession and map to sessionValidationFailed with technical when other error', async () => {
+            httpServiceMock.reloadSession.mockReturnValue(throwError(() => new Error('boom')));
+
+            action$.next(authActions.validateSession());
+            const emitted = await firstValueFrom(effects.validateSession$);
+
+            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'technical' }));
+            expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
