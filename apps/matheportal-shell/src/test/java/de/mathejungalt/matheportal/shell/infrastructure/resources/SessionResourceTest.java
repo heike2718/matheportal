@@ -7,7 +7,8 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 
-import de.mathejungalt.authsessions.api.SessionConstants;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import de.mathejungalt.matheportal.shell.domain.logout.LogoutService;
 import de.mathejungalt.matheportal.shell.test.IamIntegrationTestProfile;
 
@@ -16,12 +17,14 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @QuarkusTest
 @TestHTTPEndpoint(SessionResource.class)
 @TestProfile(IamIntegrationTestProfile.class)
 class SessionResourceTest {
+
+    @ConfigProperty(name = "session.cookie.name")
+    String sessionCookiName;
 
     @InjectMock
     LogoutService logoutService;
@@ -31,13 +34,7 @@ class SessionResourceTest {
 
         doNothing().when(logoutService).logout();
 
-        given()
-                .accept(ContentType.JSON)
-                .delete("/")
-                .then()
-                .statusCode(204)
-                .and()
-                .cookie(SessionConstants.SESSION_COOKIE_NAME);
+        given().accept(ContentType.JSON).delete("/").then().statusCode(204).and().cookie(sessionCookiName);
 
     }
 

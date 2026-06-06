@@ -11,9 +11,9 @@ import io.quarkus.vertx.http.runtime.security.ChallengeData;
 import io.quarkus.vertx.http.runtime.security.HttpAuthenticationMechanism;
 import io.quarkus.vertx.http.runtime.security.HttpCredentialTransport;
 
-import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import de.mathejungalt.authsessions.api.SessionConstants;
+import io.smallrye.mutiny.Uni;
 
 import io.vertx.core.http.Cookie;
 import io.vertx.ext.web.RoutingContext;
@@ -28,10 +28,13 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
     private static final String AUTH_SCHEME = "Session";
     private static final String AUTH_REALM = "matheportal";
 
+    @ConfigProperty(name = "session.cookie.name")
+    String sessionCookiName;
+
     @Override
     public Uni<SecurityIdentity> authenticate(final RoutingContext context,
             final IdentityProviderManager identityProviderManager) {
-        final Cookie cookie = context.request().getCookie(SessionConstants.SESSION_COOKIE_NAME);
+        final Cookie cookie = context.request().getCookie(sessionCookiName);
 
         if (cookie == null || cookie.getValue() == null || cookie.getValue().isBlank()) {
             return Uni.createFrom().nullItem();
@@ -59,8 +62,7 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
     public Uni<HttpCredentialTransport> getCredentialTransport(final RoutingContext context) {
         return Uni
                 .createFrom()
-                .item(new HttpCredentialTransport(HttpCredentialTransport.Type.COOKIE,
-                        SessionConstants.SESSION_COOKIE_NAME));
+                .item(new HttpCredentialTransport(HttpCredentialTransport.Type.COOKIE, sessionCookiName));
     }
 
 }

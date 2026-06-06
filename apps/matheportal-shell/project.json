@@ -18,7 +18,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn clean quarkus:dev",
+                "command": "mvn quarkus:dev",
                 "envFile": "apps/matheportal-shell/.config/.env.dev"
             }
         },

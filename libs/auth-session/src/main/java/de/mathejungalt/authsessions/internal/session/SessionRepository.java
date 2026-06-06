@@ -64,7 +64,6 @@ public class SessionRepository {
      *
      * @param sessionEntity SessionEntity
      */
-    @Transactional
     public void deleteSession(final SessionEntity sessionEntity) {
         if (sessionEntity == null) {
             return;

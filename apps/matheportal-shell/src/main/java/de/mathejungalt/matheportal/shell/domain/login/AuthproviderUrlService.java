@@ -23,8 +23,8 @@ public class AuthproviderUrlService {
     @ConfigProperty(name = "auth-app.url")
     String authAppUrl;
 
-    @ConfigProperty(name = "public-redirect-url")
-    String publicRedirectUrl;
+    @ConfigProperty(name = "client.redirect.url")
+    String clientRedirectUrl;
 
     @Inject
     ClientAccessTokenService clientAccessTokenService;
@@ -43,7 +43,7 @@ public class AuthproviderUrlService {
         final String accessToken = clientAccessTokenService.orderAccessToken(nonce);
 
         final String url = authAppUrl + "login?accessToken=" + accessToken + "&state=login&redirectUrl="
-                + publicRedirectUrl;
+                + clientRedirectUrl;
 
         LOGGER.info("loginUrl={}", url);
 

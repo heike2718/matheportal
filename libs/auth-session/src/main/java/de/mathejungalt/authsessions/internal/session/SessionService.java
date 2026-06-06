@@ -134,6 +134,7 @@ public class SessionService {
      *
      * @param sessionId String
      */
+    @Transactional
     public void invalidateSession(final String sessionId) {
 
         try {

@@ -27,6 +27,9 @@ public final class StartupListener {
     @ConfigProperty(name = "quarkus.http.port")
     String port;
 
+    @ConfigProperty(name = "client.redirect.url")
+    String clientRedirectUrl;
+
     /**
      * On startup.
      *
@@ -37,7 +40,7 @@ public final class StartupListener {
         log.info(" ===========>  jdbcUrl={}", jdbcUrl);
         log.info(" ===========>  port={}", port);
         log.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
-
+        log.info(" ===========> client.redirect.url={}", clientRedirectUrl);
     }
 
 }
