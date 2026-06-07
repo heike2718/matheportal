@@ -4,9 +4,9 @@
     "projectType": "application",
     "prefix": "portal",
     "sourceRoot": "apps/matheportal-shell-ui/src",
-    "tags": [],
+    "tags": ["domain:portal", "type:app", "layer:host"],
     "targets": {
-        "build": {
+        "tech-build": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
                 "baseHref": "/matheportal-shell/",
@@ -14,7 +14,7 @@
             },
             "configurations": {
                 "production": {
-                    "target": "matheportal-shell-ui:esbuild:production",
+                    "target": "matheportal-shell-ui:tech-esbuild:production",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -23,7 +23,7 @@
                     ]
                 },
                 "qs": {
-                    "target": "matheportal-shell-ui:esbuild:qs",
+                    "target": "matheportal-shell-ui:tech-esbuild:qs",
                     "fileReplacements": [
                         {
                             "replace": "src/app/config/configuration.ts",
@@ -32,21 +32,21 @@
                     ]
                 },
                 "local": {
-                    "target": "matheportal-shell-ui:esbuild:development",
+                    "target": "matheportal-shell-ui:tech-esbuild:development",
                     "dev": true
                 },
                 "development": {
-                    "target": "matheportal-shell-ui:esbuild:development",
+                    "target": "matheportal-shell-ui:tech-esbuild:development",
                     "dev": true
                 }
             },
             "defaultConfiguration": "development"
         },
-        "prepare-runtime-config": {
+        "tech-prepare-runtime-config": {
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
-                    "target": "build",
+                    "target": "tech-build",
                     "params": "forward"
                 }
             ],
@@ -77,10 +77,18 @@
             },
             "defaultConfiguration": "development"
         },
-        "serve": {
+        "tech-serve-angular-dev": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "options": {
+                "buildTarget": "matheportal-shell-ui:tech-esbuild:development",
+                "port": 4200
+            }
+        },
+        "tech-serve-federation-dev": {
             "executor": "@angular-architects/native-federation:build",
             "options": {
-                "target": "matheportal-shell-ui:serve-original:development",
+                "target": "matheportal-shell-ui:tech-serve-angular-dev",
                 "rebuildDelay": 500,
                 "dev": true,
                 "cacheExternalArtifacts": false,
@@ -88,17 +96,7 @@
             },
             "continuous": true
         },
-        "serve-static": {
-            "continuous": true,
-            "executor": "@nx/web:file-server",
-            "options": {
-                "buildTarget": "matheportal-shell-ui:build",
-                "port": 4200,
-                "staticFilePath": "dist/apps/matheportal-shell-ui/browser",
-                "spa": true
-            }
-        },
-        "esbuild": {
+        "tech-esbuild": {
             "executor": "@angular/build:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -106,7 +104,7 @@
                 "browser": "apps/matheportal-shell-ui/src/main.ts",
                 "tsConfig": "apps/matheportal-shell-ui/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "stylePreprocessorOptions": { "includePaths": ["libs/ui-theme/src/lib/styles"] },
+                "stylePreprocessorOptions": { "includePaths": ["libs/shared-ui-theme/src/lib/styles"] },
                 "assets": [
                     {
                         "glob": "**/*",
@@ -154,58 +152,58 @@
             },
             "defaultConfiguration": "development"
         },
-        "serve-original": {
-            "continuous": true,
-            "executor": "@angular/build:dev-server",
-            "configurations": {
-                "production": {
-                    "buildTarget": "matheportal-shell-ui:esbuild:production"
-                },
-                "development": {
-                    "buildTarget": "matheportal-shell-ui:esbuild:development"
-                }
-            },
-            "defaultConfiguration": "development",
-            "options": {
-                "port": 4200
-            }
-        },
         "test": {
             "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/matheportal-shell-ui"],
             "options": {
                 "tsConfig": "apps/matheportal-shell-ui/tsconfig.spec.json",
-                "buildTarget": "matheportal-shell-ui:esbuild:test",
-                "runner": "vitest"
+                "buildTarget": "matheportal-shell-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false
             }
         },
-        "format": {
+        "test-coverage": {
+            "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/matheportal-shell-ui"],
+            "options": {
+                "tsConfig": "apps/matheportal-shell-ui/tsconfig.spec.json",
+                "buildTarget": "matheportal-shell-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false,
+                "coverage": true
+            }
+        },
+        "tech-format": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "format-check": {
+        "tech-format-check": {
             "executor": "nx:run-commands",
             "options": {
                 "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
-        "lint": {
-            "executor": "@nx/eslint:lint",
-            "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"]
-            }
+        "tech-lint": {
+            "executor": "@nx/eslint:lint"
         },
-        "lint-fix": {
+        "tech-lint-fix": {
             "executor": "@nx/eslint:lint",
             "options": {
-                "lintFilePatterns": ["{projectRoot}/src/**/*.{ts,html}"],
                 "fix": true
             }
         },
         "cleanup": {
             "executor": "nx:run-commands",
-            "dependsOn": ["lint-fix", "format"],
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
             "options": {
                 "command": "true"
             }

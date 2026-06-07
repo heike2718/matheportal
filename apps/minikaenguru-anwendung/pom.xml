@@ -14,7 +14,12 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.34.1</quarkus.platform.version>
 
+        <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
+        <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
+
+        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+        <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
 
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
@@ -24,8 +29,7 @@
         <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
         <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
 
-        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-        <egladil-maven-mixins.version>1.0.0</egladil-maven-mixins.version>
+        <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
@@ -43,6 +47,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>de.mathe-jung-alt</groupId>
+                <artifactId>matheportal-bom</artifactId>
+                <version>${matheportal-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -52,6 +63,12 @@
             <groupId>de.egladil.web</groupId>
             <artifactId>egladil-secure-tokens</artifactId>
             <version>${egladil-secure-tokens.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.mathe-jung-alt</groupId>
+            <artifactId>auth-session</artifactId>
+            <version>${auth-session.version}</version>
         </dependency>
 
         <dependency>
@@ -131,6 +148,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
@@ -150,6 +173,22 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>application.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>application.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
@@ -181,6 +220,11 @@
                         </mixin>
                         <mixin>
                             <groupId>de.egladil</groupId>
+                            <artifactId>java-unittest-mixin</artifactId>
+                            <version>${egladil-maven-mixins.version}</version>
+                        </mixin>
+                        <mixin>
+                            <groupId>de.egladil</groupId>
                             <artifactId>java-quarkustest-coverage-mixin</artifactId>
                             <version>${egladil-maven-mixins.version}</version>
                         </mixin>
@@ -191,33 +235,6 @@
                         </mixin>
                     </mixins>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.rudikershaw.gitbuildhook</groupId>
-                <artifactId>git-build-hook-maven-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <gitConfig>
-                        <!-- The location of the directory you are using to store the Git hooks in
-                        your project. -->
-                        <core.hooksPath>.git-hooks/</core.hooksPath>
-                        <core.autocrlf>false</core.autocrlf>
-                        <core.eol>lf</core.eol>
-                        <core.safecrlf>true</core.safecrlf>
-                        <!-- Optional, oft praktisch -->
-                        <pull.rebase>false</pull.rebase>
-                        <fetch.prune>true</fetch.prune>
-                    </gitConfig>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>configure</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,17 @@
+{
+    "name": "matheportal-bom",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/matheportal-bom",
+    "tags": ["platform:backend", "type:bff"],
+
+    "targets": {
+        "install": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-bom",
+                "command": "mvn clean install"
+            }
+        }
+    }
+}

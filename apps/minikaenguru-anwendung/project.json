@@ -4,27 +4,51 @@
     "projectType": "application",
     "sourceRoot": "apps/minikaenguru-anwendung/src",
     "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom", "auth-session"],
 
     "targets": {
-        "dev": {
+        "tech-dev": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn clean quarkus:dev"
+                "command": "mvn clean quarkus:dev",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev"
             }
         },
-        "debug": {
+        "tech-debug": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn quarkus:dev -Ddebug=5005"
+                "command": "mvn quarkus:dev -Ddebug=5005",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev"
+            }
+        },
+        "serve-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-anwendung-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-anwendung:tech-dev"
+                ]
+            }
+        },
+        "serve-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-anwendung-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-anwendung:tech-debug"
+                ]
             }
         },
         "test": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn test"
+                "command": "mvn test",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.test"
             }
         },
         "cleanup": {
@@ -34,7 +58,21 @@
                 "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
             }
         },
-        "stage-frontend": {
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            }
+        },
+        "tech-embed-frontend": {
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
@@ -57,12 +95,32 @@
                 "production": {}
             }
         },
-        "package": {
+        "serve-embedded": {
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
                     "projects": "self",
-                    "target": "stage-frontend",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
+        },
+        "tech-package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
                     "params": "forward"
                 }
             ],
@@ -76,8 +134,12 @@
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
+                    "target": "install",
+                    "projects": "dependencies"
+                },
+                {
                     "projects": "self",
-                    "target": "package",
+                    "target": "tech-package",
                     "params": "forward"
                 }
             ],

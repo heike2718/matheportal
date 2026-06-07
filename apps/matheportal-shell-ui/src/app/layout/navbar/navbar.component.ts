@@ -8,6 +8,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
 
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
+import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 
 @Component({
     selector: 'portal-navbar',
@@ -25,9 +26,9 @@ export class NavbarComponent {
 
     readonly version = this.#config.version;
 
-    // Platzhalter bis Auth angebunden ist
-    readonly isLoggedIn = false;
-    readonly displayName = 'Gast';
+    authSessionFacade = inject(AuthSessionFacade);
+
+    #authFlowFacade = inject(AuthFlowFacade);
 
     isHandset$ = this.#breakpointObserver.observe(Breakpoints.Handset).pipe(
         map(result => result.matches),
@@ -39,10 +40,10 @@ export class NavbarComponent {
     }
 
     onLogin(): void {
-        // folgt später
+        this.#authFlowFacade.login();
     }
 
     onLogout(): void {
-        // folgt später
+        this.#authFlowFacade.logout();
     }
 }

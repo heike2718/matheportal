@@ -10,9 +10,11 @@
         <property name="fileExtensions" value="java" />
         <property name="tabWidth" value="4" />
 
-        <module name="JavadocMethod"/>
+        <module name="JavadocMethod" />
         <module name="JavadocType" />
-        <module name="JavadocVariable" />
+        <module name="JavadocVariable">
+            <property name="scope" value="public" />
+        </module>
         <module name="JavadocStyle" />
         <module name="ConstantName" />
         <module name="LocalFinalVariableName" />
@@ -36,13 +38,13 @@
         <module name="MethodParamPad" />
         <module name="NoWhitespaceAfter">
             <property name="tokens"
-                      value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS" />
+                value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS" />
         </module>
         <module name="NoWhitespaceBefore" />
         <module name="OperatorWrap" />
         <module name="ParenPad">
             <property name="tokens"
-                      value="CTOR_CALL,METHOD_CALL,SUPER_CTOR_CALL" />
+                value="CTOR_CALL,METHOD_CALL,SUPER_CTOR_CALL" />
         </module>
         <module name="TypecastParenPad" />
         <module name="WhitespaceAfter">
@@ -52,7 +54,8 @@
 
         <!-- Checks that the order of modifiers conforms to the suggestions in
             the Java Language specification, sections 8.1.1, 8.3.1 and 8.4.3. The correct
-            order is: public,protected,private,abstract,static,final,transient,volatile,synchronized,native,strictfp -->
+            order is:
+        public,protected,private,abstract,static,final,transient,volatile,synchronized,native,strictfp -->
         <module name="ModifierOrder" />
 
         <module name="RedundantModifier" />
@@ -92,17 +95,25 @@
 
         <module name="SimplifyBooleanExpression" />
         <module name="SimplifyBooleanReturn" />
-        <module name="DesignForExtension" />
+        <module name="DesignForExtension">
+            <property name="ignoredAnnotations"
+                value="RouteFilter,Override,Inject,ApplicationScoped,RequestScoped,Singleton,Dependent" />
+        </module>
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
-        <module name="VisibilityModifier" />
+        <module name="VisibilityModifier">
+            <property name="ignoreAnnotationCanonicalNames"
+                value="org.eclipse.microprofile.config.inject.ConfigProperty,
+                     jakarta.inject.Inject,
+                     io.quarkus.arc.Unremovable" />
+        </module>
         <module name="ArrayTypeStyle" />
         <module name="FinalParameters" />
         <module name="TodoComment">
             <property name="severity" value="ignore" />
             <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity"
-                      value="inherit" />
+                value="inherit" />
         </module>
         <module name="UpperEll" />
 
@@ -170,15 +181,15 @@
         <module name="ImportOrder">
             <!-- gleiche Reihenfolge wie impsort.groups -->
             <property name="groups"
-                      value="java,javax,jakarta,org.junit,org.mockito,io.quarkus,io.quarkiverse,org.eclipse.microprofile,io.smallrye,org.hibernate,org.slf4j,org,com,de"/>
+                value="java,javax,jakarta,org.junit,org.mockito,io.quarkus,io.quarkiverse,org.eclipse.microprofile,io.smallrye,org.hibernate,org.slf4j,org,com,de" />
             <!-- statische Imports unten (wie impsort.staticAfter=true) -->
-            <property name="option" value="bottom"/>
+            <property name="option" value="bottom" />
             <!-- gleiche Gruppierung auch für static anwenden -->
             <property name="staticGroups"
-                      value="java,javax,jakarta,org.junit,org.mockito,io.quarkus,io.quarkiverse,org.eclipse.microprofile,io.smallrye,org.hibernate,org.slf4j,org,com,de"/>
+                value="java,javax,jakarta,org.junit,org.mockito,io.quarkus,io.quarkiverse,org.eclipse.microprofile,io.smallrye,org.hibernate,org.slf4j,org,com,de" />
 
-            <property name="ordered" value="true"/>
-            <property name="separated" value="true"/> <!-- Leerzeile zwischen Gruppen -->
+            <property name="ordered" value="true" />
+            <property name="separated" value="true" /> <!-- Leerzeile zwischen Gruppen -->
             <!--
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="sortStaticImportsAlphabetically" value="true"/>
@@ -187,44 +198,44 @@
 
         <!-- Harte Fehler -->
         <module name="EqualsHashCode">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
         <module name="FallThrough">
-            <property name="severity" value="error"/>
-            <property name="reliefPattern" value="continue in next case"/>
+            <property name="severity" value="error" />
+            <property name="reliefPattern" value="continue in next case" />
         </module>
         <module name="MissingSwitchDefault">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
         <module name="IllegalImport">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
         <module name="UnusedImports">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
         <module name="NeedBraces">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
         <module name="UpperEll">
-            <property name="severity" value="error"/>
+            <property name="severity" value="error" />
         </module>
 
         <!-- ImportOrder doppelt? -> ignorieren oder entfernen -->
         <module name="ImportOrder">
-            <property name="severity" value="ignore"/>
+            <property name="severity" value="ignore" />
             <!-- vorhandene properties können bleiben oder das Modul ganz raus -->
         </module>
     </module>
 
     <!-- Tabs strikt verbieten -->
     <module name="FileTabCharacter">
-        <property name="eachLine" value="true"/>
-        <property name="fileExtensions" value="java"/>
-        <property name="severity" value="error"/>
+        <property name="eachLine" value="true" />
+        <property name="fileExtensions" value="java" />
+        <property name="severity" value="error" />
     </module>
     <module name="NewlineAtEndOfFile">
-        <property name="severity" value="error"/>     <!-- im Report-Profil ggf. warning -->
-        <property name="lineSeparator" value="lf"/>   <!-- passt zu Deinem LF-Setup -->
+        <property name="severity" value="error" />     <!-- im Report-Profil ggf. warning -->
+        <property name="lineSeparator" value="lf" />   <!-- passt zu Deinem LF-Setup -->
     </module>
     <module name="Translation" />
     <!-- Checks for Size Violations. -->

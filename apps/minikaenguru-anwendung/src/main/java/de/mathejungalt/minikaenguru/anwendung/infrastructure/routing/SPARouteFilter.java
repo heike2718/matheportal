@@ -4,21 +4,17 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.quarkus.vertx.web.RouteFilter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.ext.web.RoutingContext;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * SPARouteFilter
+ * SPARouteFilter.
  */
-public class SPARouteFilter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SPARouteFilter.class);
+@Slf4j
+public final class SPARouteFilter {
 
     private static final Predicate<String> FILE_NAME_PREDICATE = Pattern
             .compile(".*[.][a-zA-Z\\d]+")
@@ -26,97 +22,52 @@ public class SPARouteFilter {
 
     private static final String API_PREFIX = "/api/";
 
-    private static final String APP_PLUS_API_PREFIX = "/minikaenguru-anwendung" + API_PREFIX;
+    private static final String SPA_ROOT_PATH = "/minikaenguru-anwendung/";
 
-    private static final String DEFAULT_APP = "/minikaenguru-anwendung/";
+    private static final String SPA_API_PREFIX = "/minikaenguru-anwendung" + API_PREFIX;
 
-    private static final String[] PATH_PREFIXES = { DEFAULT_APP };
+    private static final String SPA_INDEX_HTML = SPA_ROOT_PATH + "index.html";
 
     @RouteFilter(100)
-    void apiFilter(RoutingContext routingContext) {
+    void apiFilter(final RoutingContext routingContext) {
 
         final String path = routingContext.normalizedPath();
-        LOGGER.debug("Check reroute with path: " + path);
+        log.debug("Check reroute with path: " + path);
 
-        if (path.startsWith(APP_PLUS_API_PREFIX)) {
+        if (isApiRequest(path)) {
 
             // reroute to REST-API
-            String rerouted = path.replaceFirst(DEFAULT_APP, "/") + getQueryParameters(routingContext);
-            LOGGER.debug("(2) rc.reroute: " + rerouted);
+            final String rerouted = path.replaceFirst(SPA_ROOT_PATH, "/") + getQueryParameters(routingContext);
+            log.debug("(1) rc.reroute: " + rerouted);
             routingContext.reroute(rerouted);
-        } else {
-
-            LOGGER.debug("(3)");
-
-            if (this.doesNotNeedRedirect(path)) {
-
-                LOGGER.debug("(4)");
-                routingContext.next();
-            } else {
-
-                LOGGER.debug("(5)");
-
-                if (path.startsWith(DEFAULT_APP)) {
-
-                    // I0094: deep-Angular-Router-Links (z.B. /minikaenguru-anwendung/schulen/)
-                    // müssen zur SPA Grund-URL
-                    // (/minikaenguru-anwendung/) umgeleitet werden. Danach übernimmt wieder das
-                    // Angular-Routing
-                    // Jetzt funktionieren Bookmarking, Back-Button sowie F5 ohne dass es ein 404
-                    // gibt.
-                    String[] tokens = path.split("/");
-                    LOGGER.debug("(6) Anzahl token = {}", tokens.length);
-
-                    if (tokens.length > 2) {
-
-                        // /raetselbaukasten/ => 2 tokens!
-                        String rerouted = "/" + tokens[1] + "/";
-                        LOGGER.debug("(7) Umleiten von deep Angular router links: {} nach {} ", path, rerouted);
-                        routingContext.reroute(rerouted);
-                    } else {
-
-                        LOGGER.debug("(8) kein Umleiten der SPA-Grund-URL {} ", path);
-                        routingContext.next();
-                    }
-
-                } else {
-
-                    LOGGER.debug("(9) global else => rc.next()");
-                    routingContext.next();
-                }
-            }
+            return;
         }
 
+        if (isSpaDeepLink(path)) {
+            log.debug("(2) Reroute SPA deep link: {} nach {}", path, SPA_INDEX_HTML);
+            routingContext.reroute(SPA_INDEX_HTML);
+            return;
+        }
+
+        log.debug("(3) global else => rc.next()");
+        routingContext.next();
     }
 
-    private boolean doesNotNeedRedirect(final String path) {
+    private boolean isApiRequest(final String path) {
+        return path.startsWith(SPA_API_PREFIX);
+    }
 
-        if (path.equals("/")) {
+    private boolean isSpaDeepLink(final String path) {
+        return path.startsWith(SPA_ROOT_PATH) && !SPA_ROOT_PATH.equals(path) && !isStaticFile(path);
+    }
 
-            LOGGER.debug("(3-1) kein Umleiten von /");
-            return true;
-        }
-
-        if (FILE_NAME_PREDICATE.test(path)) {
-
-            LOGGER
-                    .debug("(3-2) kein Umleiten von statischen files aus src/main/resources/META-INF/resources/raetselbaukasten/");
-            return true;
-        }
-
-        if (Stream.of(PATH_PREFIXES).noneMatch(path::startsWith)) {
-
-            LOGGER.debug("(3-3) kein Umleiten von Pfaden, die nicht mit {} beginnen", DEFAULT_APP);
-            return true;
-        }
-
-        LOGGER.debug("(3-4)");
-        return false;
+    private boolean isStaticFile(final String path) {
+        return FILE_NAME_PREDICATE.test(path);
     }
 
     private String getQueryParameters(final RoutingContext routingContext) {
 
-        Map<String, String> queryParams = routingContext
+        final Map<String, String> queryParams = routingContext
                 .queryParams()
                 .entries()
                 .stream()
@@ -127,13 +78,11 @@ public class SPARouteFilter {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer("?");
-        queryParams.forEach((key, value) -> sb.append(key).append("=").append(value).append("&"));
+        final StringBuilder stringBuilder = new StringBuilder("?");
+        queryParams.forEach((key, value) -> stringBuilder.append(key).append("=").append(value).append("&"));
 
-        sb.deleteCharAt(sb.length() - 1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
-        return sb.toString();
-
+        return stringBuilder.toString();
     }
-
 }

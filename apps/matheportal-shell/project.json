@@ -4,27 +4,66 @@
     "projectType": "application",
     "sourceRoot": "apps/matheportal-shell/src",
     "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom", "auth-session"],
 
     "targets": {
-        "dev": {
+        "tech-generate-sources": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn clean quarkus:dev"
+                "command": "mvn clean generate-sources"
             }
         },
-        "debug": {
+        "tech-dev": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn quarkus:dev -Ddebug=5005"
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/matheportal-shell/.config/.env.dev"
+            }
+        },
+        "tech-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn quarkus:dev -Ddebug=5005",
+                "envFile": "apps/matheportal-shell/.config/.env.dev"
+            }
+        },
+        "serve-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run matheportal-shell-ui:tech-serve-federation-dev",
+                    "npx nx run matheportal-shell:tech-dev"
+                ]
+            }
+        },
+        "serve-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run matheportal-shell-ui:tech-serve-federation-dev",
+                    "npx nx run matheportal-shell:tech-debug"
+                ]
             }
         },
         "test": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn test"
+                "command": "mvn test",
+                "envFile": "apps/matheportal-shell/.config/.env.test"
+            }
+        },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn -Ptesting-coverage-strict clean verify",
+                "envFile": "apps/matheportal-shell/.config/.env.test"
             }
         },
         "cleanup": {
@@ -34,12 +73,26 @@
                 "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
             }
         },
-        "stage-frontend": {
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            }
+        },
+        "tech-embed-frontend": {
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
                     "projects": ["matheportal-shell-ui"],
-                    "target": "prepare-runtime-config",
+                    "target": "tech-prepare-runtime-config",
                     "params": "forward"
                 }
             ],
@@ -57,12 +110,36 @@
                 "production": {}
             }
         },
-        "package": {
+        "serve-embedded": {
             "executor": "nx:run-commands",
             "dependsOn": [
                 {
                     "projects": "self",
-                    "target": "stage-frontend",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/matheportal-shell",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/matheportal-shell/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
+        },
+        "tech-package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "install",
+                    "projects": "dependencies"
+                },
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
                     "params": "forward"
                 }
             ],
@@ -77,7 +154,7 @@
             "dependsOn": [
                 {
                     "projects": "self",
-                    "target": "package",
+                    "target": "tech-package",
                     "params": "forward"
                 }
             ],

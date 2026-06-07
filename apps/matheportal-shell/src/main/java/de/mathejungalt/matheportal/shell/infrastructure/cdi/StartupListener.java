@@ -3,26 +3,32 @@ package de.mathejungalt.matheportal.shell.infrastructure.cdi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 
+import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * StartupListener.
  */
+@Startup
 @ApplicationScoped
-public class StartupListener {
+@Slf4j
+public final class StartupListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartupListener.class);
+    @ConfigProperty(name = "quarkus.datasource.sessions.jdbc.url")
+    String jdbcUrl;
 
     @ConfigProperty(name = "quarkus.http.cors.origins")
     String corsOrigins;
 
     @ConfigProperty(name = "quarkus.http.port")
     String port;
+
+    @ConfigProperty(name = "client.redirect.url")
+    String clientRedirectUrl;
 
     /**
      * On startup.
@@ -31,9 +37,10 @@ public class StartupListener {
      */
     void onStartup(@Observes final StartupEvent startupEvent) {
 
-        LOGGER.info(" ===========>  port={}", port);
-        LOGGER.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
-
+        log.info(" ===========>  jdbcUrl={}", jdbcUrl);
+        log.info(" ===========>  port={}", port);
+        log.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
+        log.info(" ===========> client.redirect.url={}", clientRedirectUrl);
     }
 
 }

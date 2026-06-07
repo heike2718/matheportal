@@ -1,3 +1,21 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
-pnpm run -s check:all
+
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
+  BASE="@{u}"
+else
+  echo "No upstream branch configured. Falling back to develop."
+  BASE="develop"
+fi
+
+HEAD="HEAD"
+
+echo "Affected projects since $BASE:"
+pnpm nx show projects --affected --base="$BASE" --head="$HEAD"
+
+echo "Running analyze-quality for affected projects..."
+pnpm nx affected -t analyze-quality --base="$BASE" --head="$HEAD"
+
+echo "Running tests for affected projects..."
+pnpm nx affected -t test --base="$BASE" --head="$HEAD" --skip-nx-cache

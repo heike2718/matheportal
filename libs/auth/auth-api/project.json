@@ -1,0 +1,60 @@
+{
+    "name": "auth-api",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/auth/auth-api/src",
+    "prefix": "mp",
+    "projectType": "library",
+    "tags": ["domain:auth", "type:api"],
+    "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-api"],
+            "options": {
+                "reportsDirectory": "coverage/libs/auth/auth-api"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/auth/auth-api"],
+            "options": {
+                "coverage": true,
+                "reportsDirectory": "coverage/libs/auth/auth-api"
+            }
+        },
+        "tech-format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-lint": {
+            "executor": "@nx/eslint:lint"
+        },
+        "tech-lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

@@ -1,31 +1,52 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, EnvironmentProviders, provideBrowserGlobalErrorListeners, Provider } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { matheporalShellConfiguration } from './config/configuration';
+import { matheportalShellConfiguration } from './config/configuration';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
+import { AUTH_CONFIGURATION } from '@matheportal/auth-model';
+import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideStore } from '@ngrx/store';
+import { authDataProvider, authExpiredInterceptor, credentialsInterceptor } from '@matheportal/auth-api';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
+import { loadingInterceptor } from '@matheportal/feedback-api';
+import { errorFeedbackProvider } from '@matheportal/error-feedback';
 
-// Environment-spezifische Provider
-function getEnvironmentSpecificProviders() {
-    // const providers = [];
+function getEnvironmentSpecificProviders(): Array<Provider | EnvironmentProviders> {
+    const providers: Array<Provider | EnvironmentProviders> = [];
 
-    // if (!matheporalShellConfiguration.production) {
-    //     providers.push(
-    //         provideStoreDevtools({
-    //             maxAge: 25,
-    //             connectInZone: true,
-    //             logOnly: false,
-    //         })
-    //     );
-    // }
+    if (!matheportalShellConfiguration.production) {
+        providers.push(
+            provideStoreDevtools({
+                maxAge: 25,
+                connectInZone: true,
+                logOnly: false,
+            })
+        );
+    }
 
-    return [];
+    return providers;
 }
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideBrowserGlobalErrorListeners(),
         provideRouter(appRoutes),
+        provideStore({}),
+        provideEffects(),
         ...getEnvironmentSpecificProviders(),
-        { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheporalShellConfiguration },
+        authDataProvider,
+        { provide: AUTH_CONFIGURATION, useValue: { apiUrl: matheportalShellConfiguration.apiUrl } },
+        { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheportalShellConfiguration },
+        provideHttpClient(
+            withInterceptors([
+                loadingInterceptor,
+                credentialsInterceptor,
+                globalTechnicalHttpErrorInterceptor,
+                authExpiredInterceptor,
+            ])
+        ),
+        errorFeedbackProvider,
     ],
 };

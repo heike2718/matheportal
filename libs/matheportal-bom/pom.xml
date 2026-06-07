@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.mathe-jung-alt</groupId>
+    <artifactId>matheportal-bom</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>matheportal-bom</name>
+    <description>Zentrales Dependency-Management für alle matheportal-Projekte</description>
+
+    <properties>
+        <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
+
+        <quarkus.version>3.34.1</quarkus.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j-jboss-logmanager.version>2.1.0.Final</slf4j-jboss-logmanager.version>
+        <jackson.version>3.1.1</jackson.version>
+        <jakartaee.version>11.0.0</jakartaee.version>
+
+
+        <junit.version>5.14.3</junit.version>
+        <mockito.version>5.23.0</mockito.version>
+        <jakarta-el.version>5.0.0-M1</jakarta-el.version>
+
+        <lombock.version>1.18.42</lombock.version>
+
+        <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+        <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>de.egladil.web</groupId>
+                <artifactId>egladil-secure-tokens</artifactId>
+                <version>${egladil-secure-tokens.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${quarkus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${jakartaee.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombock.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.slf4j</groupId>
+                <artifactId>slf4j-jboss-logmanager</artifactId>
+                <version>${slf4j-jboss-logmanager.version}</version>
+            </dependency>
+
+
+            <!-- test-dependencies -->
+
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
+                <version>${jakarta-el.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

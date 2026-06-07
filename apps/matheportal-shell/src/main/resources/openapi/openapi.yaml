@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+    title: matheportal-shell API
+    version: 1.0.0
+    description: API der matheportal-shell für Session-Handling und Login.
+
+paths:
+    /api/session:
+        put:
+            tags:
+                - Session
+            summary: Prüft bzw. lädt die Session neu
+            description: >
+                Prüft die bestehende Session anhand des Session-Cookies und lädt die Sessiondaten neu. Ist die Session noch gültig und die maximale Lebensdauer noch nicht erreicht, wird die Gültigkeit der Session um das konfigurierte Idle-Timeout verlängert. Ist die Session abgelaufen oder wurde die maximale Lebensdauer erreicht, wird der Request mit 401 beantwortet und das Session-Cookie gelöscht.
+            operationId: reloadSession
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: Session wurde erfolgreich geprüft oder geladen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '401':
+                    description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+        post:
+            tags:
+                - Session
+            summary: Legt eine Session anhand eines Access-Tokens an
+            description: >
+                Nimmt ein Access-Token entgegen, erzeugt im Backend eine Session und
+                liefert die Informationen des angemeldeten Benutzers zurück.
+            operationId: createSession
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AccessTokenRequest'
+            responses:
+                '200':
+                    description: Session erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Access-Token ist ungültig oder abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        delete:
+            tags:
+                - Session
+            summary: Loggt den Benutzer aus
+            description: Beendet eine eventuell vorhandene Session im Backend und löscht das Session-Cookie. Dabei auftretende Exceptions werden nicht weitergereicht.
+            operationId: deleteSession
+            responses:
+                '204':
+                    description: Logout wurde verarbeitet.
+    /api/authurls/login:
+        get:
+            tags:
+                - Authurls
+            summary: Liefert die Login-URL des IAM
+            description: Liefert die URL, an die das Frontend für den Login weiterleiten kann.
+            operationId: getLoginUrl
+            responses:
+                '200':
+                    description: Login-URL erfolgreich ermittelt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthUrlResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '503':
+                    description: IAM nicht erreichbar
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+    securitySchemes:
+        mpSession:
+            type: apiKey
+            in: cookie
+            name: MPSESSIONID
+            description: Session-Cookie der Matheportal-Sitzung
+    schemas:
+        AccessTokenRequest:
+            type: object
+            required:
+                - idToken
+            properties:
+                idToken:
+                    type: string
+                    description: Der Access-Token-String
+                    example: eyJhbGciOi...
+        AuthUrlResponse:
+            type: object
+            required:
+                - url
+            properties:
+                url:
+                    type: string
+                    description: URL zum IAM-Login
+                    example: https://iam.example.org/login
+
+        User:
+            type: object
+            required:
+                - fullName
+                - roles
+            properties:
+                fullName:
+                    type: string
+                    minLength: 1
+                    maxLength: 201
+                    pattern: "^[\\p{IsLatin}\\d]+(?:[ '\\-.’][\\p{IsLatin}\\d]+)*$"
+                    description: Vollständiger Anzeigename (lateinische Buchstaben, Ziffern, Leerzeichen, Bindestrich, Apostroph)
+                    example: María del Carmen 2
+                roles:
+                    type: array
+                    uniqueItems: true
+                    description: Rollen des Benutzers
+                    items:
+                        type: string
+                        pattern: '^[A-Z]+(_[A-Z]+)*$'
+                    example:
+                        - STANDARD
+                        - ADMIN
+        ConstraintViolationDetail:
+            type: object
+            properties:
+                field:
+                    type: string
+                    description: Feldname der verletzten Constraint.
+                    example: clientId
+                message:
+                    type: string
+                    description: Fehlermeldung zur verletzten Constraint.
+                    example: clientId ist ungueltig.
+        ErrorResponse:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    type: string
+                    example: Irgendein Fehler ist aufgetreten
+                connstraintViolations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ConstraintViolationDetail'
