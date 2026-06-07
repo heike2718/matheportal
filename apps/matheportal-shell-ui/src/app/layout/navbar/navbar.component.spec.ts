@@ -9,11 +9,9 @@ import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { Component } from '@angular/core';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { HarnessLoader } from '@angular/cdk/testing';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
 describe('NavbarComponent', () => {
-    let loader: HarnessLoader;
     let fixture: ComponentFixture<NavbarComponent>;
     let component: NavbarComponent;
 

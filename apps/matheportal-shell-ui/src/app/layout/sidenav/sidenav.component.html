@@ -4,15 +4,17 @@
     </div>
 
     <nav class="sidenav__nav" aria-label="Seitennavigation">
-        <a
-            mat-list-item
-            class="sidenav__link sidenav__link--portal"
-            routerLink="/home"
-            routerLinkActive="sidenav__link--active"
-            (click)="onSidenavClose()">
-            <mat-icon class="sidenav__icon" aria-hidden="true">home</mat-icon>
-            <span class="sidenav__label">Startseite</span>
-        </a>
+        <div data-testid="sidenav-main-links">
+            <a
+                mat-list-item
+                class="sidenav__link sidenav__link--portal"
+                routerLink="/home"
+                routerLinkActive="sidenav__link--active"
+                (click)="onSidenavClose()">
+                <mat-icon class="sidenav__icon" aria-hidden="true">home</mat-icon>
+                <span class="sidenav__label">Startseite</span>
+            </a>
+        </div>
     </nav>
 
     <div class="sidenav__footer">
@@ -25,15 +27,15 @@
             <span>Datenschutz</span>
         </a>
 
-        @if (isLoggedIn) {
-            <button mat-stroked-button type="button" class="sidenav__logout" (click)="onLogout()">
+        @if (authSessionFacade.isSessionValidated$ | async) {
+            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogout()">
                 <mat-icon class="sidenav__icon" aria-hidden="true">logout</mat-icon>
-                <span>Logout</span>
+                <span data-testid="sidenav-auth-btn-label">Logout</span>
             </button>
         } @else {
-            <button mat-stroked-button type="button" class="sidenav__logout" (click)="onLogin()">
+            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogin()">
                 <mat-icon class="sidenav__icon" aria-hidden="true">login</mat-icon>
-                <span>Login</span>
+                <span data-testid="sidenav-auth-btn-label">Login</span>
             </button>
         }
 
