@@ -32,7 +32,7 @@ public class LogoutService {
 
         if (optSessionId.isPresent()) {
             try {
-                sessionFacade.invalidateSession(optSessionId.get());
+                sessionFacade.invalidateSessionQuietly(optSessionId.get());
             } catch (final Exception e) {
                 log
                         .error("Exception beim Loeschen der Session mit der sessionId={}: {}", optSessionId.get(),

@@ -2,9 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 export const AUTH_FEATURE_KEY = 'mpAuth';
 
-export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'useraction';
-
-export type AUTHORIZATION_STATE = 'loggedOut' | 'unauthorized' | 'authorized';
+export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'missing';
 
 export type AUTH_RESULT_STATE = 'login' | 'signup' | 'invalid';
 
@@ -25,6 +23,10 @@ export const CLEAR_AUTH_LOCATION_HASH = new InjectionToken<() => void>('clear-au
         window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
     },
 });
+
+export interface SessionValidationFailedDto {
+    readonly reason: 'expired' | 'missing';
+}
 
 export interface AuthResult {
     readonly state: AUTH_RESULT_STATE;
@@ -103,4 +105,14 @@ export function mapHashToAuthResult(hash: string): AuthResult | null {
         state: 'invalid',
         idToken,
     };
+}
+
+export function parseSessionValidationFailedDtoReason(value: unknown): 'expired' | 'missing' {
+    if (typeof value !== 'object' || value === null) {
+        return 'missing';
+    }
+
+    const reason = (value as { reason?: unknown }).reason;
+
+    return reason === 'expired' || reason === 'missing' ? reason : 'missing';
 }

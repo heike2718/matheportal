@@ -27,7 +27,7 @@
             <span>Datenschutz</span>
         </a>
 
-        @if (authSessionFacade.isSessionValidated$ | async) {
+        @if (authSessionFacade.hasSession$ | async) {
             <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogout()">
                 <mat-icon class="sidenav__icon" aria-hidden="true">logout</mat-icon>
                 <span data-testid="sidenav-auth-btn-label">Logout</span>

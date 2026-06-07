@@ -11,8 +11,7 @@ export class AuthSessionFacade {
     #store = inject(Store);
 
     user$: Observable<User> = this.#store.select(fromAuth.user);
-
-    isSessionValidated$: Observable<boolean> = this.#store.select(fromAuth.isSessionValidated);
+    hasSession$: Observable<boolean> = this.#store.select(fromAuth.hasSession);
 
     /**
      * validiert die bestehende Session.

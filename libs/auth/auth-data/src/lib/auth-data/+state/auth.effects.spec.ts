@@ -315,173 +315,51 @@ describe('AuthEffects', () => {
         });
     });
 
-    describe('logOut$', () => {
-        it('should call logOut and map to loggedOut', async () => {
-            httpServiceMock.logOut.mockReturnValue(of(undefined));
-
-            action$.next(authActions.logOut());
-
-            const emitted = await firstValueFrom(effects.logOut$);
-
-            expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
-            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-
-        it('should call logOut and map to loggedOut, when HttpErrorResponse', async () => {
-            httpServiceMock.logOut.mockReturnValue(throwError(() => httpServerErrorResponse));
-
-            action$.next(authActions.logOut());
-
-            const emitted = await firstValueFrom(effects.logOut$);
-
-            expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
-            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-
-        it('should call logOut and map to loggedOut, when general Error', async () => {
-            httpServiceMock.logOut.mockReturnValue(throwError(() => new Error('boom!')));
-
-            action$.next(authActions.logOut());
-
-            const emitted = await firstValueFrom(effects.logOut$);
-
-            expect(emitted).toEqual(authActions.loggedOut({ reason: 'useraction' }));
-            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-    });
-
     describe('sessionValidationFailed$', () => {
-        it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut, reason %i',
-            async reason => {
-                httpServiceMock.logOut.mockReturnValue(of(undefined));
-                action$.next(authActions.sessionValidationFailed({ reason: reason }));
-                const emitted = await firstValueFrom(effects.sessionValidationFailed$);
+        it('should show warning when session validation failed with expired', async () => {
+            httpServiceMock.logOut.mockReturnValue(of(undefined));
+            action$.next(authActions.sessionValidationFailed({ reason: 'expired' }));
+            await firstValueFrom(effects.sessionValidationFailed$);
 
-                expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
-                expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
-                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-                expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-                expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-            }
-        );
-
-        it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut when HttpErrorResponse, reason %i',
-            async reason => {
-                httpServiceMock.logOut.mockReturnValue(throwError(() => httpServerErrorResponse));
-                action$.next(authActions.sessionValidationFailed({ reason: reason }));
-                const emitted = await firstValueFrom(effects.sessionValidationFailed$);
-
-                expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
-                expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-
-                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-                expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-                expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-            }
-        );
-
-        it.each<SESSION_VALIDATION_FAILED_REASON>(['technical', 'expired'])(
-            'should call logOut and map to loggedOut when general Error, reason %i',
-            async reason => {
-                httpServiceMock.logOut.mockReturnValue(throwError(() => new Error('boom!')));
-                action$.next(authActions.sessionValidationFailed({ reason: reason }));
-                const emitted = await firstValueFrom(effects.sessionValidationFailed$);
-
-                expect(emitted).toEqual(authActions.loggedOut({ reason: reason }));
-                expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
-                expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-                expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
-                expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-                expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-                expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-            }
-        );
-    });
-
-    describe('loggedOut$', () => {
-        it('should publishWarning and route to home when reason expired', async () => {
-            action$.next(authActions.loggedOut({ reason: 'expired' }));
-            await firstValueFrom(effects.loggedOut$);
-
-            expect(errorPublisherMock.publishWarning).toHaveBeenCalledWith(
-                'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
-            );
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
-
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).toHaveBeenCalledTimes(1);
+            expect(errorPublisherMock.publishWarning).toHaveBeenCalledWith('abgelaufen');
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
-        it('should publishError and route to home when reason technical', async () => {
-            action$.next(authActions.loggedOut({ reason: 'technical' }));
-            await firstValueFrom(effects.loggedOut$);
+        it('should show nothing when session validation failed with missing', async () => {
+            httpServiceMock.logOut.mockReturnValue(of(undefined));
+            action$.next(authActions.sessionValidationFailed({ reason: 'missing' }));
+            await firstValueFrom(effects.sessionValidationFailed$);
 
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-            );
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
-
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
-        it('should not publish any message and route to home when reason useraction', async () => {
-            action$.next(authActions.loggedOut({ reason: 'useraction' }));
-            await firstValueFrom(effects.loggedOut$);
+        it('should show error when session validation failed with technical', async () => {
+            httpServiceMock.logOut.mockReturnValue(of(undefined));
+            action$.next(authActions.sessionValidationFailed({ reason: 'technical' }));
+            await firstValueFrom(effects.sessionValidationFailed$);
 
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
-
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith('oh oh');
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });

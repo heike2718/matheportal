@@ -13,7 +13,7 @@ describe('AppComponent', () => {
         initClearOrRestoreSession: vi.fn(),
     };
     const authSessionFacadeMock = {
-        isSessionValidated$: of(false),
+        hasSession$: of(false),
     };
 
     beforeEach(async () => {

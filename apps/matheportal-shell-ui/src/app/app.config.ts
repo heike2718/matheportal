@@ -7,7 +7,7 @@ import { AUTH_CONFIGURATION } from '@matheportal/auth-model';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideStore } from '@ngrx/store';
-import { authDataProvider, authExpiredInterceptor, credentialsInterceptor } from '@matheportal/auth-api';
+import { authDataProvider, credentialsInterceptor } from '@matheportal/auth-api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
 import { loadingInterceptor } from '@matheportal/feedback-api';
@@ -40,12 +40,7 @@ export const appConfig: ApplicationConfig = {
         { provide: AUTH_CONFIGURATION, useValue: { apiUrl: matheportalShellConfiguration.apiUrl } },
         { provide: MATHEPORTAL_SHELL_CONFIGURATION, useValue: matheportalShellConfiguration },
         provideHttpClient(
-            withInterceptors([
-                loadingInterceptor,
-                credentialsInterceptor,
-                globalTechnicalHttpErrorInterceptor,
-                authExpiredInterceptor,
-            ])
+            withInterceptors([loadingInterceptor, credentialsInterceptor, globalTechnicalHttpErrorInterceptor])
         ),
         errorFeedbackProvider,
     ],

@@ -16,7 +16,7 @@ import io.smallrye.mutiny.Uni;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.SessionFacade;
-import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
+import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 
 /**
  * SessionIdentityProvider.
@@ -57,7 +57,7 @@ public class SessionIdentityProvider implements IdentityProvider<SessionIdAuthen
                     .setPrincipal(authenticatedUser::getUuid)
                     .addRoles(authenticatedUser.getRoles())
                     .build();
-        } catch (final SessionExpiredException e) {
+        } catch (final SessionValidationFailedException e) {
             throw new AuthenticationFailedException("Session ist abgelaufen", e);
         }
     }

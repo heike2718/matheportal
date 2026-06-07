@@ -8,7 +8,8 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
+import de.mathejungalt.authsessions.api.SessionValidationFailedDto;
+import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 import de.mathejungalt.matheportal.shell.domain.session.SessionCookieAdapter;
 
 /**
@@ -16,16 +17,16 @@ import de.mathejungalt.matheportal.shell.domain.session.SessionCookieAdapter;
  */
 @Provider
 @Priority(ExceptionMapperPriorities.SESSION)
-public class SessionExpiredExceptionMapper implements ExceptionMapper<SessionExpiredException> {
+public class SessionExpiredExceptionMapper implements ExceptionMapper<SessionValidationFailedException> {
 
     @Inject
     SessionCookieAdapter sessionCookieAdapter;
 
     @Override
-    public Response toResponse(final SessionExpiredException exception) {
+    public Response toResponse(final SessionValidationFailedException exception) {
 
         final NewCookie expiredCookie = sessionCookieAdapter.createExpiredSessionCookie();
-        return Response.status(Status.UNAUTHORIZED).cookie(expiredCookie).build();
+        final SessionValidationFailedDto payload = new SessionValidationFailedDto(exception.getReason());
+        return Response.status(Status.UNAUTHORIZED).entity(payload).cookie(expiredCookie).build();
     }
-
 }

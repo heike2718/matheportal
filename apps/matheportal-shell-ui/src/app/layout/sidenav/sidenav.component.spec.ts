@@ -14,12 +14,12 @@ describe('SidenavComponent', () => {
     let component: SidenavComponent;
     let fixture: ComponentFixture<SidenavComponent>;
 
-    let isSessionValidatedSubject: BehaviorSubject<boolean>;
+    let hasSessionSubject: BehaviorSubject<boolean>;
     let userSubject: BehaviorSubject<User>;
 
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
-        isSessionValidated$: undefined as unknown as Observable<boolean>,
+        hasSession$: undefined as unknown as Observable<boolean>,
         user$: undefined as unknown as Observable<User>,
     };
     const authFlowFacadeMock = {
@@ -36,11 +36,11 @@ describe('SidenavComponent', () => {
         roles: ['STANDARD'],
     } as User;
 
-    async function setup(options?: { user?: User; isSessionValidated?: boolean }) {
-        isSessionValidatedSubject = new BehaviorSubject<boolean>(options?.isSessionValidated ?? false);
+    async function setup(options?: { user?: User; hasSession?: boolean }) {
+        hasSessionSubject = new BehaviorSubject<boolean>(options?.hasSession ?? false);
         userSubject = new BehaviorSubject<User>(options?.user ?? gast);
 
-        authSessionFacadeMock.isSessionValidated$ = isSessionValidatedSubject.asObservable();
+        authSessionFacadeMock.hasSession$ = hasSessionSubject.asObservable();
         authSessionFacadeMock.user$ = userSubject.asObservable();
 
         await TestBed.configureTestingModule({
@@ -75,7 +75,7 @@ describe('SidenavComponent', () => {
         beforeEach(async () => {
             await setup({
                 user: gast,
-                isSessionValidated: false,
+                hasSession: false,
             });
         });
 
@@ -105,7 +105,7 @@ describe('SidenavComponent', () => {
         beforeEach(async () => {
             await setup({
                 user: gast,
-                isSessionValidated: false,
+                hasSession: false,
             });
         });
         it('it should show login button and call login when login is clicked', () => {
@@ -131,7 +131,7 @@ describe('SidenavComponent', () => {
         beforeEach(async () => {
             await setup({
                 user: loggedInUser,
-                isSessionValidated: true,
+                hasSession: true,
             });
         });
         it('it should show logout button and call logout when logout is clicked', () => {

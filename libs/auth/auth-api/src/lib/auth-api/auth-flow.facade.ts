@@ -48,13 +48,6 @@ export class AuthFlowFacade {
         }
     }
 
-    /**
-     * wird vom authExpiredInterceptor aufgerufen
-     */
-    handleSessionExpired(): void {
-        this.#store.dispatch(authActions.sessionValidationFailed({ reason: 'expired' }));
-    }
-
     #handleLoginMissingIdToken(): void {
         // TODO: exception handling - also das hier ans backend senden.
         console.error('initClearOrRestoreSession: login with missing idToken');
