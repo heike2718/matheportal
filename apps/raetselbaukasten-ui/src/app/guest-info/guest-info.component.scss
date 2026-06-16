@@ -1,0 +1,17 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+}
+
+.rbk-guest-info {
+    padding: mp-theme.$mp-space-6;
+
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-5 0;
+    }
+
+    &__emphasized {
+        font-weight: bold;
+    }
+}

@@ -41,10 +41,17 @@ export default [
                             notDependOnLibsWithTags: ['host-only'],
                         },
 
-                        // Remotes dürfen nicht auf type:data zugreifen
+                        // Remotes dürfen nur auf diese hier zugreifen
                         {
                             sourceTag: 'layer:remote',
-                            notDependOnLibsWithTags: ['type:data'],
+                            onlyDependOnLibsWithTags: [
+                                'type:api',
+                                'type:model',
+                                'type:ui',
+                                'type:adapter',
+                                'domain:shared',
+                                'scope:shared',
+                            ],
                         },
 
                         // ══════════════════════════════════════════════════════════════
