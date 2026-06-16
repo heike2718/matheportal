@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,8 +96,8 @@ public class ReloadSessionServiceTest {
             reloadSessionService.reloadSession();
         });
 
-        assertAll(() -> assertEquals("expired", exception.getMessage()),
-                () -> assertEquals(SessionValidationFailedReason.MISSING, exception.getReason()),
+        assertAll(() -> assertEquals("EXPIRED", exception.getMessage()),
+                () -> assertEquals(SessionValidationFailedReason.EXPIRED, exception.getReason()),
                 () -> verify(sessionCookieAdapter).getSessionId(),
                 () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes),
                 () -> verify(sessionFacade).invalidateSessionQuietly(sessionId));
@@ -118,11 +119,11 @@ public class ReloadSessionServiceTest {
             reloadSessionService.reloadSession();
         });
 
-        assertAll(() -> assertEquals("missing", exception.getMessage()),
+        assertAll(() -> assertEquals("MISSING", exception.getMessage()),
                 () -> assertEquals(SessionValidationFailedReason.MISSING, exception.getReason()),
                 () -> verify(sessionCookieAdapter).getSessionId(),
                 () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes),
-                () -> verify(sessionFacade).invalidateSessionQuietly(sessionId));
+                () -> verify(sessionFacade, never()).invalidateSessionQuietly(sessionId));
     }
 
 }

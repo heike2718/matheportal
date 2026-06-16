@@ -12,8 +12,9 @@ public class SessionValidationFailedException extends RuntimeException {
     private final SessionValidationFailedReason reason;
 
     /**
-     * @param message String
-     * @param reason  SessionValidationFailedReason
+     * SessionValidationFailedException.
+     *
+     * @param reason SessionValidationFailedReason
      */
     public SessionValidationFailedException(final SessionValidationFailedReason reason) {
         super(reason.name());

@@ -9,6 +9,7 @@
         "test:affected": "npx nx affected -t test",
         "analyze:quality": "npx nx run-many -t analyze-quality --all",
         "analyze:quality:affected": "npx nx affected -t analyze-quality",
+        "cleanup:all": "npx nx run-many -t cleanup --all",
         "cleanup:affected": "npx nx affected -t cleanup",
         "deploy:prepare:qs": "npx nx run-many -t prepare-deployment --projects=matheportal-shell,minikaenguru-anwendung,raetselbaukasten --configuration=qs",
         "deploy:prepare:production": "npx nx run-many -t prepare-deployment --projects=matheportal-shell,minikaenguru-anwendung,raetselbaukasten --configuration=production"

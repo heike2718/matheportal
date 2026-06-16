@@ -6,12 +6,7 @@ import { provideStore } from '@ngrx/store';
 import { AuthHttpService } from '../auth-http.service';
 import { Router } from '@angular/router';
 import { authActions } from './auth.actions';
-import {
-    AuthUrlResponse,
-    CLEAR_AUTH_LOCATION_HASH,
-    SESSION_VALIDATION_FAILED_REASON,
-    User,
-} from '@matheportal/auth-model';
+import { AuthUrlResponse, LOCATION_HASH_SERVICE, User } from '@matheportal/auth-model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
@@ -20,17 +15,22 @@ describe('AuthEffects', () => {
     let action$: ReplaySubject<unknown>;
     let effects: AuthEffects;
 
-    const clearAuthLocationHashMock = vi.fn();
-
-    TestBed.overrideProvider(CLEAR_AUTH_LOCATION_HASH, {
-        useValue: clearAuthLocationHashMock,
+    const httpUnauthorizedExpiredErrorResponse = new HttpErrorResponse({
+        status: 401,
+        statusText: 'Unauthorized',
+        url: '/session',
+        error: {
+            reason: 'expired',
+        },
     });
 
-    const httpUnauthorizedErrorResponse = new HttpErrorResponse({
+    const httpUnauthorizedMissingErrorResponse = new HttpErrorResponse({
         status: 401,
-        statusText: 'unauthorized',
-        error: 'boom',
+        statusText: 'Unauthorized',
         url: '/session',
+        error: {
+            reason: 'missing',
+        },
     });
 
     const httpServerErrorResponse = new HttpErrorResponse({
@@ -60,6 +60,11 @@ describe('AuthEffects', () => {
         redirectToUrl: vi.fn(),
     };
 
+    const locationHashServiceMock = {
+        read: vi.fn(),
+        clear: vi.fn(),
+    };
+
     beforeEach(() => {
         vi.resetAllMocks();
         action$ = new ReplaySubject<unknown>(1);
@@ -76,7 +81,7 @@ describe('AuthEffects', () => {
                     useValue: errorPublisherMock,
                 },
                 { provide: BrowserNavigationService, useValue: browserNavigationServiceMock },
-                { provide: CLEAR_AUTH_LOCATION_HASH, useValue: clearAuthLocationHashMock },
+                { provide: LOCATION_HASH_SERVICE, useValue: locationHashServiceMock },
             ],
         });
 
@@ -311,7 +316,8 @@ describe('AuthEffects', () => {
 
             await firstValueFrom(effects.clearAuthCallbackHash$);
 
-            expect(clearAuthLocationHashMock).toHaveBeenCalledTimes(1);
+            expect(locationHashServiceMock.clear).toHaveBeenCalledTimes(1);
+            expect(locationHashServiceMock.read).not.toHaveBeenCalled();
         });
     });
 
@@ -327,8 +333,10 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishWarning).toHaveBeenCalledWith('abgelaufen');
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).toHaveBeenCalledWith(
+                'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
+            );
+            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -343,7 +351,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -358,8 +366,10 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith('oh oh');
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+            );
+            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -389,13 +399,31 @@ describe('AuthEffects', () => {
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
-        it('should call reloadSession and map to sessionValidationFailed with expired when http-status 401', async () => {
-            httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpUnauthorizedErrorResponse));
+        it('should call reloadSession and map to sessionValidationFailed with expired when http-status 401 and reason expired', async () => {
+            httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpUnauthorizedExpiredErrorResponse));
 
             action$.next(authActions.validateSession());
             const emitted = await firstValueFrom(effects.validateSession$);
 
             expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'expired' }));
+            expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call reloadSession and map to sessionValidationFailed with missing when http-status 401 and reason missing', async () => {
+            httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpUnauthorizedMissingErrorResponse));
+
+            action$.next(authActions.validateSession());
+            const emitted = await firstValueFrom(effects.validateSession$);
+
+            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'missing' }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
@@ -440,6 +468,75 @@ describe('AuthEffects', () => {
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('logOut$', async () => {
+        it('should call logOut and map to loggedOut when success', async () => {
+            httpServiceMock.logOut.mockReturnValue(() => of());
+            action$.next(authActions.logOut());
+            const emmited = await firstValueFrom(effects.logOut$);
+
+            expect(emmited).toEqual(authActions.loggedOut());
+            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call logOut and map to loggedOut when httpError', async () => {
+            httpServiceMock.logOut.mockReturnValue(throwError(() => httpServerErrorResponse));
+            action$.next(authActions.logOut());
+            const emmited = await firstValueFrom(effects.logOut$);
+
+            expect(emmited).toEqual(authActions.loggedOut());
+            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+
+        it('should call logOut and map to loggedOut when Error', async () => {
+            httpServiceMock.logOut.mockReturnValue(throwError(() => new Error('boom!')));
+            action$.next(authActions.logOut());
+            const emmited = await firstValueFrom(effects.logOut$);
+
+            expect(emmited).toEqual(authActions.loggedOut());
+            expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loggedOut$', () => {
+        it('should navigate to home', async () => {
+            action$.next(authActions.loggedOut());
+            await firstValueFrom(effects.loggedOut$);
+
+            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
+            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
+            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
+            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });

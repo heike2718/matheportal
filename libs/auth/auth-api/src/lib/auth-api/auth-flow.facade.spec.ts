@@ -4,13 +4,15 @@ import { Store } from '@ngrx/store';
 import { authActions } from '@matheportal/auth-data';
 import { AuthFlowFacade } from './auth-flow.facade';
 import { AuthSessionFacade } from './auth-session.facade';
-import { AUTH_LOCATION_HASH } from '@matheportal/auth-model';
+import { LOCATION_HASH_SERVICE } from '@matheportal/auth-model';
 
 describe('AuthFlowFacade', () => {
     let facade: AuthFlowFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
-    const authLocationHashMock = vi.fn();
+    const locationHashServiceMock = {
+        read: vi.fn(),
+    };
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
     };
@@ -21,8 +23,8 @@ describe('AuthFlowFacade', () => {
                 AuthFlowFacade,
                 provideMockStore(),
                 {
-                    provide: AUTH_LOCATION_HASH,
-                    useValue: authLocationHashMock,
+                    provide: LOCATION_HASH_SERVICE,
+                    useValue: locationHashServiceMock,
                 },
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
             ],
@@ -58,19 +60,9 @@ describe('AuthFlowFacade', () => {
         });
     });
 
-    describe('handleSessionExpired', () => {
-        it('handleSessionExpired should dispatch sessionValidationFailed with expired', () => {
-            facade.handleSessionExpired();
-
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenNthCalledWith(1, authActions.sessionValidationFailed({ reason: 'expired' }));
-            expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
-        });
-    });
-
     describe('test initClearOrRestoreSession', () => {
         it('initClearOrRestoreSession should dispatch createSession when state=login and idToken is present', () => {
-            authLocationHashMock.mockReturnValue(
+            locationHashServiceMock.read.mockReturnValue(
                 '#state=login&nonce=&idToken=id-token&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
@@ -81,7 +73,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should dispatch createSessionFailed when state=login and idToken is empty', () => {
-            authLocationHashMock.mockReturnValue(
+            locationHashServiceMock.read.mockReturnValue(
                 '#state=login&nonce=&idToken=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
@@ -92,7 +84,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should dispatch createSessionFailed when state=login and idToken is missing', () => {
-            authLocationHashMock.mockReturnValue('#state=login&nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
+            locationHashServiceMock.read.mockReturnValue('#state=login&nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
 
             facade.initClearOrRestoreSession();
 
@@ -102,7 +94,7 @@ describe('AuthFlowFacade', () => {
         });
 
         it('initClearOrRestoreSession should do nothing when state=signup and idToken is present', () => {
-            authLocationHashMock.mockReturnValue(
+            locationHashServiceMock.read.mockReturnValue(
                 '#state=signup&nonce=&idToken=id-token&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
@@ -112,7 +104,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should do nothing when state=signup and  idToken is empty', () => {
-            authLocationHashMock.mockReturnValue(
+            locationHashServiceMock.read.mockReturnValue(
                 '#state=signup&nonce=&idToken=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
@@ -122,7 +114,9 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should do nothing when state=signup and  idToken is missing', () => {
-            authLocationHashMock.mockReturnValue('#state=signup&nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
+            locationHashServiceMock.read.mockReturnValue(
+                '#state=signup&nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
+            );
 
             facade.initClearOrRestoreSession();
 
@@ -131,7 +125,7 @@ describe('AuthFlowFacade', () => {
         });
 
         it('initClearOrRestoreSession should dispatch invalidOAuthFlowHash when state=invalid and idToken is present', () => {
-            authLocationHashMock.mockReturnValue(
+            locationHashServiceMock.read.mockReturnValue(
                 '#state=foobar&nonce=&idToken=id-token&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
@@ -142,7 +136,9 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should dispatch invalidOAuthFlowHash when state=invalid and idToken is empty', () => {
-            authLocationHashMock.mockReturnValue('#state=&nonce=&idToken=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
+            locationHashServiceMock.read.mockReturnValue(
+                '#state=&nonce=&idToken=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
+            );
 
             facade.initClearOrRestoreSession();
 
@@ -151,7 +147,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should dispatch invalidOAuthFlowHash when state=invalid and idToken is missing', () => {
-            authLocationHashMock.mockReturnValue('#nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
+            locationHashServiceMock.read.mockReturnValue('#nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT');
 
             facade.initClearOrRestoreSession();
 
@@ -160,7 +156,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
         it('initClearOrRestoreSession should dispatch validateSession when hash is empty', () => {
-            authLocationHashMock.mockReturnValue('#');
+            locationHashServiceMock.read.mockReturnValue('#');
 
             facade.initClearOrRestoreSession();
 
@@ -168,7 +164,7 @@ describe('AuthFlowFacade', () => {
             expect(authSessionFacadeMock.validateSession).toHaveBeenCalledTimes(1);
         });
         it('initClearOrRestoreSession should dispatch validateSession when not oauthFlow', () => {
-            authLocationHashMock.mockReturnValue('#state=foobar&nonce=');
+            locationHashServiceMock.read.mockReturnValue('#state=foobar&nonce=');
 
             facade.initClearOrRestoreSession();
 

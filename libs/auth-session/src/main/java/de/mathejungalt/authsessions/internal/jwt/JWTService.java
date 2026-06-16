@@ -27,7 +27,7 @@ public class JWTService {
      * Mapped das JWT auf einen AuthenticatedUser.
      *
      * @param rawJwt String
-     * @return
+     * @return AuthenticatedUser
      * @throws InvalidJWTException wenn das JWT ungültig ist.
      */
     public AuthenticatedUser mapJWT(final String rawJwt) throws InvalidJWTException {

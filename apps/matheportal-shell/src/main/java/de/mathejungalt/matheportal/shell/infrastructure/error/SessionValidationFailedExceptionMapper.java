@@ -13,11 +13,11 @@ import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedExcept
 import de.mathejungalt.matheportal.shell.domain.session.SessionCookieAdapter;
 
 /**
- * SessionExpiredExceptionMapper.
+ * SessionValidationFailedExceptionMapper.
  */
 @Provider
 @Priority(ExceptionMapperPriorities.SESSION)
-public class SessionExpiredExceptionMapper implements ExceptionMapper<SessionValidationFailedException> {
+public class SessionValidationFailedExceptionMapper implements ExceptionMapper<SessionValidationFailedException> {
 
     @Inject
     SessionCookieAdapter sessionCookieAdapter;

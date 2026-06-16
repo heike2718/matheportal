@@ -50,6 +50,7 @@ describe('AuthSessionFacade', () => {
 
         facade.validateSession();
 
-        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(authActions.validateSession());
     });
 });

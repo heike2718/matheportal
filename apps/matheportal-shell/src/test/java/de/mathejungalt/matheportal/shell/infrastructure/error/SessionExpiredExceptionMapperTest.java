@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class SessionExpiredExceptionMapperTest {
 
     @InjectMocks
-    SessionExpiredExceptionMapper exceptionMapper;
+    SessionValidationFailedExceptionMapper exceptionMapper;
 
     @Mock
     SessionCookieAdapter sessionCookieAdapter;

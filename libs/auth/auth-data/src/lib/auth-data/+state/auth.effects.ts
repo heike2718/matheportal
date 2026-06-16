@@ -6,9 +6,8 @@ import { authActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import {
     AuthUrlResponse,
-    CLEAR_AUTH_LOCATION_HASH,
+    LOCATION_HASH_SERVICE,
     SESSION_VALIDATION_FAILED_REASON,
-    SessionValidationFailedDto,
     User,
 } from '@matheportal/auth-model';
 import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
@@ -24,7 +23,7 @@ export class AuthEffects {
     #router = inject(Router);
     #authHttpService = inject(AuthHttpService);
     #browserNavigationService = inject(BrowserNavigationService);
-    #clearAuthLocationHash = inject(CLEAR_AUTH_LOCATION_HASH);
+    #locationHashService = inject(LOCATION_HASH_SERVICE);
     #errorPublisher = inject(ERROR_PUBLISHER);
 
     #technischerFehler = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
@@ -76,7 +75,7 @@ export class AuthEffects {
         () =>
             this.#actions.pipe(
                 ofType(authActions.sessionCreated, authActions.createSessionFailed, authActions.invalidOAuthFlowHash),
-                tap(() => this.#clearAuthLocationHash())
+                tap(() => this.#locationHashService.clear())
             ),
         { dispatch: false }
     );
@@ -156,7 +155,19 @@ export class AuthEffects {
                         }
                     }
 
-                    // ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                    // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                    void this.#router.navigateByUrl('/home');
+                })
+            ),
+        { dispatch: false }
+    );
+
+    loggedOut$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.loggedOut),
+                tap(() => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
                     void this.#router.navigateByUrl('/home');
                 })
             ),

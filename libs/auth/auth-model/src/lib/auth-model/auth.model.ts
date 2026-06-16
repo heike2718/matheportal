@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { getIdToken, mapToAuthResultState } from './internal';
 
 export const AUTH_FEATURE_KEY = 'mpAuth';
 
@@ -12,16 +13,19 @@ export interface AuthConfiguration {
 
 export const AUTH_CONFIGURATION = new InjectionToken<AuthConfiguration>('auth-configuration');
 
-export const AUTH_LOCATION_HASH = new InjectionToken<() => string>('auth-location-hash', {
-    providedIn: 'root',
-    factory: () => () => window.location.hash,
-});
+export interface LocationHashService {
+    readonly read: () => string;
+    readonly clear: () => void;
+}
 
-export const CLEAR_AUTH_LOCATION_HASH = new InjectionToken<() => void>('clear-auth-location-hash', {
+export const LOCATION_HASH_SERVICE = new InjectionToken<LocationHashService>('location-hash-service', {
     providedIn: 'root',
-    factory: () => () => {
-        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-    },
+    factory: () => ({
+        read: () => window.location.hash,
+        clear: () => {
+            window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        },
+    }),
 });
 
 export interface SessionValidationFailedDto {
@@ -47,28 +51,6 @@ export const anonymousUser: User = {
 
 export interface AuthUrlResponse {
     readonly url: string;
-}
-
-function mapToAuthResultState(value: string | null): AUTH_RESULT_STATE {
-    if (value === null) {
-        return 'invalid';
-    }
-    switch (value) {
-        case 'login':
-            return 'login';
-        case 'signup':
-            return 'signup';
-        default:
-            return 'invalid';
-    }
-}
-
-function getIdToken(idTokenParam: string | null): string | undefined {
-    if (!idTokenParam) {
-        return undefined;
-    }
-
-    return idTokenParam.trim().length === 0 ? undefined : idTokenParam;
 }
 
 export function mapHashToAuthResult(hash: string): AuthResult | null {
