@@ -1,1 +1,37 @@
-<p>dashboard works!</p>
+<div class="rbk-dashboard">
+    <div class="rbk-dashboard__grid">
+        <a class="rbk-dashboard__card-link" routerLink="/raetsel">
+            <mat-card class="rbk-dashboard-card">
+                <mat-card-header>
+                    <mat-card-title>Rätsel suchen/erstellen</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="rbk-dashboard-card__content">
+                    Hier können Sie nach Rätseln suchen. / Hier können Sie eigene Rätsel erstellen.
+                </mat-card-content>
+            </mat-card>
+        </a>
+
+        <a class="rbk-dashboard__card-link" routerLink="/aufgabensammlungen">
+            <mat-card class="rbk-dashboard-card">
+                <mat-card-header>
+                    <mat-card-title>Aufgabensammlungen herunterladen/erstellen</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="rbk-dashboard-card__content">
+                    Hier können Sie Aufgabensammlungen als Arbeitsblätter oder Knobelkarteien herunterladen /
+                    Aufgabensammlungen für sich oder andere zusammenstellen
+                </mat-card-content>
+            </mat-card>
+        </a>
+
+        <a class="rbk-dashboard__card-link" routerLink="/medien">
+            <mat-card class="rbk-dashboard-card">
+                <mat-card-header>
+                    <mat-card-title>Medien erfassen</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="rbk-dashboard-card__content">
+                    Hier können Sie Medien erfassen, um sie in Rätseln zu zitieren oder zu adaptieren.
+                </mat-card-content>
+            </mat-card>
+        </a>
+    </div>
+</div>

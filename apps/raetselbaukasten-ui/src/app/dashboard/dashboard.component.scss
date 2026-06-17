@@ -1,5 +1,73 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+
 @use 'mp-theme' as mp-theme;
 
 :host {
     display: block;
+}
+
+.rbk-dashboard {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding: mp-theme.$mp-space-6;
+
+    @media (max-width: 37.5rem) {
+        padding: mp-theme.$mp-space-4;
+    }
+
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-5 0;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+        gap: mp-theme.$mp-space-5;
+        align-items: stretch;
+        max-width: 100%;
+    }
+
+    &__card-link {
+        display: block;
+        min-width: 0;
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
+.rbk-dashboard-card {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+
+    border-left: 0.4rem solid mp-theme.mp-brand(raetselbaukasten);
+
+    transition:
+        background-color 150ms ease-in-out,
+        box-shadow 150ms ease-in-out,
+        border-color 150ms ease-in-out;
+
+    &:hover,
+    &:focus-within {
+        background-color: mp-theme.mp-brand-hover(raetselbaukasten);
+    }
+
+    .mat-mdc-card-header {
+        padding: mp-theme.$mp-space-5 mp-theme.$mp-space-5 mp-theme.$mp-space-3 mp-theme.$mp-space-5;
+    }
+
+    .mat-mdc-card-content {
+        padding: 0 mp-theme.$mp-space-5 mp-theme.$mp-space-5 mp-theme.$mp-space-5;
+    }
+
+    mat-card-title,
+    &__content {
+        overflow-wrap: anywhere;
+    }
+
+    &__content {
+        margin: 0;
+    }
 }
