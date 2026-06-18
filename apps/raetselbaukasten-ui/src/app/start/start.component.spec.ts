@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 describe('StartComponent', () => {
     let component: StartComponent;
@@ -11,6 +12,8 @@ describe('StartComponent', () => {
 
     let hasSessionSubject: BehaviorSubject<boolean>;
     let userSubject: BehaviorSubject<User>;
+
+    const activatedRouteMock = {};
 
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
@@ -36,7 +39,10 @@ describe('StartComponent', () => {
 
         await TestBed.configureTestingModule({
             imports: [StartComponent],
-            providers: [{ provide: AuthSessionFacade, useValue: authSessionFacadeMock }],
+            providers: [
+                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: ActivatedRoute, useValue: activatedRouteMock },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
