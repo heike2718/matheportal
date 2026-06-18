@@ -144,9 +144,9 @@ describe('DashboardComponent', () => {
             expect(titles).toHaveLength(3);
             expect(contents).toHaveLength(3);
 
-            expect(titles[0].nativeElement.textContent.trim()).toBe('Rätsel erstellen');
-            expect(titles[1].nativeElement.textContent.trim()).toBe('Aufgabensammlungen erstellen');
-            expect(titles[2].nativeElement.textContent.trim()).toBe('Medien erfassen');
+            expect(titles[0].nativeElement.textContent.trim()).toBe('Rätsel');
+            expect(titles[1].nativeElement.textContent.trim()).toBe('Aufgabensammlungen');
+            expect(titles[2].nativeElement.textContent.trim()).toBe('Medien');
 
             expect(normalizeText(contents[0].nativeElement.textContent)).toBe(
                 'Hier können Sie Rätsel erstellen und publizieren.'
@@ -187,9 +187,9 @@ describe('DashboardComponent', () => {
             expect(titles).toHaveLength(3);
             expect(contents).toHaveLength(3);
 
-            expect(titles[0].nativeElement.textContent.trim()).toBe('Rätsel erstellen');
-            expect(titles[1].nativeElement.textContent.trim()).toBe('Aufgabensammlungen erstellen');
-            expect(titles[2].nativeElement.textContent.trim()).toBe('Medien erfassen');
+            expect(titles[0].nativeElement.textContent.trim()).toBe('Rätsel');
+            expect(titles[1].nativeElement.textContent.trim()).toBe('Aufgabensammlungen');
+            expect(titles[2].nativeElement.textContent.trim()).toBe('Medien');
 
             expect(normalizeText(contents[0].nativeElement.textContent)).toBe(
                 'Hier können Sie Rätsel erstellen und publizieren.'
