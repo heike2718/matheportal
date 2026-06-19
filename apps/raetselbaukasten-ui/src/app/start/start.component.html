@@ -1,0 +1,7 @@
+<div class="rbk-start">
+    @if (authSessionFacade.hasSession$ | async) {
+        <rbk-dashboard></rbk-dashboard>
+    } @else {
+        <rbk-guest-info></rbk-guest-info>
+    }
+</div>

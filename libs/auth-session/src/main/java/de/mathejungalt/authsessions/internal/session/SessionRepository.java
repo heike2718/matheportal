@@ -62,13 +62,14 @@ public class SessionRepository {
     /**
      * Löscht die Session.
      *
-     * @param sessionEntity SessionEntity
+     * @param sessionId
      */
-    public void deleteSession(final SessionEntity sessionEntity) {
-        if (sessionEntity == null) {
-            return;
-        }
-        entityManager.remove(sessionEntity);
+    @Transactional
+    public void deleteBySessionId(final String sessionId) {
+        entityManager
+                .createQuery("delete from SessionEntity s where s.sessionId = :sessionId")
+                .setParameter("sessionId", sessionId)
+                .executeUpdate();
     }
 
 }

@@ -18,6 +18,6 @@ export const appRoutes: Route[] = [
     },
     {
         path: 'raetselbaukasten',
-        loadComponent: () => loadRemoteModule('raetselbaukasten-ui', './Component').then(m => m.AppComponent),
+        loadChildren: () => loadRemoteModule('raetselbaukasten-ui', './Routes').then(m => m.remoteRoutes),
     },
 ];

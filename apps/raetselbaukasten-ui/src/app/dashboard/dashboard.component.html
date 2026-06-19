@@ -1,0 +1,72 @@
+<div class="rbk-dashboard">
+    @if (isAuthorized()) {
+        @if (isStandardUser()) {
+            <div data-testid="cards-standard" class="rbk-dashboard__grid">
+                <a class="rbk-dashboard__card-link" routerLink="aufgabensammlungen">
+                    <mat-card class="rbk-dashboard-card">
+                        <mat-card-header>
+                            <mat-card-title>Aufgabensammlungen herunterladen</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="rbk-dashboard-card__content">
+                            Hier können Sie Aufgabensammlungen als Arbeitsblätter oder Knobelkarteien herunterladen.
+                        </mat-card-content>
+                    </mat-card>
+                </a>
+                <a class="rbk-dashboard__card-link" routerLink="raetsel">
+                    <mat-card class="rbk-dashboard-card">
+                        <mat-card-header>
+                            <mat-card-title>Rätsel suchen</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="rbk-dashboard-card__content">
+                            Hier können Sie nach Rätseln suchen. Es ist geplant, dass Sie eigene Aufgabensammlungen
+                            erstellen können. Aber diese Funktion ist noch nicht fertig.
+                        </mat-card-content>
+                    </mat-card>
+                </a>
+            </div>
+        } @else {
+            @if (isAdmin()) {
+                <h2>Administrator</h2>
+            } @else {
+                <h2>Autor</h2>
+            }
+            <div data-testid="cards-autor-admin" class="rbk-dashboard__grid">
+                <a class="rbk-dashboard__card-link" routerLink="raetsel">
+                    <mat-card class="rbk-dashboard-card">
+                        <mat-card-header>
+                            <mat-card-title>Rätsel</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="rbk-dashboard-card__content">
+                            Hier können Sie Rätsel erstellen und publizieren.
+                        </mat-card-content>
+                    </mat-card>
+                </a>
+
+                <a class="rbk-dashboard__card-link" routerLink="aufgabensammlungen">
+                    <mat-card class="rbk-dashboard-card">
+                        <mat-card-header>
+                            <mat-card-title>Aufgabensammlungen</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="rbk-dashboard-card__content">
+                            Hier können Sie Aufgabensammlungen zusammenstellen und publizieren.
+                        </mat-card-content>
+                    </mat-card>
+                </a>
+
+                <a class="rbk-dashboard__card-link" routerLink="medien">
+                    <mat-card class="rbk-dashboard-card">
+                        <mat-card-header>
+                            <mat-card-title>Medien</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="rbk-dashboard-card__content">
+                            Hier können Sie Medien (Bücher, Zeitschriften, Internetseiten) erfassen, um sie als Rätsel
+                            zu zitieren oder in eigenen Rätseln zu adaptieren.
+                        </mat-card-content>
+                    </mat-card>
+                </a>
+            </div>
+        }
+    } @else {
+        <div data-testid="unauthorized">Sie haben leider keine Berechtigung. Bitte legen Sie ein Benutzerkonto an.</div>
+    }
+</div>

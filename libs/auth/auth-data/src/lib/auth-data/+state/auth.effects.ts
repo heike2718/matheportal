@@ -4,10 +4,16 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
 import { authActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthUrlResponse, CLEAR_AUTH_LOCATION_HASH, User } from '@matheportal/auth-model';
+import {
+    AuthUrlResponse,
+    LOCATION_HASH_SERVICE,
+    SESSION_VALIDATION_FAILED_REASON,
+    User,
+} from '@matheportal/auth-model';
 import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +23,7 @@ export class AuthEffects {
     #router = inject(Router);
     #authHttpService = inject(AuthHttpService);
     #browserNavigationService = inject(BrowserNavigationService);
-    #clearAuthLocationHash = inject(CLEAR_AUTH_LOCATION_HASH);
+    #locationHashService = inject(LOCATION_HASH_SERVICE);
     #errorPublisher = inject(ERROR_PUBLISHER);
 
     #technischerFehler = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
@@ -69,7 +75,7 @@ export class AuthEffects {
         () =>
             this.#actions.pipe(
                 ofType(authActions.sessionCreated, authActions.createSessionFailed, authActions.invalidOAuthFlowHash),
-                tap(() => this.#clearAuthLocationHash())
+                tap(() => this.#locationHashService.clear())
             ),
         { dispatch: false }
     );
@@ -100,8 +106,8 @@ export class AuthEffects {
         return this.#actions.pipe(
             ofType(authActions.logOut),
             switchMap(() => this.#authHttpService.logOut()),
-            map(() => authActions.loggedOut({ reason: 'useraction' })),
-            catchError(() => of(authActions.loggedOut({ reason: 'useraction' })))
+            map(() => authActions.loggedOut()),
+            catchError(() => of(authActions.loggedOut()))
         );
     });
 
@@ -112,8 +118,14 @@ export class AuthEffects {
                 this.#authHttpService.reloadSession().pipe(
                     map((user: User) => authActions.sessionValidated({ user })),
                     catchError((error: unknown) => {
-                        if (error instanceof HttpErrorResponse && error.status === 401) {
-                            return of(authActions.sessionValidationFailed({ reason: 'expired' }));
+                        if (error instanceof HttpErrorResponse) {
+                            const reason: SESSION_VALIDATION_FAILED_REASON =
+                                mapHttpErrorToSessionValidationFailedReason(error);
+                            return of(
+                                authActions.sessionValidationFailed({
+                                    reason: reason,
+                                })
+                            );
                         }
 
                         return of(authActions.sessionValidationFailed({ reason: 'technical' }));
@@ -123,39 +135,40 @@ export class AuthEffects {
         );
     });
 
-    sessionValidationFailed$ = createEffect(() => {
-        return this.#actions.pipe(
-            ofType(authActions.sessionValidationFailed),
-            switchMap(({ reason }) =>
-                this.#authHttpService.logOut().pipe(
-                    map(() => authActions.loggedOut({ reason })),
-                    catchError(() => of(authActions.loggedOut({ reason })))
-                )
-            )
-        );
-    });
-
-    loggedOut$ = createEffect(
+    sessionValidationFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.loggedOut),
+                ofType(authActions.sessionValidationFailed),
                 tap(({ reason }) => {
                     switch (reason) {
                         case 'expired': {
                             this.#errorPublisher.publishWarning(
                                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
                             );
+                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                            void this.#router.navigateByUrl('/home');
                             break;
                         }
+                        case 'missing':
+                            break;
                         case 'technical': {
                             this.#errorPublisher.publishError(this.#technischerFehler);
+                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                            void this.#router.navigateByUrl('/home');
                             break;
                         }
-                        case 'useraction':
-                            break;
                     }
+                })
+            ),
+        { dispatch: false }
+    );
 
-                    // ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+    loggedOut$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.loggedOut),
+                tap(() => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
                     void this.#router.navigateByUrl('/home');
                 })
             ),

@@ -10,8 +10,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.SessionFacade;
+import de.mathejungalt.authsessions.api.SessionValidationFailedReason;
 import de.mathejungalt.authsessions.api.UserDto;
-import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
+import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,24 +39,33 @@ public class ReloadSessionService {
      * Läd die Session neu, wenn sie noch vorhanden und nicht zu alt ist.
      *
      * @return UserDto
-     * @throws SessionExpiredException wenn es kein Session-Cookie gibt oder die Session nicht mehr vorhanden oder
-     *                                 endgültig abgelaufen ist.
+     * @throws SessionValidationFailedException wenn es kein Session-Cookie gibt oder die Session nicht mehr vorhanden
+     *                                          oder endgültig abgelaufen ist.
      */
-    public UserDto reloadSession() throws SessionExpiredException {
+    public UserDto reloadSession() throws SessionValidationFailedException {
 
         final Optional<String> optSessionId = sessionCookieAdapter.getSessionId();
 
         if (optSessionId.isEmpty()) {
-            throw new SessionExpiredException("kein oder leeres Session-Cookie");
+            throw new SessionValidationFailedException(SessionValidationFailedReason.MISSING);
         }
 
         final String sessionId = optSessionId.get();
 
-        final SessionDto sessionDto = sessionFacade
-                .reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes);
+        try {
+            final SessionDto sessionDto = sessionFacade
+                    .reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes);
 
-        final AuthenticatedUser authenticatedUser = sessionDto.getAuthenticatedUser();
+            final AuthenticatedUser authenticatedUser = sessionDto.getAuthenticatedUser();
 
-        return new UserDto(authenticatedUser.getFullName(), authenticatedUser.getRoles());
+            return new UserDto(authenticatedUser.getFullName(), authenticatedUser.getRoles());
+        } catch (final SessionValidationFailedException e) {
+            // muss außerhalb der reloadSession-Transaction passieren, sonst ist die session
+            // anschließend noch da.
+            if (e.getReason() == SessionValidationFailedReason.EXPIRED) {
+                this.sessionFacade.invalidateSessionQuietly(sessionId);
+            }
+            throw e;
+        }
     }
 }

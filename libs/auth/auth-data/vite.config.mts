@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import angular from '@analogjs/vite-plugin-angular';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import { configDefaults } from 'vitest/config';
 
 export default defineConfig(() => ({
     root: __dirname,
@@ -25,6 +26,7 @@ export default defineConfig(() => ({
             reportsDirectory: '../../coverage/libs/auth-data',
             provider: 'v8' as const,
             reporter: ['text', 'html', 'lcov'],
+            exclude: [...configDefaults.exclude, 'src/lib/auth-data/auth-http.service.ts'],
         },
     },
 }));

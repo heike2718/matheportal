@@ -2,7 +2,6 @@ package de.mathejungalt.authsessions.internal.session;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,8 +16,9 @@ import org.slf4j.LoggerFactory;
 import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.SessionDto;
+import de.mathejungalt.authsessions.api.SessionValidationFailedReason;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
-import de.mathejungalt.authsessions.api.exceptions.SessionExpiredException;
+import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
 /**
@@ -49,7 +49,6 @@ public class SessionService {
      * @throws AuthSessionException wenn es einen unerwarteten Implementierungsfehler oder einen Fehler beim Speichern
      *                              gibt.
      */
-    @Transactional
     public SessionDto createSession(final AuthenticatedUser authenticatedUser, final int idleTimeoutMinutes)
             throws AuthSessionException {
 
@@ -90,24 +89,29 @@ public class SessionService {
      * @param idleTimeoutMinutes int Anzahl Minuten der Untätigkeit.
      * @param maxLifetimeMinutes int maximal mögliche Lebensdauer einer Session in Minuten.
      * @return SessionDto
-     * @throws SessionExpiredException wenn die Session abgelaufen ist oder sich nicht mehr verlängern lässt
-     * @throws AuthSessionException    wenn es beim Speichern der Session zu einem Fehler kam.
+     * @throws SessionValidationFailedException wenn es keine Session gibt, diese abgelaufen ist oder sich nicht mehr
+     *                                          verlängern lässt.
+     * @throws AuthSessionException             wenn es beim Speichern der Session zu einem Fehler kam.
      */
+    @Transactional(dontRollbackOn = SessionValidationFailedException.class)
     public SessionDto reloadSession(final String sessionId, final int idleTimeoutMinutes, final int maxLifetimeMinutes)
-            throws SessionExpiredException, AuthSessionException {
+            throws SessionValidationFailedException, AuthSessionException {
 
         final SessionEntity sessionEntity = sessionRepository
                 .findBySessionId(sessionId)
-                .orElseThrow(() -> new SessionExpiredException("Die Session ist abgelaufen. Bitte neu einloggen."));
+                .orElseThrow(() -> new SessionValidationFailedException(SessionValidationFailedReason.MISSING));
 
         final boolean extendable = isSessionExtendable(sessionEntity, maxLifetimeMinutes);
 
         if (!extendable) {
             LOGGER.debug("session des users {} ist abgelaufen", sessionEntity.getUserUuid());
-            sessionRepository.deleteSession(sessionEntity);
-            throw new SessionExpiredException("Die Session ist abgelaufen. Bitte neu einloggen.");
+            throw new SessionValidationFailedException(SessionValidationFailedReason.EXPIRED);
         }
 
+        return internalExtendSession(sessionEntity, idleTimeoutMinutes);
+    }
+
+    SessionDto internalExtendSession(final SessionEntity sessionEntity, final int idleTimeoutMinutes) {
         try {
             final LocalDateTime now = LocalDateTime.now(clock);
             sessionEntity.setExpiresAt(now.plusMinutes(idleTimeoutMinutes));
@@ -115,7 +119,7 @@ public class SessionService {
 
             return SessionDto
                     .builder()
-                    .sessionId(sessionId)
+                    .sessionId(sessionEntity.getSessionId())
                     .authenticatedUser(AuthenticatedUser
                             .builder()
                             .uuid(sessionEntity.getUserUuid())
@@ -134,17 +138,10 @@ public class SessionService {
      *
      * @param sessionId String
      */
-    @Transactional
     public void invalidateSession(final String sessionId) {
-
         try {
 
-            final Optional<SessionEntity> opt = sessionRepository.findBySessionId(sessionId);
-
-            if (opt.isPresent()) {
-                sessionRepository.deleteSession(opt.get());
-            }
-
+            sessionRepository.deleteBySessionId(sessionId);
         } catch (final PersistenceException e) {
             LOGGER.error("session mit sessionId {} konnte nicht gelöscht werden: {}", sessionId, e.getMessage(), e);
         }

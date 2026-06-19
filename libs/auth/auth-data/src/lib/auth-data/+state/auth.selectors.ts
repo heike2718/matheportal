@@ -5,9 +5,9 @@ const { selectMpAuthState } = authFeature;
 
 const user = createSelector(selectMpAuthState, state => state.user);
 
-const isSessionValidated = createSelector(selectMpAuthState, state => state.isSessionValidated);
+const hasSession = createSelector(selectMpAuthState, state => !state.user.anonym);
 
 export const fromAuth = {
     user,
-    isSessionValidated,
+    hasSession: hasSession,
 };

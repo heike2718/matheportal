@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts",
+    "../matheportal-shell-ui/src/app/config/index.ts",
+    "../../libs/shared-runtime-config/src/index.ts",
+    "../../libs/testing/src/index.ts",
+    "../../libs/auth/auth-model/src/index.ts",
+    "../../libs/auth/auth-data/src/index.ts",
+    "../../libs/auth/auth-api/src/index.ts",
+    "../../libs/feedback/feedback-api/src/index.ts",
+    "../../libs/feedback/feedback-ui/src/index.ts",
+    "../../libs/error-handling/error-handling-api/src/index.ts",
+    "../../libs/composition/error-feedback/src/index.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}

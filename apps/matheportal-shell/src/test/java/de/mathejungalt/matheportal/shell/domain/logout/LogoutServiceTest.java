@@ -38,14 +38,14 @@ public class LogoutServiceTest {
         final String sessionId = "session-id";
 
         when(sessionCookieAdapter.getSessionId()).thenReturn(Optional.of(sessionId));
-        doNothing().when(sessionFacade).invalidateSession(sessionId);
+        doNothing().when(sessionFacade).invalidateSessionQuietly(sessionId);
 
         // act
         logoutService.logout();
 
         // assert
         assertAll(() -> verify(sessionCookieAdapter).getSessionId(),
-                () -> verify(sessionFacade).invalidateSession(sessionId));
+                () -> verify(sessionFacade).invalidateSessionQuietly(sessionId));
     }
 
     @Test

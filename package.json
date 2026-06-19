@@ -9,6 +9,7 @@
         "test:affected": "npx nx affected -t test",
         "analyze:quality": "npx nx run-many -t analyze-quality --all",
         "analyze:quality:affected": "npx nx affected -t analyze-quality",
+        "cleanup:all": "npx nx run-many -t cleanup --all",
         "cleanup:affected": "npx nx affected -t cleanup",
         "deploy:prepare:qs": "npx nx run-many -t prepare-deployment --projects=matheportal-shell,minikaenguru-anwendung,raetselbaukasten --configuration=qs",
         "deploy:prepare:production": "npx nx run-many -t prepare-deployment --projects=matheportal-shell,minikaenguru-anwendung,raetselbaukasten --configuration=production"
@@ -30,6 +31,7 @@
         "@angular/platform-browser": "21.2.7",
         "@angular/router": "21.2.7",
         "@ngrx/effects": "21.1.0",
+        "@ngrx/signals": "^21.1.1",
         "@ngrx/store": "21.1.0",
         "@softarc/native-federation-node": "^3.3.4",
         "es-module-shims": "^1.5.12",

@@ -1,10 +1,9 @@
 import { InjectionToken } from '@angular/core';
+import { getIdToken, mapToAuthResultState } from './internal';
 
 export const AUTH_FEATURE_KEY = 'mpAuth';
 
-export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'useraction';
-
-export type AUTHORIZATION_STATE = 'loggedOut' | 'unauthorized' | 'authorized';
+export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'missing';
 
 export type AUTH_RESULT_STATE = 'login' | 'signup' | 'invalid';
 
@@ -14,17 +13,24 @@ export interface AuthConfiguration {
 
 export const AUTH_CONFIGURATION = new InjectionToken<AuthConfiguration>('auth-configuration');
 
-export const AUTH_LOCATION_HASH = new InjectionToken<() => string>('auth-location-hash', {
+export interface LocationHashService {
+    readonly read: () => string;
+    readonly clear: () => void;
+}
+
+export const LOCATION_HASH_SERVICE = new InjectionToken<LocationHashService>('location-hash-service', {
     providedIn: 'root',
-    factory: () => () => window.location.hash,
+    factory: () => ({
+        read: () => window.location.hash,
+        clear: () => {
+            window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        },
+    }),
 });
 
-export const CLEAR_AUTH_LOCATION_HASH = new InjectionToken<() => void>('clear-auth-location-hash', {
-    providedIn: 'root',
-    factory: () => () => {
-        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-    },
-});
+export interface SessionValidationFailedDto {
+    readonly reason: 'expired' | 'missing';
+}
 
 export interface AuthResult {
     readonly state: AUTH_RESULT_STATE;
@@ -45,28 +51,6 @@ export const anonymousUser: User = {
 
 export interface AuthUrlResponse {
     readonly url: string;
-}
-
-function mapToAuthResultState(value: string | null): AUTH_RESULT_STATE {
-    if (value === null) {
-        return 'invalid';
-    }
-    switch (value) {
-        case 'login':
-            return 'login';
-        case 'signup':
-            return 'signup';
-        default:
-            return 'invalid';
-    }
-}
-
-function getIdToken(idTokenParam: string | null): string | undefined {
-    if (!idTokenParam) {
-        return undefined;
-    }
-
-    return idTokenParam.trim().length === 0 ? undefined : idTokenParam;
 }
 
 export function mapHashToAuthResult(hash: string): AuthResult | null {
@@ -103,4 +87,14 @@ export function mapHashToAuthResult(hash: string): AuthResult | null {
         state: 'invalid',
         idToken,
     };
+}
+
+export function parseSessionValidationFailedDtoReason(value: unknown): 'expired' | 'missing' {
+    if (typeof value !== 'object' || value === null) {
+        return 'missing';
+    }
+
+    const reason = (value as { reason?: unknown }).reason;
+
+    return reason === 'expired' || reason === 'missing' ? reason : 'missing';
 }

@@ -15,12 +15,17 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
 import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.SessionFacade;
+import de.mathejungalt.authsessions.api.SessionValidationFailedReason;
 import de.mathejungalt.authsessions.api.UserDto;
+import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +78,52 @@ public class ReloadSessionServiceTest {
                 () -> assertEquals("ADMIN", result.roles().iterator().next()),
                 () -> verify(sessionCookieAdapter).getSessionId(),
                 () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes));
+    }
+
+    @Test
+    void should_callInvalidateSession_and_propagateSessionValidationFailedException_when_sessionCookie_but_expired() {
+
+        // arrange
+        final String sessionId = "session-id";
+
+        when(sessionCookieAdapter.getSessionId()).thenReturn(Optional.of(sessionId));
+        when(sessionFacade.reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes))
+                .thenThrow(new SessionValidationFailedException(SessionValidationFailedReason.EXPIRED));
+        doNothing().when(sessionFacade).invalidateSessionQuietly(sessionId);
+
+        // act
+        final SessionValidationFailedException exception = assertThrows(SessionValidationFailedException.class, () -> {
+            reloadSessionService.reloadSession();
+        });
+
+        assertAll(() -> assertEquals("EXPIRED", exception.getMessage()),
+                () -> assertEquals(SessionValidationFailedReason.EXPIRED, exception.getReason()),
+                () -> verify(sessionCookieAdapter).getSessionId(),
+                () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes),
+                () -> verify(sessionFacade).invalidateSessionQuietly(sessionId));
+    }
+
+    @Test
+    void should_callInvalidateSession_and_propagateSessionValidationFailedException_when_sessionCookie_but_missing() {
+
+        // arrange
+        final String sessionId = "session-id";
+
+        when(sessionCookieAdapter.getSessionId()).thenReturn(Optional.of(sessionId));
+        when(sessionFacade.reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes))
+                .thenThrow(new SessionValidationFailedException(SessionValidationFailedReason.MISSING));
+        doNothing().when(sessionFacade).invalidateSessionQuietly(sessionId);
+
+        // act
+        final SessionValidationFailedException exception = assertThrows(SessionValidationFailedException.class, () -> {
+            reloadSessionService.reloadSession();
+        });
+
+        assertAll(() -> assertEquals("MISSING", exception.getMessage()),
+                () -> assertEquals(SessionValidationFailedReason.MISSING, exception.getReason()),
+                () -> verify(sessionCookieAdapter).getSessionId(),
+                () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes),
+                () -> verify(sessionFacade, never()).invalidateSessionQuietly(sessionId));
     }
 
 }

@@ -4,12 +4,10 @@ import { authActions } from './auth.actions';
 
 export interface AuthState {
     readonly user: User;
-    readonly isSessionValidated: boolean;
 }
 
 const initialAuthState: AuthState = {
     user: anonymousUser,
-    isSessionValidated: false,
 };
 
 export const authFeature = createFeature({
@@ -17,16 +15,16 @@ export const authFeature = createFeature({
     reducer: createReducer<AuthState>(
         initialAuthState,
         on(authActions.sessionCreated, (state, action) => {
-            return { ...state, user: action.user, isSessionValidated: true };
+            return { ...state, user: action.user };
         }),
         on(authActions.createSessionFailed, state => {
-            return { ...state, user: anonymousUser, isSessionValidated: false };
+            return { ...state, user: anonymousUser };
         }),
         on(authActions.sessionValidated, (state, action) => {
-            return { ...state, user: action.user, isSessionValidated: true };
+            return { ...state, user: action.user };
         }),
         on(authActions.sessionValidationFailed, state => {
-            return { ...state, user: anonymousUser, isSessionValidated: true };
+            return { ...state, user: anonymousUser };
         }),
         on(authActions.loggedOut, () => {
             return initialAuthState;

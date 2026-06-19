@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AuthSessionFacade } from './auth-session.facade';
 import { authActions } from '@matheportal/auth-data';
-import { AUTH_LOCATION_HASH, mapHashToAuthResult } from '@matheportal/auth-model';
+import { LOCATION_HASH_SERVICE, mapHashToAuthResult } from '@matheportal/auth-model';
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +10,7 @@ import { AUTH_LOCATION_HASH, mapHashToAuthResult } from '@matheportal/auth-model
 export class AuthFlowFacade {
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
-    #authLocationHash = inject(AUTH_LOCATION_HASH);
+    #locationHashService = inject(LOCATION_HASH_SERVICE);
 
     login(): void {
         this.#store.dispatch(authActions.requestLoginUrl());
@@ -21,7 +21,7 @@ export class AuthFlowFacade {
     }
 
     initClearOrRestoreSession(): void {
-        const hash = this.#authLocationHash();
+        const hash = this.#locationHashService.read();
         const authResult = mapHashToAuthResult(hash);
 
         if (authResult === null) {
@@ -43,21 +43,13 @@ export class AuthFlowFacade {
                 break;
             }
             case 'signup':
-                // hier erstmal noch nicht klar, was passieren soll.
+                // hier ist erstmal noch nicht klar, was passieren soll.
                 break;
         }
     }
 
-    /**
-     * wird vom authExpiredInterceptor aufgerufen
-     */
-    handleSessionExpired(): void {
-        this.#store.dispatch(authActions.sessionValidationFailed({ reason: 'expired' }));
-    }
-
     #handleLoginMissingIdToken(): void {
         // TODO: exception handling - also das hier ans backend senden.
-        console.error('initClearOrRestoreSession: login with missing idToken');
         this.#store.dispatch(authActions.createSessionFailed());
     }
 

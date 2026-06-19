@@ -22,6 +22,6 @@ module.exports = withNativeFederation({
         // New feature for more performance and avoiding
         // issues with node libs. Comment this out to
         // get the traditional behavior:
-        ignoreUnusedDeps: true,
+        ignoreUnusedDeps: false,
     },
 });

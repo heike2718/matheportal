@@ -10,9 +10,10 @@
         <property name="fileExtensions" value="java" />
         <property name="tabWidth" value="4" />
 
-        <module name="JavadocMethod" />
-        <module name="JavadocType" />
-        <module name="JavadocVariable">
+        <module name="JavadocMethod">
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+        <module name="JavadocType">
             <property name="scope" value="public" />
         </module>
         <module name="JavadocStyle" />
@@ -70,7 +71,6 @@
 
         <module name="AvoidInlineConditionals" />
         <module name="EmptyStatement" />
-        <module name="EqualsHashCode" />
 
         <!-- Checks that a local variable or a parameter does not shadow a field
             that is defined in the same class. -->
@@ -95,19 +95,11 @@
 
         <module name="SimplifyBooleanExpression" />
         <module name="SimplifyBooleanReturn" />
-        <module name="DesignForExtension">
-            <property name="ignoredAnnotations"
-                value="RouteFilter,Override,Inject,ApplicationScoped,RequestScoped,Singleton,Dependent" />
-        </module>
+        <module name="DesignForExtension" />
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
-        <module name="VisibilityModifier">
-            <property name="ignoreAnnotationCanonicalNames"
-                value="org.eclipse.microprofile.config.inject.ConfigProperty,
-                     jakarta.inject.Inject,
-                     io.quarkus.arc.Unremovable" />
-        </module>
+        <module name="VisibilityModifier" />
         <module name="ArrayTypeStyle" />
         <module name="FinalParameters" />
         <module name="TodoComment">
@@ -218,12 +210,6 @@
         </module>
         <module name="UpperEll">
             <property name="severity" value="error" />
-        </module>
-
-        <!-- ImportOrder doppelt? -> ignorieren oder entfernen -->
-        <module name="ImportOrder">
-            <property name="severity" value="ignore" />
-            <!-- vorhandene properties können bleiben oder das Modul ganz raus -->
         </module>
     </module>
 

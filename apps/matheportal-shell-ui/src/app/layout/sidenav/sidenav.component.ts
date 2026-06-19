@@ -4,10 +4,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
+import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'portal-sidenav',
-    imports: [RouterLink, RouterLinkActive, MatListModule, MatButtonModule, MatIconModule],
+    imports: [RouterLink, RouterLinkActive, MatListModule, MatButtonModule, MatIconModule, AsyncPipe],
     templateUrl: './sidenav.component.html',
     styleUrl: './sidenav.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +17,10 @@ import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.
 export class SidenavComponent {
     readonly config = inject(MATHEPORTAL_SHELL_CONFIGURATION);
     readonly version = this.config.version;
-    readonly isLoggedIn = false;
+
+    authSessionFacade = inject(AuthSessionFacade);
+
+    #authFlowFacade = inject(AuthFlowFacade);
 
     @Output()
     sidenavClose = new EventEmitter();
@@ -25,12 +30,10 @@ export class SidenavComponent {
     };
 
     onLogin(): void {
-        this.sidenavClose.emit();
-        // folgt später
+        this.#authFlowFacade.login();
     }
 
     onLogout(): void {
-        this.sidenavClose.emit();
-        // folgt später
+        this.#authFlowFacade.logout();
     }
 }

@@ -77,3 +77,9 @@ pnpm nx run workspace-tools:graph-affected-tests
 # Wie orchestriert Nx den vollständigen Deployment-Build?
 pnpm nx run workspace-tools:graph-tasks-deploy-qs
 ```
+
+## Datenbank
+
+```sql
+UPDATE matheportal_sessions SET created_at = DATE_SUB(NOW(6), INTERVAL 2 DAY), expires_at = DATE_SUB(NOW(6), INTERVAL 2 HOUR)
+```

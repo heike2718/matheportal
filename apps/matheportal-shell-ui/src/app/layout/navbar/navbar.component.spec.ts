@@ -9,20 +9,18 @@ import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { Component } from '@angular/core';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { HarnessLoader } from '@angular/cdk/testing';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
 describe('NavbarComponent', () => {
-    let loader: HarnessLoader;
     let fixture: ComponentFixture<NavbarComponent>;
     let component: NavbarComponent;
 
-    let isSessionValidatedSubject: BehaviorSubject<boolean>;
+    let hasSessionSubject: BehaviorSubject<boolean>;
     let userSubject: BehaviorSubject<User>;
 
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
-        isSessionValidated$: undefined as unknown as Observable<boolean>,
+        hasSession$: undefined as unknown as Observable<boolean>,
         user$: undefined as unknown as Observable<User>,
     };
     const authFlowFacadeMock = {
@@ -39,11 +37,11 @@ describe('NavbarComponent', () => {
         roles: ['STANDARD'],
     } as User;
 
-    async function setup(options?: { isHandset?: boolean; user?: User; isSessionValidated?: boolean }) {
-        isSessionValidatedSubject = new BehaviorSubject<boolean>(options?.isSessionValidated ?? false);
+    async function setup(options?: { isHandset?: boolean; user?: User; hasSession?: boolean }) {
+        hasSessionSubject = new BehaviorSubject<boolean>(options?.hasSession ?? false);
         userSubject = new BehaviorSubject<User>(options?.user ?? gast);
 
-        authSessionFacadeMock.isSessionValidated$ = isSessionValidatedSubject.asObservable();
+        authSessionFacadeMock.hasSession$ = hasSessionSubject.asObservable();
         authSessionFacadeMock.user$ = userSubject.asObservable();
 
         await TestBed.configureTestingModule({
@@ -102,7 +100,7 @@ describe('NavbarComponent', () => {
             await setup({
                 isHandset: false,
                 user: gast,
-                isSessionValidated: false,
+                hasSession: false,
             });
         });
         it('should show anonymous greeting', () => {
@@ -133,7 +131,7 @@ describe('NavbarComponent', () => {
             await setup({
                 isHandset: false,
                 user: loggedInUser,
-                isSessionValidated: true,
+                hasSession: true,
             });
         });
 
