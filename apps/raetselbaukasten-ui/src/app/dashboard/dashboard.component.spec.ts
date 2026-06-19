@@ -17,19 +17,19 @@ describe('DashboardComponent', () => {
     const standardUser: User = {
         anonym: false,
         fullName: 'Bilbo',
-        roles: ['STANDARD'],
+        berechtigungen: ['STANDARD'],
     };
 
     const autor: User = {
         anonym: false,
         fullName: 'Frodo',
-        roles: ['AUTOR'],
+        berechtigungen: ['AUTOR'],
     };
 
     const admin: User = {
         anonym: false,
         fullName: 'admin',
-        roles: ['ADMIN'],
+        berechtigungen: ['ADMIN'],
     };
 
     const activatedRouteMock = {};

@@ -1,20 +1,20 @@
 import { RAETSELBAUKASTEN_ROLE, RaetselbaukastenUserRole } from './raetselbaukasten-role.model';
 
-type UserWithRoles = {
-    readonly roles: readonly string[];
+type UserWithBerechtigungen = {
+    readonly berechtigungen: readonly string[];
 };
 
-export function resolveRaetselbaukastenUserRole(user: UserWithRoles | null): RaetselbaukastenUserRole {
-    if (user === null || user.roles.length === 0) {
+export function resolveRaetselbaukastenUserRole(user: UserWithBerechtigungen | null): RaetselbaukastenUserRole {
+    if (user === null || user.berechtigungen.length === 0) {
         return RAETSELBAUKASTEN_ROLE.NONE;
     }
 
-    const roleAdmin: string[] = user.roles.filter(r => r === 'ADMIN');
+    const roleAdmin: string[] = user.berechtigungen.filter(r => r === 'ADMIN');
     if (roleAdmin.length > 0) {
         return RAETSELBAUKASTEN_ROLE.ADMIN;
     }
 
-    const roleAutor: string[] = user.roles.filter(r => r === 'AUTOR');
+    const roleAutor: string[] = user.berechtigungen.filter(r => r === 'AUTOR');
 
     if (roleAutor.length > 0) {
         return RAETSELBAUKASTEN_ROLE.AUTOR;
@@ -23,7 +23,7 @@ export function resolveRaetselbaukastenUserRole(user: UserWithRoles | null): Rae
     return RAETSELBAUKASTEN_ROLE.STANDARD;
 }
 
-export function isAdminOrAutor(user: UserWithRoles): boolean {
+export function isAdminOrAutor(user: UserWithBerechtigungen): boolean {
     const raetselbaukastenRole = resolveRaetselbaukastenUserRole(user);
 
     if (raetselbaukastenRole === RAETSELBAUKASTEN_ROLE.ADMIN || raetselbaukastenRole === RAETSELBAUKASTEN_ROLE.AUTOR) {

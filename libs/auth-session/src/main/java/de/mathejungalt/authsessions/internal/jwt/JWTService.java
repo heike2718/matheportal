@@ -39,7 +39,7 @@ public class JWTService {
                     .builder()
                     .uuid(token.getSubject())
                     .fullName(token.getClaim(CLAIM_FULL_NAME))
-                    .roles(extractRoles(token))
+                    .berechtigungen(extractGroups(token))
                     .build();
 
         } catch (final Exception e) {
@@ -48,7 +48,7 @@ public class JWTService {
 
     }
 
-    private Set<String> extractRoles(final JsonWebToken token) {
+    private Set<String> extractGroups(final JsonWebToken token) {
         final Set<String> groups = token.getGroups();
         return groups == null ? Set.of() : Set.copyOf(groups);
     }

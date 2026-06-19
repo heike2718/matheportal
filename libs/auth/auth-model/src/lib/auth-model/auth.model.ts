@@ -39,13 +39,13 @@ export interface AuthResult {
 
 export interface User {
     readonly fullName: string;
-    readonly roles: string[];
+    readonly berechtigungen: string[];
     readonly anonym: boolean;
 }
 
 export const anonymousUser: User = {
     fullName: 'Gast',
-    roles: [],
+    berechtigungen: [],
     anonym: true,
 };
 

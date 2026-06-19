@@ -191,7 +191,7 @@ describe('AuthEffects', () => {
             const userResponse: User = {
                 anonym: false,
                 fullName: 'Checki',
-                roles: ['ADMIN', 'LEHRER'],
+                berechtigungen: ['ADMIN', 'LEHRER'],
             };
 
             const idToken = 'test-id-token';
@@ -306,7 +306,7 @@ describe('AuthEffects', () => {
                 user: {
                     anonym: false,
                     fullName: 'Checki',
-                    roles: ['ADMIN'],
+                    berechtigungen: ['ADMIN'],
                 },
             }),
             authActions.createSessionFailed(),
@@ -379,7 +379,7 @@ describe('AuthEffects', () => {
             const userResponse: User = {
                 anonym: false,
                 fullName: 'Checki',
-                roles: ['ADMIN', 'LEHRER'],
+                berechtigungen: ['ADMIN', 'LEHRER'],
             };
 
             httpServiceMock.reloadSession.mockReturnValue(of(userResponse));

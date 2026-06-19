@@ -33,7 +33,7 @@ describe('SidenavComponent', () => {
         // hier dein echter User-Teststub
         anonym: false,
         fullName: 'Ada Lovelace',
-        roles: ['STANDARD'],
+        berechtigungen: ['STANDARD'],
     } as User;
 
     async function setup(options?: { user?: User; hasSession?: boolean }) {

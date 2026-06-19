@@ -47,8 +47,8 @@ public class SessionEntity {
     @Column(name = "full_name", nullable = false, length = 201)
     private String fullName;
 
-    @Column(name = "roles", nullable = false, length = 100)
-    private String roles;
+    @Column(name = "berechtigungen", nullable = false, length = 100)
+    private String berechtigungen;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

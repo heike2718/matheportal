@@ -55,7 +55,7 @@ public class SessionIdentityProvider implements IdentityProvider<SessionIdAuthen
             return QuarkusSecurityIdentity
                     .builder()
                     .setPrincipal(authenticatedUser::getUuid)
-                    .addRoles(authenticatedUser.getRoles())
+                    .addRoles(authenticatedUser.getBerechtigungen())
                     .build();
         } catch (final SessionValidationFailedException e) {
             throw new AuthenticationFailedException("Session ist abgelaufen", e);
