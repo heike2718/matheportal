@@ -34,7 +34,7 @@ describe('NavbarComponent', () => {
         // hier dein echter User-Teststub
         anonym: false,
         fullName: 'Ada Lovelace',
-        roles: ['STANDARD'],
+        berechtigungen: ['STANDARD'],
     } as User;
 
     async function setup(options?: { isHandset?: boolean; user?: User; hasSession?: boolean }) {

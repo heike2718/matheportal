@@ -16,7 +16,7 @@ describe('AuthSessionFacade', () => {
         // hier dein echter User-Teststub
         anonym: false,
         fullName: 'Ada Lovelace',
-        roles: ['STANDARD'],
+        berechtigungen: ['STANDARD'],
     } as User;
 
     beforeEach(() => {

@@ -20,5 +20,5 @@ public class AuthenticatedUser {
 
     private String fullName;
 
-    private Set<String> roles;
+    private Set<String> berechtigungen;
 }

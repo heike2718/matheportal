@@ -58,7 +58,7 @@ public class ReloadSessionService {
 
             final AuthenticatedUser authenticatedUser = sessionDto.getAuthenticatedUser();
 
-            return new UserDto(authenticatedUser.getFullName(), authenticatedUser.getRoles());
+            return new UserDto(authenticatedUser.getFullName(), authenticatedUser.getBerechtigungen());
         } catch (final SessionValidationFailedException e) {
             // muss außerhalb der reloadSession-Transaction passieren, sonst ist die session
             // anschließend noch da.

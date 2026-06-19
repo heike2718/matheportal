@@ -36,7 +36,7 @@ describe('raetselbaukastenAutorGuard', () => {
         const user: User = {
             anonym: isAnonym,
             fullName: fullName,
-            roles: rollen,
+            berechtigungen: rollen,
         };
 
         userSubject = new BehaviorSubject<User>(user);

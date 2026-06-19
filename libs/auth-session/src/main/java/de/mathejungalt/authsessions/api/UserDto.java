@@ -5,8 +5,8 @@ import java.util.Set;
 /**
  * UserDto.
  *
- * @param fullName String
- * @param roles    Set
+ * @param fullName       String
+ * @param berechtigungen Set
  */
-public record UserDto(String fullName, Set<String> roles) {
+public record UserDto(String fullName, Set<String> berechtigungen) {
 }

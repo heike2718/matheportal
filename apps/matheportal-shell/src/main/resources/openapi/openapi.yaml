@@ -138,7 +138,7 @@ components:
             type: object
             required:
                 - fullName
-                - roles
+                - berechtigungen
             properties:
                 fullName:
                     type: string
@@ -147,16 +147,18 @@ components:
                     pattern: "^[\\p{IsLatin}\\d]+(?:[ '\\-.’][\\p{IsLatin}\\d]+)*$"
                     description: Vollständiger Anzeigename (lateinische Buchstaben, Ziffern, Leerzeichen, Bindestrich, Apostroph)
                     example: María del Carmen 2
-                roles:
+                berechtigungen:
                     type: array
                     uniqueItems: true
-                    description: Rollen des Benutzers
+                    description: Berechtigungen des Benutzers
                     items:
                         type: string
                         pattern: '^[A-Z]+(_[A-Z]+)*$'
                     example:
                         - STANDARD
                         - ADMIN
+                        - LEHRER
+                        - AUTOR
         ConstraintViolationDetail:
             type: object
             properties:
