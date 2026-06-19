@@ -1,5 +1,4 @@
-import { anonymousUser, User } from '@matheportal/auth-model';
-import { resolveRaetselbaukastenUserRole } from './raetselbaukasten-role.utils';
+import { isAdminOrAutor, resolveRaetselbaukastenUserRole } from './raetselbaukasten-role.utils';
 import { RAETSELBAUKASTEN_ROLE } from './raetselbaukasten-role.model';
 
 describe('resolveRaetselbaukastenUserRole', () => {
@@ -37,5 +36,27 @@ describe('resolveRaetselbaukastenUserRole', () => {
         const result = resolveRaetselbaukastenUserRole({ roles: ['HALLO', 'KL_ADMIN'] });
 
         expect(result).toBe(RAETSELBAUKASTEN_ROLE.STANDARD);
+    });
+});
+
+describe('isAdminOrAutor', () => {
+    it('returns false when roles empty', () => {
+        const result = isAdminOrAutor({ roles: [] });
+        expect(result).toBeFalsy();
+    });
+
+    it('returns false when roles not contains AUTOR and ADMIN', () => {
+        const result = isAdminOrAutor({ roles: ['KL_ADMIN', 'STANDARD'] });
+        expect(result).toBeFalsy();
+    });
+
+    it('returns true when roles contains AUTOR', () => {
+        const result = isAdminOrAutor({ roles: ['HALLO', 'KL_ADMIN', 'STANDARD', 'AUTOR'] });
+        expect(result).toBeTruthy();
+    });
+
+    it('returns true when roles contains ADMIN', () => {
+        const result = isAdminOrAutor({ roles: ['HALLO', 'KL_ADMIN', 'STANDARD', 'ADMIN'] });
+        expect(result).toBeTruthy();
     });
 });

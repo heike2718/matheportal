@@ -145,18 +145,19 @@ export class AuthEffects {
                             this.#errorPublisher.publishWarning(
                                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
                             );
+                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                            void this.#router.navigateByUrl('/home');
                             break;
                         }
                         case 'missing':
                             break;
                         case 'technical': {
                             this.#errorPublisher.publishError(this.#technischerFehler);
+                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
+                            void this.#router.navigateByUrl('/home');
                             break;
                         }
                     }
-
-                    // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
-                    void this.#router.navigateByUrl('/home');
                 })
             ),
         { dispatch: false }

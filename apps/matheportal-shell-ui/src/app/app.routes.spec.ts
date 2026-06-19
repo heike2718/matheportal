@@ -13,7 +13,9 @@ describe('appRoutes', () => {
         const route = appRoutes.find(r => r.path === 'raetselbaukasten');
 
         expect(route).toBeDefined();
-        expect(route?.loadComponent).toBeTypeOf('function');
+        expect(route?.loadChildren).toBeTypeOf('function');
+        expect(route?.loadComponent).toBeUndefined();
         expect(route?.component).toBeUndefined();
+        expect(route?.children).toBeUndefined();
     });
 });

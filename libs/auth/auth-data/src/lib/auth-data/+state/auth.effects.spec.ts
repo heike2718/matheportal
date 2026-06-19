@@ -322,7 +322,7 @@ describe('AuthEffects', () => {
     });
 
     describe('sessionValidationFailed$', () => {
-        it('should show warning when session validation failed with expired', async () => {
+        it('should show warning when session validation failed with expired and redirect to home', async () => {
             httpServiceMock.logOut.mockReturnValue(of(undefined));
             action$.next(authActions.sessionValidationFailed({ reason: 'expired' }));
             await firstValueFrom(effects.sessionValidationFailed$);
@@ -340,7 +340,7 @@ describe('AuthEffects', () => {
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
-        it('should show nothing when session validation failed with missing', async () => {
+        it('should show nothing when session validation failed with missing, but not redirect to home', async () => {
             httpServiceMock.logOut.mockReturnValue(of(undefined));
             action$.next(authActions.sessionValidationFailed({ reason: 'missing' }));
             await firstValueFrom(effects.sessionValidationFailed$);
@@ -351,11 +351,11 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
-        it('should show error when session validation failed with technical', async () => {
+        it('should show error when session validation failed with technical and redirect to home', async () => {
             httpServiceMock.logOut.mockReturnValue(of(undefined));
             action$.next(authActions.sessionValidationFailed({ reason: 'technical' }));
             await firstValueFrom(effects.sessionValidationFailed$);

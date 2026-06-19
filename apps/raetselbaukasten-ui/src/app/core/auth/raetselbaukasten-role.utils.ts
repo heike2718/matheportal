@@ -22,3 +22,13 @@ export function resolveRaetselbaukastenUserRole(user: UserWithRoles | null): Rae
 
     return RAETSELBAUKASTEN_ROLE.STANDARD;
 }
+
+export function isAdminOrAutor(user: UserWithRoles): boolean {
+    const raetselbaukastenRole = resolveRaetselbaukastenUserRole(user);
+
+    if (raetselbaukastenRole === RAETSELBAUKASTEN_ROLE.ADMIN || raetselbaukastenRole === RAETSELBAUKASTEN_ROLE.AUTOR) {
+        return true;
+    }
+
+    return false;
+}
