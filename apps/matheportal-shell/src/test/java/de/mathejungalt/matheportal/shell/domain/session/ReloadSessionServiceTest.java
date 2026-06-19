@@ -56,7 +56,7 @@ public class ReloadSessionServiceTest {
         final AuthenticatedUser authenticatedUser = AuthenticatedUser
                 .builder()
                 .fullName("Konfetti Paletti")
-                .roles(Set.of("ADMIN"))
+                .berechtigungen(Set.of("ADMIN"))
                 .build();
 
         final SessionDto sessionDto = SessionDto
@@ -74,8 +74,8 @@ public class ReloadSessionServiceTest {
 
         // assert
         assertAll(() -> assertNotNull(result), () -> assertEquals("Konfetti Paletti", result.fullName()),
-                () -> assertEquals(1, result.roles().size()),
-                () -> assertEquals("ADMIN", result.roles().iterator().next()),
+                () -> assertEquals(1, result.berechtigungen().size()),
+                () -> assertEquals("ADMIN", result.berechtigungen().iterator().next()),
                 () -> verify(sessionCookieAdapter).getSessionId(),
                 () -> verify(sessionFacade).reloadSession(sessionId, sessionIdleTimeoutMinutes, maxLifetimeMinutes));
     }

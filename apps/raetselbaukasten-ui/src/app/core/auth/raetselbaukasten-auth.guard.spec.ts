@@ -36,7 +36,7 @@ describe('raetselbaukastenAuthGuard', () => {
         const user: User = {
             anonym: isAnonym,
             fullName: fullName,
-            roles: rollen,
+            berechtigungen: rollen,
         };
 
         userSubject = new BehaviorSubject<User>(user);
@@ -82,7 +82,7 @@ describe('raetselbaukastenAuthGuard', () => {
         expect(result).toBeTruthy();
     });
 
-    it('should allow access for loggedIn users without roles', async () => {
+    it('should allow access for loggedIn users without berechtigungen', async () => {
         setup([], false, 'Ada');
 
         const result = await TestBed.runInInjectionContext(async () =>
@@ -92,7 +92,7 @@ describe('raetselbaukastenAuthGuard', () => {
         expect(result).toBeTruthy();
     });
 
-    it('should allow access for loggedIn users with role STANDARD', async () => {
+    it('should allow access for loggedIn users with authority STANDARD', async () => {
         setup(['STANDARD'], false, 'Bilbo');
 
         const result = await TestBed.runInInjectionContext(async () =>

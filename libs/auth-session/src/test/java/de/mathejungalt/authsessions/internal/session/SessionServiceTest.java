@@ -55,7 +55,7 @@ public class SessionServiceTest {
                 .builder()
                 .uuid(uuid)
                 .fullName("Flotte Lotte")
-                .roles(Set.of("STANDARD"))
+                .berechtigungen(Set.of("STANDARD"))
                 .build();
 
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Berlin"));
@@ -70,7 +70,7 @@ public class SessionServiceTest {
         assertAll(() -> assertNotNull(sessionDto), () -> assertNotNull(sessionDto.getAuthenticatedUser()),
                 () -> assertEquals("Flotte Lotte", sessionDto.getAuthenticatedUser().getFullName()),
                 () -> assertEquals(uuid, sessionDto.getAuthenticatedUser().getUuid()),
-                () -> assertEquals("STANDARD", sessionDto.getAuthenticatedUser().getRoles().iterator().next()),
+                () -> assertEquals("STANDARD", sessionDto.getAuthenticatedUser().getBerechtigungen().iterator().next()),
                 () -> assertNotNull(sessionDto.getSessionId()));
 
         verify(sessionRepository).saveSession(any(SessionEntity.class));

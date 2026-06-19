@@ -8,7 +8,7 @@ describe('authFeature tests', () => {
 
     const user: User = {
         fullName: 'David Hilbert',
-        roles: ['ADMIN'],
+        berechtigungen: ['ADMIN'],
         anonym: false,
     };
 

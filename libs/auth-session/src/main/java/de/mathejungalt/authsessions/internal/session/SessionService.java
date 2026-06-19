@@ -65,7 +65,7 @@ public class SessionService {
                     .sessionId(sessionId)
                     .fullName(authenticatedUser.getFullName())
                     .userUuid(authenticatedUser.getUuid())
-                    .roles(toCsv(authenticatedUser.getRoles()))
+                    .berechtigungen(toCsv(authenticatedUser.getBerechtigungen()))
                     .build();
 
             sessionRepository.saveSession(sessionEntity);
@@ -124,7 +124,7 @@ public class SessionService {
                             .builder()
                             .uuid(sessionEntity.getUserUuid())
                             .fullName(sessionEntity.getFullName())
-                            .roles(parseRoles(sessionEntity.getRoles()))
+                            .berechtigungen(parseBerechtigungen(sessionEntity.getBerechtigungen()))
                             .build())
                     .build();
 
@@ -148,20 +148,20 @@ public class SessionService {
 
     }
 
-    private String toCsv(final Set<String> roles) {
-        if (roles == null || roles.isEmpty()) {
+    private String toCsv(final Set<String> berechtigungen) {
+        if (berechtigungen == null || berechtigungen.isEmpty()) {
             return "";
         }
-        return String.join(",", roles);
+        return String.join(",", berechtigungen);
     }
 
-    private Set<String> parseRoles(final String rolesCsv) {
-        if (rolesCsv == null || rolesCsv.isBlank()) {
+    private Set<String> parseBerechtigungen(final String berechtigungenCsv) {
+        if (berechtigungenCsv == null || berechtigungenCsv.isBlank()) {
             return Set.of();
         }
 
         return Set
-                .of(rolesCsv.split(","))
+                .of(berechtigungenCsv.split(","))
                 .stream()
                 .map(String::trim)
                 .filter(s -> !s.isBlank())

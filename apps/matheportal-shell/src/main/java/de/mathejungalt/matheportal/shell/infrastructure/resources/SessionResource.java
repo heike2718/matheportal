@@ -40,7 +40,7 @@ public final class SessionResource implements SessionApi {
         final SessionDto sessionDto = loginService.login(accessTokenRequest.getIdToken());
 
         final UserDto user = new UserDto(sessionDto.getAuthenticatedUser().getFullName(),
-                sessionDto.getAuthenticatedUser().getRoles());
+                sessionDto.getAuthenticatedUser().getBerechtigungen());
 
         final NewCookie sessionCookie = sessionCookieAdapter.createSessionCookie(sessionDto.getSessionId());
 
