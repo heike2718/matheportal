@@ -2,16 +2,19 @@
 
 :host {
     display: block;
+    min-width: 0;
 }
 
 .rbk-start {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
     padding: mp-theme.$mp-space-6;
 
-    &__title {
-        margin: 0 0 mp-theme.$mp-space-5 0;
-    }
-
-    &__emphasized {
-        font-weight: bold;
+    @media (max-width: 37.5rem) {
+        padding-inline: mp-theme.$mp-space-1;
+        padding-block: mp-theme.$mp-space-4;
     }
 }

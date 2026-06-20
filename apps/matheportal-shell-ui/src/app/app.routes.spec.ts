@@ -5,8 +5,10 @@ describe('appRoutes', () => {
         const route = appRoutes.find(r => r.path === 'minikaenguru-anwendung');
 
         expect(route).toBeDefined();
-        expect(route?.loadComponent).toBeTypeOf('function');
+        expect(route?.loadChildren).toBeTypeOf('function');
+        expect(route?.loadComponent).toBeUndefined();
         expect(route?.component).toBeUndefined();
+        expect(route?.children).toBeUndefined();
     });
 
     it('should configure remote route for raetselbaukasten', () => {

@@ -1,3 +1,165 @@
+@use 'mp-theme' as mp-theme;
+
 :host {
     display: block;
+    min-width: 0;
+
+    // Wichtig: die Komponente reagiert dann auf ihre eigene Breite,
+    // nicht nur auf die Viewport-Breite.
+    container-type: inline-size;
+}
+
+.mka-guest-info {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    // Kein eigenes Seitenpadding hier.
+    // Das kommt bereits von .mka-start.
+
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-5 0;
+    }
+
+    p {
+        max-width: 65ch;
+    }
+
+    &__section {
+        margin-top: mp-theme.$mp-space-6;
+    }
+
+    &__section h3 {
+        margin: 0 0 mp-theme.$mp-space-3 0;
+    }
+
+    &__dates {
+        display: grid;
+        gap: mp-theme.$mp-space-3;
+        max-width: 42rem;
+        margin: 0;
+    }
+
+    &__date-row {
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: minmax(14rem, 24rem) auto;
+        gap: mp-theme.$mp-space-4;
+        align-items: baseline;
+
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+        border-radius: mp-theme.$mp-radius-m;
+        background: rgba(0, 0, 0, 0.04);
+
+        dt {
+            min-width: 0;
+            font-weight: 600;
+        }
+
+        dd {
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+    }
+
+    &__login-hint {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 42rem;
+        min-width: 0;
+
+        display: flex;
+        gap: mp-theme.$mp-space-4;
+        align-items: flex-start;
+
+        margin-block: mp-theme.$mp-space-6;
+        padding: mp-theme.$mp-space-4 mp-theme.$mp-space-5;
+
+        border-left: 0.4rem solid mp-theme.mp-brand(minikaenguru);
+        border-radius: mp-theme.$mp-radius-m;
+        background-color: mp-theme.mp-brand-hover(minikaenguru);
+    }
+
+    &__login-hint-icon {
+        flex: 0 0 auto;
+        margin-top: 0.15rem;
+    }
+
+    &__login-hint-text {
+        min-width: 0;
+
+        h2 {
+            margin: 0 0 mp-theme.$mp-space-2 0;
+            font-size: 1.15rem;
+        }
+
+        p {
+            margin: 0;
+            max-width: none;
+            overflow-wrap: break-word;
+            word-break: normal;
+        }
+    }
+
+    &__browser-hint {
+        box-sizing: border-box;
+        margin-top: mp-theme.$mp-space-6;
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+
+        border-left: 0.25rem solid rgba(0, 0, 0, 0.25);
+        border-radius: mp-theme.$mp-radius-m;
+        background: rgba(0, 0, 0, 0.04);
+
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+}
+
+@container (max-width: 37.5rem) {
+    .mka-guest-info {
+        p {
+            max-width: none;
+        }
+
+        &__section {
+            margin-top: mp-theme.$mp-space-5;
+        }
+
+        &__dates {
+            gap: mp-theme.$mp-space-2;
+        }
+
+        &__date-row {
+            grid-template-columns: 1fr;
+            gap: mp-theme.$mp-space-1;
+            padding: mp-theme.$mp-space-3;
+
+            dd {
+                white-space: normal;
+            }
+        }
+
+        &__login-hint {
+            display: block;
+            padding: mp-theme.$mp-space-3;
+        }
+
+        &__login-hint-icon {
+            display: block;
+            margin: 0 0 mp-theme.$mp-space-2 0;
+        }
+
+        &__login-hint-text {
+            h2 {
+                font-size: 1.05rem;
+            }
+        }
+
+        &__browser-hint {
+            margin-top: mp-theme.$mp-space-5;
+            padding: mp-theme.$mp-space-3;
+        }
+    }
 }

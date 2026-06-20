@@ -2,25 +2,46 @@
 
 :host {
     display: block;
+    min-width: 0;
 }
 
 .rbk-guest-info {
-    padding: mp-theme.$mp-space-6;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    // Kein eigenes Seitenpadding hier.
+    // Das sollte der äußere Start-/Page-Wrapper übernehmen.
 
     &__title {
         margin: 0 0 mp-theme.$mp-space-5 0;
     }
 
+    p {
+        max-width: 65ch;
+    }
+
     &__emphasized {
-        font-weight: bold;
+        box-sizing: border-box;
+        max-width: 65ch;
+        margin-block: mp-theme.$mp-space-4;
+
+        font-weight: 600;
+        line-height: 1.45;
     }
 
     &__login-hint {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 42rem;
+        min-width: 0;
+
         display: flex;
         gap: mp-theme.$mp-space-4;
         align-items: flex-start;
 
-        margin-block: mp-theme.$mp-space-5;
+        margin-block: mp-theme.$mp-space-6;
         padding: mp-theme.$mp-space-4 mp-theme.$mp-space-5;
 
         border-left: 0.4rem solid mp-theme.mp-brand(raetselbaukasten);
@@ -43,6 +64,36 @@
 
         p {
             margin: 0;
+            max-width: none;
+            overflow-wrap: break-word;
+            word-break: normal;
+        }
+    }
+
+    @media (max-width: 37.5rem) {
+        p {
+            max-width: none;
+        }
+
+        &__emphasized {
+            max-width: none;
+            margin-block: mp-theme.$mp-space-3;
+        }
+
+        &__login-hint {
+            display: block;
+            padding: mp-theme.$mp-space-3;
+        }
+
+        &__login-hint-icon {
+            display: block;
+            margin: 0 0 mp-theme.$mp-space-2 0;
+        }
+
+        &__login-hint-text {
+            h2 {
+                font-size: 1.05rem;
+            }
         }
     }
 }

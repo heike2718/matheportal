@@ -7,6 +7,4 @@ import { RouterModule } from '@angular/router';
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
 })
-export class AppComponent {
-    protected title = 'minikaenguru-anwendung-ui';
-}
+export class AppComponent {}

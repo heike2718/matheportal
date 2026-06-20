@@ -49,6 +49,10 @@ export const anonymousUser: User = {
     anonym: true,
 };
 
+export type UserWithBerechtigungen = {
+    readonly berechtigungen: readonly string[];
+};
+
 export interface AuthUrlResponse {
     readonly url: string;
 }

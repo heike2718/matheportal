@@ -1,41 +1,41 @@
-import { isAdminOrAutor, resolveRaetselbaukastenUserRole } from './raetselbaukasten-role.utils';
-import { RAETSELBAUKASTEN_ROLE } from './raetselbaukasten-role.model';
+import { isAdminOrAutor, resolveRaetselbaukastenBerechtigung } from './raetselbaukasten-berechtigung.utils';
+import { RAETSELBAUKASTEN_BERECHTIGUNG } from './raetselbaukasten-berechtigung.model';
 
-describe('resolveRaetselbaukastenUserRole', () => {
+describe('resolveRaetselbaukastenBerechtigung', () => {
     it('should return NONE when null', () => {
-        const result = resolveRaetselbaukastenUserRole(null);
+        const result = resolveRaetselbaukastenBerechtigung(null);
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.NONE);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.none);
     });
 
     it('should return NONE when no role', () => {
-        const result = resolveRaetselbaukastenUserRole({ berechtigungen: [] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: [] });
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.NONE);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.none);
     });
 
     it('should return ADMIN when AUTOR and ADMIN', () => {
-        const result = resolveRaetselbaukastenUserRole({ berechtigungen: ['KL_ADMIN', 'AUTOR', 'ADMIN'] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['KL_ADMIN', 'AUTOR', 'ADMIN'] });
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.ADMIN);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.admin);
     });
 
     it('should return AUTOR when AUTOR', () => {
-        const result = resolveRaetselbaukastenUserRole({ berechtigungen: ['AUTOR', 'STANDARD'] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['AUTOR', 'STANDARD'] });
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.AUTOR);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.autor);
     });
 
     it('should return STANDARD when STANDARD', () => {
-        const result = resolveRaetselbaukastenUserRole({ berechtigungen: ['LEHRER', 'STANDARD'] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['LEHRER', 'STANDARD'] });
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.STANDARD);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.standard);
     });
 
     it('should return STANDARD when any role but AUTOR or ADMIN', () => {
-        const result = resolveRaetselbaukastenUserRole({ berechtigungen: ['HALLO', 'KL_ADMIN'] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['HALLO', 'KL_ADMIN'] });
 
-        expect(result).toBe(RAETSELBAUKASTEN_ROLE.STANDARD);
+        expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.standard);
     });
 });
 

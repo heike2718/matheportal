@@ -1,1 +1,17 @@
-<p>start works!</p>
+<div class="mka-start">
+    @if (minikaenguruContextFacade.isLoggedIn()) {
+        @if (minikaenguruContextFacade.isPrivatveranstalter()) {
+            <mka-dashboard-privat></mka-dashboard-privat>
+        }
+        @if (minikaenguruContextFacade.isLehrer()) {
+            <mka-dashboard-lehrer></mka-dashboard-lehrer>
+        }
+        @if (minikaenguruContextFacade.isStandarduser()) {
+            <div data-testId="mka-standarduser">
+                <p>Hier muss dann der Flow zum Anlegen eines Veranstalters kommen.</p>
+            </div>
+        }
+    } @else {
+        <mka-guest-info></mka-guest-info>
+    }
+</div>

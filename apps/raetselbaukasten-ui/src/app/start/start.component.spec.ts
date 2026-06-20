@@ -65,9 +65,9 @@ describe('StartComponent', () => {
             });
         });
 
-        it('shows guest-info when not logged in', () => {
-            const notAuthorizedSectionDe = fixture.debugElement.query(By.css('rbk-guest-info'));
-            expect(notAuthorizedSectionDe).toBeTruthy();
+        it('only shows guest-info when not logged in', () => {
+            expect(fixture.debugElement.query(By.css('rbk-guest-info'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('rbk-dashboard'))).toBeFalsy();
         });
     });
 
@@ -79,9 +79,9 @@ describe('StartComponent', () => {
             });
         });
 
-        it('shows does not show guest-info when logged in', () => {
-            const notAuthorizedSectionDe = fixture.debugElement.query(By.css('rbk-guest-info'));
-            expect(notAuthorizedSectionDe).toBeFalsy();
+        it('only shows dashboard when logged in', () => {
+            expect(fixture.debugElement.query(By.css('rbk-guest-info'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('rbk-dashboard'))).toBeTruthy();
         });
     });
 });
