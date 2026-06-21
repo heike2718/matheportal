@@ -41,7 +41,7 @@ public class SessionEntity {
     @Column(name = "session_id", nullable = false, length = 128, unique = true)
     private String sessionId;
 
-    @Column(name = "user_uuid", nullable = false, columnDefinition = "char(36)")
+    @Column(name = "user_uuid", nullable = false, length = 36)
     private String userUuid;
 
     @Column(name = "full_name", nullable = false, length = 201)

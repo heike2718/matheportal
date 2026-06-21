@@ -24,15 +24,15 @@
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>
         <spotbugs.failOnError>true</spotbugs.failOnError>
-        <jacoco.exclusion-1>**/*Dto*.class</jacoco.exclusion-1>
-        <jacoco.exclusion-2>**/*Application*.class</jacoco.exclusion-2>
-        <jacoco.exclusion-3>**/ResponseStatus.class</jacoco.exclusion-3>
-        <jacoco.exclusion-4>**/healthchecks/**</jacoco.exclusion-4>
+
+        <jacoco.exclusion-1>de/mathejungalt/minikaenguru/anwendung/domain/generated/**</jacoco.exclusion-1>
+        <jacoco.exclusion-2>de/mathejungalt/minikaenguru/anwendung/infrastructure/generated/**</jacoco.exclusion-2>
 
         <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
         <lombock.version>1.18.42</lombock.version>
+        <openapi-generator-maven-plugin.version>7.20.0</openapi-generator-maven-plugin.version>
 
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -104,6 +104,16 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-mariadb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
         </dependency>
 
         <dependency>
@@ -236,6 +246,47 @@
                     </mixins>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-internal-server-stubs</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <configOptions>
+                                <library>quarkus</library>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useBeanValidation>true</useBeanValidation>
+                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                                <interfaceOnly>true</interfaceOnly>
+                                <returnResponse>true</returnResponse>
+                                <useTags>true</useTags>
+                                <sourceFolder>src/main/java</sourceFolder>
+                                <basePackage>de.mathejungalt.minikaenguru.anwendung</basePackage>
+                                <apiPackage>
+                                    de.mathejungalt.minikaenguru.anwendung.infrastructure.generated</apiPackage>
+                                <modelPackage>
+                                    de.mathejungalt.minikaenguru.anwendung.domain.generated</modelPackage>
+                                <generateConstructors>false</generateConstructors>
+                                <generateBuilders>false</generateBuilders>
+                                <openApiNullable>false</openApiNullable>
+                                <generatedAnnotation>jakarta.annotation.Generated</generatedAnnotation>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

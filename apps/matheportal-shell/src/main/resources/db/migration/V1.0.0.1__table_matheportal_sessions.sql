@@ -1,11 +1,12 @@
 CREATE TABLE matheportal_sessions (
-    id BIGINT NOT NULL AUTO_INCREMENT,
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT comment '',
     session_id VARCHAR(128) NOT NULL,
     user_uuid CHAR(36) NOT NULL,
     full_name VARCHAR(201) NOT NULL,
-    roles VARCHAR(100) NOT NULL,
+    berechtigungen VARCHAR(100) NOT NULL,
+    created_at DATETIME(6) NOT NULL,
     expires_at DATETIME(6) NOT NULL,
-    PRIMARY KEY (id),
+    version int(10) DEFAULT 0,
     UNIQUE KEY uk_matheportal_sessions_session_id (session_id),
     KEY idx_matheportal_sessions_user_uuid (user_uuid),
     KEY idx_matheportal_sessions_expires_at (expires_at)

@@ -3,7 +3,6 @@ package de.mathejungalt.matheportal.shell.infrastructure.resources;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -20,7 +19,6 @@ import de.mathejungalt.matheportal.shell.infrastructure.generated.SessionApi;
 /**
  * SessionResource.
  */
-@Path("/api/session")
 public final class SessionResource implements SessionApi {
 
     @Inject

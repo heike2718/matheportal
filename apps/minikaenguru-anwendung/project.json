@@ -7,6 +7,13 @@
     "implicitDependencies": ["matheportal-bom", "auth-session"],
 
     "targets": {
+        "tech-generate-sources": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn clean generate-sources"
+            }
+        },
         "tech-dev": {
             "executor": "nx:run-commands",
             "options": {
