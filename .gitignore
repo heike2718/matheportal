@@ -56,4 +56,6 @@ apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-a
 apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten
 **/target
 
+.database/datenmigration/dumps
+
 vitest.config.*.timestamp*
