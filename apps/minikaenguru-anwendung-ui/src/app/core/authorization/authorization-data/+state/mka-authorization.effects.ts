@@ -8,6 +8,7 @@ import { User } from '@matheportal/auth-model';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 @Injectable({
     providedIn: 'root',
@@ -17,6 +18,7 @@ export class MkaAuthorizationEffects {
     #errorPublisher = inject(ERROR_PUBLISHER);
     #httpService = inject(MkaAuthorizationHttpService);
     #store = inject(Store);
+    #authSessionFacade = inject(AuthSessionFacade);
 
     loadMkaAuthorization$ = createEffect(() => {
         return this.#actions.pipe(
@@ -31,6 +33,17 @@ export class MkaAuthorizationEffects {
             )
         );
     });
+
+    mkaAuthorizationLoaded$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(mkaAuthorizationActions.mkaAuthorizationLoaded),
+                tap(action => {
+                    this.#authSessionFacade.synchronizeUser(action.user);
+                })
+            ),
+        { dispatch: false }
+    );
 
     loadMkaAuthorizationFailed$ = createEffect(
         () =>

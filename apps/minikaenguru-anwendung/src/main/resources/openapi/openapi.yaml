@@ -4,16 +4,16 @@ info:
     version: 1.0.0
     description: API der minikaenguru-anwendung.
 paths:
-    /api/veranstalter:
+    /api/berechtigungen:
         get:
             tags:
-                - Veranstalter
-            summary: Läd einen Veranstalter
+                - Berechtigungen
+            summary: Läd die Minkänguru- Berechtigung eines eingeloggten Users
             description: >
                 Holt die UUID aus der Session selektiert mit dieser den Veranstalter.
-                Gleichzeitig wird die Session um eine Berechtigung erweitert und der
-                zugehörige User mit zurückgegeben
-            operationId: loadVeranstalter
+                Falls es einen gibt, wird die Session um eine Berechtigung erweitert und der
+                zugehörige User wird zurückgegeben
+            operationId: loadBerechtigung
             security:
                 - mpSession: []
             responses:
@@ -22,7 +22,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/VeranstalterResponseDto'
+                                $ref: '#/components/schemas/User'
                 '401':
                     description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
                 '404':
@@ -77,13 +77,6 @@ components:
                         - DEFAULT
                         - ERTEILT
                         - ENTZOGEN
-        VeranstalterResponseDto:
-            type: object
-            properties:
-                veranstalter:
-                    $ref: '#/components/schemas/Veranstalter'
-                user:
-                    $ref: '#/components/schemas/User'
         User:
             type: object
             required:

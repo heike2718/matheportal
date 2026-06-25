@@ -21,6 +21,8 @@ import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
 import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
 
+import io.vertx.mutiny.ext.web.Session;
+
 /**
  * SessionService.
  */

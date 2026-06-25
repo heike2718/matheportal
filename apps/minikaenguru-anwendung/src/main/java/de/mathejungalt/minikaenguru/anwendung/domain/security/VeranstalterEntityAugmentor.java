@@ -32,8 +32,9 @@ public class VeranstalterEntityAugmentor {
             case PRIVAT -> builder.addRole("PRIVAT");
             }
 
-            builder.addAttribute("veranstalterTyp", veranstalterEntity.getTyp());
-            builder.addAttribute("teilnahmekuerzel", veranstalterEntity.getTeilnahmekuerzel());
+            // builder.addAttribute("veranstalterTyp", veranstalterEntity.getTyp());
+            // builder.addAttribute("teilnahmekuerzel",
+            // veranstalterEntity.getTeilnahmekuerzel());
 
         });
 

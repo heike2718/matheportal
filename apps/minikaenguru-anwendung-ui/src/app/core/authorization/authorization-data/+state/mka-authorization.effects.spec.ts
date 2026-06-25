@@ -11,6 +11,7 @@ import { AuthorizationLoadState } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('MkaAuthorizationEffects tests', () => {
     let action$: ReplaySubject<unknown>;
@@ -26,6 +27,10 @@ describe('MkaAuthorizationEffects tests', () => {
         publishError: vi.fn(),
     };
 
+    const authSessionFacadeMock = {
+        synchronizeUser: vi.fn(),
+    };
+
     beforeEach(() => {
         vi.resetAllMocks();
         action$ = new ReplaySubject<unknown>(1);
@@ -38,6 +43,10 @@ describe('MkaAuthorizationEffects tests', () => {
                 {
                     provide: ERROR_PUBLISHER,
                     useValue: errorPublisherMock,
+                },
+                {
+                    provide: AuthSessionFacade,
+                    useValue: authSessionFacadeMock,
                 },
                 {
                     provide: MkaAuthorizationHttpService,
@@ -127,6 +136,24 @@ describe('MkaAuthorizationEffects tests', () => {
 
             expect(emmited).toEqual(mkaAuthorizationActions.loadMkaAuthorizationFailed());
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('loadMkaAuthorizationFailed$ test', () => {
+        it('publishes error when loadMkaAuthorizationFailed', async () => {
+            const user: User = {
+                anonym: false,
+                fullName: 'Full Name',
+                berechtigungen: ['STANDARD', 'PRIVAT'],
+            };
+
+            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
+            await firstValueFrom(effects.mkaAuthorizationLoaded$);
+
+            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
+            expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledWith(user);
         });
     });
 

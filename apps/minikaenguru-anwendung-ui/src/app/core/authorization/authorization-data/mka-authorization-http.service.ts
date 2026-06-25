@@ -1,20 +1,15 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { User } from '@matheportal/auth-model';
-import { Observable, of } from 'rxjs';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class MkaAuthorizationHttpService {
-    // #httpClient = inject(HttpClient);
+    #config = inject(MINIKAENGURU_ANWENDUNG_CONFIGURATION);
+    #httpClient = inject(HttpClient);
 
     public loadMkaAuthorization(): Observable<User> {
-        const user: User = {
-            anonym: false,
-            berechtigungen: ['STANDARD'],
-            fullName: 'Standarduser',
-        };
-
-        return of(user);
+        return this.#httpClient.get<User>(this.#config.apiUrl + '/api/berechtigungen', { withCredentials: true });
     }
 }

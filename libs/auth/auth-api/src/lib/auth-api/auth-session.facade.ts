@@ -24,7 +24,7 @@ export class AuthSessionFacade {
      * Nachdem der user um weitere Berechtigungen angereichert wurde, kann der Store synchronisiert werden.
      * @param user User
      */
-    augmentUser(user: User): void {
+    synchronizeUser(user: User): void {
         this.#store.dispatch(authActions.userAugmented({ user }));
     }
 }

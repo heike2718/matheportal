@@ -3,6 +3,7 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
@@ -13,6 +14,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entitie
 /**
  * VeranstalterDao.
  */
+@ApplicationScoped
 public class VeranstalterDao {
 
     @Inject
