@@ -1,5 +1,5 @@
 import { UserWithBerechtigungen } from '@matheportal/auth-model';
-import { Veranstaltertyp, VERANSTALTERTYP } from './minikaenguru-context.model';
+import { Veranstaltertyp, VERANSTALTERTYP } from './mka-authorization.model';
 
 export function resolveVeranstaltertyp(user: UserWithBerechtigungen | null): Veranstaltertyp {
     if (user === null || user.berechtigungen.length === 0) {

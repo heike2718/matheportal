@@ -1,82 +1,112 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartComponent } from './start.component';
 import { By } from '@angular/platform-browser';
-import { computed, signal } from '@angular/core';
-import { VERANSTALTERTYP, Veranstaltertyp } from '../core/context/minikaenguru-context.model';
-import { MinikaenguruContextFacade } from '../core/context/minikaenguru-context.facade';
+import { computed } from '@angular/core';
+import { MkaAuthorizationFacade } from '../core/authorization/authorization-api/mka-authorization.facade';
+import { StartViewState } from '../core/authorization/authorization-model';
 
-describe('StartComponent', () => {
+describe('StartComponent tests', () => {
     let component: StartComponent;
     let fixture: ComponentFixture<StartComponent>;
 
-    const loggedIn = signal(false);
-    const veranstaltertyp = signal<Veranstaltertyp>(VERANSTALTERTYP.none);
-
-    const minikaenguruContextFacadeMock = {
-        isLoggedIn: computed(() => loggedIn()),
-        isPrivatveranstalter: computed(() => veranstaltertyp() === VERANSTALTERTYP.privat),
-        isLehrer: computed(() => veranstaltertyp() === VERANSTALTERTYP.lehrer),
-        isStandarduser: computed(() => veranstaltertyp() === VERANSTALTERTYP.none),
+    const mkaAuthorizationFacadeMock = {
+        startViewState: computed(() => 'guest'),
+        ensureAuthorizationLoaded: vi.fn(),
     };
 
-    beforeEach(async () => {
-        loggedIn.set(false);
-        veranstaltertyp.set(VERANSTALTERTYP.none);
-
+    async function setup(startViewState: StartViewState) {
+        mkaAuthorizationFacadeMock.startViewState = computed(() => startViewState);
         await TestBed.configureTestingModule({
             imports: [StartComponent],
-            providers: [{ provide: MinikaenguruContextFacade, useValue: minikaenguruContextFacadeMock }],
+            providers: [{ provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
         component = fixture.componentInstance;
-    });
+    }
 
     describe('logged out tests', () => {
-        it('shows guest-info when not logged in', () => {
-            loggedIn.set(false);
-            veranstaltertyp.set(VERANSTALTERTYP.none);
+        beforeEach(async () => await setup('guest'));
+
+        it('shows guest-info when guest', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
 
-    describe('logged in tests', () => {
-        it('shows mka-standarduser when logged in and none', () => {
-            loggedIn.set(true);
-            veranstaltertyp.set(VERANSTALTERTYP.none);
+    describe('loading tests', () => {
+        beforeEach(async () => await setup('loading'));
+        it('shows loading when loading', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
+    });
 
-        it('shows dashboard-lehrer when logged in and lehrer', () => {
-            loggedIn.set(true);
-            veranstaltertyp.set(VERANSTALTERTYP.lehrer);
+    describe('augmentation failed tests', () => {
+        beforeEach(async () => setup('failed'));
+        it('shows failed when failed', () => {
+            fixture.detectChanges();
+
+            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeTruthy();
+        });
+    });
+
+    describe('standard user tests', () => {
+        beforeEach(async () => setup('veranstalter-anlegen'));
+        it('shows mka-standarduser when veranstalter-anlegen', () => {
+            fixture.detectChanges();
+
+            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
+        });
+    });
+
+    describe('lehrer tests', () => {
+        beforeEach(async () => setup('dashboard-lehrer'));
+        it('shows dashboard-lehrer when dashboard-lehrer', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
+    });
 
-        it('shows dashboard-privat when logged in and privatveranstalter', () => {
-            loggedIn.set(true);
-            veranstaltertyp.set(VERANSTALTERTYP.privat);
+    describe('privatveranstalter tests', () => {
+        beforeEach(async () => setup('dashboard-privat'));
+        it('shows dashboard-privat when dashboard-privat', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
 });

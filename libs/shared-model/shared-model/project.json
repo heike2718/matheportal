@@ -1,0 +1,45 @@
+{
+    "name": "shared-model",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/shared-model/shared-model/src",
+    "prefix": "mp",
+    "projectType": "library",
+    "tags": ["scope:shared", "type:model"],
+    "targets": {
+        "tech-format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-lint": {
+            "executor": "@nx/eslint:lint"
+        },
+        "tech-lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

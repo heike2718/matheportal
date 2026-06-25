@@ -14,6 +14,7 @@ import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
+import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 
 @Injectable({
     providedIn: 'root',
@@ -25,8 +26,6 @@ export class AuthEffects {
     #browserNavigationService = inject(BrowserNavigationService);
     #locationHashService = inject(LOCATION_HASH_SERVICE);
     #errorPublisher = inject(ERROR_PUBLISHER);
-
-    #technischerFehler = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
 
     requestLogInUrl$ = createEffect(() => {
         return this.#actions.pipe(
@@ -56,7 +55,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.requestLoginUrlFailed),
                 tap(() => {
-                    this.#errorPublisher.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -85,7 +84,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.createSessionFailed),
                 tap(() => {
-                    this.#errorPublisher.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -96,7 +95,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.invalidOAuthFlowHash),
                 tap(() => {
-                    this.#errorPublisher.publishError(this.#technischerFehler);
+                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -152,7 +151,7 @@ export class AuthEffects {
                         case 'missing':
                             break;
                         case 'technical': {
-                            this.#errorPublisher.publishError(this.#technischerFehler);
+                            this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                             // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
                             void this.#router.navigateByUrl('/home');
                             break;

@@ -2,10 +2,9 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ERROR_PUBLISHER } from './error.publisher';
+import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 
 export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-    const message = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
-
     // TODO: später eventuell einen eigenen errorState verwenden, nicht nur MessageService
     const messagePublisher = inject(ERROR_PUBLISHER);
 
@@ -15,7 +14,7 @@ export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next
                 if (error.status === 0 || error.status >= 500) {
                     // TODO Dinge zum Reporting einbauen
                     // messageService.publishOnce(message), damit nicht mehrere gleiche Fehlermeldungen entstehen.
-                    messagePublisher.publishError(message);
+                    messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 }
             }
 

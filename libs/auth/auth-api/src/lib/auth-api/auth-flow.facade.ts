@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { AuthSessionFacade } from './auth-session.facade';
 import { authActions } from '@matheportal/auth-data';
 import { LOCATION_HASH_SERVICE, mapHashToAuthResult } from '@matheportal/auth-model';
+import { AuthFlowObserver } from '@matheportal/shared-model';
 
 @Injectable({
     providedIn: 'root',
@@ -11,6 +12,8 @@ export class AuthFlowFacade {
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
     #locationHashService = inject(LOCATION_HASH_SERVICE);
+
+    #authFlowObservers: AuthFlowObserver[] = [];
 
     login(): void {
         this.#store.dispatch(authActions.requestLoginUrl());
@@ -45,6 +48,19 @@ export class AuthFlowFacade {
             case 'signup':
                 // hier ist erstmal noch nicht klar, was passieren soll.
                 break;
+        }
+    }
+
+    registerObserver(observer: AuthFlowObserver): void {
+        const registeredObservers = this.#authFlowObservers.filter(o => o.getId() === observer.getId());
+        if (registeredObservers.length === 0) {
+            this.#authFlowObservers.push(observer);
+        }
+    }
+
+    notifyObservers(): void {
+        for (const observer of this.#authFlowObservers) {
+            observer.userLoggedOut();
         }
     }
 

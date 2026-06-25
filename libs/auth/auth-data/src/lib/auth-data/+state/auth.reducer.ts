@@ -26,6 +26,9 @@ export const authFeature = createFeature({
         on(authActions.sessionValidationFailed, state => {
             return { ...state, user: anonymousUser };
         }),
+        on(authActions.userAugmented, (state, action) => {
+            return { ...state, user: action.user };
+        }),
         on(authActions.loggedOut, () => {
             return initialAuthState;
         })

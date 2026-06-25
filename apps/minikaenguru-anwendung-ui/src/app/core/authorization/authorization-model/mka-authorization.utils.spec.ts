@@ -1,5 +1,5 @@
-import { VERANSTALTERTYP } from './minikaenguru-context.model';
-import { resolveVeranstaltertyp } from './minikaenguru-context.utils';
+import { VERANSTALTERTYP } from './mka-authorization.model';
+import { resolveVeranstaltertyp } from './mka-authorization.utils';
 
 describe('resolveVeranstaltertyp', () => {
     it('should return none when null', () => {

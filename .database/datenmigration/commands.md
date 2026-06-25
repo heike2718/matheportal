@@ -1,13 +1,14 @@
 # Commands für die Datenmigration
 
-## Tabelle VERANSTALTER
+## Erzeugen der Migrationstabellen
 
 Mit den selects aus create_tables Basistabelle der zu übernehmenden Spalten bauen.
+
+## dumps ziehen und einspielen
 
 Dann dumps der migrationstabellen ziehen.
 
 ```bash
-mysqldump farben_wettbewerbe_migration -h 172.18.0.2 -u root -p --disable-ssl  > farben_wettbewerbe_migration.dump.sql
 mysqldump mk_wettbewerb farben_wettbewerbe_migration -h 172.18.0.2 -u root -p --disable-ssl  > farben_wettbewerbe_migration.dump.sql
 mysqldump mk_wettbewerb loesungszettel_migration -h 172.18.0.2 -u root -p --disable-ssl  > loesungszettel_migration.dump.sql
 mysqldump mk_wettbewerb schulkollegien_migration -h 172.18.0.2 -u root -p --disable-ssl  > schulkollegien_migration.dump.sql
@@ -26,42 +27,50 @@ mysqldump mk_kataloge schulen_migration -h 172.18.0.2 -u root -p --disable-ssl >
 
 die dumps ins dumps-Verzeichnis des db-containers legen. Image neu bauen, dann mit source einspielen.
 
-Daten migrieren
+## Daten migrieren
+
+Daten migrieren mit den scripten im Verzeichnis migration.
+
+## Migrationstabellen löschen
 
 ```sql
-insert into veranstalter (user_uuid, typ, teilnahmekuerzel, newsletter, zugang_unterlagen, updated_at, created_at) select user_uuid, typ, teilnahmekuerzel, newsletter, zugang_unterlagen, updated_at, updated_at from veranstalter_migration;
+drop table farben_wettbewerbe_migration;
+drop table loesungszettel_migration;
+drop table schulkollegien_migration;
+drop table scores_aufgaben_migration;
+drop table scores_klassenstufen_migration;
+drop table teilnahmen_migration;
+drop table veranstalter_migration;
+drop table vertraege_adv_migration;
+drop table vertraege_adv_texte_migration;
+drop table wettbewerbe_migration;
+
+drop table laender_migration;
+drop table orte_migration;
+drop table schulen_migration;
 ```
 
-+-----------------------------+
-| Tables_in_mk_wettbewerb |
-+-----------------------------+
-| DOWNLOADS | nur Struktur
-| EVENTS | nur Struktur
-| FARBEN_WETTBEWERBE | create table
-| KINDER | nur Struktur
-| KLASSEN | nur Struktur
-| LOESUNGSZETTEL | migration select
-| MUSTERTEXTE |
-| NEWSLETTERS |
-| NEWSLETTER_AUSLIEFERUNGEN |
+| Tables_in_mk_wettbewerb     |              |
+| --------------------------- | ------------ |
+| DOWNLOADS                   | nur Struktur |
+| EVENTS                      | nur Struktur |
+| FARBEN_WETTBEWERBE          | migriert     |
+| KINDER                      | nur Struktur |
+| KLASSEN                     | nur Struktur |
+| LOESUNGSZETTEL              | migriert     |
+| MUSTERTEXTE                 |              |
+| NEWSLETTERS                 |              |
+| NEWSLETTER_AUSLIEFERUNGEN   |              |
 | NEWSLETTER_VERSANDAUFTRAEGE |
-| PACEMAKERS | fällt weg
-| SCHULEN | create table
-| SCHULKOLLEGIEN | migration select
-| SCORES_AUFGABEN | migration select
-| SCORES_KLASSENSTUFEN | migration select
-| TEILNAHMEN | migration select
-| UPLOADS | nur Struktur
-| USERS | fällt weg
-| VERANSTALTER | migration fertig
-| VERTRAEGE_ADV | migration select
-| VERTRAEGE_ADV_TEXTE | migration select
-| VW_DOWNLOADS |
-| VW_MUSTERTEXTE_SHORTLIST |
-| VW_SCORES_AUFGABEN |
-| VW_UPLOADS |
-| VW_WOCHENSTATISTIK |
-| WETTBEWERBE | migration select
-| schema_version |
-| veranstalter_migration |
-+-----------------------------+
+| PACEMAKERS                  | fällt weg    |
+| SCHULEN                     | migriert     |
+| SCHULKOLLEGIEN              | migriert     |
+| SCORES_AUFGABEN             | migriert     |
+| SCORES_KLASSENSTUFEN        | migriert     |
+| TEILNAHMEN                  | migriert     |
+| UPLOADS                     | nur Struktur |
+| USERS                       | fällt weg    |
+| VERANSTALTER                | migriert     |
+| VERTRAEGE_ADV               | migriert     |
+| VERTRAEGE_ADV_TEXTE         | migriert     |
+| WETTBEWERBE                 | migriert     |

@@ -14,6 +14,8 @@ paths:
                 Gleichzeitig wird die Session um eine Berechtigung erweitert und der
                 zugehörige User mit zurückgegeben
             operationId: loadVeranstalter
+            security:
+                - mpSession: []
             responses:
                 '200':
                     description: Veranstalter gefunden
@@ -44,7 +46,9 @@ components:
             properties:
                 typ:
                     type: string
-                    pattern: '^[LEHRER|PRIVAT]$'
+                    enum:
+                        - LEHRER
+                        - PRIVAT
                     description: Typ des Veranstalters
                     example:
                         - LEHRER
@@ -64,7 +68,10 @@ components:
                     description: Flag, ob der Veranstalter Newsletter erhalten möchte
                 zugangsstatusUnterlagen:
                     type: string
-                    pattern: '^[DEFAULT|ERTEILT|ENTZOGEN]'
+                    enum:
+                        - DEFAULT
+                        - ERTEILT
+                        - ENTZOGEN
                     description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
                     example:
                         - DEFAULT

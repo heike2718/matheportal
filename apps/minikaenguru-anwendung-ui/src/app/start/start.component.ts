@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { GuestInfoComponent } from '../guest-info/guest-info.component';
-import { MinikaenguruContextFacade } from '../core/context/minikaenguru-context.facade';
 import { DashboardLehrerComponent } from '../dashboard-lehrer/dashboard-lehrer.component';
 import { DashboardPrivatComponent } from '../dashboard-privat/dashboard-privat.component';
+import { MkaAuthorizationFacade } from '../core/authorization/authorization-api/mka-authorization.facade';
 
 @Component({
     selector: 'mka-start',
@@ -11,6 +11,10 @@ import { DashboardPrivatComponent } from '../dashboard-privat/dashboard-privat.c
     styleUrl: './start.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StartComponent {
-    readonly minikaenguruContextFacade = inject(MinikaenguruContextFacade);
+export class StartComponent implements OnInit {
+    readonly mkaAuthorizationFacade = inject(MkaAuthorizationFacade);
+
+    ngOnInit(): void {
+        this.mkaAuthorizationFacade.ensureAuthorizationLoaded();
+    }
 }

@@ -1,17 +1,28 @@
 <div class="mka-start">
-    @if (minikaenguruContextFacade.isLoggedIn()) {
-        @if (minikaenguruContextFacade.isPrivatveranstalter()) {
+    @switch (mkaAuthorizationFacade.startViewState()) {
+        @case ('loading') {
+            <div data-testId="mka-loading">
+                <p>Bitte warten...</p>
+            </div>
+        }
+        @case ('dashboard-privat') {
             <mka-dashboard-privat></mka-dashboard-privat>
         }
-        @if (minikaenguruContextFacade.isLehrer()) {
+        @case ('dashboard-lehrer') {
             <mka-dashboard-lehrer></mka-dashboard-lehrer>
         }
-        @if (minikaenguruContextFacade.isStandarduser()) {
+        @case ('veranstalter-anlegen') {
             <div data-testId="mka-standarduser">
                 <p>Hier muss dann der Flow zum Anlegen eines Veranstalters kommen.</p>
             </div>
         }
-    } @else {
-        <mka-guest-info></mka-guest-info>
+        @case ('guest') {
+            <mka-guest-info></mka-guest-info>
+        }
+        @case ('failed') {
+            <div data-testId="mka-authorization-failed">
+                <p>Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.</p>
+            </div>
+        }
     }
 </div>

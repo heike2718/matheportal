@@ -14,8 +14,7 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.veranstalter.VeranstalterTyp;
-import de.mathejungalt.minikaenguru.anwendung.domain.veranstalter.ZugangsberechtigungUnterlagen;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Veranstalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,14 +49,17 @@ public class VeranstalterEntity {
 
     @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
-    private VeranstalterTyp typ;
+    private Veranstalter.TypEnum typ;
 
     @Column(name = "newsletter")
     private boolean newsletterEmpfaenger;
 
     @Column(name = "zugang_unterlagen", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ZugangsberechtigungUnterlagen zugangsberechtigungUnterlagen;
+    private Veranstalter.ZugangsstatusUnterlagenEnum zugangsberechtigungUnterlagen;
+
+    @Column(name = "teilnahmekuerzel", length = 1000)
+    private String teilnahmekuerzel;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
