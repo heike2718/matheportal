@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import io.quarkus.security.identity.SecurityIdentity;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.User;
-import de.mathejungalt.minikaenguru.anwendung.domain.security.SecurityIdentityAttributeKeys;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.security.SecurityIdentityAttributeKeys;
 
 import lombok.extern.slf4j.Slf4j;
 

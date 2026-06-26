@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.domain.security;
+package de.mathejungalt.minikaenguru.anwendung.infrastructure.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +28,7 @@ public class VeranstalterEntityAugmentor {
 
     @ActivateRequestContext
     public SecurityIdentity augment(final SecurityIdentity identity) {
+
         final QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder(identity);
 
         final String subject = identity.getPrincipal().getName();

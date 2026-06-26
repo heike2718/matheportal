@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.domain.security;
+package de.mathejungalt.minikaenguru.anwendung.infrastructure.security;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.domain.security;
+package de.mathejungalt.minikaenguru.anwendung.infrastructure.security;
 
 /**
  * SecurityIdentityAttributeKeys.
