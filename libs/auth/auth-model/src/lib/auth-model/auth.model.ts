@@ -7,6 +7,8 @@ export type SESSION_VALIDATION_FAILED_REASON = 'technical' | 'expired' | 'missin
 
 export type AUTH_RESULT_STATE = 'login' | 'signup' | 'invalid';
 
+export const LOGGED_OUT_EVENT = 'user logged out';
+
 export interface AuthConfiguration {
     readonly apiUrl: string;
 }
@@ -47,6 +49,10 @@ export const anonymousUser: User = {
     fullName: 'Gast',
     berechtigungen: [],
     anonym: true,
+};
+
+export type UserWithBerechtigungen = {
+    readonly berechtigungen: readonly string[];
 };
 
 export interface AuthUrlResponse {

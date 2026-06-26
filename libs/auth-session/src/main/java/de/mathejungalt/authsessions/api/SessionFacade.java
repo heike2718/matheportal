@@ -1,16 +1,22 @@
 package de.mathejungalt.authsessions.api;
 
+import java.util.Set;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 import de.mathejungalt.authsessions.api.exceptions.InvalidJWTException;
 import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 import de.mathejungalt.authsessions.internal.jwt.JWTService;
 import de.mathejungalt.authsessions.internal.session.SessionService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * SessionFacade.
  */
+@Slf4j
 @ApplicationScoped
 public class SessionFacade {
 
@@ -64,4 +70,33 @@ public class SessionFacade {
 
     }
 
+    /**
+     * Aktualisiert die Berechtigungen in der Session und setzt den status auf AUGMENTED. Das ist erforderlich, um
+     * Metaberechtigungen der Minikänguru-Anwendung als Role für RBAC zur Verfügung zu haben.
+     *
+     * @param sessionId      String die sessionId
+     * @param berechtigungen Set berechtigungen, die zu dieser SessionId gespeichert werden müssen.
+     */
+    public void augmentSession(final String sessionId, final Set<String> berechtigungen) {
+        try {
+            sessionService.augmentSessionQuietlySessionQuietly(sessionId, berechtigungen);
+        } catch (final PersistenceException e) {
+            log.error("session: Berechtigungen konnten nicht aktualisiert werden: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Markiert die session als für zusätzliche Berechtigungen geprüft. Es gab keine anwendungsspezifischen
+     * Anreicherungen.
+     *
+     * @param sessionId String die sessionId
+     */
+    public void markSessionAugmentationChecked(final String sessionId) {
+
+        try {
+            sessionService.markSessionAugmentationChecked(sessionId);
+        } catch (final PersistenceException e) {
+            log.error("session: konnte nicht als geprüueft markiert werden.: {}", e.getMessage(), e);
+        }
+    }
 }

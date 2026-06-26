@@ -15,6 +15,9 @@ describe('AuthEffects', () => {
     let action$: ReplaySubject<unknown>;
     let effects: AuthEffects;
 
+    const expectedTechnicalErrorMessage =
+        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
+
     const httpUnauthorizedExpiredErrorResponse = new HttpErrorResponse({
         status: 401,
         statusText: 'Unauthorized',
@@ -172,9 +175,7 @@ describe('AuthEffects', () => {
 
             await firstValueFrom(effects.requestLoginUrlFailed$);
 
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-            );
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
@@ -265,9 +266,7 @@ describe('AuthEffects', () => {
             await resultPromise;
 
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-            );
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
@@ -287,9 +286,7 @@ describe('AuthEffects', () => {
             await resultPromise;
 
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-            );
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
@@ -366,9 +363,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
-            );
+            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
             expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });

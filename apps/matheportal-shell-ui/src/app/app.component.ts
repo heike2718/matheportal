@@ -6,7 +6,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './layout/sidenav/sidenav.component';
 import { AuthFlowFacade } from '@matheportal/auth-api';
 import { MessageComponent, LoadingIndicatorComponent } from '@matheportal/feedback-ui';
-import { matheportalShellConfiguration } from './config/configuration';
 
 @Component({
     imports: [
@@ -26,8 +25,6 @@ export class AppComponent implements OnInit {
     #authFlowFacade = inject(AuthFlowFacade);
 
     ngOnInit(): void {
-        console.log(JSON.stringify(matheportalShellConfiguration));
-
         this.#authFlowFacade.initClearOrRestoreSession();
     }
 }

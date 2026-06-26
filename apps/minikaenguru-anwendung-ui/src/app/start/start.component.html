@@ -1,1 +1,28 @@
-<p>start works!</p>
+<div class="mka-start">
+    @switch (mkaAuthorizationFacade.startViewState()) {
+        @case ('loading') {
+            <div data-testId="mka-loading">
+                <p>Bitte warten...</p>
+            </div>
+        }
+        @case ('dashboard-privat') {
+            <mka-dashboard-privat></mka-dashboard-privat>
+        }
+        @case ('dashboard-lehrer') {
+            <mka-dashboard-lehrer></mka-dashboard-lehrer>
+        }
+        @case ('veranstalter-anlegen') {
+            <div data-testId="mka-standarduser">
+                <p>Hier muss dann der Flow zum Anlegen eines Veranstalters kommen.</p>
+            </div>
+        }
+        @case ('guest') {
+            <mka-guest-info></mka-guest-info>
+        }
+        @case ('failed') {
+            <div data-testId="mka-authorization-failed">
+                <p>Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.</p>
+            </div>
+        }
+    }
+</div>

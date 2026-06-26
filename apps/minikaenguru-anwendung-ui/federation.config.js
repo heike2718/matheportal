@@ -4,7 +4,7 @@ module.exports = withNativeFederation({
     name: 'minikaenguru-anwendung-ui',
 
     exposes: {
-        './Component': './apps/minikaenguru-anwendung-ui/src/app/app.component.ts',
+        './Routes': './apps/minikaenguru-anwendung-ui/src/app/remote.routes.ts',
     },
 
     shared: {
@@ -26,6 +26,6 @@ module.exports = withNativeFederation({
         // New feature for more performance and avoiding
         // issues with node libs. Comment this out to
         // get the traditional behavior:
-        ignoreUnusedDeps: true,
+        ignoreUnusedDeps: false,
     },
 });

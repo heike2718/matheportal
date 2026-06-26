@@ -24,7 +24,7 @@ public class LogoutService {
     SessionFacade sessionFacade;
 
     /**
-     * Löscht die Session, falls vorhanden
+     * Löscht die Session, falls vorhanden.
      */
     public void logout() {
 

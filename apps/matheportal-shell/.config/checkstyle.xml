@@ -74,12 +74,17 @@
 
         <!-- Checks that a local variable or a parameter does not shadow a field
             that is defined in the same class. -->
-        <module name="HiddenField" />
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter" value="true" />
+            <property name="ignoreSetter" value="true" />
+        </module>
 
         <module name="IllegalInstantiation" />
         <module name="InnerAssignment" />
         <module name="MagicNumber">
             <property name="ignoreNumbers" value="-1, 0, 1, 2, 100" />
+            <property name="ignoreAnnotation" value="true" />
+            <property name="ignoreHashCodeMethod" value="true" />
         </module>
 
         <!-- Checks that switch statement has "default" clause. -->
@@ -95,11 +100,20 @@
 
         <module name="SimplifyBooleanExpression" />
         <module name="SimplifyBooleanReturn" />
-        <module name="DesignForExtension" />
+        <module name="DesignForExtension">
+            <property name="ignoredAnnotations" value="Override" />
+        </module>
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
-        <module name="VisibilityModifier" />
+        <module name="VisibilityModifier">
+            <property name="ignoreAnnotationCanonicalNames"
+                value="
+                  jakarta.ws.rs.core.Context,
+                  jakarta.inject.Inject,
+                  org.eclipse.microprofile.config.inject.ConfigProperty
+              " />
+        </module>
         <module name="ArrayTypeStyle" />
         <module name="FinalParameters" />
         <module name="TodoComment">

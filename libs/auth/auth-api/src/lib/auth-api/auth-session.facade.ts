@@ -19,4 +19,12 @@ export class AuthSessionFacade {
     validateSession(): void {
         this.#store.dispatch(authActions.validateSession());
     }
+
+    /**
+     * Nachdem der user um weitere Berechtigungen angereichert wurde, kann der Store synchronisiert werden.
+     * @param user User
+     */
+    synchronizeUser(user: User): void {
+        this.#store.dispatch(authActions.userAugmented({ user }));
+    }
 }

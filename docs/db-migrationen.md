@@ -1,13 +1,10 @@
 # DB-Migrationen
 
-## Flyway
+## matheportal_sessions
 
-- neues Migrationsscript in .database/sql
-- auf der Kommandozeile mit flyway-standalone gegen mariadb-all:
+### Flyway
 
-```shell
-sudo /opt/flyway-5.2.4/flyway -configFile=/home/heike/git/konfigurationen/flyway/matheportal_sessions/conf/flyway.conf migrate
-```
+- neues Migrationsscript in apps/matheportal-shell/src/main/resources/db/migration
 
 Haben keine dedizierte Test-DB, da sessions volatil sind.
 

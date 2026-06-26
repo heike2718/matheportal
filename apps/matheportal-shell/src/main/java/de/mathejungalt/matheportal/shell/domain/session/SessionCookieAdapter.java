@@ -48,7 +48,7 @@ public class SessionCookieAdapter {
     }
 
     /**
-     * Generiert das Session-Cookie
+     * Generiert das Session-Cookie.
      *
      * @param sessionId String
      * @return NewCookie

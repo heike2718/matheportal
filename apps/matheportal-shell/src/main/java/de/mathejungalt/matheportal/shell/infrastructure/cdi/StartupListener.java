@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class StartupListener {
 
     @ConfigProperty(name = "quarkus.datasource.sessions.jdbc.url")
-    String jdbcUrl;
+    String sessionsJdbcUrl;
 
     @ConfigProperty(name = "quarkus.http.cors.origins")
     String corsOrigins;
@@ -37,7 +37,7 @@ public final class StartupListener {
      */
     void onStartup(@Observes final StartupEvent startupEvent) {
 
-        log.info(" ===========>  jdbcUrl={}", jdbcUrl);
+        log.info(" ===========>  sessionsJdbcUrl={}", sessionsJdbcUrl);
         log.info(" ===========>  port={}", port);
         log.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
         log.info(" ===========> client.redirect.url={}", clientRedirectUrl);

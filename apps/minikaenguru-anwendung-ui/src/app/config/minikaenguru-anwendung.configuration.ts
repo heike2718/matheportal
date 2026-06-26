@@ -5,6 +5,6 @@ export interface MinikaenguruAnwendungConfiguration extends MatheportalRuntimeCo
     readonly apiUrl: string;
 }
 
-export const MATHEPORTAL_SHELL_CONFIGURATION = new InjectionToken<MinikaenguruAnwendungConfiguration>(
+export const MINIKAENGURU_ANWENDUNG_CONFIGURATION = new InjectionToken<MinikaenguruAnwendungConfiguration>(
     'minikaenguru-anwendung-configuration'
 );

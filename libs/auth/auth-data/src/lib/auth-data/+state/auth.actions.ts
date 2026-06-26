@@ -14,6 +14,7 @@ export const authActions = createActionGroup({
         validateSession: emptyProps(),
         sessionValidated: props<{ user: User }>(),
         sessionValidationFailed: props<{ reason: SESSION_VALIDATION_FAILED_REASON }>(),
+        userAugmented: props<{ user: User }>(),
         logOut: emptyProps(),
         loggedOut: emptyProps(),
     },

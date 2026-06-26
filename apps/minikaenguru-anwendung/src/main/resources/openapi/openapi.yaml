@@ -1,0 +1,127 @@
+openapi: '3.0.3'
+info:
+    title: minikaenguru-anwendung API
+    version: 1.0.0
+    description: API der minikaenguru-anwendung.
+paths:
+    /api/berechtigungen:
+        get:
+            tags:
+                - Berechtigungen
+            summary: Läd die Minkänguru- Berechtigung eines eingeloggten Users
+            description: >
+                Holt die UUID aus der Session selektiert mit dieser den Veranstalter.
+                Falls es einen gibt, wird die Session um eine Berechtigung erweitert und der
+                zugehörige User wird zurückgegeben
+            operationId: loadBerechtigung
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: Veranstalter gefunden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '401':
+                    description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
+                '404':
+                    description: Veranstalter nicht gefunden
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+components:
+    securitySchemes:
+        mpSession:
+            type: apiKey
+            in: cookie
+            name: MPSESSIONID
+            description: Session-Cookie der Matheportal-Sitzung
+    schemas:
+        Veranstalter:
+            type: object
+            properties:
+                typ:
+                    type: string
+                    enum:
+                        - LEHRER
+                        - PRIVAT
+                    description: Typ des Veranstalters
+                    example:
+                        - LEHRER
+                        - PRIVAT
+                teilnahmenummern:
+                    type: array
+                    uniqueItems: true
+                    description: Teilnahmenummern sind die Schulkürzel oder das Kürzel eines Privatveranstalters.
+                    items:
+                        type: string
+                        pattern: '^[A-Z0-9]*$'
+                    example:
+                        - V8DDP4X9ZY
+                        - SSBXQUBN
+                newsletter:
+                    type: boolean
+                    description: Flag, ob der Veranstalter Newsletter erhalten möchte
+                zugangsstatusUnterlagen:
+                    type: string
+                    enum:
+                        - DEFAULT
+                        - ERTEILT
+                        - ENTZOGEN
+                    description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
+                    example:
+                        - DEFAULT
+                        - ERTEILT
+                        - ENTZOGEN
+        User:
+            type: object
+            required:
+                - fullName
+                - berechtigungen
+            properties:
+                fullName:
+                    type: string
+                    minLength: 1
+                    maxLength: 201
+                    pattern: "^[\\p{IsLatin}\\d]+(?:[ '\\-.’][\\p{IsLatin}\\d]+)*$"
+                    description: Vollständiger Anzeigename (lateinische Buchstaben, Ziffern, Leerzeichen, Bindestrich, Apostroph)
+                    example: María del Carmen 2
+                berechtigungen:
+                    type: array
+                    uniqueItems: true
+                    description: Berechtigungen des Benutzers
+                    items:
+                        type: string
+                        pattern: '^[A-Z]+(_[A-Z]+)*$'
+                    example:
+                        - STANDARD
+                        - ADMIN
+                        - LEHRER
+                        - AUTOR
+        ConstraintViolationDetail:
+            type: object
+            properties:
+                field:
+                    type: string
+                    description: Feldname der verletzten Constraint.
+                    example: clientId
+                message:
+                    type: string
+                    description: Fehlermeldung zur verletzten Constraint.
+                    example: clientId ist ungueltig.
+        ErrorResponse:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    type: string
+                    example: Irgendein Fehler ist aufgetreten
+                connstraintViolations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ConstraintViolationDetail'
