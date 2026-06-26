@@ -19,10 +19,17 @@ import de.mathejungalt.authsessions.api.SessionFacade;
 import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 
 /**
- * SessionIdentityProvider.
+ * SessionIdIdentityProvider.<br>
+ * <br>
+ * Hier weren der SecurityIdentity die Attribute sessionId, fullName und augmentationState hinzugefügt. Diese werden vom
+ * MinikaenguruSecurityIdentityAugmentor, vom VeranstalterEntityAugmentor und vom BerechtigungenService benötigt, um den
+ * Veranstaltertyp als Role für RBAC verfügbar zu haben und die session in der DB und den User im Portal synchron zu
+ * halten.<br>
+ * <br>
+ * Eine nich aktive session wird gleichzeitig verlängert.
  */
 @ApplicationScoped
-public class SessionIdentityProvider implements IdentityProvider<SessionIdAuthenticationRequest> {
+public class SessionIdIdentityProvider implements IdentityProvider<SessionIdAuthenticationRequest> {
 
     @ConfigProperty(name = "session.idle.timeout")
     int sessionIdleTimeoutMinutes;
@@ -56,6 +63,10 @@ public class SessionIdentityProvider implements IdentityProvider<SessionIdAuthen
                     .builder()
                     .setPrincipal(authenticatedUser::getUuid)
                     .addRoles(authenticatedUser.getBerechtigungen())
+                    .addAttribute(SecurityIdentityAttributeKeys.FULL_NAME, authenticatedUser.getFullName())
+                    .addAttribute(SecurityIdentityAttributeKeys.SESSIION_ID, authenticationRequest.getSessionId())
+                    .addAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE,
+                            SecurityIdentityAugmentationState.NOT_AUGMENTED.toString())
                     .build();
         } catch (final SessionValidationFailedException e) {
             throw new AuthenticationFailedException("Session ist abgelaufen", e);

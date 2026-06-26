@@ -19,7 +19,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/raetselbaukasten",
-                "command": "mvn quarkus:dev -Ddebug=5005",
+                "command": "mvn quarkus:dev -Ddebug=5006",
                 "envFile": "apps/raetselbaukasten/.config/.env.dev"
             }
         },

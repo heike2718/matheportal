@@ -2,6 +2,7 @@ package de.mathejungalt.minikaenguru.anwendung.domain.security;
 
 import java.util.Set;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.security.identity.IdentityProviderManager;
@@ -21,6 +22,7 @@ import io.vertx.ext.web.RoutingContext;
 /**
  * SessionCookieAuthenticationMechanism.
  */
+@Priority(1)
 @ApplicationScoped
 public class SessionCookieAuthenticationMechanism implements HttpAuthenticationMechanism {
 

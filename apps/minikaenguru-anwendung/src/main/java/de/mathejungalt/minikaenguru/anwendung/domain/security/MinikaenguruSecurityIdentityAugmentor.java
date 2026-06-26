@@ -26,6 +26,13 @@ public class MinikaenguruSecurityIdentityAugmentor implements SecurityIdentityAu
             return Uni.createFrom().item(securityIdentity);
         }
 
+        final SecurityIdentityAugmentationState augmentationState = SecurityIdentityAugmentationState
+                .valueOf(securityIdentity.getAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE));
+
+        if (augmentationState == SecurityIdentityAugmentationState.AUGMENTED) {
+            return Uni.createFrom().item(securityIdentity);
+        }
+
         return context.runBlocking(() -> veranstalterEntityAugmentor.augment(securityIdentity));
     }
 }

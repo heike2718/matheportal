@@ -69,4 +69,10 @@ public class VeranstalterEntity {
 
     @Version
     private int version;
+
+    @Override
+    public String toString() {
+        return "VeranstalterEntity [id=" + id + ", userUuid=" + userUuid + ", typ=" + typ + ", newsletterEmpfaenger="
+                + newsletterEmpfaenger + ", zugangsberechtigungUnterlagen=" + zugangsberechtigungUnterlagen + "]";
+    }
 }

@@ -2,6 +2,7 @@ package de.mathejungalt.authsessions.internal.session;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,6 @@ import de.mathejungalt.authsessions.api.SessionValidationFailedReason;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
 import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedException;
 import de.mathejungalt.authsessions.internal.session.entities.SessionEntity;
-
-import io.vertx.mutiny.ext.web.Session;
 
 /**
  * SessionService.
@@ -180,4 +179,20 @@ public class SessionService {
         return !now.isAfter(session.getCreatedAt().plusMinutes(maxLifetimeMinutes));
     }
 
+    /**
+     * Speichert die session mit den neuen berechtigungen.
+     *
+     * @param sessionId      String
+     * @param berechtigungen Set
+     */
+    @Transactional
+    public void updateSessionQuietly(final String sessionId, final Set<String> berechtigungen) {
+        final Optional<SessionEntity> opt = sessionRepository.findBySessionId(sessionId);
+        if (opt.isEmpty()) {
+            LOGGER.debug("session ist nicht mehr da");
+        }
+        final SessionEntity sessionEntity = opt.get();
+        sessionEntity.setBerechtigungen(String.join(",", berechtigungen));
+        sessionRepository.saveSession(sessionEntity);
+    }
 }

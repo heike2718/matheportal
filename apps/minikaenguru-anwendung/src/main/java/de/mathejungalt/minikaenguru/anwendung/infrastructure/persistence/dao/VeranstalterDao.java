@@ -11,10 +11,13 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.VeranstalterEntity;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * VeranstalterDao.
  */
 @ApplicationScoped
+@Slf4j
 public class VeranstalterDao {
 
     @Inject
@@ -40,6 +43,8 @@ public class VeranstalterDao {
                 .createNamedQuery(VeranstalterEntity.FIND_BY_USER_UUID, VeranstalterEntity.class)
                 .setParameter("userUuid", userUuid)
                 .getResultList();
+
+        log.info("Anzahl Treffer = {}", resultList.size());
 
         return resultList.stream().findFirst();
     }
