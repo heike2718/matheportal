@@ -21,6 +21,7 @@ export class AuthFlowFacade {
 
     logout(): void {
         this.#store.dispatch(authActions.logOut());
+        this.notifyObservers();
     }
 
     initClearOrRestoreSession(): void {

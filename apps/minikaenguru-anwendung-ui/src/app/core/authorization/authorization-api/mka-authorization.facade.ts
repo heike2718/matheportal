@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthorizationLoadState, Veranstaltertyp, VERANSTALTERTYP } from '../authorization-model';
 import { fromMkaAuthorization } from '../authorization-data';
@@ -58,6 +58,11 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
 
         return 'veranstalter-anlegen';
     });
+
+    // eslint-disable-next-line @angular-eslint/prefer-inject
+    constructor(private authFlowFacade: AuthFlowFacade) {
+        this.authFlowFacade.registerObserver(this);
+    }
 
     ensureAuthorizationLoaded(): void {
         if (this.#isLoggedIn()) {

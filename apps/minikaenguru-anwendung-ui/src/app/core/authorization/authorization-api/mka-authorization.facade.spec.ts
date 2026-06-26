@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState, Veranstaltertyp } from '../authorization-model';
 import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
 
@@ -46,6 +46,10 @@ describe('MkaAuthorizationFacade tests', () => {
         user$: undefined as unknown as Observable<User>,
     };
 
+    const authFlowFacadeMock = {
+        registerObserver: vi.fn(),
+    };
+
     async function setup(user: User, authorizationLoadState: AuthorizationLoadState, veranstalterTyp: Veranstaltertyp) {
         userSubject = new BehaviorSubject<User>(user);
 
@@ -55,6 +59,7 @@ describe('MkaAuthorizationFacade tests', () => {
             providers: [
                 MkaAuthorizationFacade,
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideMockStore({
                     selectors: [
                         {
@@ -135,6 +140,7 @@ describe('MkaAuthorizationFacade tests', () => {
             async authorizationLoadState => {
                 await setup(loggedInStandardUser, authorizationLoadState, veranstaltertypNone);
 
+                expect(authFlowFacadeMock.registerObserver).toHaveBeenCalled();
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).toHaveBeenCalledTimes(1);
