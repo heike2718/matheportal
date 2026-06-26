@@ -21,6 +21,14 @@ public class ExchangeTokenResponse {
     private String jwt;
 
     /**
+     * ExchangeTokenResponse.
+     */
+    ExchangeTokenResponse() {
+        super();
+        // wegen JavaDoc strict
+    }
+
+    /**
      * Mapped data aus dem responsePayload.
      *
      * @param responsePayload ResponsePayload
@@ -31,13 +39,4 @@ public class ExchangeTokenResponse {
         final Map<String, String> dataMap = (Map<String, String>) responsePayload.getData();
         return ExchangeTokenResponse.builder().nonce(dataMap.get("nonce")).jwt(dataMap.get("jwt")).build();
     }
-
-    /**
-     * ExchangeTokenResponse.
-     */
-    ExchangeTokenResponse() {
-        super();
-        // wegen JavaDoc strict
-    }
-
 }

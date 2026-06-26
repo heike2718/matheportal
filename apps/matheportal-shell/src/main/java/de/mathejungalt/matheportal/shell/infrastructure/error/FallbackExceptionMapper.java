@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Provider
 @Priority(ExceptionMapperPriorities.FALLBACK)
-public class FallbackExceptionMapper implements ExceptionMapper<RuntimeException> {
+public final class FallbackExceptionMapper implements ExceptionMapper<RuntimeException> {
 
     @Context
     UriInfo uriInfo;

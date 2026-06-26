@@ -9,7 +9,7 @@ import de.mathejungalt.matheportal.shell.domain.clientauth.ResponsePayload;
 import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
 
 /**
- * RestClientUtils
+ * RestClientUtils.
  */
 public final class RestClientUtils {
 

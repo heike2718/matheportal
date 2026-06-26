@@ -32,10 +32,10 @@ public class VeranstalterDao {
     }
 
     /**
-     * Sucht einen Veranstalter anhand seiner (für veranstalter)
+     * Sucht einen Veranstalter anhand seiner (für veranstalter).
      *
      * @param userUuid
-     * @return
+     * @return Optional
      */
     public Optional<VeranstalterEntity> findByUserUuid(final String userUuid) {
 

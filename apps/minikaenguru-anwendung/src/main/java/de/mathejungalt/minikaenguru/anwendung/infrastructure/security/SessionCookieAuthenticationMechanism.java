@@ -4,6 +4,7 @@ import java.util.Set;
 
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response.Status;
 
 import io.quarkus.security.identity.IdentityProviderManager;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -50,9 +51,11 @@ public class SessionCookieAuthenticationMechanism implements HttpAuthenticationM
 
     @Override
     public Uni<ChallengeData> getChallenge(final RoutingContext context) {
+
         return Uni
                 .createFrom()
-                .item(new ChallengeData(401, AUTH_HEADER_NAME, AUTH_SCHEME + " realm=\"" + AUTH_REALM + "\""));
+                .item(new ChallengeData(Status.UNAUTHORIZED.getStatusCode(), AUTH_HEADER_NAME,
+                        AUTH_SCHEME + " realm=\"" + AUTH_REALM + "\""));
     }
 
     @Override

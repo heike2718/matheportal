@@ -20,7 +20,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entitie
  * packt den Typ und die teilnahmekuerzel hinein.
  */
 @ApplicationScoped
-public class VeranstalterEntityAugmentor {
+public final class VeranstalterEntityAugmentor {
 
     @Inject
     VeranstalterDao veranstalterDao;

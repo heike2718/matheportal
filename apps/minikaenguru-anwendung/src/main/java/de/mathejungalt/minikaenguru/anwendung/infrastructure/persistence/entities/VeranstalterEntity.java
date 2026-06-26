@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 public class VeranstalterEntity {
 
     /**
-     * name dieser NamedQuery
+     * name dieser NamedQuery.
      */
     public static final String FIND_BY_USER_UUID = "VeranstalterEntity.FIND_BY_USER_UUID";
 
