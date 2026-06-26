@@ -21,7 +21,7 @@ import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedExcept
 /**
  * SessionIdIdentityProvider.<br>
  * <br>
- * Hier weren der SecurityIdentity die Attribute sessionId, fullName und augmentationState hinzugefügt. Diese werden vom
+ * Hier weren der SecurityIdentity die Attribute sessionId und fullName hinzugefügt. Diese werden vom
  * MinikaenguruSecurityIdentityAugmentor, vom VeranstalterEntityAugmentor und vom BerechtigungenService benötigt, um den
  * Veranstaltertyp als Role für RBAC verfügbar zu haben und die session in der DB und den User im Portal synchron zu
  * halten.<br>
@@ -64,9 +64,8 @@ public class SessionIdIdentityProvider implements IdentityProvider<SessionIdAuth
                     .setPrincipal(authenticatedUser::getUuid)
                     .addRoles(authenticatedUser.getBerechtigungen())
                     .addAttribute(SecurityIdentityAttributeKeys.FULL_NAME, authenticatedUser.getFullName())
-                    .addAttribute(SecurityIdentityAttributeKeys.SESSIION_ID, authenticationRequest.getSessionId())
-                    .addAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE,
-                            SecurityIdentityAugmentationState.NOT_AUGMENTED.toString())
+                    .addAttribute(SecurityIdentityAttributeKeys.SESSION_ID, authenticationRequest.getSessionId())
+                    .addAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE, sessionDto.getAugmentationState())
                     .build();
         } catch (final SessionValidationFailedException e) {
             throw new AuthenticationFailedException("Session ist abgelaufen", e);

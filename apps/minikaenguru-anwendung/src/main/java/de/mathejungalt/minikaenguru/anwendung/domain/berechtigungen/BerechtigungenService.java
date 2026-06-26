@@ -22,17 +22,19 @@ public class BerechtigungenService {
 
     /**
      * @return User
+     * @throws IllegalStateException wenn die SecurityIdentity unvollständig ist.
      */
-    public User getUser() {
+    public User getUser() throws IllegalStateException {
 
         final String fullName = securityIdentity.getAttribute(SecurityIdentityAttributeKeys.FULL_NAME);
+
         if (fullName == null) {
-            log
-                    .warn("Attribut {} war in der SecurityIdentity nicht gesetzt! ",
-                            SecurityIdentityAttributeKeys.FULL_NAME);
-            return new User("kein Name", securityIdentity.getRoles());
+
+            final String message = "Attribut " + SecurityIdentityAttributeKeys.FULL_NAME
+                    + " fehlt in der SecurityIdentity. SessionIdIdentityProvider pruefen!";
+
+            throw new IllegalStateException(message);
         }
         return new User(fullName, securityIdentity.getRoles());
     }
-
 }

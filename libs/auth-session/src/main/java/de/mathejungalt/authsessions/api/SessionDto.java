@@ -18,4 +18,6 @@ public class SessionDto {
 
     private AuthenticatedUser authenticatedUser;
 
+    private SecurityIdentityAugmentationState augmentationState;
+
 }

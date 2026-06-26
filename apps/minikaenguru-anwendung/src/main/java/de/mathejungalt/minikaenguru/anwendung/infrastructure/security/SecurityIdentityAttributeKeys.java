@@ -15,10 +15,10 @@ public final class SecurityIdentityAttributeKeys {
      * Key für das attribute, das die sessionId transportiert. Kann dann mit
      * SecurityIdentity.getAttribute(SessionIdAttributeKeys.SESSIION_ID) herausgeholt werden.
      */
-    public static final String SESSIION_ID = "sessionId";
+    public static final String SESSION_ID = "sessionId";
 
     /**
-     * Key für das attribute, das das flag augmented transportiert. Kann dann mit
+     * Key für das attribute, das den Status transportiert. Kann dann mit
      * SecurityIdentity.getAttribute(SessionIdAttributeKeys.AUGMENTED) herausgeholt werden. Dient als Zeichen dafür,
      * dass die Security
      */

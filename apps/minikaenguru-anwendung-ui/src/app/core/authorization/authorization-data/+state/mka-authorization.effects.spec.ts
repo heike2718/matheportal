@@ -165,7 +165,7 @@ describe('MkaAuthorizationEffects tests', () => {
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
             );
         });
     });

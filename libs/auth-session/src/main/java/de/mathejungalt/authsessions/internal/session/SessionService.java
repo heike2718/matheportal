@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import de.egladil.web.egladil_secure_tokens.SecureRandomGenerator;
 import de.mathejungalt.authsessions.api.AuthenticatedUser;
+import de.mathejungalt.authsessions.api.SecurityIdentityAugmentationState;
 import de.mathejungalt.authsessions.api.SessionDto;
 import de.mathejungalt.authsessions.api.SessionValidationFailedReason;
 import de.mathejungalt.authsessions.api.exceptions.AuthSessionException;
@@ -67,6 +68,7 @@ public class SessionService {
                     .fullName(authenticatedUser.getFullName())
                     .userUuid(authenticatedUser.getUuid())
                     .berechtigungen(toCsv(authenticatedUser.getBerechtigungen()))
+                    .augmentationState(SecurityIdentityAugmentationState.NOT_AUGMENTED)
                     .build();
 
             sessionRepository.saveSession(sessionEntity);
@@ -121,6 +123,7 @@ public class SessionService {
             return SessionDto
                     .builder()
                     .sessionId(sessionEntity.getSessionId())
+                    .augmentationState(sessionEntity.getAugmentationState())
                     .authenticatedUser(AuthenticatedUser
                             .builder()
                             .uuid(sessionEntity.getUserUuid())
@@ -186,13 +189,29 @@ public class SessionService {
      * @param berechtigungen Set
      */
     @Transactional
-    public void updateSessionQuietly(final String sessionId, final Set<String> berechtigungen) {
+    public void augmentSessionQuietlySessionQuietly(final String sessionId, final Set<String> berechtigungen) {
         final Optional<SessionEntity> opt = sessionRepository.findBySessionId(sessionId);
         if (opt.isEmpty()) {
             LOGGER.debug("session ist nicht mehr da");
         }
         final SessionEntity sessionEntity = opt.get();
         sessionEntity.setBerechtigungen(String.join(",", berechtigungen));
+        sessionEntity.setAugmentationState(SecurityIdentityAugmentationState.AUGMENTED);
+        sessionRepository.saveSession(sessionEntity);
+    }
+
+    /**
+     * Speichert die session mit dem Status NO_AUGMENTATION.
+     *
+     * @param sessionId String
+     */
+    public void markSessionAugmentationChecked(final String sessionId) {
+        final Optional<SessionEntity> opt = sessionRepository.findBySessionId(sessionId);
+        if (opt.isEmpty()) {
+            LOGGER.debug("session ist nicht mehr da");
+        }
+        final SessionEntity sessionEntity = opt.get();
+        sessionEntity.setAugmentationState(SecurityIdentityAugmentationState.NO_AUGMENTATION);
         sessionRepository.saveSession(sessionEntity);
     }
 }

@@ -9,6 +9,8 @@ import io.quarkus.security.identity.SecurityIdentityAugmentor;
 
 import io.smallrye.mutiny.Uni;
 
+import de.mathejungalt.authsessions.api.SecurityIdentityAugmentationState;
+
 /**
  * MinikaenguruSecurityIdentityAugmentor.
  */
@@ -26,13 +28,15 @@ public class MinikaenguruSecurityIdentityAugmentor implements SecurityIdentityAu
             return Uni.createFrom().item(securityIdentity);
         }
 
-        final SecurityIdentityAugmentationState augmentationState = SecurityIdentityAugmentationState
-                .valueOf(securityIdentity.getAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE));
+        final SecurityIdentityAugmentationState augmentationState = securityIdentity
+                .getAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE);
 
-        if (augmentationState == SecurityIdentityAugmentationState.AUGMENTED) {
-            return Uni.createFrom().item(securityIdentity);
+        if (augmentationState == SecurityIdentityAugmentationState.NOT_AUGMENTED) {
+            // verhindert unnötige DB-Rundreisen.
+            return context.runBlocking(() -> veranstalterEntityAugmentor.augment(securityIdentity));
+
         }
 
-        return context.runBlocking(() -> veranstalterEntityAugmentor.augment(securityIdentity));
+        return Uni.createFrom().item(securityIdentity);
     }
 }

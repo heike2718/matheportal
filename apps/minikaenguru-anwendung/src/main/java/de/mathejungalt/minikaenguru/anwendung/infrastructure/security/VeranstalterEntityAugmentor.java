@@ -1,6 +1,7 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.security;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,6 +13,7 @@ import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 
 import de.mathejungalt.authsessions.api.SessionFacade;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.VeranstalterDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.VeranstalterEntity;
 
 /**
  * VeranstalterEntityAugmentor. Ergänzt die SecurityIdentity um eine Rolle, die dem Typ des Veranstalters entspricht und
@@ -29,23 +31,30 @@ public class VeranstalterEntityAugmentor {
     @ActivateRequestContext
     public SecurityIdentity augment(final SecurityIdentity identity) {
 
-        final QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder(identity);
+        final String sessionId = identity.getAttribute(SecurityIdentityAttributeKeys.SESSION_ID);
 
+        if (sessionId == null) {
+            final String message = "Attribut " + SecurityIdentityAttributeKeys.SESSION_ID
+                    + " fehlt in der SecurityIdentity. SessionIdIdentityProvider pruefen!";
+
+            throw new IllegalStateException(message);
+        }
+
+        final QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder(identity);
         final String subject = identity.getPrincipal().getName();
 
-        veranstalterDao.findByUserUuid(subject).ifPresent((veranstalterEntity) -> {
+        final Optional<VeranstalterEntity> opt = veranstalterDao.findByUserUuid(subject);
+        if (opt.isPresent()) {
+            final VeranstalterEntity veranstalterEntity = opt.get();
 
-            final String sessionId = identity.getAttribute(SecurityIdentityAttributeKeys.SESSIION_ID);
-            final String berechtigung = veranstalterEntity.getTyp().toString();
+            final String berechtigung = veranstalterEntity.getTyp().name();
             builder.addRole(berechtigung);
             final Set<String> berechtigungen = new HashSet<>(identity.getRoles());
             berechtigungen.add(berechtigung);
-            sessionFacade.updateSession(sessionId, berechtigungen);
-        });
-
-        builder
-                .addAttribute(SecurityIdentityAttributeKeys.AUGMENTATION_STATE,
-                        SecurityIdentityAugmentationState.AUGMENTED.toString());
+            sessionFacade.augmentSession(sessionId, berechtigungen);
+        } else {
+            sessionFacade.markSessionAugmentationChecked(sessionId);
+        }
 
         return builder.build();
     }

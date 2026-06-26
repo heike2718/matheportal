@@ -266,7 +266,7 @@ describe('AuthEffects', () => {
 
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
             );
 
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
@@ -288,7 +288,7 @@ describe('AuthEffects', () => {
 
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
             );
             expect(httpServiceMock.createSession).not.toHaveBeenCalled();
             expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
@@ -367,7 +367,7 @@ describe('AuthEffects', () => {
             expect(errorPublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
             );
             expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();

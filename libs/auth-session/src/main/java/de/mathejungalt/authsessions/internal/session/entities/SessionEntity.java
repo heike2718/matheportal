@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+
+import de.mathejungalt.authsessions.api.SecurityIdentityAugmentationState;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,6 +53,10 @@ public class SessionEntity {
 
     @Column(name = "berechtigungen", nullable = false, length = 100)
     private String berechtigungen;
+
+    @Column(name = "augmentation_state", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private SecurityIdentityAugmentationState augmentationState;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
