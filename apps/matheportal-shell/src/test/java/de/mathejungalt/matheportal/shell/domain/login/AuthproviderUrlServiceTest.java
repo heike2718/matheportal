@@ -73,4 +73,48 @@ public class AuthproviderUrlServiceTest {
                 () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
 
     }
+
+    @Test
+    void should_getSignupUrl_returnTheUrl() {
+
+        // arrange
+        final String accessToken = "abc123";
+        when(clientAccessTokenService.orderAccessToken(anyString())).thenReturn(accessToken);
+
+        // act
+        final AuthUrlResponse result = service.getSignupUrl();
+
+        // assert
+        assertAll(() -> assertEquals(
+                "http://localhost:9000/authprovider/signup?accessToken=abc123&state=signup&redirectUrl=http://localhost:9100/matheportal/",
+                result.getUrl()), () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
+
+    }
+
+    @Test
+    void should_getsignupUrl_propagateIamClientException() {
+
+        // arrange
+        when(clientAccessTokenService.orderAccessToken(anyString()))
+                .thenThrow(new IamClientException(("IAM antwortet mit Fehlercode"), null,
+                        IamClientErrorType.IAM_CONTRACT_VIOLATION));
+
+        // act + assert
+        assertAll(() -> assertThrows(IamClientException.class, () -> service.getSignupUrl()),
+                () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
+
+    }
+
+    @Test
+    void should_getSignupUrl_propagateIamUnreachableException() {
+
+        // arrange
+        when(clientAccessTokenService.orderAccessToken(anyString()))
+                .thenThrow(new IamUnreachableException(("IAM antwortet mit Fehlercode"), null));
+
+        // act + assert
+        assertAll(() -> assertThrows(IamUnreachableException.class, () -> service.getSignupUrl()),
+                () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
+
+    }
 }

@@ -5,20 +5,18 @@ import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenService;
 import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
 import de.mathejungalt.matheportal.shell.domain.restclientutils.NonceGenerator;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * AuthproviderUrlService.
  */
+@Slf4j
 @RequestScoped
 public class AuthproviderUrlService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthproviderUrlService.class);
 
     @ConfigProperty(name = "auth-app.url")
     String authAppUrl;
@@ -45,7 +43,25 @@ public class AuthproviderUrlService {
         final String url = authAppUrl + "login?accessToken=" + accessToken + "&state=login&redirectUrl="
                 + clientRedirectUrl;
 
-        LOGGER.info("loginUrl={}", url);
+        log.info("loginUrl={}", url);
+
+        return new AuthUrlResponse(url);
+    }
+
+    /**
+     * Gibt die redirect url zum Signup zurück
+     *
+     * @return AuthUrlResponse
+     */
+    public AuthUrlResponse getSignupUrl() {
+
+        final String nonce = nonceGenerator.generateNonce();
+        final String accessToken = clientAccessTokenService.orderAccessToken(nonce);
+
+        final String url = authAppUrl + "signup?accessToken=" + accessToken + "&state=signup&redirectUrl="
+                + clientRedirectUrl;
+
+        log.info("loginUrl={}", url);
 
         return new AuthUrlResponse(url);
     }

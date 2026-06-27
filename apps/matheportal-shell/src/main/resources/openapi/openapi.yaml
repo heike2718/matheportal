@@ -106,6 +106,32 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/authurls/signup:
+        get:
+            tags:
+                - Authurls
+            summary: Liefert die Sigbup-URL des IAM
+            description: Liefert die URL, an die das Frontend für das Signup weiterleiten kann.
+            operationId: getSignupUrl
+            responses:
+                '200':
+                    description: Signup-URL erfolgreich ermittelt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthUrlResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '503':
+                    description: IAM nicht erreichbar
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
 components:
     securitySchemes:
