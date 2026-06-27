@@ -36,4 +36,8 @@ export class SidenavComponent {
     onLogout(): void {
         this.#authFlowFacade.logout();
     }
+
+    onSignup(): void {
+        this.#authFlowFacade.signup();
+    }
 }

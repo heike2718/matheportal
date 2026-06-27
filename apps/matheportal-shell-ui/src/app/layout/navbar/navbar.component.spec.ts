@@ -90,6 +90,24 @@ describe('NavbarComponent', () => {
             const minikaenguruLinkDe = fixture.debugElement.query(By.css('.nav__link--minikaenguru'));
             const raetselbaukastenLinkDe = fixture.debugElement.query(By.css('.nav__link--raetselbaukasten'));
 
+            const portalIcon = portalLinkDe.query(By.css('.nav__icon'));
+            expect(portalIcon.nativeElement.textContent.trim()).toBe('home');
+
+            const portalText = portalLinkDe.query(By.css('.nav__caption'));
+            expect(portalText.nativeElement.textContent.trim()).toBe('Matheportal');
+
+            const minikaenguruIcon = minikaenguruLinkDe.query(By.css('.nav__icon'));
+            expect(minikaenguruIcon.nativeElement.textContent.trim()).toBe('school');
+
+            const minikaenguruText = minikaenguruLinkDe.query(By.css('.nav__caption'));
+            expect(minikaenguruText.nativeElement.textContent.trim()).toBe('Minikänguru');
+
+            const raetselbaukastenIcon = raetselbaukastenLinkDe.query(By.css('.nav__icon'));
+            expect(raetselbaukastenIcon.nativeElement.textContent.trim()).toBe('extension');
+
+            const raetselbaukastenText = raetselbaukastenLinkDe.query(By.css('.nav__caption'));
+            expect(raetselbaukastenText.nativeElement.textContent.trim()).toBe('Rätselbaukasten');
+
             expect(portalLinkDe).toBeTruthy();
             expect(minikaenguruLinkDe).toBeTruthy();
             expect(raetselbaukastenLinkDe).toBeTruthy();
@@ -121,14 +139,45 @@ describe('NavbarComponent', () => {
             expect(authButtonsDe.length).toBe(2);
 
             const loginButtonDe = authButtonsDe[0];
-            expect(loginButtonDe.nativeElement.textContent.trim()).toBe('Login');
-            loginButtonDe.triggerEventHandler('click');
+            const loginIcon = loginButtonDe.query(By.css('.nav__icon'));
+            const loginText = loginButtonDe.query(By.css('[data-testid="navbar-auth-btn-label"]'));
+            expect(loginText.nativeElement.textContent.trim()).toBe('einloggen');
+            expect(loginIcon.nativeElement.textContent.trim()).toBe('login');
 
             const signupButtonDe = authButtonsDe[1];
-            expect(signupButtonDe.nativeElement.textContent.trim()).toBe('Konto anlegen');
-            signupButtonDe.triggerEventHandler('click');
+            const signupIcon = signupButtonDe.query(By.css('.nav__icon'));
+            const signupText = signupButtonDe.query(By.css('[data-testid="navbar-auth-btn-label"]'));
+            expect(signupIcon.nativeElement.textContent.trim()).toBe('person_add');
+            expect(signupText.nativeElement.textContent.trim()).toBe('registrieren');
+        });
+
+        it('it should call login when login is clicked', () => {
+            fixture.detectChanges();
+
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.nav__auth-btn'));
+
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
+
+            const loginButtonDe = authButtonsDe[0];
+            loginButtonDe.triggerEventHandler('click');
 
             expect(authFlowFacadeMock.login).toHaveBeenCalledOnce();
+            expect(authFlowFacadeMock.signup).not.toHaveBeenCalled();
+            expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
+        });
+        it('it should call signup when sihup is clicked', () => {
+            fixture.detectChanges();
+
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.nav__auth-btn'));
+
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
+
+            const signupButtonDe = authButtonsDe[1];
+            signupButtonDe.triggerEventHandler('click');
+
+            expect(authFlowFacadeMock.login).not.toHaveBeenCalled();
             expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce();
             expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
         });
@@ -155,14 +204,16 @@ describe('NavbarComponent', () => {
         it('should show logout button and call logout when logout is clicked', () => {
             fixture.detectChanges();
 
-            const authButtonDe = fixture.debugElement.query(By.css('.nav__auth-btn'));
+            const logoutButtonDe = fixture.debugElement.query(By.css('.nav__auth-btn'));
+            const logoutIcon = logoutButtonDe.query(By.css('.nav__icon'));
+            const logoutText = logoutButtonDe.query(By.css('[data-testid="navbar-auth-btn-label"]'));
+            expect(logoutIcon.nativeElement.textContent.trim()).toBe('logout');
+            expect(logoutText.nativeElement.textContent.trim()).toBe('abmelden');
 
-            expect(authButtonDe).toBeTruthy();
-            expect(authButtonDe.nativeElement.textContent.trim()).toBe('Logout');
-
-            authButtonDe.triggerEventHandler('click');
+            logoutButtonDe.triggerEventHandler('click');
 
             expect(authFlowFacadeMock.logout).toHaveBeenCalledOnce();
+            expect(authFlowFacadeMock.signup).not.toHaveBeenCalled();
             expect(authFlowFacadeMock.login).not.toHaveBeenCalled();
         });
     });

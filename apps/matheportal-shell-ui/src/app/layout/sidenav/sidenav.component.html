@@ -4,18 +4,57 @@
     </div>
 
     <nav class="sidenav__nav" aria-label="Seitennavigation">
-        <div data-testid="sidenav-main-links">
+        <div class="sidenav__main-links" data-testid="sidenav-main-links">
             <a
                 mat-list-item
                 class="sidenav__link sidenav__link--portal"
                 routerLink="/home"
                 routerLinkActive="sidenav__link--active"
                 (click)="onSidenavClose()">
-                <mat-icon class="sidenav__icon" aria-hidden="true">home</mat-icon>
+                <mat-icon class="sidenav__icon sidenav__icon--link" aria-hidden="true">home</mat-icon>
                 <span class="sidenav__label">Startseite</span>
+            </a>
+
+            <a
+                mat-list-item
+                class="sidenav__link sidenav__link--minikaenguru"
+                routerLink="/minikaenguru-anwendung"
+                routerLinkActive="sidenav__link--active"
+                (click)="onSidenavClose()">
+                <mat-icon class="sidenav__icon sidenav__icon--link" aria-hidden="true">school</mat-icon>
+                <span class="sidenav__label">Minikänguru</span>
+            </a>
+
+            <a
+                mat-list-item
+                class="sidenav__link sidenav__link--raetselbaukasten"
+                routerLink="/raetselbaukasten"
+                routerLinkActive="sidenav__link--active"
+                (click)="onSidenavClose()">
+                <mat-icon class="sidenav__icon sidenav__icon--link" aria-hidden="true">extension</mat-icon>
+                <span class="sidenav__label">Rätselbaukasten</span>
             </a>
         </div>
     </nav>
+
+    <div class="sidenav__auth-actions" data-testid="sidenav-auth-actions">
+        @if (authSessionFacade.hasSession$ | async) {
+            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogout()">
+                <mat-icon class="sidenav__icon sidenav__icon--button" aria-hidden="true">logout</mat-icon>
+                <span data-testid="sidenav-auth-btn-label">abmelden</span>
+            </button>
+        } @else {
+            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogin()">
+                <mat-icon class="sidenav__icon sidenav__icon--button" aria-hidden="true">login</mat-icon>
+                <span data-testid="sidenav-auth-btn-label">einloggen</span>
+            </button>
+
+            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onSignup()">
+                <mat-icon class="sidenav__icon sidenav__icon--button" aria-hidden="true">person_add</mat-icon>
+                <span data-testid="sidenav-auth-btn-label">registrieren</span>
+            </button>
+        }
+    </div>
 
     <div class="sidenav__footer">
         <a
@@ -26,18 +65,6 @@
             <mat-icon class="sidenav__icon" aria-hidden="true">privacy_tip</mat-icon>
             <span>Datenschutz</span>
         </a>
-
-        @if (authSessionFacade.hasSession$ | async) {
-            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogout()">
-                <mat-icon class="sidenav__icon" aria-hidden="true">logout</mat-icon>
-                <span data-testid="sidenav-auth-btn-label">Logout</span>
-            </button>
-        } @else {
-            <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogin()">
-                <mat-icon class="sidenav__icon" aria-hidden="true">login</mat-icon>
-                <span data-testid="sidenav-auth-btn-label">Login</span>
-            </button>
-        }
 
         <div class="sidenav__version">Version {{ version }}</div>
     </div>
