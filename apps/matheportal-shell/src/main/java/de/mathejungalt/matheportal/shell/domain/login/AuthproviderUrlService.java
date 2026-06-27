@@ -61,7 +61,7 @@ public class AuthproviderUrlService {
         final String url = authAppUrl + "signup?accessToken=" + accessToken + "&state=signup&redirectUrl="
                 + clientRedirectUrl;
 
-        log.info("loginUrl={}", url);
+        log.info("signupUrl={}", url);
 
         return new AuthUrlResponse(url);
     }

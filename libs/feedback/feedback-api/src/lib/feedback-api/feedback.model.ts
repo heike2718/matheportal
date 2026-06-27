@@ -12,3 +12,23 @@ export interface AppMessage {
     readonly text: string;
     readonly dismissAfterMs?: number; // nur für info - soll nach einer gewissen Zeit verschwinden können
 }
+
+export function resolveMessageDismissAfterMs(message: string): number {
+    const minimalDuration = 3000;
+    const maximalDuration = 7000;
+    const durationPerLetter = 45;
+
+    const normalizedLength = message.trim().replace(/\s+/g, ' ').length;
+
+    const durationForMessage = normalizedLength * durationPerLetter;
+
+    if (durationForMessage < minimalDuration) {
+        return minimalDuration;
+    }
+
+    if (durationForMessage > maximalDuration) {
+        return maximalDuration;
+    }
+
+    return durationForMessage;
+}

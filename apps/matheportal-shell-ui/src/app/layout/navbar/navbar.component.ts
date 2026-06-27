@@ -43,6 +43,10 @@ export class NavbarComponent {
         this.#authFlowFacade.login();
     }
 
+    onSignup(): void {
+        this.#authFlowFacade.signup();
+    }
+
     onLogout(): void {
         this.#authFlowFacade.logout();
     }

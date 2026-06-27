@@ -4,7 +4,6 @@ import { AuthSessionFacade } from './auth-session.facade';
 import { authActions } from '@matheportal/auth-data';
 import { LOCATION_HASH_SERVICE, mapHashToAuthResult } from '@matheportal/auth-model';
 import { AuthFlowObserver } from '@matheportal/shared-model';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -17,6 +16,10 @@ export class AuthFlowFacade {
 
     login(): void {
         this.#store.dispatch(authActions.requestLoginUrl());
+    }
+
+    signup(): void {
+        this.#store.dispatch(authActions.requestSignupUrl());
     }
 
     logout(): void {
@@ -47,7 +50,7 @@ export class AuthFlowFacade {
                 break;
             }
             case 'signup':
-                // hier ist erstmal noch nicht klar, was passieren soll.
+                this.#store.dispatch(authActions.signedUp());
                 break;
         }
     }

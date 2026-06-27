@@ -1,12 +1,12 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { ERROR_PUBLISHER } from './error.publisher';
+import { MESSAGE_PUBLISHER } from './error.publisher';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 
 export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     // TODO: später eventuell einen eigenen errorState verwenden, nicht nur MessageService
-    const messagePublisher = inject(ERROR_PUBLISHER);
+    const messagePublisher = inject(MESSAGE_PUBLISHER);
 
     return next(req).pipe(
         catchError((error: unknown) => {

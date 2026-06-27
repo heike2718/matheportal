@@ -25,6 +25,7 @@ describe('NavbarComponent', () => {
     };
     const authFlowFacadeMock = {
         login: vi.fn(),
+        signup: vi.fn(),
         logout: vi.fn(),
     };
 
@@ -111,17 +112,24 @@ describe('NavbarComponent', () => {
             expect(greetingDe).toBeTruthy();
             expect(greetingDe.nativeElement.textContent.trim()).toBe('Hallo, Gast');
         });
-        it('it should show login button and call login when login is clicked', () => {
+        it('it should show login button and signup button and call the expected method when clicked', () => {
             fixture.detectChanges();
 
-            const authButtonDe = fixture.debugElement.query(By.css('.nav__auth-btn'));
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.nav__auth-btn'));
 
-            expect(authButtonDe).toBeTruthy();
-            expect(authButtonDe.nativeElement.textContent.trim()).toBe('Login');
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
 
-            authButtonDe.triggerEventHandler('click');
+            const loginButtonDe = authButtonsDe[0];
+            expect(loginButtonDe.nativeElement.textContent.trim()).toBe('Login');
+            loginButtonDe.triggerEventHandler('click');
+
+            const signupButtonDe = authButtonsDe[1];
+            expect(signupButtonDe.nativeElement.textContent.trim()).toBe('Konto anlegen');
+            signupButtonDe.triggerEventHandler('click');
 
             expect(authFlowFacadeMock.login).toHaveBeenCalledOnce();
+            expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce();
             expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
         });
     });

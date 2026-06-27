@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
@@ -10,9 +11,8 @@ import {
     SESSION_VALIDATION_FAILED_REASON,
     User,
 } from '@matheportal/auth-model';
-import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
+import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 
@@ -25,9 +25,9 @@ export class AuthEffects {
     #authHttpService = inject(AuthHttpService);
     #browserNavigationService = inject(BrowserNavigationService);
     #locationHashService = inject(LOCATION_HASH_SERVICE);
-    #errorPublisher = inject(ERROR_PUBLISHER);
+    #messagePublisher = inject(MESSAGE_PUBLISHER);
 
-    requestLogInUrl$ = createEffect(() => {
+    requestLoginUrl$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(authActions.requestLoginUrl),
             switchMap(() =>
@@ -39,23 +39,59 @@ export class AuthEffects {
         );
     });
 
+    requestLoginUrlFailed$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.requestLoginUrlFailed),
+                tap(() => {
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    requestSignupUrl$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(authActions.requestSignupUrl),
+            switchMap(() =>
+                this.#authHttpService.getSignupUrl().pipe(
+                    map((urlResponse: AuthUrlResponse) => authActions.redirectToIam({ iamUrl: urlResponse.url })),
+                    catchError(() => of(authActions.requestSignupUrlFailed()))
+                )
+            )
+        );
+    });
+
+    requestSignupUrlFailed$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.requestSignupUrlFailed),
+                tap(() => {
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    signedUp$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(authActions.signedUp),
+                tap(() => {
+                    this.#messagePublisher.publishInfo(
+                        'Ihr Benutzerkonto wurde erfolgreich angelegt. Bevor Sie sich einloggen, muss es noch aktiviert werden. Bitte prüfen Sie Ihre Mail.'
+                    );
+                })
+            ),
+        { dispatch: false }
+    );
+
     redirectToIam$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(authActions.redirectToIam),
                 tap(({ iamUrl }) => {
                     this.#browserNavigationService.redirectToUrl(iamUrl);
-                })
-            ),
-        { dispatch: false }
-    );
-
-    requestLoginUrlFailed$ = createEffect(
-        () =>
-            this.#actions.pipe(
-                ofType(authActions.requestLoginUrlFailed),
-                tap(() => {
-                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -73,7 +109,12 @@ export class AuthEffects {
     clearAuthCallbackHash$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.sessionCreated, authActions.createSessionFailed, authActions.invalidOAuthFlowHash),
+                ofType(
+                    authActions.sessionCreated,
+                    authActions.createSessionFailed,
+                    authActions.invalidOAuthFlowHash,
+                    authActions.signedUp
+                ),
                 tap(() => this.#locationHashService.clear())
             ),
         { dispatch: false }
@@ -84,7 +125,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.createSessionFailed),
                 tap(() => {
-                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -95,7 +136,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(authActions.invalidOAuthFlowHash),
                 tap(() => {
-                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
@@ -141,7 +182,7 @@ export class AuthEffects {
                 tap(({ reason }) => {
                     switch (reason) {
                         case 'expired': {
-                            this.#errorPublisher.publishWarning(
+                            this.#messagePublisher.publishWarning(
                                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
                             );
                             // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
@@ -151,7 +192,7 @@ export class AuthEffects {
                         case 'missing':
                             break;
                         case 'technical': {
-                            this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                            this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                             // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
                             void this.#router.navigateByUrl('/home');
                             break;

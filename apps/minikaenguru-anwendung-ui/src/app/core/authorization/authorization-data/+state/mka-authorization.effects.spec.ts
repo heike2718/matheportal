@@ -4,7 +4,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationEffects } from './mka-authorization.effects';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
+import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { User } from '@matheportal/auth-model';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthorizationLoadState } from '../../authorization-model';
@@ -22,7 +22,7 @@ describe('MkaAuthorizationEffects tests', () => {
         loadMkaAuthorization: vi.fn(),
     };
 
-    const errorPublisherMock = {
+    const messagePublisherMock = {
         publishWarning: vi.fn(),
         publishError: vi.fn(),
     };
@@ -41,8 +41,8 @@ describe('MkaAuthorizationEffects tests', () => {
                 MkaAuthorizationEffects,
                 provideMockActions(() => action$),
                 {
-                    provide: ERROR_PUBLISHER,
-                    useValue: errorPublisherMock,
+                    provide: MESSAGE_PUBLISHER,
+                    useValue: messagePublisherMock,
                 },
                 {
                     provide: AuthSessionFacade,
@@ -151,7 +151,7 @@ describe('MkaAuthorizationEffects tests', () => {
             await firstValueFrom(effects.mkaAuthorizationLoaded$);
 
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).not.toHaveBeenCalled();
+            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
             expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledWith(user);
         });
@@ -163,8 +163,8 @@ describe('MkaAuthorizationEffects tests', () => {
             await firstValueFrom(effects.loadMkaAuthorizationFailed$);
 
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-            expect(errorPublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(errorPublisherMock.publishError).toHaveBeenCalledWith(
+            expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
                 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
             );
         });

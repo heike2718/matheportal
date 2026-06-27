@@ -1,12 +1,15 @@
 import { Provider, inject } from '@angular/core';
-import { ERROR_PUBLISHER, ErrorPublisher } from '@matheportal/error-handling-api';
+import { MESSAGE_PUBLISHER, MessagePublisher } from '@matheportal/error-handling-api';
 import { MessageService } from '@matheportal/feedback-api';
 
-export const errorFeedbackProvider: Provider = {
-    provide: ERROR_PUBLISHER,
-    useFactory: (): ErrorPublisher => {
+export const errorAndFeedbackProvider: Provider = {
+    provide: MESSAGE_PUBLISHER,
+    useFactory: (): MessagePublisher => {
         const messageService = inject(MessageService);
         return {
+            publishInfo: (message: string): void => {
+                messageService.publishInfo(message);
+            },
             publishWarning: (message: string): void => {
                 messageService.publishWarning(message);
             },

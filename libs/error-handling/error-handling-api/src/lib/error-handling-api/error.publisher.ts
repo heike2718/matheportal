@@ -1,8 +1,9 @@
 import { InjectionToken } from '@angular/core';
 
-export interface ErrorPublisher {
+export interface MessagePublisher {
+    publishInfo(message: string): void;
     publishWarning(message: string): void;
     publishError(message: string): void;
 }
 
-export const ERROR_PUBLISHER = new InjectionToken<ErrorPublisher>('ERROR_PUBLISHER');
+export const MESSAGE_PUBLISHER = new InjectionToken<MessagePublisher>('MESSAGE_PUBLISHER');

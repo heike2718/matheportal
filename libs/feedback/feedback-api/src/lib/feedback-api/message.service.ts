@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { AppMessage } from './feedback.model';
+import { AppMessage, resolveMessageDismissAfterMs } from './feedback.model';
 
 @Injectable({
     providedIn: 'root',
@@ -7,7 +7,8 @@ import { AppMessage } from './feedback.model';
 export class MessageService {
     readonly message = signal<AppMessage | null>(null);
 
-    publishInfo(text: string, dismissAfterMs = 3000): void {
+    publishInfo(text: string): void {
+        const dismissAfterMs = resolveMessageDismissAfterMs(text);
         this.#publish({ type: 'info', text, dismissAfterMs });
     }
 

@@ -11,7 +11,7 @@ import { authDataProvider, credentialsInterceptor } from '@matheportal/auth-api'
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
 import { loadingInterceptor } from '@matheportal/feedback-api';
-import { errorFeedbackProvider } from '@matheportal/error-feedback';
+import { errorAndFeedbackProvider } from '@matheportal/error-and-feedback';
 
 function getEnvironmentSpecificProviders(): Array<Provider | EnvironmentProviders> {
     const providers: Array<Provider | EnvironmentProviders> = [];
@@ -42,6 +42,6 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(
             withInterceptors([loadingInterceptor, credentialsInterceptor, globalTechnicalHttpErrorInterceptor])
         ),
-        errorFeedbackProvider,
+        errorAndFeedbackProvider,
     ],
 };

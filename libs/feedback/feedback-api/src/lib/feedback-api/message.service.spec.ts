@@ -34,31 +34,18 @@ describe('MessageService', () => {
             expect(message?.dismissAfterMs).toBe(3000);
         });
 
-        it('should set info message with custom dismiss timeout', () => {
-            // arrange
-            const text = 'Test info message';
-            const customTimeout = 2000;
-
-            // act
-            service.publishInfo(text, customTimeout);
-
-            // assert
-            const message = service.message();
-            expect(message?.dismissAfterMs).toBe(customTimeout);
-        });
-
         it('should auto-clear info message after dismiss timeout', () => {
             // arrange
             const text = 'Test info message';
 
             // act
-            service.publishInfo(text, 4000);
+            service.publishInfo(text);
 
             // assert before timeout
             expect(service.message()).not.toBeNull();
 
             // Zeit vorrücken
-            vi.advanceTimersByTime(4000);
+            vi.advanceTimersByTime(3000);
 
             // assert after timeout
             expect(service.message()).toBeNull();
@@ -70,15 +57,15 @@ describe('MessageService', () => {
             const secondText = 'Second message';
 
             // act
-            service.publishInfo(firstText, 4000);
+            service.publishInfo(firstText);
             const firstMessage = service.message();
 
             // Message ändern bevor Timeout abläuft
-            vi.advanceTimersByTime(2000);
-            service.publishInfo(secondText, 4000);
+            vi.advanceTimersByTime(1500);
+            service.publishInfo(secondText);
 
             // Timeout der ersten Message ablaufen lassen
-            vi.advanceTimersByTime(2000); // Jetzt bei 4000ms total
+            vi.advanceTimersByTime(1500); // Jetzt bei 3000ms total
 
             // assert
             expect(service.message()).not.toBeNull();
@@ -173,10 +160,10 @@ describe('MessageService', () => {
             vi.spyOn(window, 'setTimeout');
 
             // act
-            service.publishInfo('Message 1', 1000);
-            service.publishInfo('Message 2', 2000);
+            service.publishInfo('Message 1');
+            service.publishInfo('Message 2');
             service.publishWarning('Message 3');
-            service.publishInfo('Message 4', 3000);
+            service.publishInfo('Message 4');
 
             // assert
             expect(service.message()?.text).toBe('Message 4');
@@ -216,7 +203,7 @@ describe('MessageService', () => {
             // → Message B sollte NICHT gelöscht werden
 
             // arrange
-            service.publishInfo('Message A', 1000);
+            service.publishInfo('Message A');
 
             // 500ms später wechseln wir zu Message B
             vi.advanceTimersByTime(500);
@@ -234,10 +221,10 @@ describe('MessageService', () => {
             // Wenn keine neue Message gesetzt wurde, sollte die alte gelöscht werden
 
             // arrange
-            service.publishInfo('Standalone message', 1000);
+            service.publishInfo('Standalone message');
 
             // act - Timeout komplett ablaufen lassen
-            vi.advanceTimersByTime(1000);
+            vi.advanceTimersByTime(3000);
 
             // assert - Message sollte gelöscht sein
             expect(service.message()).toBeNull();

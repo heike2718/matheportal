@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { ERROR_PUBLISHER } from '@matheportal/error-handling-api';
+import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
@@ -15,7 +15,7 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 })
 export class MkaAuthorizationEffects {
     #actions = inject(Actions);
-    #errorPublisher = inject(ERROR_PUBLISHER);
+    #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(MkaAuthorizationHttpService);
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
@@ -50,7 +50,7 @@ export class MkaAuthorizationEffects {
             this.#actions.pipe(
                 ofType(mkaAuthorizationActions.loadMkaAuthorizationFailed),
                 tap(() => {
-                    this.#errorPublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
             ),
         { dispatch: false }
