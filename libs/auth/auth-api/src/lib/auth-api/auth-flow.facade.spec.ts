@@ -44,7 +44,7 @@ describe('AuthFlowFacade', () => {
         it('login should dispatch requestLoginUrl', () => {
             facade.login();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.requestLoginUrl());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -54,7 +54,7 @@ describe('AuthFlowFacade', () => {
         it('logout should dispatch logOut', () => {
             facade.logout();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.logOut());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -68,7 +68,7 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenNthCalledWith(1, authActions.createSession({ idToken: 'id-token' }));
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -79,7 +79,7 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.createSessionFailed());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -88,39 +88,42 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.createSessionFailed());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
 
-        it('initClearOrRestoreSession should do nothing when state=signup and idToken is present', () => {
+        it('initClearOrRestoreSession should dispatch signedUp when state=signup and idToken is present', () => {
             locationHashServiceMock.read.mockReturnValue(
                 '#state=signup&nonce=&idToken=id-token&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(0);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
+            expect(dispatchSpy).toHaveBeenCalledWith(authActions.signedUp());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
-        it('initClearOrRestoreSession should do nothing when state=signup and  idToken is empty', () => {
+        it('initClearOrRestoreSession should dispatch signedUp when state=signup and  idToken is empty', () => {
             locationHashServiceMock.read.mockReturnValue(
                 '#state=signup&nonce=&idToken=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(0);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
+            expect(dispatchSpy).toHaveBeenCalledWith(authActions.signedUp());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
-        it('initClearOrRestoreSession should do nothing when state=signup and  idToken is missing', () => {
+        it('initClearOrRestoreSession should dispatch signedUp when state=signup and  idToken is missing', () => {
             locationHashServiceMock.read.mockReturnValue(
                 '#state=signup&nonce=&oauthFlowType=AUTHORIZATION_TOKEN_GRANT'
             );
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(0);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
+            expect(dispatchSpy).toHaveBeenCalledWith(authActions.signedUp());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
 
@@ -131,7 +134,7 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.invalidOAuthFlowHash());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -142,7 +145,7 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.invalidOAuthFlowHash());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -151,7 +154,7 @@ describe('AuthFlowFacade', () => {
 
             facade.initClearOrRestoreSession();
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledOnce();
             expect(dispatchSpy).toHaveBeenCalledWith(authActions.invalidOAuthFlowHash());
             expect(authSessionFacadeMock.validateSession).not.toHaveBeenCalled();
         });
@@ -161,7 +164,7 @@ describe('AuthFlowFacade', () => {
             facade.initClearOrRestoreSession();
 
             expect(dispatchSpy).toHaveBeenCalledTimes(0);
-            expect(authSessionFacadeMock.validateSession).toHaveBeenCalledTimes(1);
+            expect(authSessionFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
         it('initClearOrRestoreSession should dispatch validateSession when not oauthFlow', () => {
             locationHashServiceMock.read.mockReturnValue('#state=foobar&nonce=');
@@ -169,7 +172,7 @@ describe('AuthFlowFacade', () => {
             facade.initClearOrRestoreSession();
 
             expect(dispatchSpy).toHaveBeenCalledTimes(0);
-            expect(authSessionFacadeMock.validateSession).toHaveBeenCalledTimes(1);
+            expect(authSessionFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
     });
 });

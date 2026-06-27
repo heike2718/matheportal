@@ -30,7 +30,7 @@
             flex: 0 0 auto;
             display: flex;
             align-items: center;
-            gap: mp-theme.$mp-space-5; // Abstand zwischen User- und Meta-Gruppe
+            gap: mp-theme.$mp-space-5;
         }
     }
 
@@ -53,7 +53,6 @@
     &__link {
         display: inline-flex;
         align-items: center;
-        gap: mp-theme.$mp-space-2;
         min-height: 2.5rem;
         padding-inline: mp-theme.$mp-space-3;
         border: 1px solid transparent;
@@ -66,29 +65,39 @@
             color 150ms ease-in-out,
             box-shadow 150ms ease-in-out;
 
-        &:hover,
         &:focus-visible {
-            background-color: rgb(0 0 0 / 4%);
-            border-color: rgb(0 0 0 / 8%);
+            box-shadow: 0 0 0 2px rgb(0 0 0 / 18%);
         }
 
         &--portal {
+            background-color: rgb(0 0 0 / 4%);
+            border-color: rgb(0 0 0 / 8%);
+
+            &:hover,
+            &:focus-visible {
+                background-color: rgb(0 0 0 / 5%);
+                border-color: rgb(0 0 0 / 12%);
+            }
+
             &.nav__link--active {
                 background-color: rgb(0 0 0 / 5%);
                 border-color: rgb(0 0 0 / 12%);
                 color: mp-theme.mp-primary(500);
+                box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%);
             }
         }
 
         &--minikaenguru {
+            background-color: mp-theme.mp-brand-hover(minikaenguru);
+            border-color: rgb(42 88 140 / 20%);
+
             &:hover,
             &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(minikaenguru);
-                border-color: rgb(42 88 140 / 20%);
+                border-color: rgb(42 88 140 / 30%);
+                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 18%);
             }
 
             &.nav__link--active {
-                background-color: mp-theme.mp-brand-hover(minikaenguru);
                 border-color: mp-theme.mp-brand(minikaenguru);
                 color: mp-theme.mp-brand(minikaenguru);
                 box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru);
@@ -96,14 +105,16 @@
         }
 
         &--raetselbaukasten {
+            background-color: mp-theme.mp-brand-hover(raetselbaukasten);
+            border-color: rgb(63 102 87 / 20%);
+
             &:hover,
             &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-                border-color: rgb(63 102 87 / 20%);
+                border-color: rgb(63 102 87 / 30%);
+                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 18%);
             }
 
             &.nav__link--active {
-                background-color: mp-theme.mp-brand-hover(raetselbaukasten);
                 border-color: mp-theme.mp-brand(raetselbaukasten);
                 color: mp-theme.mp-brand(raetselbaukasten);
                 box-shadow: inset 0 0 0 1px mp-theme.mp-brand(raetselbaukasten);
@@ -164,6 +175,14 @@
 
     &__icon {
         margin-right: 0;
+
+        &--link {
+            margin-right: mp-theme.$mp-space-3;
+        }
+
+        &--button {
+            margin-right: 0;
+        }
     }
 
     &__caption {

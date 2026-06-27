@@ -25,6 +25,7 @@ describe('SidenavComponent', () => {
     const authFlowFacadeMock = {
         login: vi.fn(),
         logout: vi.fn(),
+        signup: vi.fn(),
     };
 
     const gast: User = anonymousUser;
@@ -87,6 +88,12 @@ describe('SidenavComponent', () => {
 
             const portalLinkDe = fixture.debugElement.query(By.css('.sidenav__link--portal'));
             expect(portalLinkDe).toBeTruthy();
+
+            const minikaenguruLinkDe = fixture.debugElement.query(By.css('.sidenav__link--minikaenguru'));
+            expect(minikaenguruLinkDe).toBeTruthy();
+
+            const raetselbaukastenLinkDe = fixture.debugElement.query(By.css('.sidenav__link--raetselbaukasten'));
+            expect(raetselbaukastenLinkDe).toBeTruthy();
         });
 
         it('should show the datenschutz-Link', () => {
@@ -108,22 +115,69 @@ describe('SidenavComponent', () => {
                 hasSession: false,
             });
         });
-        it('it should show login button and call login when login is clicked', () => {
+        it('it should show login and signup buttons', () => {
             fixture.detectChanges();
 
-            const authButtonDe = fixture.debugElement.query(By.css('.sidenav__auth-btn'));
-            const auhtIcon = authButtonDe.query(By.css('.sidenav__icon'));
-            const authTextDe = authButtonDe.query(By.css('[data-testid="sidenav-auth-btn-label"]'));
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.sidenav__auth-btn'));
 
-            expect(authButtonDe).toBeTruthy();
-            expect(auhtIcon).toBeTruthy();
-            expect(auhtIcon.nativeElement.textContent.trim()).toBe('login');
-            expect(authTextDe.nativeElement.textContent.trim()).toBe('Login');
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
 
-            authButtonDe.triggerEventHandler('click');
+            const loginButtonDe = authButtonsDe[0];
+            const loginIcon = loginButtonDe.query(By.css('.sidenav__icon'));
+            const loginText = loginButtonDe.query(By.css('[data-testid="sidenav-auth-btn-label"]'));
+
+            expect(loginIcon.nativeElement.textContent.trim()).toBe('login');
+            expect(loginText.nativeElement.textContent.trim()).toBe('einloggen');
+
+            loginButtonDe.triggerEventHandler('click');
+
+            const signupButtonDe = authButtonsDe[1];
+            const signupIcon = signupButtonDe.query(By.css('.sidenav__icon'));
+            const signupText = signupButtonDe.query(By.css('[data-testid="sidenav-auth-btn-label"]'));
+
+            expect(signupIcon.nativeElement.textContent.trim()).toBe('person_add');
+            expect(signupText.nativeElement.textContent.trim()).toBe('registrieren');
+
+            signupButtonDe.triggerEventHandler('click');
+
+            expect(authFlowFacadeMock.login).toHaveBeenCalledOnce(); // vom ersten click
+            expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
+            expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce(); // vom zweiten click
+        });
+
+        it('it should call login when login is clicked', () => {
+            fixture.detectChanges();
+
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.sidenav__auth-btn'));
+
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
+
+            const loginButtonDe = authButtonsDe[0];
+
+            loginButtonDe.triggerEventHandler('click');
 
             expect(authFlowFacadeMock.login).toHaveBeenCalledOnce();
             expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
+            expect(authFlowFacadeMock.signup).not.toHaveBeenCalled();
+        });
+
+        it('it should call signup when signup is clicked', () => {
+            fixture.detectChanges();
+
+            const authButtonsDe = fixture.debugElement.queryAll(By.css('.sidenav__auth-btn'));
+
+            expect(authButtonsDe).toBeTruthy();
+            expect(authButtonsDe.length).toBe(2);
+
+            const signupButtonDe = authButtonsDe[1];
+
+            signupButtonDe.triggerEventHandler('click');
+
+            expect(authFlowFacadeMock.login).not.toHaveBeenCalled();
+            expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
+            expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce();
         });
     });
 
@@ -144,7 +198,7 @@ describe('SidenavComponent', () => {
             expect(authButtonDe).toBeTruthy();
             expect(auhtIcon).toBeTruthy();
             expect(auhtIcon.nativeElement.textContent.trim()).toBe('logout');
-            expect(authTextDe.nativeElement.textContent.trim()).toBe('Logout');
+            expect(authTextDe.nativeElement.textContent.trim()).toBe('abmelden');
 
             authButtonDe.triggerEventHandler('click');
 

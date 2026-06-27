@@ -6,6 +6,8 @@ export const authActions = createActionGroup({
     events: {
         requestLoginUrl: emptyProps(),
         requestLoginUrlFailed: emptyProps(),
+        requestSignupUrl: emptyProps(),
+        requestSignupUrlFailed: emptyProps(),
         redirectToIam: props<{ iamUrl: string }>(),
         invalidOAuthFlowHash: emptyProps(),
         createSession: props<{ idToken: string }>(),
@@ -15,6 +17,7 @@ export const authActions = createActionGroup({
         sessionValidated: props<{ user: User }>(),
         sessionValidationFailed: props<{ reason: SESSION_VALIDATION_FAILED_REASON }>(),
         userAugmented: props<{ user: User }>(),
+        signedUp: emptyProps(),
         logOut: emptyProps(),
         loggedOut: emptyProps(),
     },

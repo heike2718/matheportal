@@ -11,11 +11,19 @@ export class AuthHttpService {
     #http = inject(HttpClient);
 
     /**
-     * Holt die redirect-URL zum IAM.
+     * Holt die login-redirect-URL zum IAM.
      * @returns Observable
      */
     getLoginUrl(): Observable<AuthUrlResponse> {
         return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/api/authurls/login');
+    }
+
+    /**
+     * Holt die signup-redirect-URL zum IAM.
+     * @returns Observable
+     */
+    getSignupUrl(): Observable<AuthUrlResponse> {
+        return this.#http.get<AuthUrlResponse>(this.#config.apiUrl + '/api/authurls/signup');
     }
 
     /**

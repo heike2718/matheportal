@@ -81,12 +81,6 @@ export default [
                             ],
                         },
 
-                        // adapter
-                        {
-                            sourceTag: 'type:adapter',
-                            onlyDependOnLibsWithTags: ['type:api', 'type:model', 'domain:shared', 'scope:shared'],
-                        },
-
                         // ngrx-Effects und http-Services: model, error-handling und shared
                         {
                             sourceTag: 'type:data',
@@ -147,9 +141,9 @@ export default [
                             sourceTag: 'domain:error-handling',
                             onlyDependOnLibsWithTags: ['domain:shared', 'scope:shared'],
                         },
-                        // error-handling und feedback-api müssen über eine composition gekoppelt werden
+                        // error-handling-api und feedback-api werden über diese Composition gekoppelt.
                         {
-                            sourceTag: 'domain:composition-error-feedback',
+                            sourceTag: 'domain:composition-error-and-feedback',
                             onlyDependOnLibsWithTags: [
                                 'domain:error-handling',
                                 'domain:feedback',
@@ -181,12 +175,12 @@ export default [
                                 'domain:feedback',
                                 'domain:shared',
                                 'domain:error-handling',
-                                'domain:composition-error-feedback',
+                                'domain:composition-error-and-feedback',
                                 'scope:shared',
                             ],
                         },
 
-                        // minikaenguru-app darf auth composition-error-feedback konsumieren –
+                        // minikaenguru-app darf auth, und error-handling konsumieren –
                         // aber nicht raetselbaukasten und nicht umgekehrt
                         {
                             sourceTag: 'domain:minikaenguru-app',

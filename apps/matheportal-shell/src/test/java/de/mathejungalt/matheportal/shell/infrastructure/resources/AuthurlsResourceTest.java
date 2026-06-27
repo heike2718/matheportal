@@ -27,7 +27,7 @@ class AuthurlsResourceTest {
         // act
         final AuthUrlResponse authUrlResponse = given()
                 .accept(ContentType.JSON)
-                .get("/")
+                .get("/login")
                 .then()
                 .statusCode(200)
                 .and()
@@ -42,6 +42,29 @@ class AuthurlsResourceTest {
 
         assertAll(() -> assertTrue(authUrl.startsWith("http://localhost:9000/authprovider/login?accessToken=")),
                 () -> assertTrue(authUrl.endsWith("&state=login&redirectUrl=http://localhost:9100/matheportal/")));
+    }
+
+    @Test
+    void test_signupUrl() {
+
+        // act
+        final AuthUrlResponse authUrlResponse = given()
+                .accept(ContentType.JSON)
+                .get("/signup")
+                .then()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .and()
+                .extract()
+                .as(AuthUrlResponse.class);
+
+        // assert
+        final String authUrl = authUrlResponse.getUrl();
+
+        assertAll(() -> assertTrue(authUrl.startsWith("http://localhost:9000/authprovider/signup?accessToken=")),
+                () -> assertTrue(authUrl.endsWith("&state=signup&redirectUrl=http://localhost:9100/matheportal/")));
     }
 
 }

@@ -21,4 +21,10 @@ public class AuthurlsResource implements AuthurlsApi {
         return Response.ok(payload).build();
     }
 
+    @Override
+    public Response getSignupUrl() {
+        final AuthUrlResponse payload = authproviderUrlService.getSignupUrl();
+        return Response.ok(payload).build();
+    }
+
 }

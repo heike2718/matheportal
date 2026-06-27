@@ -7,12 +7,13 @@ Es dient als Referenz beim Hinzufügen neuer Libraries und beim Verstehen von Li
 
 ## Tag-Dimensionen
 
-Jede Library hat **drei Tags** aus drei orthogonalen Dimensionen:
+Jede Library hat **vier Tags** aus vier orthogonalen Dimensionen:
 
 | Dimension    | Zweck                       | Beispiele                                                    |
 | ------------ | --------------------------- | ------------------------------------------------------------ |
 | `domain:xxx` | Fachliche Zugehörigkeit     | `domain:auth`, `domain:feedback`, `domain:shared`            |
 | `type:xxx`   | Architekturschicht          | `type:api`, `type:data`, `type:model`, `type:ui`, `type:app` |
+| `scope:xxx`  |                             | `scope:shared`                                               |
 | `layer:xxx`  | Deployment-Rolle (nur Apps) | `layer:host`, `layer:remote`                                 |
 
 Sonder-Tag (kein Präfix):
@@ -26,20 +27,20 @@ Sonder-Tag (kein Präfix):
 
 ## apps libs und ihre Tags
 
-| Library                   | domain                              | type           | layer / sonstige |
-| ------------------------- | ----------------------------------- | -------------- | ---------------- |
-| auth-api                  | `domain:auth`                       | `type:api`     |                  |
-| auth-data                 | `domain:auth`                       | `type:data`    |                  |
-| auth-model                | `domain:auth`                       | `type:model`   |                  |
-| error-feedback            | `domain:composition-error-feedback` | `type:adapter` |                  |
-| error-handling-api        | `domain:error-handling`             | `type:api`     |                  |
-| feedback-api              | `domain:feedback`                   | `type:api`     |                  |
-| feedback-ui               | `domain:feedback`                   | `type:ui`      | `host-only`      |
-| shared-runtime-config     | `domain:shared`                     | `type:model`   |                  |
-| shared-ui-themes          |                                     |                | `scope:shared`   |
-| matheportal-shell-ui      | `domain:portal`                     | `type:app`     | `layer:host`     |
-| minikaenguru-anwendung-ui | `domain:minikaenguru-app`           | `type:app`     | `layer:remote`   |
-| raetselbaukasten          | `domain:raetselbaukasten`           | `type:app`     | `layer:remote`   |
+| Library                   | domain                                  | type           | layer / sonstige |
+| ------------------------- | --------------------------------------- | -------------- | ---------------- |
+| auth-api                  | `domain:auth`                           | `type:api`     |                  |
+| auth-data                 | `domain:auth`                           | `type:data`    |                  |
+| auth-model                | `domain:auth`                           | `type:model`   |                  |
+| error-and-feedback        | `domain:composition-error-and-feedback` | `type:adapter` |                  |
+| error-handling-api        | `domain:error-handling`                 | `type:api`     |                  |
+| feedback-api              | `domain:feedback`                       | `type:api`     |                  |
+| feedback-ui               | `domain:feedback`                       | `type:ui`      | `host-only`      |
+| shared-runtime-config     | `domain:shared`                         | `type:model`   |                  |
+| shared-ui-themes          |                                         |                | `scope:shared`   |
+| matheportal-shell-ui      | `domain:portal`                         | `type:app`     | `layer:host`     |
+| minikaenguru-anwendung-ui | `domain:minikaenguru-app`               | `type:app`     | `layer:remote`   |
+| raetselbaukasten          | `domain:raetselbaukasten`               | `type:app`     | `layer:remote`   |
 
 ---
 

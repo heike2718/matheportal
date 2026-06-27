@@ -11,7 +11,7 @@
                     class="nav__link nav__link--portal"
                     routerLink="/home"
                     routerLinkActive="nav__link--active">
-                    <mat-icon class="nav__icon" aria-hidden="true">home</mat-icon>
+                    <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">home</mat-icon>
                     <span class="nav__caption">Matheportal</span>
                 </a>
 
@@ -20,6 +20,7 @@
                     class="nav__link nav__link--minikaenguru"
                     routerLink="/minikaenguru-anwendung"
                     routerLinkActive="nav__link--active">
+                    <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">school</mat-icon>
                     <span class="nav__caption">Minikänguru</span>
                 </a>
 
@@ -28,6 +29,7 @@
                     class="nav__link nav__link--raetselbaukasten"
                     routerLink="/raetselbaukasten"
                     routerLinkActive="nav__link--active">
+                    <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">extension</mat-icon>
                     <span class="nav__caption">Rätselbaukasten</span>
                 </a>
             </div>
@@ -42,9 +44,19 @@
                 }
 
                 @if (authSessionFacade.hasSession$ | async) {
-                    <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogout()">Logout</button>
+                    <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogout()">
+                        <mat-icon class="nav__icon nav__icon--button" aria-hidden="true">logout</mat-icon>
+                        <span data-testid="navbar-auth-btn-label">abmelden</span>
+                    </button>
                 } @else {
-                    <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogin()">Login</button>
+                    <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogin()">
+                        <mat-icon class="nav__icon nav__icon--button" aria-hidden="true">login</mat-icon>
+                        <span data-testid="navbar-auth-btn-label">einloggen</span>
+                    </button>
+                    <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onSignup()">
+                        <mat-icon class="nav__icon nav__icon--button" aria-hidden="true">person_add</mat-icon>
+                        <span data-testid="navbar-auth-btn-label">registrieren</span>
+                    </button>
                 }
             </div>
 

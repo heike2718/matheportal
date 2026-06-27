@@ -1,10 +1,10 @@
 {
-    "name": "error-feedback",
+    "name": "error-and-feedback",
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/composition/error-feedback/src",
+    "sourceRoot": "libs/composition/error-and-feedback/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["domain:composition-error-feedback", "type:adapter"],
+    "tags": ["domain:composition-error-and-feedback", "type:adapter"],
     "targets": {
         "lint": {
             "executor": "@nx/eslint:lint"
