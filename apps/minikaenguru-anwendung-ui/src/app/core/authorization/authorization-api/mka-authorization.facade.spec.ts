@@ -2,11 +2,11 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState, Veranstaltertyp } from '../authorization-model';
 import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
+import { computed } from '@angular/core';
 
 interface TestParameters {
     readonly user: User;
@@ -17,8 +17,6 @@ describe('MkaAuthorizationFacade tests', () => {
     let facade: MkaAuthorizationFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
-
-    let userSubject: BehaviorSubject<User>;
 
     const loggedInStandardUser: User = {
         anonym: false,
@@ -43,7 +41,8 @@ describe('MkaAuthorizationFacade tests', () => {
     const veranstaltertypPrivat: Veranstaltertyp = 'PRIVAT';
 
     const authSessionFacadeMock = {
-        user$: undefined as unknown as Observable<User>,
+        user: computed(() => anonymousUser),
+        isLoggedIn: computed(() => false),
     };
 
     const authFlowFacadeMock = {
@@ -51,9 +50,8 @@ describe('MkaAuthorizationFacade tests', () => {
     };
 
     async function setup(user: User, authorizationLoadState: AuthorizationLoadState, veranstalterTyp: Veranstaltertyp) {
-        userSubject = new BehaviorSubject<User>(user);
-
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+        authSessionFacadeMock.user = computed(() => user);
+        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
 
         TestBed.configureTestingModule({
             providers: [

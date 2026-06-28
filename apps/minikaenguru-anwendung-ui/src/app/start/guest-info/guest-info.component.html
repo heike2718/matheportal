@@ -39,17 +39,19 @@
         <p>Bitte nutzen Sie die Aufgaben der vergangenen Jahre, um die Kinder auf den Wettbewerb vorzubereiten.</p>
     </section>
 
-    <div class="mka-guest-info__login-hint" aria-labelledby="mka-login-hint-title">
-        <mat-icon class="mka-guest-info__login-hint-icon" aria-hidden="true">lock</mat-icon>
+    @if (!authSessionFacade.isLoggedIn()) {
+        <div class="mka-guest-info__login-hint" aria-labelledby="mka-login-hint-title">
+            <mat-icon class="mka-guest-info__login-hint-icon" aria-hidden="true">lock</mat-icon>
 
-        <div class="mka-guest-info__login-hint-text">
-            <h2 id="mka-login-hint-title">Login erforderlich</h2>
-            <p>
-                Bitte loggen Sie sich über die Navigation ein. Ein neues Benutzerkonto können Sie dort ebenfalls
-                anlegen.
-            </p>
+            <div class="mka-guest-info__login-hint-text">
+                <h2 id="mka-login-hint-title">Login erforderlich</h2>
+                <p>
+                    Bitte loggen Sie sich über die Navigation ein. Ein neues Benutzerkonto können Sie dort ebenfalls
+                    anlegen.
+                </p>
+            </div>
         </div>
-    </div>
+    }
 
     <p class="mka-guest-info__browser-hint">Hinweis: Die Anwendung ist mit Firefox, Chrome und Edge getestet.</p>
 </section>

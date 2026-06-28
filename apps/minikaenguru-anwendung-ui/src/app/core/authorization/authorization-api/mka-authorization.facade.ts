@@ -20,14 +20,8 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
     );
 
     readonly #veranstalterTyp$: Observable<Veranstaltertyp> = this.#store.select(fromMkaAuthorization.veranstalterTyp);
-
-    readonly #user = toSignal(this.#authSessionFacade.user$, {
-        initialValue: null,
-    });
-
     readonly #authorizationLoadState = toSignal(this.#authorizationLoadState$, { initialValue: 'not-loaded' });
     readonly #veranstaltertyp = toSignal(this.#veranstalterTyp$, { initialValue: 'NONE' });
-    readonly #isLoggedIn = computed(() => !this.#user()?.anonym);
 
     readonly isLehrperson = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.schule);
 
@@ -36,7 +30,7 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
     readonly startViewState = computed(() => {
         const authorizationState = this.#authorizationLoadState();
 
-        if (!this.#isLoggedIn()) {
+        if (!this.#authSessionFacade.isLoggedIn()) {
             return 'guest';
         }
 
@@ -65,7 +59,7 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
     }
 
     ensureAuthorizationLoaded(): void {
-        if (this.#isLoggedIn()) {
+        if (this.#authSessionFacade.isLoggedIn()) {
             this.#store.dispatch(mkaAuthorizationActions.loadMkaAuthorization());
         }
     }

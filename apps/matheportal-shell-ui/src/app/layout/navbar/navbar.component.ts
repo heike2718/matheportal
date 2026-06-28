@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,10 +8,11 @@ import { map, shareReplay } from 'rxjs';
 
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'portal-navbar',
-    imports: [MatButtonModule, MatIconModule, MatToolbarModule, RouterLink, RouterLinkActive, AsyncPipe],
+    imports: [MatButtonModule, MatIconModule, MatToolbarModule, RouterLink, RouterLinkActive],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,10 +30,12 @@ export class NavbarComponent {
 
     #authFlowFacade = inject(AuthFlowFacade);
 
-    isHandset$ = this.#breakpointObserver.observe(Breakpoints.Handset).pipe(
+    #isHandset$ = this.#breakpointObserver.observe(Breakpoints.Handset).pipe(
         map(result => result.matches),
         shareReplay(1)
     );
+
+    isHandset = toSignal(this.#isHandset$, { initialValue: false });
 
     onToggleSidenav(): void {
         this.sidenavToggle.emit();

@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartComponent } from './start.component';
 import { By } from '@angular/platform-browser';
-import { computed } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 import { StartViewState } from '../../core/authorization/authorization-model';
+import { provideRouter } from '@angular/router';
+import { anonymousUser } from '@matheportal/auth-model';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('StartComponent tests', () => {
     let component: StartComponent;
@@ -14,11 +17,20 @@ describe('StartComponent tests', () => {
         ensureAuthorizationLoaded: vi.fn(),
     };
 
+    const authSessionFacadeMock = {
+        user: computed(() => anonymousUser),
+        isLoggedIn: computed(() => false),
+    };
+
     async function setup(startViewState: StartViewState) {
         mkaAuthorizationFacadeMock.startViewState = computed(() => startViewState);
         await TestBed.configureTestingModule({
             imports: [StartComponent],
-            providers: [{ provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock }],
+            providers: [
+                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock },
+                provideRouter([{ path: 'minikaenguru-anwendung/guest', component: DummyRouteComponent }]),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
@@ -110,3 +122,9 @@ describe('StartComponent tests', () => {
         });
     });
 });
+
+@Component({
+    standalone: true,
+    template: '',
+})
+class DummyRouteComponent {}

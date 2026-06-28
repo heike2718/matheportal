@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, Observable, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { NavbarComponent } from './navbar.component';
 import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
@@ -15,14 +14,12 @@ describe('NavbarComponent', () => {
     let fixture: ComponentFixture<NavbarComponent>;
     let component: NavbarComponent;
 
-    let hasSessionSubject: BehaviorSubject<boolean>;
-    let userSubject: BehaviorSubject<User>;
-
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
-        hasSession$: undefined as unknown as Observable<boolean>,
-        user$: undefined as unknown as Observable<User>,
+        isLoggedIn: computed(() => false),
+        user: computed(() => anonymousUser),
     };
+
     const authFlowFacadeMock = {
         login: vi.fn(),
         signup: vi.fn(),
@@ -38,12 +35,9 @@ describe('NavbarComponent', () => {
         berechtigungen: ['STANDARD'],
     } as User;
 
-    async function setup(options?: { isHandset?: boolean; user?: User; hasSession?: boolean }) {
-        hasSessionSubject = new BehaviorSubject<boolean>(options?.hasSession ?? false);
-        userSubject = new BehaviorSubject<User>(options?.user ?? gast);
-
-        authSessionFacadeMock.hasSession$ = hasSessionSubject.asObservable();
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+    async function setup(isHandset: boolean, user: User) {
+        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        authSessionFacadeMock.user = computed(() => user);
 
         await TestBed.configureTestingModule({
             imports: [NavbarComponent],
@@ -65,7 +59,7 @@ describe('NavbarComponent', () => {
         fixture = TestBed.createComponent(NavbarComponent);
         component = fixture.componentInstance;
 
-        component.isHandset$ = of(options?.isHandset ?? false);
+        component.isHandset = computed(() => isHandset);
 
         fixture.detectChanges();
     }
@@ -77,7 +71,7 @@ describe('NavbarComponent', () => {
 
     describe('NavbarComponent not handset', () => {
         beforeEach(async () => {
-            await setup({ isHandset: false });
+            await setup(false, gast);
         });
         it('should show desktop navigation links when not on handset', () => {
             const linksDe = fixture.debugElement.query(By.css('.nav__links'));
@@ -116,11 +110,7 @@ describe('NavbarComponent', () => {
 
     describe('NavbarComponent not handset and logged out', () => {
         beforeEach(async () => {
-            await setup({
-                isHandset: false,
-                user: gast,
-                hasSession: false,
-            });
+            await setup(false, gast);
         });
         it('should show anonymous greeting', () => {
             fixture.detectChanges();
@@ -185,11 +175,7 @@ describe('NavbarComponent', () => {
 
     describe('Navbarcomponent not handset and logged in', () => {
         beforeEach(async () => {
-            await setup({
-                isHandset: false,
-                user: loggedInUser,
-                hasSession: true,
-            });
+            await setup(false, loggedInUser);
         });
 
         it('should show personalized greeting', () => {
@@ -220,10 +206,9 @@ describe('NavbarComponent', () => {
 
     describe('NavbarComponent handset', () => {
         beforeEach(async () => {
-            await setup({ isHandset: true });
+            await setup(true, gast);
         });
         it('should show hamburger menu button on handset', () => {
-            component.isHandset$ = of(true);
             fixture.detectChanges();
 
             const buttonDe = fixture.debugElement.query(By.css('.nav__menu-btn'));
@@ -236,7 +221,6 @@ describe('NavbarComponent', () => {
         it('should emit sidenavToggle when hamburger menu button is clicked', () => {
             const spy = vi.spyOn(component.sidenavToggle, 'emit');
 
-            component.isHandset$ = of(true);
             fixture.detectChanges();
 
             const buttonDe = fixture.debugElement.query(By.css('.nav__menu-btn'));

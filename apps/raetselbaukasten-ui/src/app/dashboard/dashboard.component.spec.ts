@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { By } from '@angular/platform-browser';
@@ -11,8 +10,6 @@ import { normalizeText } from '@matheportal/shared-testing';
 describe('DashboardComponent', () => {
     let component: DashboardComponent;
     let fixture: ComponentFixture<DashboardComponent>;
-
-    let userSubject: BehaviorSubject<User>;
 
     const standardUser: User = {
         anonym: false,
@@ -35,12 +32,11 @@ describe('DashboardComponent', () => {
     const activatedRouteMock = {};
 
     const authSessionFacadeMock = {
-        user$: undefined as unknown as Observable<User>,
+        user: computed(() => anonymousUser),
     };
 
     async function setup(user: User) {
-        userSubject = new BehaviorSubject<User>(user);
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+        authSessionFacadeMock.user = computed(() => user);
 
         await TestBed.configureTestingModule({
             imports: [DashboardComponent],

@@ -12,6 +12,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling-api';
 import { loadingInterceptor } from '@matheportal/feedback-api';
 import { errorAndFeedbackProvider } from '@matheportal/error-and-feedback';
+import { DEFAULT_DIALOG_CONFIG, DialogConfig } from '@angular/cdk/dialog';
 
 function getEnvironmentSpecificProviders(): Array<Provider | EnvironmentProviders> {
     const providers: Array<Provider | EnvironmentProviders> = [];
@@ -43,5 +44,6 @@ export const appConfig: ApplicationConfig = {
             withInterceptors([loadingInterceptor, credentialsInterceptor, globalTechnicalHttpErrorInterceptor])
         ),
         errorAndFeedbackProvider,
+        { provide: DEFAULT_DIALOG_CONFIG, useValue: { ...new DialogConfig(), disableClose: true } },
     ],
 };

@@ -5,11 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'portal-sidenav',
-    imports: [RouterLink, RouterLinkActive, MatListModule, MatButtonModule, MatIconModule, AsyncPipe],
+    imports: [RouterLink, RouterLinkActive, MatListModule, MatButtonModule, MatIconModule],
     templateUrl: './sidenav.component.html',
     styleUrl: './sidenav.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
