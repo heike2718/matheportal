@@ -22,9 +22,9 @@ describe('resolveVeranstaltertyp', () => {
 
         expect(result).toBe(VERANSTALTERTYP.privat);
     });
-    it('should return lehrer when Lehrer', () => {
-        const result = resolveVeranstaltertyp({ berechtigungen: ['STANDARD', 'LEHRER'] });
+    it('should return schule when Schule', () => {
+        const result = resolveVeranstaltertyp({ berechtigungen: ['STANDARD', 'SCHULE'] });
 
-        expect(result).toBe(VERANSTALTERTYP.lehrer);
+        expect(result).toBe(VERANSTALTERTYP.schule);
     });
 });

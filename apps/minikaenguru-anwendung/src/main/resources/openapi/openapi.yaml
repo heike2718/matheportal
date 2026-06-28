@@ -47,11 +47,11 @@ components:
                 typ:
                     type: string
                     enum:
-                        - LEHRER
+                        - SCHULE
                         - PRIVAT
                     description: Typ des Veranstalters
                     example:
-                        - LEHRER
+                        - SCHULE
                         - PRIVAT
                 teilnahmenummern:
                     type: array
@@ -100,7 +100,8 @@ components:
                     example:
                         - STANDARD
                         - ADMIN
-                        - LEHRER
+                        - SCHULE
+                        - PRIVAT
                         - AUTOR
         ConstraintViolationDetail:
             type: object

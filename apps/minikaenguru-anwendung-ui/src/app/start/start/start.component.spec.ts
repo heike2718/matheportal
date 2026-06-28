@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartComponent } from './start.component';
 import { By } from '@angular/platform-browser';
 import { computed } from '@angular/core';
-import { MkaAuthorizationFacade } from '../core/authorization/authorization-api/mka-authorization.facade';
-import { StartViewState } from '../core/authorization/authorization-model';
+import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
+import { StartViewState } from '../../core/authorization/authorization-model';
 
 describe('StartComponent tests', () => {
     let component: StartComponent;

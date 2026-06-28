@@ -29,7 +29,7 @@ describe('MkaAuthorizationFacade tests', () => {
     const loggedInLehrer: User = {
         anonym: false,
         fullName: 'Frodo',
-        berechtigungen: ['STANDARD', 'LEHRER'],
+        berechtigungen: ['STANDARD', 'SCHULE'],
     };
 
     const loggedInPrivatveranstalter: User = {
@@ -39,7 +39,7 @@ describe('MkaAuthorizationFacade tests', () => {
     };
 
     const veranstaltertypNone: Veranstaltertyp = 'NONE';
-    const veranstaltertypLehrer: Veranstaltertyp = 'LEHRER';
+    const veranstaltertypSchule: Veranstaltertyp = 'SCHULE';
     const veranstaltertypPrivat: Veranstaltertyp = 'PRIVAT';
 
     const authSessionFacadeMock = {
@@ -90,7 +90,7 @@ describe('MkaAuthorizationFacade tests', () => {
         });
         it.each([
             [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
+            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypSchule }],
             [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
         ] as [TestParameters][])(
             'should return loading when logged in with $testParameter and not-loaded',
@@ -103,7 +103,7 @@ describe('MkaAuthorizationFacade tests', () => {
         );
         it.each([
             [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
+            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypSchule }],
             [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
         ] as [TestParameters][])(
             'should return failed when logged in with $testParameter and failed',
@@ -120,9 +120,9 @@ describe('MkaAuthorizationFacade tests', () => {
 
             expect(facade.startViewState()).toBe('dashboard-privat');
         });
-        it('should return dashboard-lehrer when logged in as lehrer', async () => {
+        it('should return dashboard-lehrer when logged in with berechtigung SCHULE', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInLehrer, authorizationLoadState, veranstaltertypLehrer);
+            await setup(loggedInLehrer, authorizationLoadState, veranstaltertypSchule);
 
             expect(facade.startViewState()).toBe('dashboard-lehrer');
         });
@@ -161,7 +161,7 @@ describe('MkaAuthorizationFacade tests', () => {
     describe('userLoggedOut tests', () => {
         it.each([
             [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
+            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypSchule }],
             [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
         ] as [TestParameters][])(
             'should dispatch userLoggedOut-Action when userLoggedOut ist called with $testParameter',

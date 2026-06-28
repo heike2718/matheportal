@@ -11,9 +11,9 @@ export function resolveVeranstaltertyp(user: UserWithBerechtigungen | null): Ver
         return VERANSTALTERTYP.privat;
     }
 
-    const berechtigungLehrer: string[] = user.berechtigungen.filter(b => b === 'LEHRER');
+    const berechtigungLehrer: string[] = user.berechtigungen.filter(b => b === 'SCHULE');
     if (berechtigungLehrer.length > 0) {
-        return VERANSTALTERTYP.lehrer;
+        return VERANSTALTERTYP.schule;
     }
 
     return VERANSTALTERTYP.none;

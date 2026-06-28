@@ -15,16 +15,16 @@ describe('mkaAuthorizationFeature tests', () => {
         });
         it('should return the previous state, when unknown action and defined state', () => {
             const state = mkaAuthorizationFeature.reducer(
-                { authorizationLoadState: 'loaded', veranstaltertyp: 'LEHRER' },
+                { authorizationLoadState: 'loaded', veranstaltertyp: 'SCHULE' },
                 unknownAction
             );
             expect(state.authorizationLoadState).toEqual('loaded');
-            expect(state.veranstaltertyp).toEqual('LEHRER');
+            expect(state.veranstaltertyp).toEqual('SCHULE');
         });
     });
 
     describe('mkaAuthorizationLoaded tests', () => {
-        it('should return loaded and lehrer, when initial state and loaded with berechtigung LEHRER', () => {
+        it('should return loaded and schule, when initial state and loaded with berechtigung SCHULE', () => {
             const actualState: MkaAuthorizationState = {
                 authorizationLoadState: 'not-loaded',
                 veranstaltertyp: 'NONE',
@@ -32,14 +32,14 @@ describe('mkaAuthorizationFeature tests', () => {
             const user: User = {
                 anonym: false,
                 fullName: 'Jonny Lehrer',
-                berechtigungen: ['LEHRER'],
+                berechtigungen: ['SCHULE'],
             };
             const state = mkaAuthorizationFeature.reducer(
                 actualState,
                 mkaAuthorizationActions.mkaAuthorizationLoaded({ user })
             );
             expect(state.authorizationLoadState).toEqual('loaded');
-            expect(state.veranstaltertyp).toEqual('LEHRER');
+            expect(state.veranstaltertyp).toEqual('SCHULE');
         });
         it('should return loaded and privat, when initial state and loaded with berechtigung PRIVAT', () => {
             const actualState: MkaAuthorizationState = {
@@ -82,9 +82,9 @@ describe('mkaAuthorizationFeature tests', () => {
             [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'NONE' }],
             [{ authorizationLoadState: 'loaded', veranstaltertyp: 'NONE' }],
             [{ authorizationLoadState: 'failed', veranstaltertyp: 'NONE' }],
-            [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'LEHRER' }],
-            [{ authorizationLoadState: 'loaded', veranstaltertyp: 'LEHRER' }],
-            [{ authorizationLoadState: 'failed', veranstaltertyp: 'LEHRER' }],
+            [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'SCHULE' }],
+            [{ authorizationLoadState: 'loaded', veranstaltertyp: 'SCHULE' }],
+            [{ authorizationLoadState: 'failed', veranstaltertyp: 'SCHULE' }],
             [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'PRIVAT' }],
             [{ authorizationLoadState: 'loaded', veranstaltertyp: 'PRIVAT' }],
             [{ authorizationLoadState: 'failed', veranstaltertyp: 'PRIVAT' }],
@@ -107,9 +107,9 @@ describe('mkaAuthorizationFeature tests', () => {
             [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'NONE' }],
             [{ authorizationLoadState: 'loaded', veranstaltertyp: 'NONE' }],
             [{ authorizationLoadState: 'failed', veranstaltertyp: 'NONE' }],
-            [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'LEHRER' }],
-            [{ authorizationLoadState: 'loaded', veranstaltertyp: 'LEHRER' }],
-            [{ authorizationLoadState: 'failed', veranstaltertyp: 'LEHRER' }],
+            [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'SCHULE' }],
+            [{ authorizationLoadState: 'loaded', veranstaltertyp: 'SCHULE' }],
+            [{ authorizationLoadState: 'failed', veranstaltertyp: 'SCHULE' }],
             [{ authorizationLoadState: 'not-loaded', veranstaltertyp: 'PRIVAT' }],
             [{ authorizationLoadState: 'loaded', veranstaltertyp: 'PRIVAT' }],
             [{ authorizationLoadState: 'failed', veranstaltertyp: 'PRIVAT' }],

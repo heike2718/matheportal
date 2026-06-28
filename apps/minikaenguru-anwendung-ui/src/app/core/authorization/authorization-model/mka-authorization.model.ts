@@ -1,5 +1,5 @@
 export const VERANSTALTERTYP = {
-    lehrer: 'LEHRER',
+    schule: 'SCHULE',
     privat: 'PRIVAT',
     none: 'NONE',
 } as const;

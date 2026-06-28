@@ -273,7 +273,7 @@ describe('AuthEffects', () => {
             const userResponse: User = {
                 anonym: false,
                 fullName: 'Checki',
-                berechtigungen: ['ADMIN', 'LEHRER'],
+                berechtigungen: ['ADMIN', 'SCHULE'],
             };
 
             const idToken = 'test-id-token';
@@ -480,7 +480,7 @@ describe('AuthEffects', () => {
             const userResponse: User = {
                 anonym: false,
                 fullName: 'Checki',
-                berechtigungen: ['ADMIN', 'LEHRER'],
+                berechtigungen: ['ADMIN', 'SCHULE'],
             };
 
             httpServiceMock.reloadSession.mockReturnValue(of(userResponse));

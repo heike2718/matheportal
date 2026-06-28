@@ -29,7 +29,7 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
     readonly #veranstaltertyp = toSignal(this.#veranstalterTyp$, { initialValue: 'NONE' });
     readonly #isLoggedIn = computed(() => !this.#user()?.anonym);
 
-    readonly isLehrer = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.lehrer);
+    readonly isLehrperson = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.schule);
 
     readonly isPrivatveranstalter = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.privat);
 
@@ -52,7 +52,7 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
             return 'dashboard-privat';
         }
 
-        if (this.isLehrer()) {
+        if (this.isLehrperson()) {
             return 'dashboard-lehrer';
         }
 
