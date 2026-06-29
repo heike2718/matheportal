@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.quarkus.security.identity.SecurityIdentity;
 
 import de.mathejungalt.authsessions.api.SessionFacade;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.VeranstalterDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,16 +24,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class VeranstalterEntityAugmentorTest {
+public class WettbewerbsdurchfuehrendeEntityAugmentorTest {
 
     @Mock
-    VeranstalterDao veranstalterDao;
+    WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
 
     @Mock
     SessionFacade sessionFacade;
 
     @InjectMocks
-    VeranstalterEntityAugmentor augmentor;
+    WettbewerbsdurchfuehrenderEntityAugmentor augmentor;
 
     @Test
     void should_throwIllegalStateException_when_sessionId_missing() {
@@ -52,7 +52,7 @@ public class VeranstalterEntityAugmentorTest {
                 () -> assertEquals(
                         "Attribut sessionId fehlt in der SecurityIdentity. SessionIdIdentityProvider pruefen!",
                         exception.getMessage()),
-                () -> verify(veranstalterDao, never()).findByUserUuid(anyString()),
+                () -> verify(wettbewerbsdurchfuehrenderDao, never()).findByUserUuid(anyString()),
                 () -> verify(sessionFacade, never()).augmentSession(anyString(), anySet()),
                 () -> verify(sessionFacade, never()).markSessionAugmentationChecked(anyString()));
     }

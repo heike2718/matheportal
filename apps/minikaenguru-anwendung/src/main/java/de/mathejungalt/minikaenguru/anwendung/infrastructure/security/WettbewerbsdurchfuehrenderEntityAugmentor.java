@@ -12,18 +12,18 @@ import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 
 import de.mathejungalt.authsessions.api.SessionFacade;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.VeranstalterDao;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.VeranstalterEntity;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
 /**
- * VeranstalterEntityAugmentor. Ergänzt die SecurityIdentity um eine Rolle, die dem Typ des Veranstalters entspricht und
- * packt den Typ und die teilnahmekuerzel hinein.
+ * WettbewerbsdurchfuehrenderEntityAugmentor. Ergänzt die SecurityIdentity um eine Rolle, die dem Typ der Berechtigung
+ * für Minikänguru entspricht, und packt den Typ und die teilnahmekuerzel hinein.
  */
 @ApplicationScoped
-public final class VeranstalterEntityAugmentor {
+public final class WettbewerbsdurchfuehrenderEntityAugmentor {
 
     @Inject
-    VeranstalterDao veranstalterDao;
+    WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
 
     @Inject
     SessionFacade sessionFacade;
@@ -43,11 +43,11 @@ public final class VeranstalterEntityAugmentor {
         final QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder(identity);
         final String subject = identity.getPrincipal().getName();
 
-        final Optional<VeranstalterEntity> opt = veranstalterDao.findByUserUuid(subject);
+        final Optional<WettbewerbsdurchfuehrenderEntity> opt = wettbewerbsdurchfuehrenderDao.findByUserUuid(subject);
         if (opt.isPresent()) {
-            final VeranstalterEntity veranstalterEntity = opt.get();
+            final WettbewerbsdurchfuehrenderEntity entity = opt.get();
 
-            final String berechtigung = veranstalterEntity.getTyp().name();
+            final String berechtigung = entity.getTyp().name();
             builder.addRole(berechtigung);
             final Set<String> berechtigungen = new HashSet<>(identity.getRoles());
             berechtigungen.add(berechtigung);

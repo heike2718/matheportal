@@ -10,7 +10,7 @@ paths:
                 - Berechtigungen
             summary: Läd die Minkänguru- Berechtigung eines eingeloggten Users
             description: >
-                Holt die UUID aus der Session selektiert mit dieser den Veranstalter.
+                Holt die UUID aus der Session selektiert mit dieser den Wettbewerbsdurchführenden.
                 Falls es einen gibt, wird die Session um eine Berechtigung erweitert und der
                 zugehörige User wird zurückgegeben
             operationId: loadBerechtigung
@@ -18,7 +18,7 @@ paths:
                 - mpSession: []
             responses:
                 '200':
-                    description: Veranstalter gefunden
+                    description: Zuordnung gefunden
                     content:
                         application/json:
                             schema:
@@ -26,7 +26,116 @@ paths:
                 '401':
                     description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
                 '404':
-                    description: Veranstalter nicht gefunden
+                    description: keine Zuordnung gefunden
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerbsdurchfuehrende/konto:
+        get:
+            tags:
+                - Wettbewerbsdurchfuehrender
+            summary: 'Lesen eines Wettbewerbsdurchführenden'
+            description: 'Ein Wettbewerbsdurchführender mit der uuid aus der session wird gelesen'
+            operationId: loadWettbewerbsdurchfuehrenden
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: Wettbewerbsdurchführender erfolgreich geladen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags:
+                - Wettbewerbsdurchfuehrender
+            summary: 'Anlegen eines Wettbewerbsdurchführenden'
+            description: 'Ein neuer Wettbewerbsdurchführender mit der uuid aus der session wird angelegt'
+            operationId: createWettbewerbsdurchfuehrenden
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/WettbewerbsdurchfuerenderRequest'
+            security:
+                - mpSession: []
+            responses:
+                '201':
+                    description: Wettbewerbsdurchführender erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        put:
+            tags:
+                - Wettbewerbsdurchfuehrender
+            summary: 'Ändern eines Wettbewerbsdurchführenden'
+            description: 'Der Wettbewerbsdurchführende mit der uuid aus der session wird geändert'
+            operationId: updateWettbewerbsdurchfuehrenden
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/WettbewerbsdurchfuerenderRequest'
+            security:
+                - mpSession: []
+            responses:
+                '201':
+                    description: Wettbewerbsdurchführender erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
                 '500':
                     description: Serverfehler
                     content:
@@ -41,22 +150,52 @@ components:
             name: MPSESSIONID
             description: Session-Cookie der Matheportal-Sitzung
     schemas:
-        Veranstalter:
+        Wettbewerbsdurchfuehrungsart:
+            type: string
+            enum:
+                - SCHULE
+                - PRIVAT
+            description: die Art, wie der Wettbewerb durchgeführt wird (als Schule oder privat)
+            example:
+                - SCHULE
+                - PRIVAT
+        ZugangsberechtigungUnterlagen:
+            type: string
+            enum:
+                - DEFAULT
+                - ERTEILT
+                - ENTZOGEN
+            description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
+            example:
+                - DEFAULT
+                - ERTEILT
+                - ENTZOGEN
+        WettbewerbsdurchfuerenderRequest:
             type: object
+            required:
+                - typ
+            description: Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden.
             properties:
-                typ:
+                durchfuehrungsart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
+                newsletter:
+                    type: boolean
+                    description: Flag, ob der Durchführende Newsletter erhalten möchte
+                schule:
                     type: string
-                    enum:
-                        - SCHULE
-                        - PRIVAT
-                    description: Typ des Veranstalters
-                    example:
-                        - SCHULE
-                        - PRIVAT
+                    description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
+        Wettbewerbsdurchfuehrender:
+            type: object
+            description: Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden.
+            properties:
+                durchfuehrungsart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
                 teilnahmenummern:
                     type: array
                     uniqueItems: true
-                    description: Teilnahmenummern sind die Schulkürzel oder das Kürzel eines Privatveranstalters.
+                    description: Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
                     items:
                         type: string
                         pattern: '^[A-Z0-9]*$'
@@ -65,18 +204,10 @@ components:
                         - SSBXQUBN
                 newsletter:
                     type: boolean
-                    description: Flag, ob der Veranstalter Newsletter erhalten möchte
+                    description: Flag, ob der Durchführende Newsletter erhalten möchte
                 zugangsstatusUnterlagen:
-                    type: string
-                    enum:
-                        - DEFAULT
-                        - ERTEILT
-                        - ENTZOGEN
-                    description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
-                    example:
-                        - DEFAULT
-                        - ERTEILT
-                        - ENTZOGEN
+                    type: object
+                    $ref: '#/components/schemas/ZugangsberechtigungUnterlagen'
         User:
             type: object
             required:
@@ -93,7 +224,7 @@ components:
                 berechtigungen:
                     type: array
                     uniqueItems: true
-                    description: Berechtigungen des Benutzers
+                    description: Berechtigungen des Benutzers. Diese werden im gegebenen Kontext aus IAM und den 2 Berechtigungstypen Minikänguru gemerged
                     items:
                         type: string
                         pattern: '^[A-Z]+(_[A-Z]+)*$'

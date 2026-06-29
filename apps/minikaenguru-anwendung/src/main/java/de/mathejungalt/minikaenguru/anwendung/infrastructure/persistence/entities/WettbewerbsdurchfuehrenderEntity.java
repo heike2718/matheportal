@@ -14,7 +14,8 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.Veranstalter;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.ZugangsberechtigungUnterlagen;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,23 +23,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * VeranstalterEntity.
+ * WettbewerbsdurchfuehrenderEntity.
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "veranstalter", schema = "minikaenguru")
+@Table(name = "wettbewerbsdurchfuehrende", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
-        name = VeranstalterEntity.FIND_BY_USER_UUID,
-        query = "select v from VeranstalterEntity v where v.userUuid = :userUuid") })
-public class VeranstalterEntity {
+        name = WettbewerbsdurchfuehrenderEntity.FIND_BY_USER_UUID,
+        query = "select d from WettbewerbsdurchfuehrenderEntity d where d.userUuid = :userUuid") })
+public class WettbewerbsdurchfuehrenderEntity {
 
     /**
      * name dieser NamedQuery.
      */
-    public static final String FIND_BY_USER_UUID = "VeranstalterEntity.FIND_BY_USER_UUID";
+    public static final String FIND_BY_USER_UUID = "WettbewerbsdurchfuehrenderEntity.FIND_BY_USER_UUID";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,14 +50,14 @@ public class VeranstalterEntity {
 
     @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
-    private Veranstalter.TypEnum typ;
+    private Wettbewerbsdurchfuehrungsart typ;
 
     @Column(name = "newsletter")
     private boolean newsletterEmpfaenger;
 
     @Column(name = "zugang_unterlagen", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Veranstalter.ZugangsstatusUnterlagenEnum zugangsberechtigungUnterlagen;
+    private ZugangsberechtigungUnterlagen zugangsberechtigungUnterlagen;
 
     @Column(name = "teilnahmekuerzel", length = 1000)
     private String teilnahmekuerzel;
@@ -72,7 +73,8 @@ public class VeranstalterEntity {
 
     @Override
     public String toString() {
-        return "VeranstalterEntity [id=" + id + ", userUuid=" + userUuid + ", typ=" + typ + ", newsletterEmpfaenger="
-                + newsletterEmpfaenger + ", zugangsberechtigungUnterlagen=" + zugangsberechtigungUnterlagen + "]";
+        return "WettbewerbsdurchfuehrenderEntity [id=" + id + ", userUuid=" + userUuid + ", typ=" + typ
+                + ", newsletterEmpfaenger=" + newsletterEmpfaenger + ", zugangsberechtigungUnterlagen="
+                + zugangsberechtigungUnterlagen + "]";
     }
 }
