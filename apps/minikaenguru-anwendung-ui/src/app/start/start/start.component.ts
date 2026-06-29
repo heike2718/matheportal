@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
 import { GuestInfoComponent } from '../guest-info/guest-info.component';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
-import { DashboardLehrerComponent } from '../../lehrperson/dashboard-lehrer/dashboard-lehrer.component';
-import { DashboardPrivatComponent } from '../../privat/dashboard-privat/dashboard-privat.component';
 import { TeilnahmeartWaehlenDialogComponent } from '../teilnahmeart-waehlen-dialog/teilnahmeart-waehlen-dialog.component';
 import { DialogModule, Dialog } from '@angular/cdk/dialog';
 import { GewaehlteTeilnahmeart } from '../teilnahmeart-waehlen-dialog/teilnahmeart-vaehlen-dialog.model';
 import { take, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { DashboardLehrpersonComponent } from '../../lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
+import { DashboardPrivatpersonComponent } from '../../privatperson/dashboard-privatperson/dashboard-privatperson.component';
 
 @Component({
     selector: 'mka-start',
-    imports: [GuestInfoComponent, DashboardLehrerComponent, DashboardPrivatComponent, DialogModule],
+    imports: [GuestInfoComponent, DashboardLehrpersonComponent, DashboardPrivatpersonComponent, DialogModule],
     templateUrl: './start.component.html',
     styleUrl: './start.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

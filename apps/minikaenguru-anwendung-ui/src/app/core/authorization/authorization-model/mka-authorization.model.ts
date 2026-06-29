@@ -14,8 +14,8 @@ export type StartViewState =
     | 'loading'
     | 'failed'
     | 'guest'
-    | 'dashboard-privat'
-    | 'dashboard-lehrer'
+    | 'dashboard-privatperson'
+    | 'dashboard-lehrperson'
     | 'wettbewerbsdurchfuehrenden-anlegen';
 
 export const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';

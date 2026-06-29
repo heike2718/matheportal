@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardPrivatComponent } from './dashboard-privat.component';
+import { DashboardPrivatpersonComponent } from './dashboard-privatperson.component';
 
 describe('DashboardPrivatComponent', () => {
-    let component: DashboardPrivatComponent;
-    let fixture: ComponentFixture<DashboardPrivatComponent>;
+    let component: DashboardPrivatpersonComponent;
+    let fixture: ComponentFixture<DashboardPrivatpersonComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [DashboardPrivatComponent],
+            imports: [DashboardPrivatpersonComponent],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(DashboardPrivatComponent);
+        fixture = TestBed.createComponent(DashboardPrivatpersonComponent);
         component = fixture.componentInstance;
         await fixture.whenStable();
     });

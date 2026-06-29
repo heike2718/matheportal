@@ -116,17 +116,17 @@ describe('MkaAuthorizationFacade tests', () => {
                 expect(facade.startViewState()).toBe('failed');
             }
         );
-        it('should return dashboard-privat when logged in as Privatperson', async () => {
+        it('should return dashboard-privatperson when logged in as Privatperson', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
             await setup(loggedInPrivatperson, authorizationLoadState, berechtigungstypPrivat);
 
-            expect(facade.startViewState()).toBe('dashboard-privat');
+            expect(facade.startViewState()).toBe('dashboard-privatperson');
         });
-        it('should return dashboard-lehrer when logged in with berechtigung SCHULE', async () => {
+        it('should return dashboard-lehrperson when logged in with berechtigung SCHULE', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
             await setup(loggedInLehrer, authorizationLoadState, berechtigungstypSchule);
 
-            expect(facade.startViewState()).toBe('dashboard-lehrer');
+            expect(facade.startViewState()).toBe('dashboard-lehrperson');
         });
         it('should return wettbewerbsdurchfuehrenden-anlegen when logged in as standarduser', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';

@@ -49,11 +49,11 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
         }
 
         if (this.isPrivatveranstalter()) {
-            return 'dashboard-privat';
+            return 'dashboard-privatperson';
         }
 
         if (this.isLehrperson()) {
-            return 'dashboard-lehrer';
+            return 'dashboard-lehrperson';
         }
 
         return 'wettbewerbsdurchfuehrenden-anlegen';

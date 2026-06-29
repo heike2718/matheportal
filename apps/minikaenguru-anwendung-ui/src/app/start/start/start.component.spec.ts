@@ -44,8 +44,8 @@ describe('StartComponent tests', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
@@ -58,8 +58,8 @@ describe('StartComponent tests', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
@@ -72,8 +72,8 @@ describe('StartComponent tests', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeTruthy();
@@ -86,8 +86,8 @@ describe('StartComponent tests', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
@@ -95,13 +95,13 @@ describe('StartComponent tests', () => {
     });
 
     describe('lehrer tests', () => {
-        beforeEach(async () => setup('dashboard-lehrer'));
-        it('shows dashboard-lehrer when dashboard-lehrer', () => {
+        beforeEach(async () => setup('dashboard-lehrperson'));
+        it('shows dashboard-lehrperson when dashboard-lehrperson', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
@@ -109,13 +109,13 @@ describe('StartComponent tests', () => {
     });
 
     describe('privatveranstalter tests', () => {
-        beforeEach(async () => setup('dashboard-privat'));
-        it('shows dashboard-privat when dashboard-privat', () => {
+        beforeEach(async () => setup('dashboard-privatperson'));
+        it('shows dashboard-privatperson when dashboard-privatperson', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrer'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privat'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
