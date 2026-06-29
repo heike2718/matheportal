@@ -1,0 +1,43 @@
+<section class="durchfuehrungsart-dialog" aria-labelledby="durchfuehrungsart-dialog-title">
+    <header class="durchfuehrungsart-dialog__header">
+        <h2 id="durchfuehrungsart-dialog-title" class="durchfuehrungsart-dialog__title">Durchführungsart auswählen</h2>
+
+        <p class="durchfuehrungsart-dialog__intro">
+            Sie sind angemeldet, haben aber noch kein Minikängurukonto. Bitte wählen Sie aus, wie Sie Minikänguru nutzen
+            möchten.
+        </p>
+    </header>
+
+    <div class="durchfuehrungsart-dialog__options" aria-label="Durchführungsart">
+        <button
+            type="button"
+            class="durchfuehrungsart-dialog__option"
+            data-testid="mka-durchfuehrungsart-schule"
+            (click)="selectSchule()">
+            <span class="durchfuehrungsart-dialog__option-title">Schule</span>
+            <span class="durchfuehrungsart-dialog__option-text">
+                Sie organisieren den Wettbewerb für eine oder mehrere Klassen einer Schule.
+            </span>
+        </button>
+
+        <button
+            type="button"
+            class="durchfuehrungsart-dialog__option"
+            data-testid="mka-durchfuehrungsart-privat"
+            (click)="selectPrivat()">
+            <span class="durchfuehrungsart-dialog__option-title">Privat</span>
+            <span class="durchfuehrungsart-dialog__option-text">
+                Sie lassen ein oder mehrere Kinder ohne Schule am Wettbewerb teilnehmen.
+            </span>
+        </button>
+
+        <button
+            type="button"
+            class="durchfuehrungsart-dialog__option durchfuehrungsart-dialog__option--secondary"
+            data-testid="mka-durchfuehrungsart-nicht-teilnehmen"
+            (click)="selectNichtTeilnehmen()">
+            <span class="durchfuehrungsart-dialog__option-title">Nicht jetzt</span>
+            <span class="durchfuehrungsart-dialog__option-text"> Es wird kein Minikängurukonto angelegt. </span>
+        </button>
+    </div>
+</section>

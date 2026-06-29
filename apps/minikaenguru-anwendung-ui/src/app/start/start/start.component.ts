@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
 import { GuestInfoComponent } from '../guest-info/guest-info.component';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
-import { TeilnahmeartWaehlenDialogComponent } from '../teilnahmeart-waehlen-dialog/teilnahmeart-waehlen-dialog.component';
 import { DialogModule, Dialog } from '@angular/cdk/dialog';
-import { GewaehlteTeilnahmeart } from '../teilnahmeart-waehlen-dialog/teilnahmeart-vaehlen-dialog.model';
 import { take, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { DashboardLehrpersonComponent } from '../../lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 import { DashboardPrivatpersonComponent } from '../../privatperson/dashboard-privatperson/dashboard-privatperson.component';
+import { GewaehlteDurchfuehrungsart } from '../durchfuehrungsart-waehlen-dialog/durchfuehrungsart-waehlen-dialog.model';
+import { DurchfuehrungsartWaehlenDialogComponent } from '../durchfuehrungsart-waehlen-dialog/durchfuehrungsart-waehlen-dialog.component';
 
 @Component({
     selector: 'mka-start',
@@ -46,26 +46,29 @@ export class StartComponent implements OnInit {
     }
 
     #openDurchfuerendenAnlegenDialog(): void {
-        const dialogRef = this.#dialog.open<GewaehlteTeilnahmeart | undefined>(TeilnahmeartWaehlenDialogComponent, {
-            autoFocus: 'dialog',
-            maxHeight: '90vh',
-        });
+        const dialogRef = this.#dialog.open<GewaehlteDurchfuehrungsart | undefined>(
+            DurchfuehrungsartWaehlenDialogComponent,
+            {
+                autoFocus: 'dialog',
+                maxHeight: '90vh',
+            }
+        );
         dialogRef.closed
             .pipe(
                 take(1),
-                tap(teilnahmeart => {
-                    this.#onTeilnahmeartGewaehlt(teilnahmeart);
+                tap(durchfuehrungsart => {
+                    this.#onDurchfuehrungsartGewaehlt(durchfuehrungsart);
                 })
             )
             .subscribe();
     }
 
-    #onTeilnahmeartGewaehlt(teilnahmeart: GewaehlteTeilnahmeart | undefined): void {
-        if (!teilnahmeart || teilnahmeart === 'nicht_teilnehmen') {
+    #onDurchfuehrungsartGewaehlt(durchfuehrungsart: GewaehlteDurchfuehrungsart | undefined): void {
+        if (!durchfuehrungsart || durchfuehrungsart === 'nicht_durchfuehren') {
             this.#router.navigateByUrl('/minikaenguru-anwendung/guests');
             return;
         } else {
-            console.log('Teilnahmeart=' + teilnahmeart);
+            console.log('Durchführungsart=' + durchfuehrungsart);
         }
     }
 }

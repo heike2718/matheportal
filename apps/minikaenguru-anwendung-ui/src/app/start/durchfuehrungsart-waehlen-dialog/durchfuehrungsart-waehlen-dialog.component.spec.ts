@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TeilnahmeartWaehlenDialogComponent } from './teilnahmeart-waehlen-dialog.component';
 import { DialogRef } from '@angular/cdk/dialog';
+import { DurchfuehrungsartWaehlenDialogComponent } from './durchfuehrungsart-waehlen-dialog.component';
 
-describe('TeilnahmeartWaehlenDialogComponent', () => {
-    let component: TeilnahmeartWaehlenDialogComponent;
-    let fixture: ComponentFixture<TeilnahmeartWaehlenDialogComponent>;
+describe('DurchfuehrungsartWaehlenDialogComponent', () => {
+    let component: DurchfuehrungsartWaehlenDialogComponent;
+    let fixture: ComponentFixture<DurchfuehrungsartWaehlenDialogComponent>;
 
     const dialogRefMock = {};
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [TeilnahmeartWaehlenDialogComponent],
+            imports: [DurchfuehrungsartWaehlenDialogComponent],
             providers: [{ provide: DialogRef, useValue: dialogRefMock }],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(TeilnahmeartWaehlenDialogComponent);
+        fixture = TestBed.createComponent(DurchfuehrungsartWaehlenDialogComponent);
         component = fixture.componentInstance;
         await fixture.whenStable();
     });
