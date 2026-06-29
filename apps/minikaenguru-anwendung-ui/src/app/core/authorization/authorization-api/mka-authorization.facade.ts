@@ -1,7 +1,11 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthorizationLoadState, Veranstaltertyp, VERANSTALTERTYP } from '../authorization-model';
+import {
+    AuthorizationLoadState,
+    MinikaenguruBerechtigungstyp,
+    MINIKAENGURU_BERECHTIGUNGSTYP,
+} from '../authorization-model';
 import { fromMkaAuthorization } from '../authorization-data';
 import { AuthFlowObserver } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
@@ -19,13 +23,15 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
         fromMkaAuthorization.authorizationLoadState
     );
 
-    readonly #veranstalterTyp$: Observable<Veranstaltertyp> = this.#store.select(fromMkaAuthorization.veranstalterTyp);
+    readonly #veranstalterTyp$: Observable<MinikaenguruBerechtigungstyp> = this.#store.select(
+        fromMkaAuthorization.berechtigungstyp
+    );
     readonly #authorizationLoadState = toSignal(this.#authorizationLoadState$, { initialValue: 'not-loaded' });
     readonly #veranstaltertyp = toSignal(this.#veranstalterTyp$, { initialValue: 'NONE' });
 
-    readonly isLehrperson = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.schule);
+    readonly isLehrperson = computed(() => this.#veranstaltertyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
-    readonly isPrivatveranstalter = computed(() => this.#veranstaltertyp() === VERANSTALTERTYP.privat);
+    readonly isPrivatveranstalter = computed(() => this.#veranstaltertyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
         const authorizationState = this.#authorizationLoadState();
@@ -50,7 +56,7 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
             return 'dashboard-lehrer';
         }
 
-        return 'veranstalter-anlegen';
+        return 'wettbewerbsdurchfuehrenden-anlegen';
     });
 
     // eslint-disable-next-line @angular-eslint/prefer-inject

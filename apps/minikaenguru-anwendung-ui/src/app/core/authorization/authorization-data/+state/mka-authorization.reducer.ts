@@ -2,19 +2,19 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import {
     AuthorizationLoadState,
     MKA_AUTHORIZATION_FEATURE_KEY,
-    resolveVeranstaltertyp,
-    Veranstaltertyp,
+    resolveBerechtigungstyp,
+    MinikaenguruBerechtigungstyp,
 } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 
 export interface MkaAuthorizationState {
     readonly authorizationLoadState: AuthorizationLoadState;
-    readonly veranstaltertyp: Veranstaltertyp;
+    readonly berechtigungstyp: MinikaenguruBerechtigungstyp;
 }
 
 const initialMkaAuthorizationState: MkaAuthorizationState = {
     authorizationLoadState: 'not-loaded',
-    veranstaltertyp: 'NONE',
+    berechtigungstyp: 'NONE',
 };
 
 export const mkaAuthorizationFeature = createFeature({
@@ -22,8 +22,8 @@ export const mkaAuthorizationFeature = createFeature({
     reducer: createReducer<MkaAuthorizationState>(
         initialMkaAuthorizationState,
         on(mkaAuthorizationActions.mkaAuthorizationLoaded, (state, action) => {
-            const veranstaltertyp = resolveVeranstaltertyp(action.user);
-            return { ...state, veranstaltertyp: veranstaltertyp, authorizationLoadState: 'loaded' };
+            const berechtigungstyp = resolveBerechtigungstyp(action.user);
+            return { ...state, berechtigungstyp: berechtigungstyp, authorizationLoadState: 'loaded' };
         }),
         on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };

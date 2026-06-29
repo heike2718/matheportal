@@ -3,10 +3,10 @@ import { mkaAuthorizationFeature } from './mka-authorization.reducer';
 
 const { selectMkaAuthorizationState } = mkaAuthorizationFeature;
 
-const veranstalterTyp = createSelector(selectMkaAuthorizationState, state => state.veranstaltertyp);
+const berechtigungstyp = createSelector(selectMkaAuthorizationState, state => state.berechtigungstyp);
 const authorizationLoadState = createSelector(selectMkaAuthorizationState, state => state.authorizationLoadState);
 
 export const fromMkaAuthorization = {
-    veranstalterTyp,
+    berechtigungstyp: berechtigungstyp,
     authorizationLoadState,
 };

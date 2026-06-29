@@ -20,24 +20,24 @@ export class StartComponent implements OnInit {
     readonly mkaAuthorizationFacade = inject(MkaAuthorizationFacade);
 
     #dialog = inject(Dialog);
-    #veranstalterAnlegenDialogOpened = false;
+    #durchfuehrendenAnlegenDialogOpened = false;
     #router = inject(Router);
 
     constructor() {
         effect(() => {
             const viewState = this.mkaAuthorizationFacade.startViewState();
 
-            if (viewState !== 'veranstalter-anlegen') {
-                this.#veranstalterAnlegenDialogOpened = false;
+            if (viewState !== 'wettbewerbsdurchfuehrenden-anlegen') {
+                this.#durchfuehrendenAnlegenDialogOpened = false;
                 return;
             }
 
-            if (this.#veranstalterAnlegenDialogOpened) {
+            if (this.#durchfuehrendenAnlegenDialogOpened) {
                 return;
             }
 
-            this.#veranstalterAnlegenDialogOpened = true;
-            this.#openVeranstalterAnlegenDialog();
+            this.#durchfuehrendenAnlegenDialogOpened = true;
+            this.#openDurchfuerendenAnlegenDialog();
         });
     }
 
@@ -45,7 +45,7 @@ export class StartComponent implements OnInit {
         this.mkaAuthorizationFacade.ensureAuthorizationLoaded();
     }
 
-    #openVeranstalterAnlegenDialog(): void {
+    #openDurchfuerendenAnlegenDialog(): void {
         const dialogRef = this.#dialog.open<GewaehlteTeilnahmeart | undefined>(TeilnahmeartWaehlenDialogComponent, {
             autoFocus: 'dialog',
             maxHeight: '90vh',

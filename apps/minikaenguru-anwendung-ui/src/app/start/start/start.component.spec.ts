@@ -81,7 +81,7 @@ describe('StartComponent tests', () => {
     });
 
     describe('standard user tests', () => {
-        beforeEach(async () => setup('veranstalter-anlegen'));
+        beforeEach(async () => setup('wettbewerbsdurchfuehrenden-anlegen'));
         it('shows mka-standarduser when veranstalter-anlegen', () => {
             fixture.detectChanges();
 
