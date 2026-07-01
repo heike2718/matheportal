@@ -3,7 +3,7 @@ import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+
 import {
     AuthorizationLoadState,
     MINIKAENGURU_BERECHTIGUNGSTYP,
@@ -11,6 +11,7 @@ import {
 } from '../authorization-model';
 import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 interface TestParameters {
     readonly user: User;
@@ -49,10 +50,6 @@ describe('MkaAuthorizationFacade tests', () => {
         isLoggedIn: computed(() => false),
     };
 
-    const authFlowFacadeMock = {
-        registerObserver: vi.fn(),
-    };
-
     async function setup(
         user: User,
         authorizationLoadState: AuthorizationLoadState,
@@ -65,7 +62,6 @@ describe('MkaAuthorizationFacade tests', () => {
             providers: [
                 MkaAuthorizationFacade,
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
-                { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideMockStore({
                     selectors: [
                         {
@@ -146,7 +142,6 @@ describe('MkaAuthorizationFacade tests', () => {
             async authorizationLoadState => {
                 await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
 
-                expect(authFlowFacadeMock.registerObserver).toHaveBeenCalled();
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).toHaveBeenCalledTimes(1);
