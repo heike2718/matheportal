@@ -7,6 +7,7 @@ import { StartViewState } from '../../core/authorization/authorization-model';
 import { provideRouter } from '@angular/router';
 import { anonymousUser } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 
 describe('StartComponent tests', () => {
     let fixture: ComponentFixture<StartComponent>;
@@ -14,6 +15,10 @@ describe('StartComponent tests', () => {
     const mkaAuthorizationFacadeMock = {
         startViewState: computed(() => 'guest'),
         ensureAuthorizationLoaded: vi.fn(),
+    };
+
+    const wetbbewerbsdurchfuehrendeFacadeMock = {
+        privatpersonAnlegen: vi.fn(),
     };
 
     const authSessionFacadeMock = {
@@ -28,6 +33,7 @@ describe('StartComponent tests', () => {
             providers: [
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
                 { provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock },
+                { provide: WettbewerbsdurchfuehrendeFacade, useValue: wetbbewerbsdurchfuehrendeFacadeMock },
                 provideRouter([{ path: 'minikaenguru-anwendung/guest', component: DummyRouteComponent }]),
             ],
         }).compileComponents();
@@ -45,7 +51,7 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
@@ -59,7 +65,7 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
@@ -73,12 +79,12 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeTruthy();
         });
     });
 
-    describe('standard user tests', () => {
+    describe('needs-wettbewerbdurchfuehrenden tests', () => {
         beforeEach(async () => setup('needs-wettbewerbsdurchfuehrenden'));
         it('shows mka-standarduser when veranstalter-anlegen', () => {
             fixture.detectChanges();
@@ -87,7 +93,7 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeTruthy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
@@ -101,7 +107,7 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });
@@ -115,7 +121,7 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-standarduser"]'))).toBeFalsy();
+            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
         });
     });

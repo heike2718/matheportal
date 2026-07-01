@@ -12,9 +12,8 @@
             <mka-dashboard-lehrperson></mka-dashboard-lehrperson>
         }
         @case ('needs-wettbewerbsdurchfuehrenden') {
-            <div data-testid="mka-standarduser">
-                <p>Bitte wählen Sie aus, wie Sie den Wettbewerb durchführen möchten.</p>
-            </div>
+            <mka-durchfuehrungsart-waehlen
+                (durchfuehrungsartGewaehlt)="handleDurchfuehrungsartGewaehlt($event)"></mka-durchfuehrungsart-waehlen>
         }
         @case ('guest') {
             <mka-guest-info></mka-guest-info>

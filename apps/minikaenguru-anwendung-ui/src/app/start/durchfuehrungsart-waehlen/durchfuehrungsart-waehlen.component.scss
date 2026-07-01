@@ -3,21 +3,9 @@
 
 :host {
     display: block;
-    box-sizing: border-box;
-    width: min(92vw, 40rem);
-    max-width: 100%;
-    max-height: 90vh;
-    overflow: auto;
-    background-color: mp-theme.$mp-color-surface;
-    border-radius: mp-theme.$mp-radius-l;
-    box-shadow: mp-theme.$mp-shadow-2;
-
-    &:focus {
-        outline: none;
-    }
 }
 
-.durchfuehrungsart-dialog {
+.durchfuehrungsart {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -45,9 +33,15 @@
         line-height: mp-theme.$mp-line-height-normal;
     }
 
+    &__hint {
+        margin: 0;
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+    }
+
     &__options {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
         gap: mp-theme.$mp-space-3;
     }
 
@@ -85,10 +79,6 @@
         &:active {
             transform: translateY(1px);
         }
-
-        &--secondary {
-            background-color: mp-theme.$mp-color-surface-subtle;
-        }
     }
 
     &__option-title {
@@ -99,19 +89,21 @@
     }
 
     &__option-text {
-        font-size: mp-theme.$mp-font-size-s;
+        font-size: mp-theme.$mp-font-size-m;
         line-height: mp-theme.$mp-line-height-normal;
     }
 }
 
 @media (width <= 480px) {
     :host {
-        width: 92vw;
+        display: block;
+        width: min(92vw, 100%);
         max-height: 90vh;
+        margin-inline: auto;
         border-radius: mp-theme.$mp-radius-m;
     }
 
-    .durchfuehrungsart-dialog {
+    .durchfuehrungsart {
         gap: mp-theme.$mp-space-4;
         padding: mp-theme.$mp-space-4;
 
@@ -120,6 +112,10 @@
         }
 
         &__intro {
+            font-size: mp-theme.$mp-font-size-s;
+        }
+
+        &__hint {
             font-size: mp-theme.$mp-font-size-s;
         }
 
