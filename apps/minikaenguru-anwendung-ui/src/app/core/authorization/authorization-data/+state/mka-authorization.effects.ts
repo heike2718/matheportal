@@ -10,9 +10,7 @@ import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class MkaAuthorizationEffects {
     #actions = inject(Actions);
     #messagePublisher = inject(MESSAGE_PUBLISHER);

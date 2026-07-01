@@ -132,7 +132,7 @@ describe('MkaAuthorizationFacade tests', () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
             await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
 
-            expect(facade.startViewState()).toBe('wettbewerbsdurchfuehrenden-anlegen');
+            expect(facade.startViewState()).toBe('needs-wettbewerbsdurchfuehrenden');
         });
     });
 

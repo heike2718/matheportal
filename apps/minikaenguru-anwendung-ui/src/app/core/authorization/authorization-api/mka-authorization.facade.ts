@@ -55,7 +55,7 @@ export class MkaAuthorizationFacade {
             return 'dashboard-lehrperson';
         }
 
-        return 'wettbewerbsdurchfuehrenden-anlegen';
+        return 'needs-wettbewerbsdurchfuehrenden';
     });
 
     ensureAuthorizationLoaded(): void {

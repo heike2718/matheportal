@@ -6,7 +6,7 @@ import {
 import { Observable, of } from 'rxjs';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
-export class WettbewerbsdurchfuehrendeHttpSerice {
+export class WettbewerbsdurchfuehrendeHttpService {
     /**
      * Legt einen neuen Wettbewerbsdurchführenden an.
      * @param requestDto WettbewerbsdurchfuerenderRequest
@@ -15,6 +15,7 @@ export class WettbewerbsdurchfuehrendeHttpSerice {
     public createWettbewerbsdurchfuehrenden(
         requestDto: WettbewerbsdurchfuerenderRequest
     ): Observable<WettbewerbsdurchfuehrenderDto> {
+        console.log(JSON.stringify(requestDto));
         const result: WettbewerbsdurchfuehrenderDto = {
             durchfuehrungsart: 'PRIVAT',
             newsletter: false,

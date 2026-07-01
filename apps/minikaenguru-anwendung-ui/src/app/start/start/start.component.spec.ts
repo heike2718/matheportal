@@ -9,7 +9,6 @@ import { anonymousUser } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('StartComponent tests', () => {
-    let component: StartComponent;
     let fixture: ComponentFixture<StartComponent>;
 
     const mkaAuthorizationFacadeMock = {
@@ -34,7 +33,6 @@ describe('StartComponent tests', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
-        component = fixture.componentInstance;
     }
 
     describe('logged out tests', () => {
@@ -81,7 +79,7 @@ describe('StartComponent tests', () => {
     });
 
     describe('standard user tests', () => {
-        beforeEach(async () => setup('wettbewerbsdurchfuehrenden-anlegen'));
+        beforeEach(async () => setup('needs-wettbewerbsdurchfuehrenden'));
         it('shows mka-standarduser when veranstalter-anlegen', () => {
             fixture.detectChanges();
 

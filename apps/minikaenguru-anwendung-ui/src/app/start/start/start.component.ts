@@ -27,7 +27,7 @@ export class StartComponent implements OnInit {
         effect(() => {
             const viewState = this.mkaAuthorizationFacade.startViewState();
 
-            if (viewState !== 'wettbewerbsdurchfuehrenden-anlegen') {
+            if (viewState !== 'needs-wettbewerbsdurchfuehrenden') {
                 this.#durchfuehrendenAnlegenDialogOpened = false;
                 return;
             }

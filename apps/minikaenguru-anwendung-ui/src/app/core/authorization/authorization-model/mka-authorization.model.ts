@@ -17,6 +17,6 @@ export type StartViewState =
     | 'guest'
     | 'dashboard-privatperson'
     | 'dashboard-lehrperson'
-    | 'wettbewerbsdurchfuehrenden-anlegen';
+    | 'needs-wettbewerbsdurchfuehrenden';
 
 export const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';

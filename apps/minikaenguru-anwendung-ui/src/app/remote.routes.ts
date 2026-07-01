@@ -5,6 +5,8 @@ import { mkaAuthorizationDataProvider } from './core/authorization/authorization
 import { minikaenguruAnwendungConfiguration } from './config/configuration';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from './config/minikaenguru-anwendung.configuration';
 import { GuestInfoComponent } from './start/guest-info/guest-info.component';
+import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
+import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -19,6 +21,10 @@ export const remoteRoutes: Routes = [
                 path: 'guests',
                 component: GuestInfoComponent,
             },
+            {
+                path: 'dashboard-privatperson',
+                component: DashboardPrivatpersonComponent,
+            },
         ],
         providers: [
             {
@@ -26,6 +32,7 @@ export const remoteRoutes: Routes = [
                 useValue: minikaenguruAnwendungConfiguration,
             },
             ...mkaAuthorizationDataProvider,
+            ...wettbewerbsdurchfuehrendeDataProvider,
         ],
     },
 ];
