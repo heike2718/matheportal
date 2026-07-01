@@ -19,7 +19,7 @@ describe('mapDto tests', () => {
         [
             {
                 durchfuehrungsart: 'SCHULE',
-                zugangsberechtigungUnterlagen: 'DEFAULT',
+                zugangsberechtigungUnterlagen: 'STANDARD',
                 expectedDurchfuehrungsart: DURCHFUEHRUNGSART.schule,
                 expectedZugangsberechtigung: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
             },
@@ -27,7 +27,7 @@ describe('mapDto tests', () => {
         [
             {
                 durchfuehrungsart: 'PRIVAT',
-                zugangsberechtigungUnterlagen: 'DEFAULT',
+                zugangsberechtigungUnterlagen: 'STANDARD',
                 expectedDurchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 expectedZugangsberechtigung: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
             },
@@ -86,7 +86,7 @@ describe('mapDto tests', () => {
         [
             {
                 durchfuehrungsart: 'SCHULE',
-                zugangsberechtigungUnterlagen: 'DEFAULT',
+                zugangsberechtigungUnterlagen: 'STANDARD',
                 expectedDurchfuehrungsart: DURCHFUEHRUNGSART.schule,
                 expectedZugangsberechtigung: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
             },
@@ -94,7 +94,7 @@ describe('mapDto tests', () => {
         [
             {
                 durchfuehrungsart: 'PRIVAT',
-                zugangsberechtigungUnterlagen: 'DEFAULT',
+                zugangsberechtigungUnterlagen: 'STANDARD',
                 expectedDurchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 expectedZugangsberechtigung: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
             },

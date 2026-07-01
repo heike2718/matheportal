@@ -162,12 +162,12 @@ components:
         ZugangsberechtigungUnterlagen:
             type: string
             enum:
-                - DEFAULT
+                - STANDARD
                 - ERTEILT
                 - ENTZOGEN
             description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
             example:
-                - DEFAULT
+                - STANDARD
                 - ERTEILT
                 - ENTZOGEN
         WettbewerbsdurchfuerenderRequest:

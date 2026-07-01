@@ -19,7 +19,7 @@ export class WettbewerbsdurchfuehrendeHttpSerice {
             durchfuehrungsart: 'PRIVAT',
             newsletter: false,
             teilnahmenummern: ['T432523627'],
-            zugangsberechtigungUnterlagen: 'DEFAULT',
+            zugangsberechtigungUnterlagen: 'STANDARD',
         };
 
         return of(result);

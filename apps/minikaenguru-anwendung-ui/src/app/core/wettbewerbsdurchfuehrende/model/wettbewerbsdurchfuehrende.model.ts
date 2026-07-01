@@ -6,7 +6,7 @@ export enum DURCHFUEHRUNGSART {
 export type Durchfuehrungsart = (typeof DURCHFUEHRUNGSART)[keyof typeof DURCHFUEHRUNGSART];
 
 export enum ZUGANGSBERECHTIGUNG_UNTERLAGEN {
-    standard = 'DEFAULT',
+    standard = 'STANDARD',
     erteilt = 'ERTEILT',
     entzogen = 'ENTZOGEN',
 }

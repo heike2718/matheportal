@@ -40,7 +40,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: true,
                 teilnahmenummern: ['Z98765432', 'A1234567'],
-                zugangsberechtigungUnterlagen: 'DEFAULT',
+                zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
