@@ -5,7 +5,7 @@ import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
 import { User } from '@matheportal/auth-model';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthSessionFacade } from '@matheportal/auth-api';

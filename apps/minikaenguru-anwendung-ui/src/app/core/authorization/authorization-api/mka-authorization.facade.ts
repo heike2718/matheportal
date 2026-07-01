@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
     AuthorizationLoadState,
@@ -7,15 +7,12 @@ import {
     MINIKAENGURU_BERECHTIGUNGSTYP,
 } from '../authorization-model';
 import { fromMkaAuthorization } from '../authorization-data';
-import { AuthFlowObserver } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { mkaAuthorizationActions } from '../authorization-data/+state/mka-authorization.actions';
 import { Observable } from 'rxjs';
 
-@Injectable({
-    providedIn: 'root',
-})
-export class MkaAuthorizationFacade implements AuthFlowObserver {
+@Injectable() // kein providedIn: 'root', aber mittels mkaAuthorizationDataProvider in den remote.routes.ts im remote-Kontext providen
+export class MkaAuthorizationFacade {
     readonly #authSessionFacade = inject(AuthSessionFacade);
     readonly #store = inject(Store);
 
@@ -23,15 +20,17 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
         fromMkaAuthorization.authorizationLoadState
     );
 
-    readonly #veranstalterTyp$: Observable<MinikaenguruBerechtigungstyp> = this.#store.select(
+    readonly #berechtigungstyp$: Observable<MinikaenguruBerechtigungstyp> = this.#store.select(
         fromMkaAuthorization.berechtigungstyp
     );
     readonly #authorizationLoadState = toSignal(this.#authorizationLoadState$, { initialValue: 'not-loaded' });
-    readonly #veranstaltertyp = toSignal(this.#veranstalterTyp$, { initialValue: 'NONE' });
+    readonly #berechtigungstyp = toSignal(this.#berechtigungstyp$, {
+        initialValue: MINIKAENGURU_BERECHTIGUNGSTYP.none,
+    });
 
-    readonly isLehrperson = computed(() => this.#veranstaltertyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
+    readonly isLehrperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
-    readonly isPrivatveranstalter = computed(() => this.#veranstaltertyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+    readonly isPrivatveranstalter = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
         const authorizationState = this.#authorizationLoadState();
@@ -59,22 +58,9 @@ export class MkaAuthorizationFacade implements AuthFlowObserver {
         return 'wettbewerbsdurchfuehrenden-anlegen';
     });
 
-    // eslint-disable-next-line @angular-eslint/prefer-inject
-    constructor(private authFlowFacade: AuthFlowFacade) {
-        this.authFlowFacade.registerObserver(this);
-    }
-
     ensureAuthorizationLoaded(): void {
         if (this.#authSessionFacade.isLoggedIn()) {
             this.#store.dispatch(mkaAuthorizationActions.loadMkaAuthorization());
         }
-    }
-
-    getId(): string {
-        return 'MkaAuthorizationFacade';
-    }
-
-    userLoggedOut(): void {
-        this.#store.dispatch(mkaAuthorizationActions.userLoggedOut());
     }
 }

@@ -25,7 +25,7 @@
             "@matheportal/feedback-ui": ["libs/feedback/feedback-ui/src/index.ts"],
             "@matheportal/error-handling-api": ["libs/error-handling/error-handling-api/src/index.ts"],
             "@matheportal/error-and-feedback": ["libs/composition/error-and-feedback/src/index.ts"],
-            "@matheportal/shared-model": ["libs/shared-model/shared-model/src/index.ts"]
+            "@matheportal/shared-utils": ["libs/shared-utils/shared-utils/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

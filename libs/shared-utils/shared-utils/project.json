@@ -1,11 +1,26 @@
 {
-    "name": "shared-model",
+    "name": "shared-utils",
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/shared-model/shared-model/src",
+    "sourceRoot": "libs/shared-utils/shared-utils/src",
     "prefix": "mp",
     "projectType": "library",
-    "tags": ["scope:shared", "type:model"],
+    "tags": ["scope:shared", "type:utils"],
     "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/shared-utils/shared-utils"],
+            "options": {
+                "reportsDirectory": "coverage/libs/shared-utils/shared-utils"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/shared-utils/shared-utils"],
+            "options": {
+                "coverage": true,
+                "reportsDirectory": "coverage/libs/shared-utils/shared-utils"
+            }
+        },
         "tech-format": {
             "executor": "nx:run-commands",
             "options": {

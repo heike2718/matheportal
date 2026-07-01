@@ -7,6 +7,5 @@ export const mkaAuthorizationActions = createActionGroup({
         loadMkaAuthorization: emptyProps(),
         mkaAuthorizationLoaded: props<{ user: User }>(),
         loadMkaAuthorizationFailed: emptyProps(),
-        userLoggedOut: emptyProps(),
     },
 });

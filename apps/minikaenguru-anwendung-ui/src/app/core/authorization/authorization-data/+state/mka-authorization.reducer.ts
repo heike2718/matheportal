@@ -4,8 +4,10 @@ import {
     MKA_AUTHORIZATION_FEATURE_KEY,
     resolveBerechtigungstyp,
     MinikaenguruBerechtigungstyp,
+    MINIKAENGURU_BERECHTIGUNGSTYP,
 } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { userLoggedOut } from '@matheportal/auth-api';
 
 export interface MkaAuthorizationState {
     readonly authorizationLoadState: AuthorizationLoadState;
@@ -14,7 +16,7 @@ export interface MkaAuthorizationState {
 
 const initialMkaAuthorizationState: MkaAuthorizationState = {
     authorizationLoadState: 'not-loaded',
-    berechtigungstyp: 'NONE',
+    berechtigungstyp: MINIKAENGURU_BERECHTIGUNGSTYP.none,
 };
 
 export const mkaAuthorizationFeature = createFeature({
@@ -28,8 +30,6 @@ export const mkaAuthorizationFeature = createFeature({
         on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };
         }),
-        on(mkaAuthorizationActions.userLoggedOut, () => {
-            return initialMkaAuthorizationState;
-        })
+        on(userLoggedOut, () => initialMkaAuthorizationState)
     ),
 });

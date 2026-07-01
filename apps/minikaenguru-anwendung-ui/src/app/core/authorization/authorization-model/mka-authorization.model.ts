@@ -1,11 +1,12 @@
-export const MINIKAENGURU_BERECHTIGUNGSTYP = {
-    schule: 'SCHULE',
-    privat: 'PRIVAT',
-    none: 'NONE',
-} as const;
+export enum MINIKAENGURU_BERECHTIGUNGSTYP {
+    schule = 'SCHULE',
+    privat = 'PRIVAT',
+    none = 'NONE',
+}
 
-export type MinikaenguruBerechtigungstyp =
-    (typeof MINIKAENGURU_BERECHTIGUNGSTYP)[keyof typeof MINIKAENGURU_BERECHTIGUNGSTYP];
+export type MinikaenguruBerechtigungstypKeys = keyof typeof MINIKAENGURU_BERECHTIGUNGSTYP;
+
+export type MinikaenguruBerechtigungstyp = (typeof MINIKAENGURU_BERECHTIGUNGSTYP)[MinikaenguruBerechtigungstypKeys];
 
 export type AuthorizationLoadState = 'not-loaded' | 'loaded' | 'failed';
 

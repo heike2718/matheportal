@@ -4,7 +4,11 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { AuthorizationLoadState, MinikaenguruBerechtigungstyp } from '../authorization-model';
+import {
+    AuthorizationLoadState,
+    MINIKAENGURU_BERECHTIGUNGSTYP,
+    MinikaenguruBerechtigungstyp,
+} from '../authorization-model';
 import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
 
@@ -36,9 +40,9 @@ describe('MkaAuthorizationFacade tests', () => {
         berechtigungen: ['STANDARD', 'PRIVAT'],
     };
 
-    const berechtigungstypNone: MinikaenguruBerechtigungstyp = 'NONE';
-    const berechtigungstypSchule: MinikaenguruBerechtigungstyp = 'SCHULE';
-    const berechtigungstypPrivat: MinikaenguruBerechtigungstyp = 'PRIVAT';
+    const berechtigungstypNone: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
+    const berechtigungstypSchule: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.schule;
+    const berechtigungstypPrivat: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.privat;
 
     const authSessionFacadeMock = {
         user: computed(() => anonymousUser),
@@ -85,7 +89,7 @@ describe('MkaAuthorizationFacade tests', () => {
     describe('startViewState tests', () => {
         it('should return guest when not logged in', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-            const berechtigungstyp: MinikaenguruBerechtigungstyp = 'NONE';
+            const berechtigungstyp: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
             await setup(anonymousUser, authorizationLoadState, berechtigungstyp);
 
             expect(facade.startViewState()).toBe('guest');
@@ -157,21 +161,6 @@ describe('MkaAuthorizationFacade tests', () => {
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).not.toHaveBeenCalled();
-            }
-        );
-    });
-    describe('userLoggedOut tests', () => {
-        it.each([
-            [{ user: loggedInStandardUser, berechtigungstyptyp: berechtigungstypNone }],
-            [{ user: loggedInLehrer, berechtigungstyp: berechtigungstypSchule }],
-            [{ user: loggedInPrivatperson, berechtigungstyptyp: berechtigungstypPrivat }],
-        ] as [TestParameters][])(
-            'should dispatch userLoggedOut-Action when userLoggedOut ist called with $testParameter',
-            async testParameter => {
-                await setup(testParameter.user, 'loaded', testParameter.berechtigungstyp);
-                facade.userLoggedOut();
-                expect(dispatchSpy).toHaveBeenCalledTimes(1);
-                expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.userLoggedOut());
             }
         );
     });

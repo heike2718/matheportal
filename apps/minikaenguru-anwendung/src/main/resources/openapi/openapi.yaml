@@ -179,9 +179,6 @@ components:
                 durchfuehrungsart:
                     type: object
                     $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                newsletter:
-                    type: boolean
-                    description: Flag, ob der Durchführende Newsletter erhalten möchte
                 schule:
                     type: string
                     description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
@@ -205,7 +202,7 @@ components:
                 newsletter:
                     type: boolean
                     description: Flag, ob der Durchführende Newsletter erhalten möchte
-                zugangsstatusUnterlagen:
+                zugangsberechtigungUnterlagen:
                     type: object
                     $ref: '#/components/schemas/ZugangsberechtigungUnterlagen'
         User:
