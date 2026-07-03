@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table vertraege_adv_texte_migration as 
+create table vertraege_adv_texte_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as 
 select
 UUID as uuid,
 VERSIONSNUMMER as versionsnummer,

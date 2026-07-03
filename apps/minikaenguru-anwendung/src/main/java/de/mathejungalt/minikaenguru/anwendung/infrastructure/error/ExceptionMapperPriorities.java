@@ -11,6 +11,11 @@ public final class ExceptionMapperPriorities {
     public static final int VALIDATION = 1;
 
     /**
+     * für fachliche Dinge wie conflict
+     */
+    public static final int APPLICATION = 100;
+
+    /**
      * für alle anderen RuntimeExceptions.
      */
     public static final int FALLBACK = 1000;

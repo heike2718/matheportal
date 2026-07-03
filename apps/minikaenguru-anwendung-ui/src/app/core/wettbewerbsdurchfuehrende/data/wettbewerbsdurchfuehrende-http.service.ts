@@ -1,12 +1,16 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
     WettbewerbsdurchfuehrenderDto,
     WettbewerbsdurchfuerenderRequest,
 } from '../model/wettbewerbsdurchfuehrende.model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
 export class WettbewerbsdurchfuehrendeHttpService {
+    #config = inject(MINIKAENGURU_ANWENDUNG_CONFIGURATION);
+    #httpClient = inject(HttpClient);
     /**
      * Legt einen neuen Wettbewerbsdurchführenden an.
      * @param requestDto WettbewerbsdurchfuerenderRequest
@@ -16,13 +20,11 @@ export class WettbewerbsdurchfuehrendeHttpService {
         requestDto: WettbewerbsdurchfuerenderRequest
     ): Observable<WettbewerbsdurchfuehrenderDto> {
         console.log(JSON.stringify(requestDto));
-        const result: WettbewerbsdurchfuehrenderDto = {
-            durchfuehrungsart: 'PRIVAT',
-            newsletter: false,
-            teilnahmenummern: ['T432523627'],
-            zugangsberechtigungUnterlagen: 'STANDARD',
-        };
 
-        return of(result);
+        return this.#httpClient.post<WettbewerbsdurchfuehrenderDto>(
+            this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
+            requestDto,
+            { withCredentials: true }
+        );
     }
 }

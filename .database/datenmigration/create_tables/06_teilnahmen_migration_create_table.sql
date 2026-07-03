@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table teilnahmen_migration as
+create table teilnahmen_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as
 select
 WETTBEWERB_UUID as jahr,
 TEILNAHMEART as teilnahmeart,

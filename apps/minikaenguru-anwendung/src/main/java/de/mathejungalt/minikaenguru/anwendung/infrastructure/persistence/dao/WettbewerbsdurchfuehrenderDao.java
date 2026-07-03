@@ -6,6 +6,7 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
 
@@ -48,5 +49,22 @@ public class WettbewerbsdurchfuehrenderDao {
         log.info("Anzahl Treffer = {}", resultList.size());
 
         return resultList.stream().findFirst();
+    }
+
+    /**
+     * Legt neuen Eintrag an oder aktualisiert existierenden.
+     *
+     * @param entity WettbewerbsdurchfuehrenderEntity
+     * @return WettbewerbsdurchfuehrenderEntity
+     */
+    @Transactional
+    public WettbewerbsdurchfuehrenderEntity saveEntity(final WettbewerbsdurchfuehrenderEntity entity) {
+
+        if (entity.getId() == null) {
+            this.entityManager.persist(entity);
+            return entity;
+        } else {
+            return this.entityManager.merge(entity);
+        }
     }
 }

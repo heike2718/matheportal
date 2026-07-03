@@ -41,6 +41,11 @@ public class WettbewerbsdurchfuehrenderEntity {
      */
     public static final String FIND_BY_USER_UUID = "WettbewerbsdurchfuehrenderEntity.FIND_BY_USER_UUID";
 
+    /**
+     * Name des uk für die Spalte privatkuerzel
+     */
+    public static final String UK_NAME_PRIVATKUERZEL = "uk_wettbewerbsdurchfuehrende_privatkuerzel";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // NOPMD id ist nun mal richtig hier.
@@ -59,8 +64,11 @@ public class WettbewerbsdurchfuehrenderEntity {
     @Enumerated(EnumType.STRING)
     private ZugangsberechtigungUnterlagen zugangsberechtigungUnterlagen;
 
-    @Column(name = "teilnahmekuerzel", length = 1000)
-    private String teilnahmekuerzel;
+    @Column(name = "schulkuerzel", length = 1000)
+    private String schulkuerzel;
+
+    @Column(name = "privatkuerzel", length = 10)
+    private String privatkuerzel;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
