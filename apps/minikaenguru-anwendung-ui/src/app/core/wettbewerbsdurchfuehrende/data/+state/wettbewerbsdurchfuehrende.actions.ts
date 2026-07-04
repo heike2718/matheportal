@@ -9,6 +9,6 @@ export const wettbewerbsdurchfuehrendeActions = createActionGroup({
     events: {
         durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuerenderRequest }>(),
         durchfuehrenderAngelegt: props<{ responseDto: WettbewerbsdurchfuehrenderDto }>(),
-        durchfuehrendenAnlegenFailed: emptyProps(),
+        durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
     },
 });

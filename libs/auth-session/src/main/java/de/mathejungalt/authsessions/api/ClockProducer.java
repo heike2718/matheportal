@@ -1,4 +1,4 @@
-package de.mathejungalt.authsessions.internal;
+package de.mathejungalt.authsessions.api;
 
 import java.time.Clock;
 import java.time.ZoneId;

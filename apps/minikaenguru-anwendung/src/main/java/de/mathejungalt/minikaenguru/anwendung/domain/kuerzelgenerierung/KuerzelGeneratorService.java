@@ -22,7 +22,7 @@ public class KuerzelGeneratorService {
 
     private static final int LENGTH_PRIVATTEILNAHMEN = 10;
 
-    private static final int MAX_RETRIES = 5;
+    private static final int MAX_GENERATE_RETRIES = 5;
 
     /**
      * Generiert ein Kürzel für einen Ort oder eine Schule, den es noch nicht gibt. Diese sind immer 8stellig.
@@ -51,7 +51,7 @@ public class KuerzelGeneratorService {
             return kuerzel;
         }
 
-        for (int attemtCount = 1; attemtCount <= MAX_RETRIES; attemtCount++) {
+        for (int attemtCount = 1; attemtCount <= MAX_GENERATE_RETRIES; attemtCount++) {
 
             kuerzel = this.kuerzelGenerator.generateKuerzel(length);
             entity = kuerzelDao.findKuerzelById(kuerzel);

@@ -10,9 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.KuerzelDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.KuerzelEntity;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +41,11 @@ public class KuerzelGeneratorServiceTest {
         final String result = service.generatePrivatteilnahmekuerzel();
 
         // assert
-        assertEquals(expectedValue, result);
+        ;
+
+        assertAll(() -> assertEquals(expectedValue, result),
+                () -> verify(kuerzelGenerator, times(1)).generateKuerzel(10),
+                () -> verify(kuerzelDao, times(1)).findKuerzelById(anyString()));
 
     }
 
@@ -66,7 +74,11 @@ public class KuerzelGeneratorServiceTest {
         final String result = service.generatePrivatteilnahmekuerzel();
 
         // assert
-        assertEquals(kuerzelFuenf, result);
+        ;
+
+        assertAll(() -> assertEquals(kuerzelFuenf, result),
+                () -> verify(kuerzelGenerator, times(5)).generateKuerzel(10),
+                () -> verify(kuerzelDao, times(5)).findKuerzelById(anyString()));
 
     }
 
@@ -97,8 +109,7 @@ public class KuerzelGeneratorServiceTest {
         final String result = service.generatePrivatteilnahmekuerzel();
 
         // assert
-        assertNull(result);
-
+        assertAll(() -> assertNull(result), () -> verify(kuerzelGenerator, times(6)).generateKuerzel(10),
+                () -> verify(kuerzelDao, times(6)).findKuerzelById(anyString()));
     }
-
 }

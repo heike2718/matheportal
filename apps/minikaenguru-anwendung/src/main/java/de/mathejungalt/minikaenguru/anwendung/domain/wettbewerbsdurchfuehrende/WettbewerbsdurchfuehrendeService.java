@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class WettbewerbsdurchfuehrendeService {
 
-    private static final int MAX_RETRIES = 5;
+    private static final int MAX_SAVE_RETRIES = 5;
 
     @Inject
     WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
@@ -81,7 +81,7 @@ public class WettbewerbsdurchfuehrendeService {
                     "Dieser Benutzer ist bereits als Wettbewerbsdurchführender registriert");
         }
 
-        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        for (int attempt = 1; attempt <= MAX_SAVE_RETRIES; attempt++) {
             try {
 
                 final WettbewerbsdurchfuehrenderEntity entity = createWettbewerbsdurchfuehrendePrivatEntity();
@@ -102,11 +102,11 @@ public class WettbewerbsdurchfuehrendeService {
                 }
             }
         }
-        throw new MinikaenguruRuntimeException("Konnte nach " + MAX_RETRIES
-                + " kein eindeutiges privatkuerzel für wettbewerbsdurchfuegernden generieren, gebe auf");
+        throw new MinikaenguruRuntimeException("Konnte nach " + MAX_SAVE_RETRIES
+                + " Versuchen kein eindeutiges privatkuerzel für wettbewerbsdurchfuegernden generieren, gebe auf");
     }
 
-    private Wettbewerbsdurchfuehrender mapToWettbewerbsdurchfuehrender(final WettbewerbsdurchfuehrenderEntity result) {
+    Wettbewerbsdurchfuehrender mapToWettbewerbsdurchfuehrender(final WettbewerbsdurchfuehrenderEntity result) {
 
         final Set<String> teilnahmenummern = new HashSet<>();
 
@@ -129,9 +129,14 @@ public class WettbewerbsdurchfuehrendeService {
                 .newsletter(result.isNewsletterEmpfaenger());
     }
 
-    private WettbewerbsdurchfuehrenderEntity createWettbewerbsdurchfuehrendePrivatEntity() {
+    WettbewerbsdurchfuehrenderEntity createWettbewerbsdurchfuehrendePrivatEntity() {
 
         final String privatkuerzel = kuerzelGeneratorService.generatePrivatteilnahmekuerzel();
+
+        if (privatkuerzel == null) {
+            throw new MinikaenguruRuntimeException(
+                    "Es konnte nach 5 Versuchen kein neues eindeutiges Privatkürzel generiert werden.");
+        }
 
         final LocalDateTime now = LocalDateTime.now(clock);
 

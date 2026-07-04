@@ -10,7 +10,7 @@ import {
     WettbewerbsdurchfuerenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
@@ -31,6 +31,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
 
     let routerMock: { navigateByUrl: ReturnType<typeof vi.fn> };
+
+    const conflictErrorResponse = new HttpErrorResponse({
+        status: 409,
+        error: { message: 'es ist ein Konflikt aufgetreten', constraintViolations: [] },
+    });
 
     const httpServerErrorResponse = new HttpErrorResponse({
         status: 500,
@@ -91,27 +96,43 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
         });
 
-        it('should call the http service and map to durchfuehrendenAnlegenFailed when httpMock throws HttpError', async () => {
+        it('should call the http service and map to durchfuehrendenAnlegenFailed when httpMock throws ServerError', async () => {
             httpServiceMock.createWettbewerbsdurchfuehrenden.mockReturnValue(throwError(() => httpServerErrorResponse));
             action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await firstValueFrom(effects.durchfuehrendenAnlegen$);
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed());
+            expect(emmited).toEqual(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+            );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
         });
         it('should call the http service and map to durchfuehrendenAnlegenFailed when httpMock throws other Error', async () => {
-            httpServiceMock.createWettbewerbsdurchfuehrenden.mockReturnValue(throwError(() => new Error('uiuiui!')));
+            const error = new Error('uiuiui!');
+            httpServiceMock.createWettbewerbsdurchfuehrenden.mockReturnValue(throwError(() => error));
             action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await firstValueFrom(effects.durchfuehrendenAnlegen$);
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed());
+            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }));
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
         });
     });
 
     describe('durchfuehrendenAnlegenFailed$ tests', () => {
-        it('publishes a technical error message when durchfuehrendenAnlegenFailed', async () => {
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed());
+        it('publishes an error message when durchfuehrendenAnlegenFailed with conflict', async () => {
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: conflictErrorResponse })
+            );
+            await firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
+
+            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith('es ist ein Konflikt aufgetreten');
+            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+        });
+        it('publishes an error message when durchfuehrendenAnlegenFailed with serverError', async () => {
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+            );
             await firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
 
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();

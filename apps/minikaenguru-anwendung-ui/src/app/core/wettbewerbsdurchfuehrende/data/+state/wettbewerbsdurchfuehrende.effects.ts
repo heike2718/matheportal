@@ -7,6 +7,8 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
+import { HttpErrorResponse } from '@angular/common/http';
+import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -23,7 +25,9 @@ export class WettbewerbsdurchfuehrendeEffects {
                     map((responseDto: WettbewerbsdurchfuehrenderDto) =>
                         wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
                     ),
-                    catchError(() => of(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed()))
+                    catchError((error: Error) =>
+                        of(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }))
+                    )
                 )
             )
         );
@@ -33,8 +37,9 @@ export class WettbewerbsdurchfuehrendeEffects {
         () =>
             this.#actions.pipe(
                 ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
-                tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                tap(action => {
+                    const errorMessage = mapErrorToMessage(action.error);
+                    this.#messagePublisher.publishError(errorMessage);
                 })
             ),
         { dispatch: false }

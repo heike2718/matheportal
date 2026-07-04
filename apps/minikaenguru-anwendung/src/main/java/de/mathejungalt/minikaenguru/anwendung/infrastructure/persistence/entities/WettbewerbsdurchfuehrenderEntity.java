@@ -20,6 +20,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Zugangsberechtigu
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -27,8 +28,9 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "wettbewerbsdurchfuehrende", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
@@ -48,6 +50,7 @@ public class WettbewerbsdurchfuehrenderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Exclude
     private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "user_uuid", nullable = false, length = 36)
@@ -55,28 +58,36 @@ public class WettbewerbsdurchfuehrenderEntity {
 
     @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
+    @EqualsAndHashCode.Exclude
     private Wettbewerbsdurchfuehrungsart typ;
 
     @Column(name = "newsletter")
+    @EqualsAndHashCode.Exclude
     private boolean newsletterEmpfaenger;
 
     @Column(name = "zugang_unterlagen", nullable = false)
     @Enumerated(EnumType.STRING)
+    @EqualsAndHashCode.Exclude
     private ZugangsberechtigungUnterlagen zugangsberechtigungUnterlagen;
 
     @Column(name = "schulkuerzel", length = 1000)
+    @EqualsAndHashCode.Exclude
     private String schulkuerzel;
 
     @Column(name = "privatkuerzel", length = 10)
+    @EqualsAndHashCode.Exclude
     private String privatkuerzel;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @EqualsAndHashCode.Exclude
     private LocalDateTime updatedAt;
 
     @Version
+    @EqualsAndHashCode.Exclude
     private int version;
 
     @Override
@@ -85,4 +96,5 @@ public class WettbewerbsdurchfuehrenderEntity {
                 + ", newsletterEmpfaenger=" + newsletterEmpfaenger + ", zugangsberechtigungUnterlagen="
                 + zugangsberechtigungUnterlagen + "]";
     }
+
 }
