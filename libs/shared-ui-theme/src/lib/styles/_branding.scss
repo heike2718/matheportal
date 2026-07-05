@@ -3,11 +3,17 @@
 // Kontextfarben der Portal-Bewohner
 $mp-brand-minikaenguru: #2a588c;
 $mp-brand-raetselbaukasten: #3f6657;
+$mp-brand-minikaenguru-admin: #8c3a3a;
+$mp-brand-minikaenguru-statistik: #b8651b;
 
 // Dezente Hover-Flächen
 $mp-brand-minikaenguru-hover: color.scale($mp-brand-minikaenguru, $lightness: 94%);
 $mp-brand-raetselbaukasten-hover: color.scale($mp-brand-raetselbaukasten, $lightness: 94%);
+$mp-brand-minikaenguru-admin-hover: color.scale($mp-brand-minikaenguru-admin, $lightness: 94%);
+$mp-brand-minikaenguru-statistik-hover: color.scale($mp-brand-minikaenguru-statistik, $lightness: 94%);
 
 // Optional für spätere Erweiterungen
 $mp-brand-minikaenguru-soft: color.scale($mp-brand-minikaenguru, $lightness: 88%);
 $mp-brand-raetselbaukasten-soft: color.scale($mp-brand-raetselbaukasten, $lightness: 88%);
+$mp-brand-minikaenguru-admin-soft: color.scale($mp-brand-minikaenguru-admin, $lightness: 88%);
+$mp-brand-minikaenguru-statistik-soft: color.scale($mp-brand-minikaenguru-statistik, $lightness: 88%);
