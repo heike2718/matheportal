@@ -13,9 +13,11 @@ export class AuthSessionFacade {
 
     user$: Observable<User> = this.#store.select(fromAuth.user);
     #hasSession$: Observable<boolean> = this.#store.select(fromAuth.hasSession);
+    #isAdmin$: Observable<boolean> = this.#store.select(fromAuth.isAdmin);
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
     readonly isLoggedIn = toSignal(this.#hasSession$, { initialValue: false });
+    readonly isAdmin = toSignal(this.#isAdmin$, { initialValue: false });
 
     /**
      * validiert die bestehende Session.

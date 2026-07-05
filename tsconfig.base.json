@@ -15,7 +15,7 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@mp-shell-config": ["./apps/matheportal-shell-ui/src/app/config/index.ts"],
+            "@matheportal-shell-config": ["./apps/matheportal-shell-ui/src/app/config/index.ts"],
             "@matheportal/shared-runtime-config": ["libs/shared-runtime-config/src/index.ts"],
             "@matheportal/shared-testing": ["libs/testing/src/index.ts"],
             "@matheportal/auth-model": ["libs/auth/auth-model/src/index.ts"],

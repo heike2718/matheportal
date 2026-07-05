@@ -35,6 +35,10 @@
         @return branding.$mp-brand-raetselbaukasten;
     }
 
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin;
+    }
+
     @error 'Unbekannter Branding-Kontext: #{$context}';
 }
 
@@ -45,6 +49,10 @@
 
     @if $context == raetselbaukasten {
         @return branding.$mp-brand-raetselbaukasten-hover;
+    }
+
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin-hover;
     }
 
     @error 'Unbekannter Branding-Kontext: #{$context}';

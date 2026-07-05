@@ -1,0 +1,187 @@
+{
+    "name": "minikaenguru-admin-ui",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "mk-admin",
+    "sourceRoot": "apps/minikaenguru-admin-ui/src",
+    "tags": ["domain:minikaenguru-admin", "type:app", "layer:remote"],
+    "targets": {
+        "tech-build": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "baseHref": "/minikaenguru-admin/",
+                "output-hashing": "all"
+            },
+            "configurations": {
+                "production": {
+                    "target": "minikaenguru-admin-ui:tech-esbuild:production",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.production.ts"
+                        }
+                    ]
+                },
+                "qs": {
+                    "target": "minikaenguru-admin-ui:tech-esbuild:qs",
+                    "fileReplacements": [
+                        {
+                            "replace": "src/app/config/configuration.ts",
+                            "with": "src/app/config/configuration.qs.ts"
+                        }
+                    ]
+                },
+                "local": {
+                    "target": "minikaenguru-admin-ui:tech-esbuild:development",
+                    "dev": true
+                },
+                "development": {
+                    "target": "minikaenguru-admin-ui:tech-esbuild:development",
+                    "dev": true
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "serve-static": {
+            "continuous": true,
+            "executor": "@nx/web:file-server",
+            "options": {
+                "buildTarget": "minikaenguru-admin-ui:build",
+                "port": 4200,
+                "staticFilePath": "dist/apps/minikaenguru-admin-ui/browser",
+                "spa": true
+            }
+        },
+        "tech-esbuild": {
+            "executor": "@angular/build:application",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/apps/minikaenguru-admin-ui",
+                "browser": "apps/minikaenguru-admin-ui/src/main.ts",
+                "tsConfig": "apps/minikaenguru-admin-ui/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": { "includePaths": ["libs/shared-ui-theme/src/lib/styles"] },
+                "assets": [
+                    {
+                        "glob": "**/*",
+                        "input": "apps/minikaenguru-admin-ui/public"
+                    }
+                ],
+                "styles": [
+                    "apps/minikaenguru-admin-ui/src/styles.scss",
+                    "node_modules/material-icons/iconfont/material-icons.css"
+                ],
+                "polyfills": ["es-module-shims"]
+            },
+            "configurations": {
+                "production": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "1mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "4kb",
+                            "maximumError": "8kb"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "qs": {
+                    "optimization": true,
+                    "extractLicenses": true,
+                    "sourceMap": false,
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": true
+                },
+                "test": {
+                    "sourceMap": true,
+                    "optimization": false,
+                    "polyfills": []
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "tech-serve-angular-dev": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "options": {
+                "buildTarget": "minikaenguru-admin-ui:tech-esbuild:development",
+                "port": 4204
+            }
+        },
+        "tech-serve-federation-dev": {
+            "executor": "@angular-architects/native-federation:build",
+            "options": {
+                "target": "minikaenguru-admin-ui:tech-serve-angular-dev",
+                "rebuildDelay": 500,
+                "dev": true,
+                "cacheExternalArtifacts": false,
+                "port": 0
+            },
+            "continuous": true
+        },
+        "test": {
+            "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/minikaenguru-admin-ui"],
+            "options": {
+                "tsConfig": "apps/minikaenguru-admin-ui/tsconfig.spec.json",
+                "buildTarget": "minikaenguru-admin-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false
+            }
+        },
+        "test-coverage": {
+            "executor": "@angular/build:unit-test",
+            "outputs": ["{workspaceRoot}/coverage/apps/minikaenguru-admin-ui"],
+            "options": {
+                "tsConfig": "apps/minikaenguru-admin-ui/tsconfig.spec.json",
+                "buildTarget": "minikaenguru-admin-ui:tech-esbuild:test",
+                "runner": "vitest",
+                "watch": false,
+                "coverage": true
+            }
+        },
+        "tech-format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-lint": {
+            "executor": "@nx/eslint:lint"
+        },
+        "tech-lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

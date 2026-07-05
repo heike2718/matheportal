@@ -18,6 +18,7 @@ describe('NavbarComponent', () => {
         validateSession: vi.fn(),
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
+        isAdmin: computed(() => false),
     };
 
     const authFlowFacadeMock = {
@@ -38,6 +39,7 @@ describe('NavbarComponent', () => {
     async function setup(isHandset: boolean, user: User) {
         authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
         authSessionFacadeMock.user = computed(() => user);
+        authSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
 
         await TestBed.configureTestingModule({
             imports: [NavbarComponent],
@@ -81,8 +83,13 @@ describe('NavbarComponent', () => {
             expect(menuButtonDe).toBeNull();
 
             const portalLinkDe = fixture.debugElement.query(By.css('.nav__link--portal'));
+            expect(portalLinkDe).toBeTruthy();
+
             const minikaenguruLinkDe = fixture.debugElement.query(By.css('.nav__link--minikaenguru'));
+            expect(minikaenguruLinkDe).toBeTruthy();
+
             const raetselbaukastenLinkDe = fixture.debugElement.query(By.css('.nav__link--raetselbaukasten'));
+            expect(raetselbaukastenLinkDe).toBeTruthy();
 
             const portalIcon = portalLinkDe.query(By.css('.nav__icon'));
             expect(portalIcon.nativeElement.textContent.trim()).toBe('home');
@@ -101,10 +108,6 @@ describe('NavbarComponent', () => {
 
             const raetselbaukastenText = raetselbaukastenLinkDe.query(By.css('.nav__caption'));
             expect(raetselbaukastenText.nativeElement.textContent.trim()).toBe('Rätselbaukasten');
-
-            expect(portalLinkDe).toBeTruthy();
-            expect(minikaenguruLinkDe).toBeTruthy();
-            expect(raetselbaukastenLinkDe).toBeTruthy();
         });
     });
 
@@ -170,6 +173,23 @@ describe('NavbarComponent', () => {
             expect(authFlowFacadeMock.login).not.toHaveBeenCalled();
             expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce();
             expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('NavbarComponent not handset and logged in as ADMIN', () => {
+        beforeEach(async () => {
+            await setup(false, { anonym: false, fullName: 'Ruth', berechtigungen: ['ADMIN'] });
+        });
+        it('should show minikaenguru-Admin-Link when logged in as ADMIN', () => {
+            fixture.detectChanges();
+            const minikaenguruAdminLinkDe = fixture.debugElement.query(By.css('.nav__link--minikaenguru-admin'));
+            expect(minikaenguruAdminLinkDe).toBeTruthy();
+
+            const minikaenguruAdminText = minikaenguruAdminLinkDe.query(By.css('.nav__caption'));
+            expect(minikaenguruAdminText.nativeElement.textContent.trim()).toBe('Minikänguru ADMIN');
+
+            const minikaenguruAdminIcon = minikaenguruAdminLinkDe.query(By.css('.nav__icon'));
+            expect(minikaenguruAdminIcon.nativeElement.textContent.trim()).toBe('admin_panel_settings');
         });
     });
 

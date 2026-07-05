@@ -163,6 +163,7 @@ export default [
                                 'domain:portal',
                                 'domain:minikaenguru-app',
                                 'domain:raetselbaukasten',
+                                'domain:minikaenguru-admin',
                             ],
                         },
 
@@ -181,7 +182,7 @@ export default [
                         },
 
                         // minikaenguru-app darf auth, und error-handling konsumieren –
-                        // aber nicht raetselbaukasten und nicht umgekehrt
+                        // aber keines der anderen remotes und nicht umgekehrt
                         {
                             sourceTag: 'domain:minikaenguru-app',
                             onlyDependOnLibsWithTags: [
@@ -197,6 +198,16 @@ export default [
                             sourceTag: 'domain:raetselbaukasten',
                             onlyDependOnLibsWithTags: [
                                 'domain:raetselbaukasten',
+                                'domain:auth',
+                                'domain:shared',
+                                'domain:error-handling',
+                                'scope:shared',
+                            ],
+                        },
+                        {
+                            sourceTag: 'domain:minikaenguru-admin',
+                            onlyDependOnLibsWithTags: [
+                                'domain:minikaenguru-admin',
                                 'domain:auth',
                                 'domain:shared',
                                 'domain:error-handling',

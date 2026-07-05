@@ -1,0 +1,169 @@
+{
+    "name": "minikaenguru-admin",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/minikaenguru-admin/src",
+    "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom", "auth-session"],
+
+    "targets": {
+        "tech-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn clean quarkus:dev",
+                "envFile": "apps/minikaenguru-admin/.config/.env.dev"
+            }
+        },
+        "tech-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn quarkus:dev -Ddebug=5006",
+                "envFile": "apps/minikaenguru-admin/.config/.env.dev"
+            }
+        },
+        "serve-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-admin-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-admin:tech-dev"
+                ]
+            }
+        },
+        "serve-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-admin-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-admin:tech-debug"
+                ]
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn test",
+                "envFile": "apps/minikaenguru-admin/.config/.env.test"
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            }
+        },
+        "tech-embed-frontend": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": ["minikaenguru-admin-ui"],
+                    "target": "build",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf apps/minikaenguru-admin/src/main/resources/META-INF/resources/minikaenguru-admin",
+                    "mkdir -p apps/minikaenguru-admin/src/main/resources/META-INF/resources/minikaenguru-admin",
+                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/minikaenguru-admin-ui/browser/ apps/minikaenguru-admin/src/main/resources/META-INF/resources/minikaenguru-admin/"
+                ]
+            },
+            "configurations": {
+                "local": {},
+                "qs": {},
+                "production": {}
+            }
+        },
+        "serve-embedded": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/minikaenguru-admin/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
+        },
+        "tech-package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "outputs": ["{workspaceRoot}/apps/minikaenguru-admin/target"],
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn clean package -DskipTests"
+            }
+        },
+        "prepare-deployment": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "install",
+                    "projects": "dependencies"
+                },
+                {
+                    "projects": "self",
+                    "target": "tech-package",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-admin/quarkus-app",
+                    "mv apps/minikaenguru-admin/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-admin"
+                ]
+            },
+            "configurations": {
+                "qs": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-admin/quarkus-app",
+                        "mv apps/minikaenguru-admin/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-admin"
+                    ]
+                },
+                "production": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/minikaenguru-admin/quarkus-app",
+                        "mv apps/minikaenguru-admin/target/quarkus-app /home/heike/deployments/vserver1/matheportal/minikaenguru-admin"
+                    ]
+                }
+            }
+        }
+    }
+}

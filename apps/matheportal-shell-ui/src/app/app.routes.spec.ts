@@ -20,4 +20,14 @@ describe('appRoutes', () => {
         expect(route?.component).toBeUndefined();
         expect(route?.children).toBeUndefined();
     });
+
+    it('should configure remote route for minikaenguru-admin', () => {
+        const route = appRoutes.find(r => r.path === 'minikaenguru-admin');
+
+        expect(route).toBeDefined();
+        expect(route?.loadChildren).toBeTypeOf('function');
+        expect(route?.loadComponent).toBeUndefined();
+        expect(route?.component).toBeUndefined();
+        expect(route?.children).toBeUndefined();
+    });
 });
