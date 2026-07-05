@@ -5,23 +5,20 @@ import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { HomeComponent } from '../../home/home.component';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { BehaviorSubject, Observable, of } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 describe('SidenavComponent', () => {
     let component: SidenavComponent;
     let fixture: ComponentFixture<SidenavComponent>;
 
-    let hasSessionSubject: BehaviorSubject<boolean>;
-    let userSubject: BehaviorSubject<User>;
-
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
-        hasSession$: undefined as unknown as Observable<boolean>,
-        user$: undefined as unknown as Observable<User>,
+        isLoggedIn: computed(() => false),
+        user: computed(() => anonymousUser),
     };
+
     const authFlowFacadeMock = {
         login: vi.fn(),
         logout: vi.fn(),
@@ -37,12 +34,9 @@ describe('SidenavComponent', () => {
         berechtigungen: ['STANDARD'],
     } as User;
 
-    async function setup(options?: { user?: User; hasSession?: boolean }) {
-        hasSessionSubject = new BehaviorSubject<boolean>(options?.hasSession ?? false);
-        userSubject = new BehaviorSubject<User>(options?.user ?? gast);
-
-        authSessionFacadeMock.hasSession$ = hasSessionSubject.asObservable();
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+    async function setup(user: User) {
+        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        authSessionFacadeMock.user = computed(() => user);
 
         await TestBed.configureTestingModule({
             imports: [SidenavComponent],
@@ -74,10 +68,7 @@ describe('SidenavComponent', () => {
 
     describe('general tests', () => {
         beforeEach(async () => {
-            await setup({
-                user: gast,
-                hasSession: false,
-            });
+            await setup(gast);
         });
 
         it('should show a navigation list', () => {
@@ -110,10 +101,7 @@ describe('SidenavComponent', () => {
 
     describe('logged out', () => {
         beforeEach(async () => {
-            await setup({
-                user: gast,
-                hasSession: false,
-            });
+            await setup(gast);
         });
         it('it should show login and signup buttons', () => {
             fixture.detectChanges();
@@ -183,10 +171,7 @@ describe('SidenavComponent', () => {
 
     describe('logged in', () => {
         beforeEach(async () => {
-            await setup({
-                user: loggedInUser,
-                hasSession: true,
-            });
+            await setup(loggedInUser);
         });
         it('it should show logout button and call logout when logout is clicked', () => {
             fixture.detectChanges();

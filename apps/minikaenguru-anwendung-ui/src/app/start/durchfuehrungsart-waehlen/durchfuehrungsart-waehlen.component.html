@@ -1,0 +1,40 @@
+<div class="durchfuehrungsart">
+    <p>
+        Der Minikänguru-Wettbewerb ist ein Mathewettbewerb für die ersten und zweiten Klassen. Er richtet sich an
+        Grundschulen, Vereine, Institutionen und Privatpersonen. Es können ganze Klassen, Gruppen oder einzelne Kinder
+        teilnehmen. Die Teilnahme ist kostenlos.
+    </p>
+
+    <h2 id="durchfuehrungsart-title" class="durchfuehrungsart__title">Durchführungsart wählen</h2>
+
+    <p class="durchfuehrungsart__intro">
+        Sie sind eingeloggt, haben aber noch kein Minikängurukonto. Bitte wählen Sie aus, ob Sie den Wettbewerb mit
+        einer oder mehreren Klassen einer Schule oder privat durchführen möchten.
+    </p>
+
+    <p class="durchfuehrungsart__hint">Das neue Minikängurukonto ist auch für kommende Wettbewerbsjahre nutzbar.</p>
+
+    <div class="durchfuehrungsart__options" aria-label="Durchführungsart für den Minikänguru-Wettbewerb wählen">
+        <button
+            type="button"
+            class="durchfuehrungsart__option"
+            data-testid="mka-durchfuehrungsart-schule"
+            (click)="selectSchule()">
+            <span class="durchfuehrungsart__option-title">Schule</span>
+            <span class="durchfuehrungsart__option-text">
+                Ich möchte mit einer oder mehreren Klassen einer Schule am Wettbewerb teilnehmen.
+            </span>
+        </button>
+
+        <button
+            type="button"
+            class="durchfuehrungsart__option"
+            data-testid="mka-durchfuehrungsart-privat"
+            (click)="selectPrivat()">
+            <span class="durchfuehrungsart__option-title">Privat</span>
+            <span class="durchfuehrungsart__option-text">
+                Ich möchte ein oder mehrere Kinder privat am Wettbewerb teilnehmen lassen.
+            </span>
+        </button>
+    </div>
+</div>

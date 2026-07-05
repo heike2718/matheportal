@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table farben_wettbewerbe_migration as
+create table farben_wettbewerbe_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as
 select
 WETTBEWERB_UUID as jahr,
 BACKGOUND_COLOR as background_color,

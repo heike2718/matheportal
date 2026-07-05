@@ -1,0 +1,60 @@
+{
+    "name": "shared-utils",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/shared-utils/shared-utils/src",
+    "prefix": "mp",
+    "projectType": "library",
+    "tags": ["scope:shared", "type:utils"],
+    "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/shared-utils/shared-utils"],
+            "options": {
+                "reportsDirectory": "coverage/libs/shared-utils/shared-utils"
+            }
+        },
+        "test-coverage": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{workspaceRoot}/coverage/libs/shared-utils/shared-utils"],
+            "options": {
+                "coverage": true,
+                "reportsDirectory": "coverage/libs/shared-utils/shared-utils"
+            }
+        },
+        "tech-format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --write \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-format-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
+            }
+        },
+        "tech-lint": {
+            "executor": "@nx/eslint:lint"
+        },
+        "tech-lint-fix": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "fix": true
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint-fix", "tech-format"],
+            "options": {
+                "command": "true"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["tech-lint", "tech-format-check"],
+            "options": {
+                "command": "true"
+            }
+        }
+    }
+}

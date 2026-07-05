@@ -18,7 +18,7 @@ import de.mathejungalt.authsessions.api.SecurityIdentityAugmentationState;
 public class MinikaenguruSecurityIdentityAugmentor implements SecurityIdentityAugmentor {
 
     @Inject
-    VeranstalterEntityAugmentor veranstalterEntityAugmentor;
+    WettbewerbsdurchfuehrenderEntityAugmentor wettbewerbsdurchfuehrenderEntityAugmentor;
 
     @Override
     public Uni<SecurityIdentity> augment(final SecurityIdentity securityIdentity,
@@ -33,7 +33,7 @@ public class MinikaenguruSecurityIdentityAugmentor implements SecurityIdentityAu
 
         if (augmentationState == SecurityIdentityAugmentationState.NOT_AUGMENTED) {
             // verhindert unnötige DB-Rundreisen.
-            return context.runBlocking(() -> veranstalterEntityAugmentor.augment(securityIdentity));
+            return context.runBlocking(() -> wettbewerbsdurchfuehrenderEntityAugmentor.augment(securityIdentity));
 
         }
 

@@ -5,7 +5,8 @@ import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
 import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { computed } from '@angular/core';
+import { anonymousUser } from '@matheportal/auth-model';
 
 describe('AppComponent', () => {
     const activatedRouteStub: Partial<ActivatedRoute> = {};
@@ -13,7 +14,8 @@ describe('AppComponent', () => {
         initClearOrRestoreSession: vi.fn(),
     };
     const authSessionFacadeMock = {
-        hasSession$: of(false),
+        isLoggedIn: computed(() => false),
+        user: computed(() => anonymousUser),
     };
 
     beforeEach(async () => {

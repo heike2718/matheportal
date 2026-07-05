@@ -1,10 +1,12 @@
-export const VERANSTALTERTYP = {
-    lehrer: 'LEHRER',
-    privat: 'PRIVAT',
-    none: 'NONE',
-} as const;
+export enum MINIKAENGURU_BERECHTIGUNGSTYP {
+    schule = 'SCHULE',
+    privat = 'PRIVAT',
+    none = 'NONE',
+}
 
-export type Veranstaltertyp = (typeof VERANSTALTERTYP)[keyof typeof VERANSTALTERTYP];
+export type MinikaenguruBerechtigungstypKeys = keyof typeof MINIKAENGURU_BERECHTIGUNGSTYP;
+
+export type MinikaenguruBerechtigungstyp = (typeof MINIKAENGURU_BERECHTIGUNGSTYP)[MinikaenguruBerechtigungstypKeys];
 
 export type AuthorizationLoadState = 'not-loaded' | 'loaded' | 'failed';
 
@@ -13,8 +15,8 @@ export type StartViewState =
     | 'loading'
     | 'failed'
     | 'guest'
-    | 'dashboard-privat'
-    | 'dashboard-lehrer'
-    | 'veranstalter-anlegen';
+    | 'dashboard-privatperson'
+    | 'dashboard-lehrperson'
+    | 'needs-wettbewerbsdurchfuehrenden';
 
 export const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';

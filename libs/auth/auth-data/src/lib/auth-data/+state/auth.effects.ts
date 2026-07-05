@@ -14,7 +14,7 @@ import {
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
 
 @Injectable({
     providedIn: 'root',

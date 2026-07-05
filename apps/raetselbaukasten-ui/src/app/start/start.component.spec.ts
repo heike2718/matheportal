@@ -1,24 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartComponent } from './start.component';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { computed } from '@angular/core';
 
 describe('StartComponent', () => {
     let component: StartComponent;
     let fixture: ComponentFixture<StartComponent>;
 
-    let hasSessionSubject: BehaviorSubject<boolean>;
-    let userSubject: BehaviorSubject<User>;
-
     const activatedRouteMock = {};
 
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
-        hasSession$: undefined as unknown as Observable<boolean>,
-        user$: undefined as unknown as Observable<User>,
+        isLoggedIn: computed(() => false),
+        user: computed(() => anonymousUser),
     };
 
     const gast: User = anonymousUser;
@@ -30,12 +27,9 @@ describe('StartComponent', () => {
         berechtigungen: ['STANDARD'],
     } as User;
 
-    async function setup(options?: { user?: User; hasSession?: boolean }) {
-        hasSessionSubject = new BehaviorSubject<boolean>(options?.hasSession ?? false);
-        userSubject = new BehaviorSubject<User>(options?.user ?? gast);
-
-        authSessionFacadeMock.hasSession$ = hasSessionSubject.asObservable();
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+    async function setup(user: User) {
+        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        authSessionFacadeMock.user = computed(() => user);
 
         await TestBed.configureTestingModule({
             imports: [StartComponent],
@@ -59,10 +53,7 @@ describe('StartComponent', () => {
 
     describe('logged out tests', () => {
         beforeEach(async () => {
-            await setup({
-                user: gast,
-                hasSession: false,
-            });
+            await setup(gast);
         });
 
         it('only shows guest-info when not logged in', () => {
@@ -73,10 +64,7 @@ describe('StartComponent', () => {
 
     describe('logged in tests', () => {
         beforeEach(async () => {
-            await setup({
-                user: loggedInUser,
-                hasSession: true,
-            });
+            await setup(loggedInUser);
         });
 
         it('only shows dashboard when logged in', () => {

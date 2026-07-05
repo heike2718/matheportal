@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table veranstalter_migration as 
+create table veranstalter_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as 
 select 
 UUID as user_uuid,
 ROLLE as typ,

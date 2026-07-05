@@ -70,6 +70,19 @@
         }
     }
 
+    &__browser-hint {
+        box-sizing: border-box;
+        margin-top: mp-theme.$mp-space-6;
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+
+        border-left: 0.25rem solid rgba(0, 0, 0, 0.25);
+        border-radius: mp-theme.$mp-radius-m;
+        background: rgba(0, 0, 0, 0.04);
+
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
     @media (max-width: 37.5rem) {
         p {
             max-width: none;

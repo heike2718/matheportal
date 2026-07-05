@@ -2,19 +2,21 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import {
     AuthorizationLoadState,
     MKA_AUTHORIZATION_FEATURE_KEY,
-    resolveVeranstaltertyp,
-    Veranstaltertyp,
+    resolveBerechtigungstyp,
+    MinikaenguruBerechtigungstyp,
+    MINIKAENGURU_BERECHTIGUNGSTYP,
 } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { userLoggedOut } from '@matheportal/auth-api';
 
 export interface MkaAuthorizationState {
     readonly authorizationLoadState: AuthorizationLoadState;
-    readonly veranstaltertyp: Veranstaltertyp;
+    readonly berechtigungstyp: MinikaenguruBerechtigungstyp;
 }
 
 const initialMkaAuthorizationState: MkaAuthorizationState = {
     authorizationLoadState: 'not-loaded',
-    veranstaltertyp: 'NONE',
+    berechtigungstyp: MINIKAENGURU_BERECHTIGUNGSTYP.none,
 };
 
 export const mkaAuthorizationFeature = createFeature({
@@ -22,14 +24,12 @@ export const mkaAuthorizationFeature = createFeature({
     reducer: createReducer<MkaAuthorizationState>(
         initialMkaAuthorizationState,
         on(mkaAuthorizationActions.mkaAuthorizationLoaded, (state, action) => {
-            const veranstaltertyp = resolveVeranstaltertyp(action.user);
-            return { ...state, veranstaltertyp: veranstaltertyp, authorizationLoadState: 'loaded' };
+            const berechtigungstyp = resolveBerechtigungstyp(action.user);
+            return { ...state, berechtigungstyp: berechtigungstyp, authorizationLoadState: 'loaded' };
         }),
         on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };
         }),
-        on(mkaAuthorizationActions.userLoggedOut, () => {
-            return initialMkaAuthorizationState;
-        })
+        on(userLoggedOut, () => initialMkaAuthorizationState)
     ),
 });

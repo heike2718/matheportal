@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { User } from '@matheportal/auth-model';
 
+// kein providedIn: 'root', aber mittels mkaAuthorizationDataProvider in den remote.routes.ts im remote-Kontext
+// providen, damit die remotespezifische #config gezogen wird.
 @Injectable()
 export class MkaAuthorizationHttpService {
     #config = inject(MINIKAENGURU_ANWENDUNG_CONFIGURATION);

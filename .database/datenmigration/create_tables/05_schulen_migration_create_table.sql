@@ -1,6 +1,9 @@
 use mk_kataloge;
 
-create table schulen_migration as
+create table schulen_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as
 select
 KUERZEL as kuerzel,
 NAME as name,

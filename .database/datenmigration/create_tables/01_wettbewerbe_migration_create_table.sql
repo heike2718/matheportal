@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table wettbewerbe_migration as
+create table wettbewerbe_migration 
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as
 select 
 cast(UUID as int) as jahr,
 STATUS as status,

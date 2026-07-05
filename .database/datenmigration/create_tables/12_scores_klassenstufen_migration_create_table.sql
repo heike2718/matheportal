@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table scores_klassenstufen_migration as 
+create table scores_klassenstufen_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as 
 select
 ID as id,
 WETTBEWERB_UUID as jahr,

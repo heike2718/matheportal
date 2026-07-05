@@ -27,7 +27,7 @@ describe('resolveRaetselbaukastenBerechtigung', () => {
     });
 
     it('should return STANDARD when STANDARD', () => {
-        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['LEHRER', 'STANDARD'] });
+        const result = resolveRaetselbaukastenBerechtigung({ berechtigungen: ['STANDARD'] });
 
         expect(result).toBe(RAETSELBAUKASTEN_BERECHTIGUNG.standard);
     });

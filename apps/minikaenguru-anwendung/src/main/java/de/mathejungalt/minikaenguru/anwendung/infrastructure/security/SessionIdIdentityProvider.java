@@ -22,9 +22,9 @@ import de.mathejungalt.authsessions.api.exceptions.SessionValidationFailedExcept
  * SessionIdIdentityProvider.<br>
  * <br>
  * Hier weren der SecurityIdentity die Attribute sessionId und fullName hinzugefügt. Diese werden vom
- * MinikaenguruSecurityIdentityAugmentor, vom VeranstalterEntityAugmentor und vom BerechtigungenService benötigt, um den
- * Veranstaltertyp als Role für RBAC verfügbar zu haben und die session in der DB und den User im Portal synchron zu
- * halten.<br>
+ * MinikaenguruSecurityIdentityAugmentor, vom WettbewerbsdurchfuehrenderEntityAugmentor und vom BerechtigungenService
+ * benötigt, um den Typ als Role für RBAC verfügbar zu haben und die session in der DB und den User im Portal synchron
+ * zu halten.<br>
  * <br>
  * Eine nich aktive session wird gleichzeitig verlängert.
  */

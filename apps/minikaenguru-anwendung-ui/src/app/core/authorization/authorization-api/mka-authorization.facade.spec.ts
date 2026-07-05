@@ -2,23 +2,26 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
-import { AuthorizationLoadState, Veranstaltertyp } from '../authorization-model';
+
+import {
+    AuthorizationLoadState,
+    MINIKAENGURU_BERECHTIGUNGSTYP,
+    MinikaenguruBerechtigungstyp,
+} from '../authorization-model';
 import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
+import { computed } from '@angular/core';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 interface TestParameters {
     readonly user: User;
-    readonly veranstaltertyp: Veranstaltertyp;
+    readonly berechtigungstyp: MinikaenguruBerechtigungstyp;
 }
 
 describe('MkaAuthorizationFacade tests', () => {
     let facade: MkaAuthorizationFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
-
-    let userSubject: BehaviorSubject<User>;
 
     const loggedInStandardUser: User = {
         anonym: false,
@@ -29,37 +32,36 @@ describe('MkaAuthorizationFacade tests', () => {
     const loggedInLehrer: User = {
         anonym: false,
         fullName: 'Frodo',
-        berechtigungen: ['STANDARD', 'LEHRER'],
+        berechtigungen: ['STANDARD', 'SCHULE'],
     };
 
-    const loggedInPrivatveranstalter: User = {
+    const loggedInPrivatperson: User = {
         anonym: false,
         fullName: 'Bilbo',
         berechtigungen: ['STANDARD', 'PRIVAT'],
     };
 
-    const veranstaltertypNone: Veranstaltertyp = 'NONE';
-    const veranstaltertypLehrer: Veranstaltertyp = 'LEHRER';
-    const veranstaltertypPrivat: Veranstaltertyp = 'PRIVAT';
+    const berechtigungstypNone: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
+    const berechtigungstypSchule: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.schule;
+    const berechtigungstypPrivat: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.privat;
 
     const authSessionFacadeMock = {
-        user$: undefined as unknown as Observable<User>,
+        user: computed(() => anonymousUser),
+        isLoggedIn: computed(() => false),
     };
 
-    const authFlowFacadeMock = {
-        registerObserver: vi.fn(),
-    };
-
-    async function setup(user: User, authorizationLoadState: AuthorizationLoadState, veranstalterTyp: Veranstaltertyp) {
-        userSubject = new BehaviorSubject<User>(user);
-
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+    async function setup(
+        user: User,
+        authorizationLoadState: AuthorizationLoadState,
+        berechtigungstyp: MinikaenguruBerechtigungstyp
+    ) {
+        authSessionFacadeMock.user = computed(() => user);
+        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
 
         TestBed.configureTestingModule({
             providers: [
                 MkaAuthorizationFacade,
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
-                { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideMockStore({
                     selectors: [
                         {
@@ -67,8 +69,8 @@ describe('MkaAuthorizationFacade tests', () => {
                             value: authorizationLoadState,
                         },
                         {
-                            selector: fromMkaAuthorization.veranstalterTyp,
-                            value: veranstalterTyp,
+                            selector: fromMkaAuthorization.berechtigungstyp,
+                            value: berechtigungstyp,
                         },
                     ],
                 }),
@@ -83,54 +85,54 @@ describe('MkaAuthorizationFacade tests', () => {
     describe('startViewState tests', () => {
         it('should return guest when not logged in', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-            const veranstaltertyp: Veranstaltertyp = 'NONE';
-            await setup(anonymousUser, authorizationLoadState, veranstaltertyp);
+            const berechtigungstyp: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
+            await setup(anonymousUser, authorizationLoadState, berechtigungstyp);
 
             expect(facade.startViewState()).toBe('guest');
         });
         it.each([
-            [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
-            [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
+            [{ user: loggedInStandardUser, berechtigungstyp: berechtigungstypNone }],
+            [{ user: loggedInLehrer, berechtigungstyp: berechtigungstypSchule }],
+            [{ user: loggedInPrivatperson, berechtigungstyp: berechtigungstypPrivat }],
         ] as [TestParameters][])(
             'should return loading when logged in with $testParameter and not-loaded',
             async testParameter => {
                 const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-                await setup(testParameter.user, authorizationLoadState, testParameter.veranstaltertyp);
+                await setup(testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
 
                 expect(facade.startViewState()).toBe('loading');
             }
         );
         it.each([
-            [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
-            [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
+            [{ user: loggedInStandardUser, berechtigungstyp: berechtigungstypNone }],
+            [{ user: loggedInLehrer, berechtigungstyp: berechtigungstypSchule }],
+            [{ user: loggedInPrivatperson, berechtigungstyp: berechtigungstypPrivat }],
         ] as [TestParameters][])(
             'should return failed when logged in with $testParameter and failed',
             async testParameter => {
                 const authorizationLoadState: AuthorizationLoadState = 'failed';
-                await setup(testParameter.user, authorizationLoadState, testParameter.veranstaltertyp);
+                await setup(testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
 
                 expect(facade.startViewState()).toBe('failed');
             }
         );
-        it('should return dashboard-privat when logged in as privatveranstalter', async () => {
+        it('should return dashboard-privatperson when logged in as Privatperson', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInPrivatveranstalter, authorizationLoadState, veranstaltertypPrivat);
+            await setup(loggedInPrivatperson, authorizationLoadState, berechtigungstypPrivat);
 
-            expect(facade.startViewState()).toBe('dashboard-privat');
+            expect(facade.startViewState()).toBe('dashboard-privatperson');
         });
-        it('should return dashboard-lehrer when logged in as lehrer', async () => {
+        it('should return dashboard-lehrperson when logged in with berechtigung SCHULE', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInLehrer, authorizationLoadState, veranstaltertypLehrer);
+            await setup(loggedInLehrer, authorizationLoadState, berechtigungstypSchule);
 
-            expect(facade.startViewState()).toBe('dashboard-lehrer');
+            expect(facade.startViewState()).toBe('dashboard-lehrperson');
         });
-        it('should return veranstalter-anlegen when logged in as standarduser', async () => {
+        it('should return wettbewerbsdurchfuehrenden-anlegen when logged in as standarduser', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInStandardUser, authorizationLoadState, veranstaltertypNone);
+            await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
 
-            expect(facade.startViewState()).toBe('veranstalter-anlegen');
+            expect(facade.startViewState()).toBe('needs-wettbewerbsdurchfuehrenden');
         });
     });
 
@@ -138,9 +140,8 @@ describe('MkaAuthorizationFacade tests', () => {
         it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
             'should dispatch the loadMkaAuthorization when user is logged in and $authorizationLoadState',
             async authorizationLoadState => {
-                await setup(loggedInStandardUser, authorizationLoadState, veranstaltertypNone);
+                await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
 
-                expect(authFlowFacadeMock.registerObserver).toHaveBeenCalled();
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).toHaveBeenCalledTimes(1);
@@ -150,26 +151,11 @@ describe('MkaAuthorizationFacade tests', () => {
         it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
             'should not dispatch the loadMkaAuthorization when user is not logged in and $authorizationLoadState',
             async authorizationLoadState => {
-                await setup(anonymousUser, authorizationLoadState, veranstaltertypNone);
+                await setup(anonymousUser, authorizationLoadState, berechtigungstypNone);
 
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).not.toHaveBeenCalled();
-            }
-        );
-    });
-    describe('userLoggedOut tests', () => {
-        it.each([
-            [{ user: loggedInStandardUser, veranstaltertyp: veranstaltertypNone }],
-            [{ user: loggedInLehrer, veranstaltertyp: veranstaltertypLehrer }],
-            [{ user: loggedInPrivatveranstalter, veranstaltertyp: veranstaltertypPrivat }],
-        ] as [TestParameters][])(
-            'should dispatch userLoggedOut-Action when userLoggedOut ist called with $testParameter',
-            async testParameter => {
-                await setup(testParameter.user, 'loaded', testParameter.veranstaltertyp);
-                facade.userLoggedOut();
-                expect(dispatchSpy).toHaveBeenCalledTimes(1);
-                expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.userLoggedOut());
             }
         );
     });

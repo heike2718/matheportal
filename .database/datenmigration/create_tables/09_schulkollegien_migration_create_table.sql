@@ -1,6 +1,9 @@
 use mk_wettbewerb;
 
-create table schulkollegien_migration as
+create table schulkollegien_migration
+CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci
+as
 select
     sk.uuid as kuerzel_schule,
     jt.user_uuid
