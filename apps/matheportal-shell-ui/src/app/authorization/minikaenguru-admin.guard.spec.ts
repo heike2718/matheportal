@@ -11,9 +11,9 @@ import {
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable } from 'rxjs';
-import { minikaenguruAdminAuthGuard } from './minikaenguru-admin-auth.guard';
+import { minikaenguruAdminGuard } from './minikaenguru-admin.guard';
 
-describe('minikaenguruAdminAuthGuard tests', () => {
+describe('matheportalShellAdminAuthGuard tests', () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
@@ -51,11 +51,11 @@ describe('minikaenguruAdminAuthGuard tests', () => {
         const { router } = setup(anonymousUser);
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(minikaenguruAdminAuthGuard()(route, state))
+            resolveGuardResult(minikaenguruAdminGuard()(route, state))
         );
 
         expect(result).toBeInstanceOf(UrlTree);
-        expect(router.serializeUrl(result as UrlTree)).toBe('/');
+        expect(router.serializeUrl(result as UrlTree)).toBe('/home');
     });
 
     it('should redirect users to the shell when logged in and have empty berechtigungen', async () => {
@@ -67,11 +67,11 @@ describe('minikaenguruAdminAuthGuard tests', () => {
         const { router } = setup(user);
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(minikaenguruAdminAuthGuard()(route, state))
+            resolveGuardResult(minikaenguruAdminGuard()(route, state))
         );
 
         expect(result).toBeInstanceOf(UrlTree);
-        expect(router.serializeUrl(result as UrlTree)).toBe('/');
+        expect(router.serializeUrl(result as UrlTree)).toBe('/home');
     });
 
     it.each(['STANDARD', 'AUTOR', 'SCHULE', 'PRIVAT', 'KL_ADMIN'])(
@@ -88,11 +88,11 @@ describe('minikaenguruAdminAuthGuard tests', () => {
             const { router } = setup(user);
 
             const result = await TestBed.runInInjectionContext(async () =>
-                resolveGuardResult(minikaenguruAdminAuthGuard()(route, state))
+                resolveGuardResult(minikaenguruAdminGuard()(route, state))
             );
 
             expect(result).toBeInstanceOf(UrlTree);
-            expect(router.serializeUrl(result as UrlTree)).toBe('/');
+            expect(router.serializeUrl(result as UrlTree)).toBe('/home');
         }
     );
 
@@ -105,7 +105,7 @@ describe('minikaenguruAdminAuthGuard tests', () => {
         setup(user);
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(minikaenguruAdminAuthGuard()(route, state))
+            resolveGuardResult(minikaenguruAdminGuard()(route, state))
         );
 
         expect(result).toBeTruthy();

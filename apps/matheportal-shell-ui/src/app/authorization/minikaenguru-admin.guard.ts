@@ -7,14 +7,12 @@ import { map, take } from 'rxjs';
  *
  * @returns true or a navigation
  */
-export const minikaenguruAdminAuthGuard = (): CanActivateFn => () => {
+export const minikaenguruAdminGuard = (): CanActivateFn => () => {
     const auth = inject(AuthSessionFacade);
     const router = inject(Router);
 
     return auth.user$.pipe(
         take(1),
-        map(user =>
-            !user.anonym && user.berechtigungen.indexOf('ADMIN') >= 0 ? true : router.createUrlTree(['/', ''])
-        )
+        map(user => (user.berechtigungen.indexOf('ADMIN') >= 0 ? true : router.createUrlTree(['/', 'home'])))
     );
 };
