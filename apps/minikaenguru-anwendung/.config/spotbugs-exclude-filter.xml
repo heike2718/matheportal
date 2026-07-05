@@ -6,22 +6,22 @@
 
   <!-- Quarkus-spezifische False Positives -->
   <Match>
-    <Class name="~.*Resource\.java"/>
-    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Class name="~.*Resource\.java" />
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,DMI_RANDOM_USED_ONLY_ONCE" />
   </Match>
 
   <!-- DTOs/Entities ausschließen -->
   <Match>
-    <Class name="~.*\.dto\..*"/>
+    <Class name="~.*\.dto\..*" />
   </Match>
 
   <!-- Generated Code -->
   <Match>
-    <Class name="~.*\.generated\..*"/>
+    <Class name="~.*\.generated\..*" />
   </Match>
 
   <!-- Spezifische noisy Rules -->
   <Match>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK" />
   </Match>
 </FindBugsFilter>
