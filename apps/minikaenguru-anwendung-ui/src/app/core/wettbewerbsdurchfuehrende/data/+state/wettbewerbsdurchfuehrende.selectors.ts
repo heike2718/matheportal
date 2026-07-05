@@ -14,6 +14,5 @@ const definedWettbewerbsdurchfuehrender = createSelector(wettbewerbsdurchfuehren
 });
 
 export const fromWettbewerbsdurchfuehrender = {
-    wettbewerbsdurchfuehrender,
     definedWettbewerbsdurchfuehrender,
 };

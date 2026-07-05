@@ -16,21 +16,21 @@ export class MkaAuthorizationFacade {
     readonly #authSessionFacade = inject(AuthSessionFacade);
     readonly #store = inject(Store);
 
-    readonly #authorizationLoadState$: Observable<AuthorizationLoadState> = this.#store.select(
+    readonly authorizationLoadState$: Observable<AuthorizationLoadState> = this.#store.select(
         fromMkaAuthorization.authorizationLoadState
     );
 
     readonly #berechtigungstyp$: Observable<MinikaenguruBerechtigungstyp> = this.#store.select(
         fromMkaAuthorization.berechtigungstyp
     );
-    readonly #authorizationLoadState = toSignal(this.#authorizationLoadState$, { initialValue: 'not-loaded' });
+    readonly #authorizationLoadState = toSignal(this.authorizationLoadState$, { initialValue: 'not-loaded' });
     readonly #berechtigungstyp = toSignal(this.#berechtigungstyp$, {
         initialValue: MINIKAENGURU_BERECHTIGUNGSTYP.none,
     });
 
     readonly isLehrperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
-    readonly isPrivatveranstalter = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+    readonly isPrivatperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
         const authorizationState = this.#authorizationLoadState();
@@ -47,7 +47,7 @@ export class MkaAuthorizationFacade {
             return 'failed';
         }
 
-        if (this.isPrivatveranstalter()) {
+        if (this.isPrivatperson()) {
             return 'dashboard-privatperson';
         }
 
