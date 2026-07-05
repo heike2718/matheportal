@@ -5,6 +5,8 @@ package de.mathejungalt.minikaenguru.anwendung.domain.exception;
  */
 public class MinikaenguruRuntimeException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * MinikaenguruRuntimeException
      *

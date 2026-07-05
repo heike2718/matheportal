@@ -11,15 +11,15 @@ public class KuerzelGenerator {
 
     String generateKuerzel(final int length) {
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
 
         for (int loop = 0; loop < length; loop++) {
 
             final int index = new Random().nextInt(CHAR_POOL.length);
-            sb.append(CHAR_POOL[index]);
+            stringBuilder.append(CHAR_POOL[index]);
         }
-        final String nonce = sb.toString();
-        return nonce;
+
+        return stringBuilder.toString();
     }
 
 }

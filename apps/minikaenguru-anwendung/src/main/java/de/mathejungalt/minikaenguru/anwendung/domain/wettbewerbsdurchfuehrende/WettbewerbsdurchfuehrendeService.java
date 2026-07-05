@@ -140,7 +140,7 @@ public class WettbewerbsdurchfuehrendeService {
 
         final LocalDateTime now = LocalDateTime.now(clock);
 
-        final WettbewerbsdurchfuehrenderEntity entity = WettbewerbsdurchfuehrenderEntity
+        return WettbewerbsdurchfuehrenderEntity
                 .builder()
                 .privatkuerzel(privatkuerzel)
                 .userUuid(securityIdentity.getPrincipal().getName())
@@ -149,7 +149,6 @@ public class WettbewerbsdurchfuehrendeService {
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
-        return entity;
     }
 
     private boolean isConstraintViolationExceptionWithUKName(final PersistenceException exception,
@@ -159,7 +158,7 @@ public class WettbewerbsdurchfuehrendeService {
 
         if (opt.isPresent()) {
             final ConstraintViolationException cve = opt.get();
-            if (WettbewerbsdurchfuehrenderEntity.UK_NAME_PRIVATKUERZEL.equals(cve.getConstraintName())) {
+            if (ukName.equals(cve.getConstraintName())) {
                 return true;
             }
 
