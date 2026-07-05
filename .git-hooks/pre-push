@@ -18,4 +18,4 @@ echo "Running analyze-quality for affected projects..."
 pnpm nx affected -t analyze-quality --base="$BASE" --head="$HEAD"
 
 echo "Running tests for affected projects..."
-pnpm nx affected -t test --base="$BASE" --head="$HEAD" --skip-nx-cache
+pnpm nx affected -t test --base="$BASE" --head="$HEAD" --skip-nx-cache --parallel=1
