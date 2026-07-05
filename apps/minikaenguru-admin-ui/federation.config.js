@@ -5,7 +5,7 @@ module.exports = withNativeFederation({
 
     // TODO: wenn remote routes mit lazy loading hinzukommen: von ./Component auf ./Routes umstellen
     exposes: {
-        './Component': './apps/minikaenguru-admin-ui/src/app/app.component.ts',
+        './Routes': './apps/minikaenguru-admin-ui/src/app/remote.routes.ts',
     },
 
     shared: {

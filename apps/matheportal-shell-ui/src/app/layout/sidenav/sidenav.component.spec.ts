@@ -10,13 +10,13 @@ import { Component, computed } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 describe('SidenavComponent', () => {
-    let component: SidenavComponent;
     let fixture: ComponentFixture<SidenavComponent>;
 
     const authSessionFacadeMock = {
         validateSession: vi.fn(),
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
+        isAdmin: computed(() => false),
     };
 
     const authFlowFacadeMock = {
@@ -37,6 +37,7 @@ describe('SidenavComponent', () => {
     async function setup(user: User) {
         authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
         authSessionFacadeMock.user = computed(() => user);
+        authSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
 
         await TestBed.configureTestingModule({
             imports: [SidenavComponent],
@@ -56,8 +57,6 @@ describe('SidenavComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(SidenavComponent);
-        component = fixture.componentInstance;
-
         fixture.detectChanges();
     }
 
@@ -166,6 +165,20 @@ describe('SidenavComponent', () => {
             expect(authFlowFacadeMock.login).not.toHaveBeenCalled();
             expect(authFlowFacadeMock.logout).not.toHaveBeenCalled();
             expect(authFlowFacadeMock.signup).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('logged in as ADIMN', () => {
+        beforeEach(async () => {
+            await setup({
+                anonym: false,
+                fullName: 'Ruth',
+                berechtigungen: ['ADMIN'],
+            });
+        });
+        it('should show the admin-link', () => {
+            const minikaenguruAdminLinkDe = fixture.debugElement.query(By.css('.sidenav__link--minikaenguru-admin'));
+            expect(minikaenguruAdminLinkDe).toBeTruthy();
         });
     });
 

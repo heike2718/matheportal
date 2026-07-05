@@ -120,6 +120,23 @@
                 box-shadow: inset 0 0 0 1px mp-theme.mp-brand(raetselbaukasten);
             }
         }
+
+        &--minikaenguru-admin {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
+            border-color: rgb(63 102 87 / 20%);
+
+            &:hover,
+            &:focus-visible {
+                border-color: rgb(63 102 87 / 30%);
+                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 18%);
+            }
+
+            &.nav__link--active {
+                border-color: mp-theme.mp-brand(minikaenguru-admin);
+                color: mp-theme.mp-brand(minikaenguru-admin);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru-admin);
+            }
+        }
     }
 
     // --- Right Side: User Group ---

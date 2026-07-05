@@ -32,6 +32,17 @@
                     <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">extension</mat-icon>
                     <span class="nav__caption">Rätselbaukasten</span>
                 </a>
+
+                @if (authSessionFacade.isAdmin()) {
+                    <a
+                        mat-button
+                        class="nav__link nav__link--minikaenguru-admin"
+                        routerLink="/minikaenguru-admin"
+                        routerLinkActive="nav__link--active">
+                        <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">admin_panel_settings</mat-icon>
+                        <span class="nav__caption">Minikänguru ADMIN</span>
+                    </a>
+                }
             </div>
         </div>
 

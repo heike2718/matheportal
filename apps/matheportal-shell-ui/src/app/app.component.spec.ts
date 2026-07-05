@@ -16,6 +16,7 @@ describe('AppComponent', () => {
     const authSessionFacadeMock = {
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
+        isAdmin: computed(() => false),
     };
 
     beforeEach(async () => {

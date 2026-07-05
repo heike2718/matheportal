@@ -20,4 +20,8 @@ export const appRoutes: Route[] = [
         path: 'raetselbaukasten',
         loadChildren: () => loadRemoteModule('raetselbaukasten-ui', './Routes').then(m => m.remoteRoutes),
     },
+    {
+        path: 'minikaenguru-admin',
+        loadChildren: () => loadRemoteModule('minikaenguru-admin-ui', './Routes').then(m => m.remoteRoutes),
+    },
 ];
