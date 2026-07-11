@@ -1,0 +1,13 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+}
+
+.mk-statistik-root {
+    padding: mp-theme.$mp-space-4 mp-theme.$mp-space-6;
+
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-3 0;
+    }
+}

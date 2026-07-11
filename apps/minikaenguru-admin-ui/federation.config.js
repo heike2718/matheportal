@@ -3,7 +3,6 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 module.exports = withNativeFederation({
     name: 'minikaenguru-admin-ui',
 
-    // TODO: wenn remote routes mit lazy loading hinzukommen: von ./Component auf ./Routes umstellen
     exposes: {
         './Routes': './apps/minikaenguru-admin-ui/src/app/remote.routes.ts',
     },
