@@ -113,7 +113,7 @@
             "executor": "@angular/build:dev-server",
             "options": {
                 "buildTarget": "minikaenguru-statistik-ui:tech-esbuild:development",
-                "port": 4204
+                "port": 4203
             }
         },
         "tech-serve-federation-dev": {

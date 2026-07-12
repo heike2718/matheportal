@@ -31,9 +31,7 @@
         <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
-        <lombock.version>1.18.42</lombock.version>
         <openapi-generator-maven-plugin.version>7.20.0</openapi-generator-maven-plugin.version>
-        <wiremock.version>3.13.2</wiremock.version>
 
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -192,7 +190,6 @@
         <dependency>
             <groupId>org.wiremock</groupId>
             <artifactId>wiremock</artifactId>
-            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
 

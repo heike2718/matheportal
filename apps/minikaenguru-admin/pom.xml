@@ -32,8 +32,6 @@
         <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
 
-        <lombock.version>1.18.42</lombock.version>
-
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
     </properties>

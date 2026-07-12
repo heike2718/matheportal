@@ -7,16 +7,20 @@ import io.quarkus.runtime.StartupEvent;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * StartupListener.
  */
+@Slf4j
 @ApplicationScoped
 public class StartupListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartupListener.class);
+    @ConfigProperty(name = "quarkus.datasource.sessions.jdbc.url")
+    String sessionsJdbcUrl;
+
+    @ConfigProperty(name = "quarkus.datasource.minikaenguru.jdbc.url")
+    String minikaenguruJdbcUrl;
 
     @ConfigProperty(name = "quarkus.http.cors.origins")
     String corsOrigins;
@@ -31,9 +35,10 @@ public class StartupListener {
      */
     void onStartup(@Observes final StartupEvent startupEvent) {
 
-        LOGGER.info(" ===========>  port={}", port);
-        LOGGER.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
+        log.info(" ===========>  sessionsJdbcUrl={}", sessionsJdbcUrl);
+        log.info(" ===========>  minikaenguruJdbcUrl={}", minikaenguruJdbcUrl);
+        log.info(" ===========>  port={}", port);
+        log.info(" ===========> quarkus.http.cors.origins={}", corsOrigins);
 
     }
-
 }

@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { AppComponent } from './app.component';
 import { MINIKAENGURU_ADMIN_CONFIGURATION } from './config/minikaenguru-admin.configuration';
-import { minikaenguruAdminConfiguration } from './config/configuration.production';
+import { minikaenguruAdminConfiguration } from './config/configuration';
 import { DashboardComponent } from './dashboard/dashboard.component';
 export const remoteRoutes: Route[] = [
     {

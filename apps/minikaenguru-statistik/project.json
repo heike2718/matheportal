@@ -1,0 +1,171 @@
+{
+    "name": "minikaenguru-statistik",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/minikaenguru-statistik/src",
+    "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom"],
+
+    "targets": {
+        "tech-generate-sources": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn clean generate-sources"
+            }
+        },
+        "tech-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn clean quarkus:dev",
+                "envFile": "apps/minikaenguru-statistik/.config/.env.dev"
+            }
+        },
+        "tech-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn quarkus:dev -Ddebug=5005",
+                "envFile": "apps/minikaenguru-statistik/.config/.env.dev"
+            }
+        },
+        "serve-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-statistik-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-statistik:tech-dev"
+                ]
+            }
+        },
+        "serve-debug": {
+            "executor": "nx:run-commands",
+            "options": {
+                "parallel": true,
+                "commands": [
+                    "npx nx run minikaenguru-statistik-ui:tech-serve-federation-dev",
+                    "npx nx run minikaenguru-statistik:tech-debug"
+                ]
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn test",
+                "envFile": "apps/minikaenguru-statistik/.config/.env.test"
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            }
+        },
+        "tech-embed-frontend": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": ["minikaenguru-statistik-ui"],
+                    "target": "build",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf apps/minikaenguru-statistik/src/main/resources/META-INF/resources/minikaenguru-statistik",
+                    "mkdir -p apps/minikaenguru-statistik/src/main/resources/META-INF/resources/minikaenguru-statistik",
+                    "rsync -a --delete /home/heike/git/matheportal/dist/apps/minikaenguru-statistik-ui/browser/ apps/minikaenguru-statistik/src/main/resources/META-INF/resources/minikaenguru-statistik/"
+                ]
+            },
+            "configurations": {
+                "local": {},
+                "qs": {},
+                "production": {}
+            }
+        },
+        "serve-embedded": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/minikaenguru-statistik/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
+        },
+        "tech-package": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "outputs": ["{workspaceRoot}/apps/minikaenguru-statistik/target"],
+            "options": {
+                "cwd": "apps/minikaenguru-statistik",
+                "command": "mvn clean package -DskipTests"
+            }
+        },
+        "prepare-deployment": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "install",
+                    "projects": "dependencies"
+                },
+                {
+                    "projects": "self",
+                    "target": "tech-package",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-statistik/quarkus-app",
+                    "mv apps/minikaenguru-statistik/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-statistik/"
+                ]
+            },
+            "configurations": {
+                "qs": {},
+                "production": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/minikaenguru-statistik/quarkus-app",
+                        "mv apps/minikaenguru-statistik/target/quarkus-app /home/heike/deployments/vserver1/matheportal/minikaenguru-statistik"
+                    ]
+                }
+            }
+        }
+    }
+}
