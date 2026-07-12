@@ -48,7 +48,8 @@
         transition:
             background-color 150ms ease-in-out,
             border-color 150ms ease-in-out,
-            color 150ms ease-in-out;
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
 
         &:hover,
         &:focus-visible {
@@ -70,28 +71,12 @@
             &:hover,
             &:focus-visible {
                 background-color: mp-theme.mp-brand-hover(minikaenguru);
-                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 16%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru);
             }
 
             &.sidenav__link--active {
                 color: mp-theme.mp-brand(minikaenguru);
-                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 22%);
-            }
-        }
-
-        &--minikaenguru-statistik {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
-            border-left-color: mp-theme.mp-brand(minikaenguru-statistik);
-
-            &:hover,
-            &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 16%);
-            }
-
-            &.sidenav__link--active {
-                color: mp-theme.mp-brand(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 22%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru);
             }
         }
 
@@ -102,12 +87,28 @@
             &:hover,
             &:focus-visible {
                 background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 16%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(raetselbaukasten);
             }
 
             &.sidenav__link--active {
                 color: mp-theme.mp-brand(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 22%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(raetselbaukasten);
+            }
+        }
+
+        &--minikaenguru-statistik {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
+            border-left-color: mp-theme.mp-brand(minikaenguru-statistik);
+
+            &:hover,
+            &:focus-visible {
+                background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-statistik);
+            }
+
+            &.sidenav__link--active {
+                color: mp-theme.mp-brand(minikaenguru-statistik);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru-statistik);
             }
         }
 
@@ -118,12 +119,12 @@
             &:hover,
             &:focus-visible {
                 background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 16%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-admin);
             }
 
             &.sidenav__link--active {
                 color: mp-theme.mp-brand(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 22%);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru-admin);
             }
         }
     }

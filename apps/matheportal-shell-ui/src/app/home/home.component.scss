@@ -57,6 +57,15 @@
         }
     }
 
+    &--minikaenguru-statistik {
+        border-left-color: mp-theme.mp-brand(minikaenguru-statistik);
+
+        &:hover,
+        &:focus-within {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
+        }
+    }
+
     &--minikaenguru-admin {
         border-left-color: mp-theme.mp-brand(minikaenguru-admin);
 

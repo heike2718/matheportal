@@ -56,7 +56,7 @@
     }
 
     @if $context == minikaenguru-statistik {
-        @return branding.$mp-brand-minikaenguru-hover;
+        @return branding.$mp-brand-minikaenguru-statistik-hover;
     }
 
     @if $context == minikaenguru-admin {
@@ -64,4 +64,64 @@
     }
 
     @error 'mp-brand-hover: unbekannter Branding-Kontext: #{$context}';
+}
+
+@function mp-brand-border($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru-border;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten-border;
+    }
+
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-statistik-border;
+    }
+
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin-border;
+    }
+
+    @error 'mp-brand-border: unbekannter Branding-Kontext: #{$context}';
+}
+
+@function mp-brand-border-hover($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru-border-hover;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten-border-hover;
+    }
+
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-statistik-border-hover;
+    }
+
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin-border-hover;
+    }
+
+    @error 'mp-brand-border-hover: unbekannter Branding-Kontext: #{$context}';
+}
+
+@function mp-brand-shadow($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru-shadow;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten-shadow;
+    }
+
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-statistik-shadow;
+    }
+
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin-shadow;
+    }
+
+    @error 'mp-brand-shadow: unbekannter Branding-Kontext: #{$context}';
 }

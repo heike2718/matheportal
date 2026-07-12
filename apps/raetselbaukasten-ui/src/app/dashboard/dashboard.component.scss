@@ -71,12 +71,9 @@
     }
 
     &__content {
+        margin: 0;
         overflow-wrap: break-word;
         word-break: normal;
         hyphens: auto;
-    }
-
-    &__content {
-        margin: 0;
     }
 }

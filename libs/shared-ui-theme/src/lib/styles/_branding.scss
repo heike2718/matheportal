@@ -17,3 +17,21 @@ $mp-brand-minikaenguru-soft: color.scale($mp-brand-minikaenguru, $lightness: 88%
 $mp-brand-raetselbaukasten-soft: color.scale($mp-brand-raetselbaukasten, $lightness: 88%);
 $mp-brand-minikaenguru-statistik-soft: color.scale($mp-brand-minikaenguru-statistik, $lightness: 88%);
 $mp-brand-minikaenguru-admin-soft: color.scale($mp-brand-minikaenguru-admin, $lightness: 88%);
+
+// Dezente Border-Farben
+$mp-brand-minikaenguru-border: color.change($mp-brand-minikaenguru, $alpha: 0.2);
+$mp-brand-raetselbaukasten-border: color.change($mp-brand-raetselbaukasten, $alpha: 0.2);
+$mp-brand-minikaenguru-statistik-border: color.change($mp-brand-minikaenguru-statistik, $alpha: 0.2);
+$mp-brand-minikaenguru-admin-border: color.change($mp-brand-minikaenguru-admin, $alpha: 0.2);
+
+// Hover-Border-Farben
+$mp-brand-minikaenguru-border-hover: color.change($mp-brand-minikaenguru, $alpha: 0.3);
+$mp-brand-raetselbaukasten-border-hover: color.change($mp-brand-raetselbaukasten, $alpha: 0.3);
+$mp-brand-minikaenguru-statistik-border-hover: color.change($mp-brand-minikaenguru-statistik, $alpha: 0.3);
+$mp-brand-minikaenguru-admin-border-hover: color.change($mp-brand-minikaenguru-admin, $alpha: 0.3);
+
+// Dezente innere Hover-Schatten
+$mp-brand-minikaenguru-shadow: color.change($mp-brand-minikaenguru, $alpha: 0.18);
+$mp-brand-raetselbaukasten-shadow: color.change($mp-brand-raetselbaukasten, $alpha: 0.18);
+$mp-brand-minikaenguru-statistik-shadow: color.change($mp-brand-minikaenguru-statistik, $alpha: 0.18);
+$mp-brand-minikaenguru-admin-shadow: color.change($mp-brand-minikaenguru-admin, $alpha: 0.18);

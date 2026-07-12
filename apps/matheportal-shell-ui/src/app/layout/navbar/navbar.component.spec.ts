@@ -195,7 +195,7 @@ describe('NavbarComponent', () => {
             expect(minikaenguruAdminLinkDe).toBeTruthy();
 
             const minikaenguruAdminText = minikaenguruAdminLinkDe.query(By.css('.nav__caption'));
-            expect(minikaenguruAdminText.nativeElement.textContent.trim()).toBe('Minikänguru ADMIN');
+            expect(minikaenguruAdminText.nativeElement.textContent.trim()).toBe('ADMIN');
 
             const minikaenguruAdminIcon = minikaenguruAdminLinkDe.query(By.css('.nav__icon'));
             expect(minikaenguruAdminIcon.nativeElement.textContent.trim()).toBe('admin_panel_settings');
