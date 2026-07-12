@@ -91,6 +91,9 @@ describe('NavbarComponent', () => {
             const raetselbaukastenLinkDe = fixture.debugElement.query(By.css('.nav__link--raetselbaukasten'));
             expect(raetselbaukastenLinkDe).toBeTruthy();
 
+            const statistikLinkDe = fixture.debugElement.query(By.css('.nav__link--minikaenguru-statistik'));
+            expect(statistikLinkDe).toBeTruthy();
+
             const portalIcon = portalLinkDe.query(By.css('.nav__icon'));
             expect(portalIcon.nativeElement.textContent.trim()).toBe('home');
 
@@ -108,6 +111,12 @@ describe('NavbarComponent', () => {
 
             const raetselbaukastenText = raetselbaukastenLinkDe.query(By.css('.nav__caption'));
             expect(raetselbaukastenText.nativeElement.textContent.trim()).toBe('Rätselbaukasten');
+
+            const statistikIcon = statistikLinkDe.query(By.css('.nav__icon'));
+            expect(statistikIcon.nativeElement.textContent.trim()).toBe('bar_chart');
+
+            const statistikText = statistikLinkDe.query(By.css('.nav__caption'));
+            expect(statistikText.nativeElement.textContent.trim()).toBe('Statistik');
         });
     });
 

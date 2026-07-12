@@ -84,6 +84,9 @@ describe('SidenavComponent', () => {
 
             const raetselbaukastenLinkDe = fixture.debugElement.query(By.css('.sidenav__link--raetselbaukasten'));
             expect(raetselbaukastenLinkDe).toBeTruthy();
+
+            const statistiklinkDe = fixture.debugElement.query(By.css('.sidenav__link--minikaenguru-statistik'));
+            expect(statistiklinkDe).toBeTruthy();
         });
 
         it('should show the datenschutz-Link', () => {

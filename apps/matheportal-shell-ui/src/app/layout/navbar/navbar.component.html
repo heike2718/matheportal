@@ -33,6 +33,15 @@
                     <span class="nav__caption">Rätselbaukasten</span>
                 </a>
 
+                <a
+                    mat-button
+                    class="nav__link nav__link--minikaenguru-statistik"
+                    routerLink="/minikaenguru-statistik"
+                    routerLinkActive="nav__link--active">
+                    <mat-icon class="nav__icon nav__icon--link" aria-hidden="true">bar_chart</mat-icon>
+                    <span class="nav__caption">Statistik</span>
+                </a>
+
                 @if (authSessionFacade.isAdmin()) {
                     <a
                         mat-button

@@ -34,6 +34,17 @@
                 <mat-icon class="sidenav__icon sidenav__icon--link" aria-hidden="true">extension</mat-icon>
                 <span class="sidenav__label">Rätselbaukasten</span>
             </a>
+
+            <a
+                mat-list-item
+                class="sidenav__link sidenav__link--minikaenguru-statistik"
+                routerLink="/minikaenguru-statistik"
+                routerLinkActive="sidenav__link--active"
+                (click)="onSidenavClose()">
+                <mat-icon class="sidenav__icon sidenav__icon--link" aria-hidden="true">bar_chart</mat-icon>
+                <span class="sidenav__label">Statistik</span>
+            </a>
+
             @if (authSessionFacade.isAdmin()) {
                 <a
                     mat-list-item

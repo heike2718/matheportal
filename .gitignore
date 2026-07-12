@@ -59,3 +59,5 @@ apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten
 .database/datenmigration/dumps
 
 vitest.config.*.timestamp*
+
+/.quarkus/cli/

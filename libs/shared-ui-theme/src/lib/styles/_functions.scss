@@ -35,11 +35,15 @@
         @return branding.$mp-brand-raetselbaukasten;
     }
 
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-statistik;
+    }
+
     @if $context == minikaenguru-admin {
         @return branding.$mp-brand-minikaenguru-admin;
     }
 
-    @error 'Unbekannter Branding-Kontext: #{$context}';
+    @error 'mp-brand: unbekannter Branding-Kontext: #{$context}';
 }
 
 @function mp-brand-hover($context) {
@@ -51,9 +55,13 @@
         @return branding.$mp-brand-raetselbaukasten-hover;
     }
 
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-hover;
+    }
+
     @if $context == minikaenguru-admin {
         @return branding.$mp-brand-minikaenguru-admin-hover;
     }
 
-    @error 'Unbekannter Branding-Kontext: #{$context}';
+    @error 'mp-brand-hover: unbekannter Branding-Kontext: #{$context}';
 }

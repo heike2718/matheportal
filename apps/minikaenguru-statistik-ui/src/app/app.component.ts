@@ -8,5 +8,5 @@ import { RouterModule } from '@angular/router';
     styleUrl: './app.component.scss',
 })
 export class AppComponent {
-    protected title = 'minikaenguru-statistik-ui';
+    protected title = 'minikaenguru-statistik';
 }
