@@ -14,7 +14,7 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.37.2</quarkus.platform.version>
 
-        <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+        <matheportal-bom.version>0.0.2-SNAPSHOT</matheportal-bom.version>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
         <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
 
