@@ -89,12 +89,12 @@
 
         &--minikaenguru {
             background-color: mp-theme.mp-brand-hover(minikaenguru);
-            border-color: rgb(42 88 140 / 20%);
+            border-color: mp-theme.mp-brand-border(minikaenguru);
 
             &:hover,
             &:focus-visible {
-                border-color: rgb(42 88 140 / 30%);
-                box-shadow: inset 0 0 0 1px rgb(42 88 140 / 18%);
+                border-color: mp-theme.mp-brand-border-hover(minikaenguru);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru);
             }
 
             &.nav__link--active {
@@ -106,12 +106,12 @@
 
         &--raetselbaukasten {
             background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-            border-color: rgb(63 102 87 / 20%);
+            border-color: mp-theme.mp-brand-border(raetselbaukasten);
 
             &:hover,
             &:focus-visible {
-                border-color: rgb(63 102 87 / 30%);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 18%);
+                border-color: mp-theme.mp-brand-border-hover(raetselbaukasten);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(raetselbaukasten);
             }
 
             &.nav__link--active {
@@ -121,14 +121,31 @@
             }
         }
 
-        &--minikaenguru-admin {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-            border-color: rgb(63 102 87 / 20%);
+        &--minikaenguru-statistik {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
+            border-color: mp-theme.mp-brand-border(minikaenguru-statistik);
 
             &:hover,
             &:focus-visible {
-                border-color: rgb(63 102 87 / 30%);
-                box-shadow: inset 0 0 0 1px rgb(63 102 87 / 18%);
+                border-color: mp-theme.mp-brand-border-hover(minikaenguru-statistik);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-statistik);
+            }
+
+            &.nav__link--active {
+                border-color: mp-theme.mp-brand(minikaenguru-statistik);
+                color: mp-theme.mp-brand(minikaenguru-statistik);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru-statistik);
+            }
+        }
+
+        &--minikaenguru-admin {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
+            border-color: mp-theme.mp-brand-border(minikaenguru-admin);
+
+            &:hover,
+            &:focus-visible {
+                border-color: mp-theme.mp-brand-border-hover(minikaenguru-admin);
+                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-admin);
             }
 
             &.nav__link--active {

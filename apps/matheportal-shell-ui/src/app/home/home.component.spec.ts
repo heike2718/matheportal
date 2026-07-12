@@ -44,13 +44,16 @@ describe('HomeComponent', () => {
         await setup(anonymousUser);
         expect(fixture).toBeTruthy();
         const cardsDe = fixture.debugElement.queryAll(By.css('.mp-home__card-link'));
-        expect(cardsDe.length).toBe(2);
+        expect(cardsDe.length).toBe(3);
 
         const cardMinikaenguruDe = fixture.debugElement.query(By.css('.mp-home-card--minikaenguru'));
         expect(cardMinikaenguruDe).toBeTruthy();
 
         const cardRaetselbaukastenDe = fixture.debugElement.query(By.css('.mp-home-card--raetselbaukasten'));
         expect(cardRaetselbaukastenDe).toBeTruthy();
+
+        const cardStatistikDe = fixture.debugElement.query(By.css('.mp-home-card--minikaenguru-statistik'));
+        expect(cardStatistikDe).toBeTruthy();
 
         const cardMinikaenguruAdminDe = fixture.debugElement.query(By.css('.mp-home-card--minikaenguru-admin'));
         expect(cardMinikaenguruAdminDe).toBeFalsy();

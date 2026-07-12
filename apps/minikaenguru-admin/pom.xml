@@ -12,9 +12,9 @@
     <properties>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.34.1</quarkus.platform.version>
+        <quarkus.platform.version>3.37.2</quarkus.platform.version>
 
-        <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+        <matheportal-bom.version>0.0.2-SNAPSHOT</matheportal-bom.version>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
         <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
 
@@ -31,8 +31,6 @@
 
         <pmd-exclusion-1>**/generated-sources/**</pmd-exclusion-1>
         <!-- Ende mixin-propetries -->
-
-        <lombock.version>1.18.42</lombock.version>
 
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -62,7 +60,6 @@
         <dependency>
             <groupId>de.egladil.web</groupId>
             <artifactId>egladil-secure-tokens</artifactId>
-            <version>${egladil-secure-tokens.version}</version>
         </dependency>
 
         <dependency>
@@ -119,7 +116,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombock.version}</version>
             <scope>provided</scope>
         </dependency>
 

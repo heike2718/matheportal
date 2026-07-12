@@ -12,7 +12,7 @@
   <url>https://github.com/heike2718/matheportal</url>
 
   <properties>
-    <matheportal-bom.version>0.0.1-SNAPSHOT</matheportal-bom.version>
+    <matheportal-bom.version>0.0.2-SNAPSHOT</matheportal-bom.version>
 
     <git-build-hook-maven-plugin.version>3.6.0</git-build-hook-maven-plugin.version>
 

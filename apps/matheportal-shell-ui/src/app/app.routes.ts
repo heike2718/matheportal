@@ -22,6 +22,10 @@ export const appRoutes: Route[] = [
         loadChildren: () => loadRemoteModule('raetselbaukasten-ui', './Routes').then(m => m.remoteRoutes),
     },
     {
+        path: 'minikaenguru-statistik',
+        loadChildren: () => loadRemoteModule('minikaenguru-statistik-ui', './Routes').then(m => m.remoteRoutes),
+    },
+    {
         path: 'minikaenguru-admin',
         canMatch: [minikaenguruAdminGuard()],
         loadChildren: () => loadRemoteModule('minikaenguru-admin-ui', './Routes').then(m => m.remoteRoutes),

@@ -6,7 +6,7 @@
 
     <groupId>de.mathe-jung-alt</groupId>
     <artifactId>matheportal-bom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>matheportal-bom</name>
@@ -15,7 +15,7 @@
     <properties>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
 
-        <quarkus.version>3.34.1</quarkus.version>
+        <quarkus.version>3.37.2</quarkus.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <slf4j.version>1.7.30</slf4j.version>
         <slf4j-jboss-logmanager.version>2.1.0.Final</slf4j-jboss-logmanager.version>
@@ -28,6 +28,7 @@
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
 
         <lombock.version>1.18.42</lombock.version>
+        <wiremock.version>3.13.2</wiremock.version>
 
         <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
         <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
@@ -107,6 +108,13 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${wiremock.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

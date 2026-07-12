@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * StartupListener.
  */
-@ApplicationScoped
 @Slf4j
+@ApplicationScoped
 public class StartupListener {
 
     @ConfigProperty(name = "quarkus.datasource.sessions.jdbc.url")

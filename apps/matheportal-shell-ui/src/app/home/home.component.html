@@ -24,6 +24,17 @@
             </mat-card>
         </a>
 
+        <a class="mp-home__card-link" routerLink="/minikaenguru-statistik">
+            <mat-card class="mp-home-card mp-home-card--minikaenguru-statistik">
+                <mat-card-header>
+                    <mat-card-title>Minikänguru-Statistik</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="mp-home-card__content">
+                    Statistiken für die Minikänguru-Wettbewerbe
+                </mat-card-content>
+            </mat-card>
+        </a>
+
         @if (authSessionFacade.isAdmin()) {
             <a class="mp-home__card-link" routerLink="/minikaenguru-admin">
                 <mat-card class="mp-home-card mp-home-card--minikaenguru-admin">
