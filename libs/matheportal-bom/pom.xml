@@ -15,7 +15,7 @@
     <properties>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
 
-        <quarkus.version>3.34.1</quarkus.version>
+        <quarkus.version>3.37.2</quarkus.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <slf4j.version>1.7.30</slf4j.version>
         <slf4j-jboss-logmanager.version>2.1.0.Final</slf4j-jboss-logmanager.version>
