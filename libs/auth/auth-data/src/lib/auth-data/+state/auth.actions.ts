@@ -1,5 +1,6 @@
-import { SESSION_VALIDATION_FAILED_REASON, User } from '@matheportal/auth-model';
+import { User } from '@matheportal/auth-model';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { SESSION_VALIDATION_FAILED_REASON } from '../auth-data.utils';
 
 export const authActions = createActionGroup({
     source: 'Auth',
