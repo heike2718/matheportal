@@ -1,5 +1,5 @@
 import { UserWithBerechtigungen } from '@matheportal/auth-model';
-import { MinikaenguruBerechtigungstyp, MINIKAENGURU_BERECHTIGUNGSTYP } from './mka-authorization.model';
+import { MinikaenguruBerechtigungstyp, MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model';
 
 export function resolveBerechtigungstyp(user: UserWithBerechtigungen | null): MinikaenguruBerechtigungstyp {
     if (user === null || user.berechtigungen.length === 0) {
