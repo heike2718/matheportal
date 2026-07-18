@@ -1,4 +1,4 @@
-import { MINIKAENGURU_BERECHTIGUNGSTYP } from './mka-authorization.model';
+import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model/mka-authorization.model';
 import { resolveBerechtigungstyp } from './mka-authorization.utils';
 
 describe('resolveVeranstaltertyp', () => {
