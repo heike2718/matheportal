@@ -12,21 +12,6 @@ export interface AuthConfiguration {
 
 export const AUTH_CONFIGURATION = new InjectionToken<AuthConfiguration>('auth-configuration');
 
-export interface LocationHashService {
-    readonly read: () => string;
-    readonly clear: () => void;
-}
-
-export const LOCATION_HASH_SERVICE = new InjectionToken<LocationHashService>('location-hash-service', {
-    providedIn: 'root',
-    factory: () => ({
-        read: () => window.location.hash,
-        clear: () => {
-            window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-        },
-    }),
-});
-
 export interface SessionValidationFailedDto {
     readonly reason: 'expired' | 'missing';
 }

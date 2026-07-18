@@ -6,10 +6,11 @@ import { provideStore } from '@ngrx/store';
 import { AuthHttpService } from '../auth-http.service';
 import { Router } from '@angular/router';
 import { authActions } from './auth.actions';
-import { AuthUrlResponse, LOCATION_HASH_SERVICE, User } from '@matheportal/auth-model';
+import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
+import { LOCATION_HASH_SERVICE } from '../location-hash.service';
 
 describe('AuthEffects', () => {
     let action$: ReplaySubject<unknown>;

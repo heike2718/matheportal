@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AuthSessionFacade } from './auth-session.facade';
 import { authActions } from '@matheportal/auth-data';
-import { LOCATION_HASH_SERVICE } from '@matheportal/auth-model';
+import { LOCATION_HASH_SERVICE } from '@matheportal/auth-data';
 import { mapHashToAuthResult } from './utils/auth-api.utils';
 @Injectable({
     providedIn: 'root',
