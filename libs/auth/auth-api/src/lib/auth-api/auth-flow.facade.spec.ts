@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { authActions } from '@matheportal/auth-data';
 import { AuthFlowFacade } from './auth-flow.facade';
 import { AuthSessionFacade } from './auth-session.facade';
-import { LOCATION_HASH_SERVICE } from '@matheportal/auth-model';
+import { LOCATION_HASH_SERVICE } from '@matheportal/auth-data';
 
 describe('AuthFlowFacade', () => {
     let facade: AuthFlowFacade;

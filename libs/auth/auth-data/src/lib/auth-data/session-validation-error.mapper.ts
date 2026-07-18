@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { parseSessionValidationFailedDtoReason, SESSION_VALIDATION_FAILED_REASON } from '@matheportal/auth-model';
+import { parseSessionValidationFailedDtoReason, SESSION_VALIDATION_FAILED_REASON } from './auth-data.utils';
 
 export function mapHttpErrorToSessionValidationFailedReason(
     error: HttpErrorResponse
