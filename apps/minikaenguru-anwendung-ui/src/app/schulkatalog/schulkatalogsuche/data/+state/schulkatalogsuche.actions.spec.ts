@@ -83,4 +83,12 @@ describe('Schulkatalogsuche actions tests', () => {
             type: '[Schulkatalogsuche] findSchulenFailed',
         });
     });
+
+    it('should create resetSuche action', () => {
+        const action = schulkatalogsucheActions.resetSuche();
+
+        expect(action).toEqual({
+            type: '[Schulkatalogsuche] resetSuche',
+        });
+    });
 });

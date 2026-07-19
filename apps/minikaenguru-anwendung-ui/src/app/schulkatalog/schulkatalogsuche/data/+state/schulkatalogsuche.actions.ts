@@ -10,5 +10,6 @@ export const schulkatalogsucheActions = createActionGroup({
         findSchulen: props<{ ort: Ort; name: string }>(),
         findSchulenSucceeded: props<{ schulen: Schule[] }>(),
         findSchulenFailed: emptyProps(),
+        resetSuche: emptyProps(),
     },
 });
