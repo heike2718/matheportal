@@ -1,13 +1,14 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import {
     AuthorizationLoadState,
-    MKA_AUTHORIZATION_FEATURE_KEY,
     MinikaenguruBerechtigungstyp,
     MINIKAENGURU_BERECHTIGUNGSTYP,
 } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { resolveBerechtigungstyp } from '../mka-authorization.utils';
+
+const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';
 
 export interface MkaAuthorizationState {
     readonly authorizationLoadState: AuthorizationLoadState;

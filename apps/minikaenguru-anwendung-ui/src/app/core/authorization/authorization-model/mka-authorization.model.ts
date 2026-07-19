@@ -18,5 +18,3 @@ export type StartViewState =
     | 'dashboard-privatperson'
     | 'dashboard-lehrperson'
     | 'needs-wettbewerbsdurchfuehrenden';
-
-export const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';
