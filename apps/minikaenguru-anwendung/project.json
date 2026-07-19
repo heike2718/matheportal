@@ -4,7 +4,7 @@
     "projectType": "application",
     "sourceRoot": "apps/minikaenguru-anwendung/src",
     "tags": ["platform:backend", "type:bff"],
-    "implicitDependencies": ["matheportal-bom", "auth-session"],
+    "implicitDependencies": ["matheportal-bom", "auth-session", "matheportal-validation"],
 
     "targets": {
         "tech-generate-sources": {

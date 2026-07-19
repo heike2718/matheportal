@@ -150,6 +150,92 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/orte:
+        get:
+            tags:
+                - Schulkatalog
+            summary: 'Suche nach Orten im Schulkatalog'
+            description: 'Orte des Schulkatalogs, auf die name passt (like)'
+            operationId: findOrte
+            security:
+                - mpSession: []
+            parameters:
+                - in: query
+                  name: name
+                  schema:
+                      type: string
+                      pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                  required: true
+                  description: Teil eines Ortsnamens
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfOrte'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/orte/{ortId}/schulen:
+        get:
+            tags:
+                - Schulkatalog
+            summary: Laden von Schulen aus dem Schulkatalog
+            description: alle Schulen eines Ortes im Schulkatalog werden geladen
+            operationId: loadSchulen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: ortId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                  required: true
+                  description: kuerzel des Ortes
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfSchulen'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:
@@ -223,8 +309,8 @@ components:
                     type: string
                     minLength: 1
                     maxLength: 201
-                    pattern: "^[\\p{IsLatin}\\d]+(?:[ '\\-.’][\\p{IsLatin}\\d]+)*$"
-                    description: Vollständiger Anzeigename (lateinische Buchstaben, Ziffern, Leerzeichen, Bindestrich, Apostroph)
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    description: vollständiger Anzeigename
                     example: María del Carmen 2
                 berechtigungen:
                     type: array
@@ -262,3 +348,46 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
+        Land:
+            type: object
+            properties:
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z\-]*$'
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                anzahlOrte:
+                    type: integer
+        Ort:
+            type: object
+            properties:
+                land:
+                    $ref: '#/components/schemas/Land'
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                anzahlSchulen:
+                    type: integer
+        Schule:
+            type: object
+            properties:
+                ort:
+                    $ref: '#/components/schemas/Ort'
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+        ArrayOfOrte:
+            type: array
+            items:
+                $ref: '#/components/schemas/Ort'
+        ArrayOfSchulen:
+            type: array
+            items:
+                $ref: '#/components/schemas/Schule'
