@@ -1,7 +1,5 @@
 import { InjectionToken } from '@angular/core';
 
-export const AUTH_FEATURE_KEY = 'mpAuth';
-
 export type AUTH_RESULT_STATE = 'login' | 'signup' | 'invalid';
 
 export const LOGGED_OUT_EVENT = 'user logged out';
