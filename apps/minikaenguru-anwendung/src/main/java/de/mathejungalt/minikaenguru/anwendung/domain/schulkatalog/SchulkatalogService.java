@@ -33,7 +33,7 @@ public class SchulkatalogService {
     public List<Ort> findOrte(final String name) {
 
         final List<OrtEntity> trefferliste = schulkatalogDao.findOrteByName(name);
-        return trefferliste.stream().map(entity -> mapFromDb(entity)).toList();
+        return trefferliste.stream().map(this::mapFromDb).toList();
     }
 
     Ort mapFromDb(final OrtEntity entity) {
@@ -53,7 +53,7 @@ public class SchulkatalogService {
      */
     public List<Schule> loadSchulen(final String ortId) {
         final List<SchuleEntity> trefferliste = schulkatalogDao.loadSchulenInOrt(ortId);
-        return trefferliste.stream().map(entity -> mapFromDb(entity)).toList();
+        return trefferliste.stream().map(this::mapFromDb).toList();
     }
 
     Schule mapFromDb(final SchuleEntity entity) {
