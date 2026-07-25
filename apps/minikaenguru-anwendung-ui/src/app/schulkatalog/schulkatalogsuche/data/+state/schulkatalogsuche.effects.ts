@@ -38,6 +38,13 @@ export class SchulkatalogsucheEffects {
         { dispatch: false }
     );
 
+    ortSelected$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(schulkatalogsucheActions.ortSelected),
+            map(({ ort }) => schulkatalogsucheActions.loadSchulen({ ort }))
+        );
+    });
+
     loadSchulen$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schulkatalogsucheActions.loadSchulen),
