@@ -193,24 +193,24 @@ describe('SchulkatalogsucheEffects', () => {
         });
     });
 
-    // describe('ortSelected$', () => {
-    //     it('ortSelected should map to loadSchulen', async () => {
-    //         const ort: Ort = {
-    //             kuerzel: 'ORT-2',
-    //             name: 'zweiter Ort',
-    //             land: {
-    //                 kuerzel: 'DE-HE',
-    //                 name: 'Hessen',
-    //             },
-    //             anzahlSchulen: 5,
-    //         };
+    describe('ortSelected$', () => {
+        it('ortSelected should map to loadSchulen', async () => {
+            const ort: Ort = {
+                kuerzel: 'ORT-2',
+                name: 'zweiter Ort',
+                land: {
+                    kuerzel: 'DE-HE',
+                    name: 'Hessen',
+                },
+                anzahlSchulen: 5,
+            };
 
-    //         action$.next(schulkatalogsucheActions.ortSelected({ ort }));
+            action$.next(schulkatalogsucheActions.ortSelected({ ort }));
 
-    //         const emmited = await firstValueFrom(effects.loadSchulen$);
-    //         expect(emmited).toEqual(schulkatalogsucheActions.loadSchulen({ ort }));
-    //     });
-    // });
+            const emmited = await firstValueFrom(effects.ortSelected$);
+            expect(emmited).toEqual(schulkatalogsucheActions.loadSchulen({ ort }));
+        });
+    });
 
     describe('loadSchulen$', () => {
         const ort1: Ort = {
@@ -263,7 +263,7 @@ describe('SchulkatalogsucheEffects', () => {
             httpServiceMock.loadSchulen.mockReturnValue(of(schulenOrt1));
             action$.next(schulkatalogsucheActions.loadSchulen({ ort: ort1 }));
 
-            const emmited = await firstValueFrom(effects.ortSelected$);
+            const emmited = await firstValueFrom(effects.loadSchulen$);
             expect(emmited).toEqual(
                 schulkatalogsucheActions.loadSchulenSucceeded({ ortId: ort1.kuerzel, schulen: schulenOrt1 })
             );
@@ -280,7 +280,7 @@ describe('SchulkatalogsucheEffects', () => {
                 .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
                 .mockReturnValueOnce(httpSecond$);
 
-            const emittedPromise = firstValueFrom(effects.ortSelected$);
+            const emittedPromise = firstValueFrom(effects.loadSchulen$);
 
             action$.next(schulkatalogsucheActions.loadSchulen({ ort: ort1 }));
 
@@ -309,7 +309,7 @@ describe('SchulkatalogsucheEffects', () => {
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => httpServerErrorResponse));
             action$.next(schulkatalogsucheActions.loadSchulen({ ort: ort1 }));
 
-            const emmited = await firstValueFrom(effects.ortSelected$);
+            const emmited = await firstValueFrom(effects.loadSchulen$);
             expect(emmited).toEqual(schulkatalogsucheActions.loadSchulenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledWith(ort1.kuerzel);
@@ -319,7 +319,7 @@ describe('SchulkatalogsucheEffects', () => {
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => error));
             action$.next(schulkatalogsucheActions.loadSchulen({ ort: ort1 }));
 
-            const emmited = await firstValueFrom(effects.ortSelected$);
+            const emmited = await firstValueFrom(effects.loadSchulen$);
             expect(emmited).toEqual(schulkatalogsucheActions.loadSchulenFailed({ error }));
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledWith(ort1.kuerzel);
