@@ -23,6 +23,7 @@ describe('schulkatalogsucheFeature tests', () => {
                 kuerzel: 'DE-BY',
                 name: 'Bayern',
             },
+            anzahlSchulen: 10,
         },
         {
             kuerzel: 'ORT-2',
@@ -31,6 +32,7 @@ describe('schulkatalogsucheFeature tests', () => {
                 kuerzel: 'DE-HE',
                 name: 'Hessen',
             },
+            anzahlSchulen: 5,
         },
     ];
 
@@ -96,7 +98,7 @@ describe('schulkatalogsucheFeature tests', () => {
         });
     });
 
-    describe('findSchulenSucceeded', () => {
+    describe('loadSchulenSucceeded', () => {
         const previousState = createState({
             orte,
             orteLoadingState: 'loaded',
@@ -106,7 +108,7 @@ describe('schulkatalogsucheFeature tests', () => {
             const ortId = orte[1].kuerzel;
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findSchulenSucceeded({ ortId, schulen })
+                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
             );
 
             expect(state).toEqual({
@@ -123,7 +125,7 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findSchulenSucceeded({ ortId, schulen })
+                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
             );
 
             expect(state).toBe(previousState);
@@ -133,7 +135,7 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findSchulenSucceeded({ ortId, schulen: [] })
+                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
             );
 
             expect(state).toEqual({
@@ -150,7 +152,7 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findSchulenSucceeded({ ortId, schulen: [] })
+                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
             );
 
             expect(state).toBe(previousState);
@@ -211,6 +213,7 @@ describe('schulkatalogsucheFeature tests', () => {
                 land,
                 kuerzel: 'SCHULE-9',
                 name: 'Primarschule Rültigasse',
+                anzahlSchulen: 4,
             };
             const schule: Schule = {
                 ort,
@@ -253,7 +256,7 @@ describe('schulkatalogsucheFeature tests', () => {
         });
     });
 
-    describe('findSchulenFailed', () => {
+    describe('loadSchulenFailed', () => {
         const httpServerErrorResponse = new HttpErrorResponse({
             status: 500,
             statusText: 'Internal Server Error',
@@ -265,7 +268,7 @@ describe('schulkatalogsucheFeature tests', () => {
             // schulkatalogsuche-data.utils is responsible for the correct mapping and therefore comletely tested in its own spec
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findSchulenFailed({ error: httpServerErrorResponse })
+                schulkatalogsucheActions.loadSchulenFailed({ error: httpServerErrorResponse })
             );
 
             expect(state).toEqual({

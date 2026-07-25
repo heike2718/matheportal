@@ -28,7 +28,7 @@ describe('schulkatalogsuche-data.utils', () => {
 
             expect(result).toBe('unauthorized');
         });
-        it('should return not-found when 404', () => {
+        it('should return loaded when 404', () => {
             const result: SCHULKATALOG_LOADING_STATE = mapErrorToSchulkatalogLoadingState(
                 new HttpErrorResponse({
                     status: 404,
@@ -38,7 +38,7 @@ describe('schulkatalogsuche-data.utils', () => {
                 })
             );
 
-            expect(result).toBe('not-found');
+            expect(result).toBe('loaded');
         });
         it('should return technical when 400', () => {
             const result: SCHULKATALOG_LOADING_STATE = mapErrorToSchulkatalogLoadingState(
@@ -75,6 +75,12 @@ describe('schulkatalogsuche-data.utils', () => {
                     url: '/ORT-1/schulen/',
                 })
             );
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when other Error', () => {
+            const error = new Error('uiuiui');
+            const result: SCHULKATALOG_LOADING_STATE = mapErrorToSchulkatalogLoadingState(error);
+
             expect(result).toBe('technical-error');
         });
     });

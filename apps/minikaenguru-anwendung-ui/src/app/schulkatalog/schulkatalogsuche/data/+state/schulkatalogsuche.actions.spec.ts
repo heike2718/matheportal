@@ -10,6 +10,7 @@ const orte: Ort[] = [
             kuerzel: 'DE-BY',
             name: 'Bayern',
         },
+        anzahlSchulen: 10,
     },
     {
         kuerzel: 'ORT-2',
@@ -18,6 +19,7 @@ const orte: Ort[] = [
             kuerzel: 'DE-HE',
             name: 'Hessen',
         },
+        anzahlSchulen: 5,
     },
 ];
 
@@ -57,19 +59,16 @@ describe('schulkatalogsucheActions', () => {
         });
     });
 
-    it('should create findSchulen action', () => {
-        const name = 'Einstein';
-
-        const action = schulkatalogsucheActions.findSchulen({ ort: orte[0], name });
+    it('should create loadSchulen action', () => {
+        const action = schulkatalogsucheActions.loadSchulen({ ort: orte[0] });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findSchulen',
+            type: '[Schulkatalogsuche] loadSchulen',
             ort: orte[0],
-            name,
         });
     });
 
-    it('should create findSchulenSucceeded action', () => {
+    it('should create loadSchulenSucceeded action', () => {
         const ortId = orte[0].kuerzel;
         const schulen: Schule[] = [
             {
@@ -78,21 +77,22 @@ describe('schulkatalogsucheActions', () => {
                 name: 'Albert-Einstein-Schule',
             },
         ];
-        const action = schulkatalogsucheActions.findSchulenSucceeded({ ortId, schulen });
+        const action = schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findSchulenSucceeded',
+            type: '[Schulkatalogsuche] loadSchulenSucceeded',
             ortId,
             schulen,
         });
     });
 
-    it('should create findSchulenFailed action when http error', () => {
-        const action = schulkatalogsucheActions.findSchulenFailed({ error: httpServerErrorResponse });
+    it('should create loadSchulenFailed action when http error', () => {
+        const error = new Error('uiuiui');
+        const action = schulkatalogsucheActions.loadSchulenFailed({ error });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findSchulenFailed',
-            error: httpServerErrorResponse,
+            type: '[Schulkatalogsuche] loadSchulenFailed',
+            error,
         });
     });
 

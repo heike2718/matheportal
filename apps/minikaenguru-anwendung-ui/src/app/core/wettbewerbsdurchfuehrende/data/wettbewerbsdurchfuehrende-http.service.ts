@@ -19,8 +19,6 @@ export class WettbewerbsdurchfuehrendeHttpService {
     public createWettbewerbsdurchfuehrenden(
         requestDto: WettbewerbsdurchfuerenderRequest
     ): Observable<WettbewerbsdurchfuehrenderDto> {
-        console.log(JSON.stringify(requestDto));
-
         return this.#httpClient.post<WettbewerbsdurchfuehrenderDto>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
             requestDto,

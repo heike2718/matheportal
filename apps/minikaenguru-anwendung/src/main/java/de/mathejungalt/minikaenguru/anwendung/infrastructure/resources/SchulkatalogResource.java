@@ -32,5 +32,4 @@ public class SchulkatalogResource implements SchulkatalogApi {
         final List<Schule> schulen = schulkatalogService.loadSchulen(ortId);
         return Response.ok(schulen).build();
     }
-
 }

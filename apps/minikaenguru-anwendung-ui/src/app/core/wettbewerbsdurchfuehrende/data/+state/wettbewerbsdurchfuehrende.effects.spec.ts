@@ -1,4 +1,4 @@
-import { firstValueFrom, of, ReplaySubject, throwError } from 'rxjs';
+import { finalize, firstValueFrom, of, ReplaySubject, Subject, throwError } from 'rxjs';
 import { WettbewerbsdurchfuehrendeEffects } from './wettbewerbsdurchfuehrende.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -10,8 +10,9 @@ import {
     WettbewerbsdurchfuerenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
-import { HttpErrorResponse, HttpEventType, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Action } from '@ngrx/store';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let action$: ReplaySubject<unknown>;
@@ -94,6 +95,140 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+        });
+
+        it('should finish the first action not start the second request (exhaustMap)', async () => {
+            const firstRequestDto: WettbewerbsdurchfuerenderRequest = {
+                durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                schule: null,
+            };
+
+            const secondRequestDto: WettbewerbsdurchfuerenderRequest = {
+                durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                schule: 'ABCDEFGH',
+            };
+
+            const responseDto1: WettbewerbsdurchfuehrenderDto = {
+                durchfuehrungsart: 'PRIVAT',
+                newsletter: false,
+                teilnahmenummern: ['A123456789'],
+                zugangsberechtigungUnterlagen: 'STANDARD',
+            };
+
+            const httpFirst$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+            const httpSecond$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+
+            const firstRequestFinalized = vi.fn();
+            const secondRequestFinalized = vi.fn();
+
+            httpServiceMock.createWettbewerbsdurchfuehrenden
+                .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
+                .mockReturnValueOnce(httpSecond$.pipe(finalize(secondRequestFinalized)));
+
+            // effect abonnieren
+            const emittedPromise = firstValueFrom(effects.durchfuehrendenAnlegen$);
+
+            // effect bekommt die erste action mit Rückgabe httpFirst$
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: firstRequestDto,
+                })
+            );
+            // exhaustMap abonniert httpFirst$. request läuft
+            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+            expect(firstRequestFinalized).not.toHaveBeenCalled();
+
+            // effect bekommt die zweite action, während httpFirst$ noch nicht emmited hat
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: secondRequestDto,
+                })
+            );
+
+            // Zweite Action wurde ignoriert.
+            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+            expect(firstRequestFinalized).not.toHaveBeenCalled();
+            expect(secondRequestFinalized).not.toHaveBeenCalled();
+
+            // Eintreffen des responses simulieren
+            httpFirst$.next(responseDto1);
+            httpFirst$.complete();
+
+            await expect(emittedPromise).resolves.toEqual(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                    responseDto: responseDto1,
+                })
+            );
+
+            expect(firstRequestFinalized).toHaveBeenCalledOnce();
+            expect(secondRequestFinalized).not.toHaveBeenCalled();
+        });
+
+        it('should accept a new action after the pending request completed', async () => {
+            const firstRequestDto: WettbewerbsdurchfuerenderRequest = {
+                durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                schule: null,
+            };
+
+            const secondRequestDto: WettbewerbsdurchfuerenderRequest = {
+                durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                schule: 'ABCDEFGH',
+            };
+
+            const responseDto1: WettbewerbsdurchfuehrenderDto = {
+                durchfuehrungsart: 'PRIVAT',
+                newsletter: false,
+                teilnahmenummern: ['A123456789'],
+                zugangsberechtigungUnterlagen: 'STANDARD',
+            };
+
+            const responseDto2: WettbewerbsdurchfuehrenderDto = {
+                durchfuehrungsart: 'SCHULE',
+                newsletter: false,
+                teilnahmenummern: ['ABCDEFGH'],
+                zugangsberechtigungUnterlagen: 'STANDARD',
+            };
+
+            const httpFirst$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+            const httpSecond$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+
+            httpServiceMock.createWettbewerbsdurchfuehrenden
+                .mockReturnValueOnce(httpFirst$)
+                .mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.durchfuehrendenAnlegen$.subscribe(action => emittedActions.push(action));
+
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: firstRequestDto,
+                })
+            );
+
+            httpFirst$.next(responseDto1);
+            httpFirst$.complete();
+
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: secondRequestDto,
+                })
+            );
+
+            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(2);
+
+            httpSecond$.next(responseDto2);
+            httpSecond$.complete();
+
+            expect(emittedActions).toEqual([
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                    responseDto: responseDto1,
+                }),
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                    responseDto: responseDto2,
+                }),
+            ]);
+
+            subscription.unsubscribe();
         });
 
         it('should call the http service and map to durchfuehrendenAnlegenFailed when httpMock throws ServerError', async () => {

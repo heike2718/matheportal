@@ -46,13 +46,13 @@ export const schulkatalogsucheFeature = createFeature({
             schulen: [],
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.findSchulenSucceeded, (state, { ortId, schulen }) => {
+        on(schulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
             if (state.selectedOrt?.kuerzel !== ortId) {
                 return state;
             }
             return { ...state, schulen, schulenLoadingState: 'loaded', selectedSchule: undefined };
         }),
-        on(schulkatalogsucheActions.findSchulenFailed, (state, { error }) => {
+        on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
                 schulenLoadingState: mapErrorToSchulkatalogLoadingState(error),
