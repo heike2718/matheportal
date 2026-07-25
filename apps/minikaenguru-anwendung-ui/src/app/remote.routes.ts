@@ -8,6 +8,7 @@ import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
+import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 
 export const remoteRoutes: Routes = [
     {
@@ -36,6 +37,7 @@ export const remoteRoutes: Routes = [
             },
             ...mkaAuthorizationDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
+            ...mkaSchulkatalogsucheDataProvider,
         ],
     },
 ];

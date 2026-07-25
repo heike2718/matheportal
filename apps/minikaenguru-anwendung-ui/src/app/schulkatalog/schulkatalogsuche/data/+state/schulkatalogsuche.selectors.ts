@@ -10,3 +10,10 @@ export const selectSchulen = createSelector(selectSchulkatalogsucheState, state 
 export const selectSelectedOrt = createSelector(selectSchulkatalogsucheState, state => state.selectedOrt);
 
 export const selectSelectedSchule = createSelector(selectSchulkatalogsucheState, state => state.selectedSchule);
+
+export const fromSchulkatalogsuche = {
+    selectOrte,
+    selectSchulen,
+    selectSelectedOrt,
+    selectSelectedSchule,
+};
