@@ -32,7 +32,7 @@ describe('SchulkatalosucheFacade tests', () => {
 
     it('findSchulen should dispatch the expected action', () => {
         const name = 'Wall';
-        facade.findOrt(name);
+        facade.findOrte(name);
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.findOrte({ name }));

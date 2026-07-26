@@ -1,6 +1,13 @@
 import { Ort, Schule } from '../../model/schulkatalog.model';
 import { SchulkatalogsucheState } from './schulkatalogsuche.reducer';
-import { selectOrte, selectSchulen, selectSelectedOrt, selectSelectedSchule } from './schulkatalogsuche.selectors';
+import {
+    orteLoaded,
+    schulenLoaded,
+    selectOrte,
+    selectSchulen,
+    selectSelectedOrt,
+    selectSelectedSchule,
+} from './schulkatalogsuche.selectors';
 
 describe('schulkatalogsucheSelectors', () => {
     const orte: Ort[] = [
@@ -66,5 +73,15 @@ describe('schulkatalogsucheSelectors', () => {
     it('should select the selected schule', () => {
         const result = selectSelectedSchule.projector(state);
         expect(result).toBeUndefined();
+    });
+
+    it('should select orteLoaded', () => {
+        const result = orteLoaded.projector(state);
+        expect(result).toBe(true);
+    });
+
+    it('should select schulenLoaded', () => {
+        const result = schulenLoaded.projector({ ...state, schulenLoadingState: 'not-loaded' });
+        expect(result).toBe(false);
     });
 });

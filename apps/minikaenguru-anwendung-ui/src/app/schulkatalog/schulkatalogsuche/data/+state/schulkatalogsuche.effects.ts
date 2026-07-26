@@ -6,6 +6,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { Ort, Schule } from '../../model/schulkatalog.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapErrorToMessage } from '../../../../core/error/minikaenguru-error-mapper';
+import { isTermSearchable, normalizeSearchTerm } from '../schulkatalogsuche-data.utils';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden.
 export class SchulkatalogsucheEffects {
@@ -13,17 +14,21 @@ export class SchulkatalogsucheEffects {
     #httpService = inject(SchulkatalogsucheHttpService);
     #messagePublisherService = inject(MESSAGE_PUBLISHER);
 
-    findOrte$ = createEffect(() => {
-        return this.#actions.pipe(
+    findOrte$ = createEffect(() =>
+        this.#actions.pipe(
             ofType(schulkatalogsucheActions.findOrte),
-            switchMap(({ name }) =>
-                this.#httpService.findOrte(name).pipe(
+            map(({ name }) => normalizeSearchTerm(name)),
+            switchMap(term => {
+                if (!isTermSearchable(term)) {
+                    return of(schulkatalogsucheActions.orteCleared());
+                }
+                return this.#httpService.findOrte(term).pipe(
                     map((orte: Ort[]) => schulkatalogsucheActions.findOrteSucceeded({ orte })),
                     catchError((error: Error) => of(schulkatalogsucheActions.findOrteFailed({ error })))
-                )
-            )
-        );
-    });
+                );
+            })
+        )
+    );
 
     findOrteFailed$ = createEffect(
         () => {

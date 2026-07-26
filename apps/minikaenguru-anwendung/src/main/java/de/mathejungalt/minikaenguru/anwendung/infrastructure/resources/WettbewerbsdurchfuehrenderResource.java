@@ -1,6 +1,5 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +16,6 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.Wettbewer
 /**
  * WettbewerbsdurchfuehrenderResource.
  */
-@ApplicationScoped
 @Authenticated
 public class WettbewerbsdurchfuehrenderResource implements WettbewerbsdurchfuehrenderApi {
 

@@ -44,8 +44,10 @@ export const schulkatalogsucheFeature = createFeature({
             ...state,
             selectedOrt: ort,
             schulen: [],
+            schulenLoadingState: 'not-loaded',
             selectedSchule: undefined,
         })),
+        on(schulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
         on(schulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
             if (state.selectedOrt?.kuerzel !== ortId) {
                 return state;
@@ -68,6 +70,12 @@ export const schulkatalogsucheFeature = createFeature({
                 selectedSchule: schule,
             };
         }),
+        on(schulkatalogsucheActions.schulenCleared, state => ({
+            ...state,
+            schulen: [],
+            schulenLoadingState: 'not-loaded',
+            selectedSchule: undefined,
+        })),
         on(schulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),
         on(userLoggedOut, () => initialSchulkatalogsucheState)
     ),

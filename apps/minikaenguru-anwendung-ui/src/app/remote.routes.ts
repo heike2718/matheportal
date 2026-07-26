@@ -9,6 +9,7 @@ import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfu
 import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
+import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -28,6 +29,10 @@ export const remoteRoutes: Routes = [
                 canActivate: [mkaPrivatpersonGuard()],
                 canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
+            },
+            {
+                path: 'schulkatalogsuche',
+                component: SchulkatalogsucheComponent,
             },
         ],
         providers: [

@@ -16,7 +16,15 @@ export class SchulkatalogsucheFacade {
 
     readonly selectedSchule = this.#store.selectSignal(fromSchulkatalogsuche.selectSelectedSchule);
 
-    public findOrt(name: string): void {
+    readonly isOrteLoaded = this.#store.selectSignal(fromSchulkatalogsuche.orteLoaded);
+
+    readonly isOrtSelected = this.#store.selectSignal(fromSchulkatalogsuche.ortSelected);
+
+    readonly isSchulenLoaded = this.#store.selectSignal(fromSchulkatalogsuche.schulenLoaded);
+
+    readonly isSchuleSelected = this.#store.selectSignal(fromSchulkatalogsuche.schuleSelected);
+
+    public findOrte(name: string): void {
         this.#store.dispatch(schulkatalogsucheActions.findOrte({ name }));
     }
 

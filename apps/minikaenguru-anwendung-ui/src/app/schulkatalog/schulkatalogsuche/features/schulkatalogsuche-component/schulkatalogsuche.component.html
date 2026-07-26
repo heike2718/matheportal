@@ -1,0 +1,7 @@
+<div class="mka-schulkatalogsuche">
+    <mka-orte-suchen
+        [orte]="orte()"
+        [orteLoaded]="isOrteLoaded()"
+        (searchTermOrtChanged)="onSearchTermOrtChanged($event)"
+        (ortSelected)="onOrtSelected($event)"></mka-orte-suchen>
+</div>

@@ -62,7 +62,7 @@ describe('SchulkatalogsucheEffects', () => {
     });
 
     describe('findOrte$', () => {
-        it('findOrte$ should call the httpService and map to findOrteSucceeded when successfull', async () => {
+        it('findOrte$ should call the httpService and map to findOrteSucceeded when normalized term has length 3 and search is successfull', async () => {
             const orte: Ort[] = [
                 {
                     kuerzel: 'ORT-1',
@@ -83,7 +83,7 @@ describe('SchulkatalogsucheEffects', () => {
                     anzahlSchulen: 5,
                 },
             ];
-            const name = 'ortname';
+            const name = '  ort';
 
             httpServiceMock.findOrte.mockReturnValue(of(orte));
             action$.next(schulkatalogsucheActions.findOrte({ name }));
@@ -91,7 +91,7 @@ describe('SchulkatalogsucheEffects', () => {
             const emmited = await firstValueFrom(effects.findOrte$);
             expect(emmited).toEqual(schulkatalogsucheActions.findOrteSucceeded({ orte }));
             expect(httpServiceMock.findOrte).toHaveBeenCalledOnce();
-            expect(httpServiceMock.findOrte).toHaveBeenCalledWith(name);
+            expect(httpServiceMock.findOrte).toHaveBeenCalledWith('ort');
         });
         it('findOrte$ should switch to the latest action and cancel previous pending requests (switchMap)', async () => {
             const treffer1: Ort[] = [
@@ -167,6 +167,15 @@ describe('SchulkatalogsucheEffects', () => {
                     orte: treffer2,
                 })
             );
+        });
+        it('findOrte$ should not call the httpService and map to orteCleared when normalized term has length 2', async () => {
+            const name = ' or ';
+
+            action$.next(schulkatalogsucheActions.findOrte({ name }));
+
+            const emmited = await firstValueFrom(effects.findOrte$);
+            expect(emmited).toEqual(schulkatalogsucheActions.orteCleared());
+            expect(httpServiceMock.findOrte).not.toHaveBeenCalledOnce();
         });
         it('findOrte$ should call the httpService and map to findOrteFailed when httpErrorResponse', async () => {
             const name = 'ortname';

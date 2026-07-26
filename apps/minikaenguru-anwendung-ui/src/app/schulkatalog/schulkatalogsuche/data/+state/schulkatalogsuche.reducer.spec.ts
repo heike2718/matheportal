@@ -160,7 +160,13 @@ describe('schulkatalogsucheFeature tests', () => {
     });
 
     describe('ortSelected', () => {
-        const previousState = createState({ orte, orteLoadingState: 'loaded' });
+        const previousState = createState({
+            orte,
+            orteLoadingState: 'loaded',
+            schulen: schulen,
+            schulenLoadingState: 'loaded',
+            selectedSchule: schulen[1],
+        });
         it('should set selectedOrt, keep orte and reset schulen and selectedSchule', () => {
             const ort = orte[0];
 
@@ -177,6 +183,23 @@ describe('schulkatalogsucheFeature tests', () => {
                 schulenLoadingState: 'not-loaded',
                 selectedSchule: undefined,
             });
+        });
+    });
+
+    describe('orteCleared', () => {
+        it('should return the initial state when orteCleared', () => {
+            const previousState = createState({
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[1],
+                schulen,
+                schulenLoadingState: 'loaded',
+                selectedSchule: schulen[1],
+            });
+
+            const state = schulkatalogsucheFeature.reducer(previousState, schulkatalogsucheActions.orteCleared());
+
+            expect(state).toBe(initialSchulkatalogsucheState);
         });
     });
 
@@ -277,6 +300,30 @@ describe('schulkatalogsucheFeature tests', () => {
                 selectedOrt: orte[1],
                 schulen: [],
                 schulenLoadingState: 'technical-error',
+                selectedSchule: undefined,
+            });
+        });
+    });
+
+    describe('schulenCleared', () => {
+        it('should set reset schulen and loadingState when schulenCleared', () => {
+            const previousState = createState({
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[1],
+                schulen,
+                schulenLoadingState: 'loaded',
+                selectedSchule: schulen[1],
+            });
+
+            const state = schulkatalogsucheFeature.reducer(previousState, schulkatalogsucheActions.schulenCleared());
+
+            expect(state).toEqual({
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[1],
+                schulen: [],
+                schulenLoadingState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });

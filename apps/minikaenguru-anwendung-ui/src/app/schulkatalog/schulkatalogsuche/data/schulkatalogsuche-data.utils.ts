@@ -18,3 +18,12 @@ export function mapErrorToSchulkatalogLoadingState(error: Error): SCHULKATALOG_L
     }
     return 'technical-error';
 }
+
+export function normalizeSearchTerm(term: string): string {
+    return term.trim();
+}
+
+export function isTermSearchable(term: string): boolean {
+    const normalizedTerm = normalizeSearchTerm(term);
+    return normalizedTerm.length >= 3;
+}

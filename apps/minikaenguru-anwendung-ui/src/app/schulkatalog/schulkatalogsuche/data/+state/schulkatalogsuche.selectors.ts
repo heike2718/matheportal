@@ -11,9 +11,24 @@ export const selectSelectedOrt = createSelector(selectSchulkatalogsucheState, st
 
 export const selectSelectedSchule = createSelector(selectSchulkatalogsucheState, state => state.selectedSchule);
 
+export const orteLoaded = createSelector(selectSchulkatalogsucheState, state => state.orteLoadingState === 'loaded');
+
+export const schulenLoaded = createSelector(
+    selectSchulkatalogsucheState,
+    state => state.schulenLoadingState === 'loaded'
+);
+
+export const ortSelected = createSelector(selectSchulkatalogsucheState, state => state.selectedOrt !== undefined);
+
+export const schuleSelected = createSelector(selectSchulkatalogsucheState, state => state.selectedSchule !== undefined);
+
 export const fromSchulkatalogsuche = {
     selectOrte,
     selectSchulen,
     selectSelectedOrt,
     selectSelectedSchule,
+    orteLoaded,
+    schulenLoaded,
+    ortSelected,
+    schuleSelected,
 };

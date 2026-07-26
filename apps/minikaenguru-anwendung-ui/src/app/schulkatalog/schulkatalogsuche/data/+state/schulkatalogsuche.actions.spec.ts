@@ -106,6 +106,22 @@ describe('schulkatalogsucheActions', () => {
         });
     });
 
+    it('should create orteCleared action', () => {
+        const action = schulkatalogsucheActions.orteCleared();
+
+        expect(action).toEqual({
+            type: '[Schulkatalogsuche] orteCleared',
+        });
+    });
+
+    it('should create schulenCleared action', () => {
+        const action = schulkatalogsucheActions.schulenCleared();
+
+        expect(action).toEqual({
+            type: '[Schulkatalogsuche] schulenCleared',
+        });
+    });
+
     it('should create ortSelected action', () => {
         const schule: Schule = {
             ort: orte[1],

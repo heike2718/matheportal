@@ -10,7 +10,7 @@ export class SchulkatalogsucheHttpService {
     #httpClient = inject(HttpClient);
 
     public findOrte(term: string): Observable<Ort[]> {
-        const options = { params: new HttpParams().set('name', term.trim()) };
+        const options = { params: new HttpParams().set('name', term.trim()), withCredentials: true };
 
         return this.#httpClient.get<Ort[]>(this.#config.apiUrl + '/api/schulkatalog/orte', options);
     }
@@ -18,6 +18,6 @@ export class SchulkatalogsucheHttpService {
     public loadSchulen(kuerzelOrt: string): Observable<Schule[]> {
         const url = this.#config.apiUrl + '/api/schulkatalog/orte/' + kuerzelOrt + '/schulen';
 
-        return this.#httpClient.get<Schule[]>(url);
+        return this.#httpClient.get<Schule[]>(url, { withCredentials: true });
     }
 }

@@ -1,0 +1,13 @@
+<div class="mka-orte-suchen">
+    <h2>Ort suchen</h2>
+    <label for="term">Name: </label>
+    <input id="term" type="text" [formField]="searchForm.term" />
+
+    @if (orteLoaded()) {
+        Anzahl Orte: {{ orte().length }}
+    }
+
+    @for (ort of orte(); track ort.kuerzel) {
+        <mka-ort-card [ort]="ort" (ortSelected)="ortSelected.emit($event)" />
+    }
+</div>
