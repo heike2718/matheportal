@@ -45,7 +45,7 @@ public class SchulkatalogResourceTest {
 
         final int index = 1;
 
-        assertAll(() -> assertEquals(4, list.size()), () -> assertEquals("27CM5KFF", list.get(index).getKuerzel()),
+        assertAll(() -> assertEquals(5, list.size()), () -> assertEquals("27CM5KFF", list.get(index).getKuerzel()),
                 () -> assertEquals("27CM5KFF", list.get(index).getKuerzel()),
                 () -> assertEquals("Halle (Saale)", list.get(index).getName()),
                 () -> assertEquals("DE-ST", list.get(index).getLand().getKuerzel()),
