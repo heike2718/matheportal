@@ -1,0 +1,15 @@
+<button type="button" class="mka-ort-card" (click)="ortSelected.emit(ort())">
+    <span class="mka-ort-card__content">
+        <span class="mka-ort-card__name">
+            {{ ort().name }}
+        </span>
+
+        <span class="mka-ort-card__land">
+            {{ ort().land.name }}
+        </span>
+    </span>
+
+    <span class="mka-ort-card__school-count"> Anzahl Schulen: {{ ort().anzahlSchulen }} </span>
+
+    <span class="mka-ort-card__arrow" aria-hidden="true"> › </span>
+</button>

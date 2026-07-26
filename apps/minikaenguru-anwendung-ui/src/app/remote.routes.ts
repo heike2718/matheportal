@@ -8,6 +8,8 @@ import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
+import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
+import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -28,6 +30,10 @@ export const remoteRoutes: Routes = [
                 canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
             },
+            {
+                path: 'schulkatalogsuche',
+                component: SchulkatalogsucheComponent,
+            },
         ],
         providers: [
             {
@@ -36,6 +42,7 @@ export const remoteRoutes: Routes = [
             },
             ...mkaAuthorizationDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
+            ...mkaSchulkatalogsucheDataProvider,
         ],
     },
 ];

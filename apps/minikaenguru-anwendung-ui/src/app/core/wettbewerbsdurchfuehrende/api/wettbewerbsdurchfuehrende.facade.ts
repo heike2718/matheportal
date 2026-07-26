@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class WettbewerbsdurchfuehrendeFacade {
     #store = inject(Store);
 
-    wettbewerbsdurchfuehrender = toSignal(
+    readonly wettbewerbsdurchfuehrender = toSignal(
         this.#store.select(fromWettbewerbsdurchfuehrender.definedWettbewerbsdurchfuehrender)
     );
 

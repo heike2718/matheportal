@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.mathe-jung-alt</groupId>
+  <artifactId>matheportal-validation</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>matheportal-validation</name>
+  <url>https://github.com/heike2718/matheportal</url>
+
+  <properties>
+    <matheportal-bom.version>0.0.2-SNAPSHOT</matheportal-bom.version>
+
+    <git-build-hook-maven-plugin.version>3.6.0</git-build-hook-maven-plugin.version>
+
+    <jandex-maven-plugin.version>3.5.0</jandex-maven-plugin.version>
+
+    <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
+    <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
+
+    <!-- Start mixin-properties -->
+    <pmd.failOnViolation>true</pmd.failOnViolation>
+    <spotbugs.failOnError>true</spotbugs.failOnError>
+    <!-- Ende mixin-propetries -->
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>21</maven.compiler.release>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>de.mathe-jung-alt</groupId>
+        <artifactId>matheportal-bom</artifactId>
+        <version>${matheportal-bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>io.smallrye</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>${jandex-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.playtika.maven.plugins</groupId>
+        <artifactId>mixin-maven-plugin</artifactId>
+        <version>${mixin-maven-plugin.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <mixins>
+
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-core-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-linting-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-code-quality-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-unittest-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-unittest-coverage-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+            <mixin>
+              <groupId>de.egladil</groupId>
+              <artifactId>java-security-mixin</artifactId>
+              <version>${egladil-maven-mixins.version}</version>
+            </mixin>
+          </mixins>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

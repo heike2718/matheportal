@@ -1,11 +1,11 @@
 import {
     DURCHFUEHRUNGSART,
     Durchfuehrungsart,
-    mapDto,
     WettbewerbsdurchfuehrenderDto,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
     ZugangsberechtigungUnterlagen,
-} from './wettbewerbsdurchfuehrende.model';
+} from '../model/wettbewerbsdurchfuehrende.model';
+import { mapDto } from './wettbewerbsdurchfuehrende-data.utils';
 
 interface TestParameters {
     readonly durchfuehrungsart: string;

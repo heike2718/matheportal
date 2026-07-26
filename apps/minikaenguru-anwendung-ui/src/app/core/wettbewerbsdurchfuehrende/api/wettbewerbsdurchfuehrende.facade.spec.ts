@@ -10,7 +10,7 @@ describe('WettbewerbsdurchfuehrendeFacade tests', () => {
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [WettbewerbsdurchfuehrendeFacade, provideMockStore({})],
         });

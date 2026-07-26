@@ -1,11 +1,10 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import {
-    mapDto,
-    WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY,
-    Wettbewerbsdurchfuehrender,
-} from '../../model/wettbewerbsdurchfuehrende.model';
+import { Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
+import { mapDto } from '../wettbewerbsdurchfuehrende-data.utils';
+
+const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'wettbewerbsdurchfuehrende';
 
 export interface WettbewerbsdurchfuehrendeState {
     wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender | undefined;

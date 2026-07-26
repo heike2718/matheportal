@@ -6,8 +6,6 @@ import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehren
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
-import { HttpErrorResponse } from '@angular/common/http';
 import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
 
 @Injectable()

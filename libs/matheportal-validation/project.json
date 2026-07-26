@@ -1,0 +1,60 @@
+{
+    "name": "matheportal-validation",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "libs/matheportal-validation/src",
+    "tags": ["platform:backend", "type:library"],
+    "implicitDependencies": ["matheportal-bom"],
+
+    "targets": {
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn test"
+            }
+        },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn -Ptesting-coverage-reportOnly clean verify"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            },
+            "outputs": ["{projectRoot}/backend/target/dependency-check-report.html"]
+        },
+        "install": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": ["matheportal-bom"],
+                    "target": "install"
+                }
+            ],
+            "options": {
+                "cwd": "libs/matheportal-validation",
+                "command": "mvn clean install"
+            }
+        }
+    }
+}
