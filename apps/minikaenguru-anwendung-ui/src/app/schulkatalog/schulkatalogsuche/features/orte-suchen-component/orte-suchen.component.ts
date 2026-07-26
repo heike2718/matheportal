@@ -1,13 +1,4 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    effect,
-    input,
-    output,
-    signal,
-    untracked,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
 import { Ort } from '../../model/schulkatalog.model';
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { OrtCardComponent } from '../ort-card-component/ort-card.component';

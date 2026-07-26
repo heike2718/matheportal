@@ -43,12 +43,37 @@ public class SchulkatalogResourceTest {
 
         final List<Ort> list = Arrays.asList(orte);
 
-        assertAll(() -> assertEquals(7, list.size()), () -> assertEquals("27CM5KFF", list.get(2).getKuerzel()),
-                () -> assertEquals("27CM5KFF", list.get(2).getKuerzel()),
-                () -> assertEquals("Halle (Saale)", list.get(2).getName()),
-                () -> assertEquals("DE-ST", list.get(2).getLand().getKuerzel()),
-                () -> assertEquals("Sachsen-Anhalt", list.get(2).getLand().getName()),
-                () -> assertEquals(19, list.get(2).getAnzahlSchulen()));
+        final int index = 1;
+
+        assertAll(() -> assertEquals(4, list.size()), () -> assertEquals("27CM5KFF", list.get(index).getKuerzel()),
+                () -> assertEquals("27CM5KFF", list.get(index).getKuerzel()),
+                () -> assertEquals("Halle (Saale)", list.get(index).getName()),
+                () -> assertEquals("DE-ST", list.get(index).getLand().getKuerzel()),
+                () -> assertEquals("Sachsen-Anhalt", list.get(index).getLand().getName()),
+                () -> assertEquals(19, list.get(index).getAnzahlSchulen()));
+
+    }
+
+    @Test
+    @TestSecurity(user = "test-user", roles = { "STANDARD" })
+    void should_findOrte_sucht_mit_praefix() {
+
+        final Ort[] orte = given()
+                .accept(ContentType.JSON)
+                .queryParam("name", "berl")
+                .get()
+                .then()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .and()
+                .extract()
+                .as(Ort[].class);
+
+        final List<Ort> list = Arrays.asList(orte);
+
+        assertEquals(3, list.size());
 
     }
 

@@ -76,6 +76,7 @@
         "eslint-config-prettier": "^10.0.0",
         "eslint-plugin-playwright": "^1.6.2",
         "jsdom": "^27.1.0",
+        "ng-mocks": "^14.15.3",
         "nx": "22.6.3",
         "prettier": "~3.6.2",
         "testing@22.6.3": "link:@angular/platform-browser-dynamic/testing@22.6.3",

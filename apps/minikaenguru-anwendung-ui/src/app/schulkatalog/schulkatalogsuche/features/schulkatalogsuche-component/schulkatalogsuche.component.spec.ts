@@ -3,9 +3,32 @@ import { SchulkatalogsucheComponent } from './schulkatalogsuche.component';
 import { signal, Signal, WritableSignal } from '@angular/core';
 import { Ort, Schule } from '../../model/schulkatalog.model';
 import { SchulkatalogsucheFacade } from '../../api/schulkatalogsuche.facade';
+import { MockComponent, ngMocks } from 'ng-mocks';
+import { OrteSuchenComponent } from '../orte-suchen-component/orte-suchen.component';
+import { By } from '@angular/platform-browser';
 
 describe('SchulkatalogsucheComponentComponent', () => {
-    let component: SchulkatalogsucheComponent;
+    const orte: Ort[] = [
+        {
+            kuerzel: 'ORT-1',
+            name: 'erster Ort',
+            land: {
+                kuerzel: 'DE-BY',
+                name: 'Bayern',
+            },
+            anzahlSchulen: 10,
+        },
+        {
+            kuerzel: 'ORT-2',
+            name: 'zweiter Ort',
+            land: {
+                kuerzel: 'DE-HE',
+                name: 'Hessen',
+            },
+            anzahlSchulen: 5,
+        },
+    ];
+
     let fixture: ComponentFixture<SchulkatalogsucheComponent>;
 
     let schulkatalogFacadeMock: {
@@ -58,14 +81,50 @@ describe('SchulkatalogsucheComponentComponent', () => {
                     useValue: schulkatalogFacadeMock,
                 },
             ],
-        }).compileComponents();
+        })
+            .overrideComponent(SchulkatalogsucheComponent, {
+                remove: { imports: [OrteSuchenComponent] },
+                add: { imports: [MockComponent(OrteSuchenComponent)] },
+            })
+            .compileComponents();
 
         fixture = TestBed.createComponent(SchulkatalogsucheComponent);
-        component = fixture.componentInstance;
         await fixture.whenStable();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    it('should pass data from facade signals down to mocked OrteSuchenComponent inputs', () => {
+        // Arrange: Testdaten in die Facade-Signale schieben
+        orteSignal.set(orte);
+        isOrteLoadedSignal.set(true);
+
+        // Act: UI updaten lassen
+        fixture.detectChanges();
+
+        const orteSuchenDe = fixture.debugElement.query(By.directive(OrteSuchenComponent));
+
+        expect(ngMocks.input(orteSuchenDe, 'orte')).toEqual(orte);
+        expect(ngMocks.input(orteSuchenDe, 'orteLoaded')).toBe(true);
+    });
+
+    it('should trigger facade.findOrte immediately when mock emits search term', () => {
+        // arrange
+        const orteSuchenDe = fixture.debugElement.query(By.directive(OrteSuchenComponent));
+
+        // act
+        ngMocks.output(orteSuchenDe, 'searchTermOrtChanged').emit('Wiesbaden');
+
+        // assert
+        expect(schulkatalogFacadeMock.findOrte).toHaveBeenCalledOnce();
+        expect(schulkatalogFacadeMock.findOrte).toHaveBeenCalledWith('Wiesbaden');
+    });
+
+    it('should trigger facade.ortSelected when mock emits ortSelected', () => {
+        const orteSuchenDe = fixture.debugElement.query(By.directive(OrteSuchenComponent));
+
+        // Analog für das zweite Output-Event
+        ngMocks.output(orteSuchenDe, 'ortSelected').emit(orte[0]);
+
+        expect(schulkatalogFacadeMock.ortSelected).toHaveBeenCalledOnce();
+        expect(schulkatalogFacadeMock.ortSelected).toHaveBeenCalledWith(orte[0]);
     });
 });

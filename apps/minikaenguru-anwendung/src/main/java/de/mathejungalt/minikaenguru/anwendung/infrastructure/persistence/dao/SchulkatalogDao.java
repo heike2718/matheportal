@@ -29,7 +29,7 @@ public class SchulkatalogDao {
      */
     public List<OrtEntity> findOrteByName(final String name) {
 
-        final String theName = "%" + name + "%";
+        final String theName = name + "%";
 
         return entityManager
                 .createNamedQuery(OrtEntity.FIND_BY_NAME, OrtEntity.class)
