@@ -4,6 +4,26 @@
     <div class="mka-orte-suchen__search-field">
         <label class="mka-orte-suchen__label" for="term">Name</label>
         <input id="term" class="mka-orte-suchen__input" type="text" [formField]="searchForm.term" />
+
+        @if (showTermError()) {
+            <div id="term-error" class="mka-orte-suchen__validation" aria-live="polite">
+                @for (error of searchForm.term().errors(); track error.kind) {
+                    <p class="mka-orte-suchen__error">
+                        {{ error.message }}
+                    </p>
+                }
+                @if (unsupportedCharacters().length > 0) {
+                    <span class="search-field__hint">
+                        Nicht unterstützt:
+                        {{ unsupportedCharacters().join(', ') }}
+                    </span>
+                }
+
+                <p class="mka-orte-suchen__validation-hint">
+                    Erlaubt sind lateinische Buchstaben, Zahlen, Leerzeichen, Satzzeichen und Symbole.
+                </p>
+            </div>
+        }
     </div>
 
     @if (orteLoaded()) {

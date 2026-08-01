@@ -1,7 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    effect,
+    input,
+    output,
+    signal,
+} from '@angular/core';
 import { Ort } from '../../model/schulkatalog.model';
-import { debounce, form, FormField } from '@angular/forms/signals';
+import { debounce, form, FormField, pattern } from '@angular/forms/signals';
 import { OrtCardComponent } from '../ort-card-component/ort-card.component';
+import { MINIKAENGURU_TEXT_PATTERN, MINIKAENGURU_TEXT_UNSUPPORTED_CHARACTERS_PATTERN } from '@matheportal/shared-utils';
 
 @Component({
     selector: 'mka-orte-suchen',
@@ -19,7 +29,18 @@ export class OrteSuchenComponent implements AfterViewInit {
 
     protected readonly searchForm = form(this.componentModel, path => {
         debounce(path.term, 300);
+        pattern(path.term, MINIKAENGURU_TEXT_PATTERN, {
+            message: 'Der Suchbegriff enthält nicht unterstützte Zeichen.',
+        });
     });
+
+    protected readonly unsupportedCharacters = computed(() => [
+        ...new Set(this.componentModel().term.match(MINIKAENGURU_TEXT_UNSUPPORTED_CHARACTERS_PATTERN) ?? []),
+    ]);
+
+    protected readonly showTermError = computed(
+        () => this.searchForm.term().dirty() && this.searchForm.term().invalid()
+    );
 
     readonly searchTermOrtChanged = output<string>();
 
@@ -40,6 +61,10 @@ export class OrteSuchenComponent implements AfterViewInit {
     private registerSearchTermEffect(): void {
         effect(() => {
             const term = this.searchForm.term().value().trim();
+
+            if (!this.searchForm.term().valid()) {
+                return;
+            }
 
             if (term === this.previousTerm) {
                 return;
