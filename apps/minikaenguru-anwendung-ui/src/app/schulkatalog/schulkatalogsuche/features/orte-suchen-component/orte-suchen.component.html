@@ -14,13 +14,13 @@
                 }
                 @if (unsupportedCharacters().length > 0) {
                     <span class="search-field__hint">
-                        Nicht unterstützt:
+                        Nicht erlaubt:
                         {{ unsupportedCharacters().join(', ') }}
                     </span>
                 }
 
                 <p class="mka-orte-suchen__validation-hint">
-                    Erlaubt sind lateinische Buchstaben, Zahlen, Leerzeichen, Satzzeichen und Symbole.
+                    {{ validationHint }}
                 </p>
             </div>
         }
@@ -34,5 +34,7 @@
                 <mka-ort-card [ort]="ort" (ortSelected)="ortSelected.emit($event)" />
             }
         </div>
+    } @else {
+        <p class="mka-orte-suchen__result-count">Bitte geben Sie einen Ort ein.</p>
     }
 </div>

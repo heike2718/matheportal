@@ -1,5 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { schulkatalogsucheFeature } from './schulkatalogsuche.reducer';
+import { getBeschreibungSelectedOrt } from '../schulkatalogsuche-data.utils';
 
 const { selectSchulkatalogsucheState } = schulkatalogsucheFeature;
 
@@ -8,6 +9,10 @@ export const selectOrte = createSelector(selectSchulkatalogsucheState, state => 
 export const selectSchulen = createSelector(selectSchulkatalogsucheState, state => state.schulen);
 
 export const selectSelectedOrt = createSelector(selectSchulkatalogsucheState, state => state.selectedOrt);
+
+export const selectNameSelectedOrt = createSelector(selectSelectedOrt, ort =>
+    ort === undefined ? '' : getBeschreibungSelectedOrt(ort)
+);
 
 export const selectSelectedSchule = createSelector(selectSchulkatalogsucheState, state => state.selectedSchule);
 
@@ -26,6 +31,7 @@ export const fromSchulkatalogsuche = {
     selectOrte,
     selectSchulen,
     selectSelectedOrt,
+    selectNameSelectedOrt,
     selectSelectedSchule,
     orteLoaded,
     schulenLoaded,

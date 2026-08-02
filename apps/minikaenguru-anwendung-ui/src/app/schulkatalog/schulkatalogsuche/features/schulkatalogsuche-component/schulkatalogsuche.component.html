@@ -1,7 +1,16 @@
 <div class="mka-schulkatalogsuche">
-    <mka-orte-suchen
-        [orte]="orte()"
-        [orteLoaded]="isOrteLoaded()"
-        (searchTermOrtChanged)="onSearchTermOrtChanged($event)"
-        (ortSelected)="onOrtSelected($event)"></mka-orte-suchen>
+    @if (isSchulenLoaded()) {
+        <mka-schulen-list
+            [nameSelectedOrt]="nameSelectedOrt()"
+            [schulen]="schulen()"
+            [schulenLoaded]="isSchulenLoaded()"
+            (schuleSelected)="onSchuleSelected($event)"
+            (ortssucheRequested)="onOrtssucheRequested()"></mka-schulen-list>
+    } @else {
+        <mka-orte-suchen
+            [orte]="orte()"
+            [orteLoaded]="isOrteLoaded()"
+            (searchTermOrtChanged)="onSearchTermOrtChanged($event)"
+            (ortSelected)="onOrtSelected($event)"></mka-orte-suchen>
+    }
 </div>

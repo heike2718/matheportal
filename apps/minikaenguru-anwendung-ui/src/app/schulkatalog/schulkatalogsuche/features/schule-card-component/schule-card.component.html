@@ -1,0 +1,13 @@
+<button type="button" class="mka-schule-card" (click)="schuleSelected.emit(schule())">
+    <span class="mka-schule-card__content">
+        <span class="mka-schule-card__name">
+            {{ schule().name }}
+        </span>
+
+        <span class="mka-schule-card__land">
+            {{ schule().ort.land.name }}
+        </span>
+    </span>
+
+    <span class="mka-schule-card__arrow" aria-hidden="true"> › </span>
+</button>
