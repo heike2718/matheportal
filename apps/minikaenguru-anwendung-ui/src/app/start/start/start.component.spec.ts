@@ -8,6 +8,8 @@ import { provideRouter } from '@angular/router';
 import { anonymousUser } from '@matheportal/auth-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
+import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
+import { MockComponent, ngMocks } from 'ng-mocks';
 
 describe('StartComponent tests', () => {
     let fixture: ComponentFixture<StartComponent>;
@@ -17,8 +19,9 @@ describe('StartComponent tests', () => {
         ensureAuthorizationLoaded: vi.fn(),
     };
 
-    const wetbbewerbsdurchfuehrendeFacadeMock = {
-        privatpersonAnlegen: vi.fn(),
+    const wettbewerbsdurchfuehrendeFacadeMock = {
+        durchfuehrungsartPrivatGewaehlt: vi.fn(),
+        durchfuehrungsartSchuleGewaehlt: vi.fn(),
     };
 
     const authSessionFacadeMock = {
@@ -33,10 +36,15 @@ describe('StartComponent tests', () => {
             providers: [
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
                 { provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock },
-                { provide: WettbewerbsdurchfuehrendeFacade, useValue: wetbbewerbsdurchfuehrendeFacadeMock },
+                { provide: WettbewerbsdurchfuehrendeFacade, useValue: wettbewerbsdurchfuehrendeFacadeMock },
                 provideRouter([{ path: 'minikaenguru-anwendung/guest', component: DummyRouteComponent }]),
             ],
-        }).compileComponents();
+        })
+            .overrideComponent(DurchfuehrungsartWaehlenComponent, {
+                remove: { imports: [DurchfuehrungsartWaehlenComponent] },
+                add: { imports: [MockComponent(DurchfuehrungsartWaehlenComponent)] },
+            })
+            .compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
     }
@@ -86,7 +94,7 @@ describe('StartComponent tests', () => {
 
     describe('needs-wettbewerbdurchfuehrenden tests', () => {
         beforeEach(async () => setup('needs-wettbewerbsdurchfuehrenden'));
-        it('shows mka-standarduser when veranstalter-anlegen', () => {
+        it('shows mka-durchfuehrungsart-waehlen when standarduser', () => {
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
@@ -95,6 +103,35 @@ describe('StartComponent tests', () => {
             expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
             expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeTruthy();
             expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
+        });
+
+        it('should trigger facade.durchfuehrungsartPrivatGewaehlt immediately when mock emits durchfuehrungsart gewaehlt', () => {
+            // arrange
+            fixture.detectChanges();
+
+            const durchfuehrungsartWaehlenComponent = fixture.debugElement.query(
+                By.directive(DurchfuehrungsartWaehlenComponent)
+            );
+
+            // act
+            ngMocks.output(durchfuehrungsartWaehlenComponent, 'durchfuehrungsartGewaehlt').emit('privat');
+
+            // assert
+            expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartPrivatGewaehlt).toHaveBeenCalledOnce();
+        });
+        it('should trigger facade.durchfuehrungsartSchuleGewaehlt immediately when mock emits durchfuehrungsart gewaehlt', () => {
+            // arrange
+            fixture.detectChanges();
+
+            const durchfuehrungsartWaehlenComponent = fixture.debugElement.query(
+                By.directive(DurchfuehrungsartWaehlenComponent)
+            );
+
+            // act
+            ngMocks.output(durchfuehrungsartWaehlenComponent, 'durchfuehrungsartGewaehlt').emit('schule');
+
+            // assert
+            expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartSchuleGewaehlt).toHaveBeenCalledOnce();
         });
     });
 

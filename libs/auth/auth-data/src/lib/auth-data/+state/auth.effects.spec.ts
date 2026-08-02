@@ -4,7 +4,6 @@ import { ReplaySubject, of, throwError, firstValueFrom } from 'rxjs';
 import { AuthEffects } from './auth.effects';
 import { provideStore } from '@ngrx/store';
 import { AuthHttpService } from '../auth-http.service';
-import { Router } from '@angular/router';
 import { authActions } from './auth.actions';
 import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -58,10 +57,6 @@ describe('AuthEffects', () => {
         publishError: vi.fn(),
     };
 
-    const routerMock = {
-        navigateByUrl: vi.fn(),
-    };
-
     const browserNavigationServiceMock = {
         redirectToUrl: vi.fn(),
     };
@@ -81,7 +76,6 @@ describe('AuthEffects', () => {
                 AuthEffects,
                 provideMockActions(() => action$),
                 { provide: AuthHttpService, useValue: httpServiceMock },
-                { provide: Router, useValue: routerMock },
                 {
                     provide: MESSAGE_PUBLISHER,
                     useValue: messagePublisherMock,
@@ -115,7 +109,6 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -134,7 +127,6 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -153,7 +145,6 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -176,7 +167,6 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
         });
     });
 
@@ -195,7 +185,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -221,7 +211,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -241,7 +231,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -264,7 +254,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -295,7 +285,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -318,7 +308,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -341,7 +331,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -363,7 +353,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -384,7 +374,7 @@ describe('AuthEffects', () => {
             expect(httpServiceMock.logOut).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -419,63 +409,6 @@ describe('AuthEffects', () => {
         });
     });
 
-    describe('sessionValidationFailed$', () => {
-        it('should show warning when session validation failed with expired and redirect to home', async () => {
-            httpServiceMock.logOut.mockReturnValue(of(undefined));
-            action$.next(authActions.sessionValidationFailed({ reason: 'expired' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
-
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.getSignupUrl).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).toHaveBeenCalledTimes(1);
-            expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
-                'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
-            );
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-
-        it('should show nothing when session validation failed with missing, but not redirect to home', async () => {
-            httpServiceMock.logOut.mockReturnValue(of(undefined));
-            action$.next(authActions.sessionValidationFailed({ reason: 'missing' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
-
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.getSignupUrl).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-
-        it('should show error when session validation failed with technical and redirect to home', async () => {
-            httpServiceMock.logOut.mockReturnValue(of(undefined));
-            action$.next(authActions.sessionValidationFailed({ reason: 'technical' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
-
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.getSignupUrl).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);
-            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-    });
-
     describe('validateSession$', () => {
         it('should call reloadSession and map to sessionValidated', async () => {
             const userResponse: User = {
@@ -499,7 +432,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -519,7 +452,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -539,7 +472,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -559,7 +492,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -579,7 +512,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });
@@ -600,7 +533,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -619,7 +552,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
 
@@ -638,25 +571,7 @@ describe('AuthEffects', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
-            expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
-        });
-    });
 
-    describe('loggedOut$', () => {
-        it('should navigate to home', async () => {
-            action$.next(authActions.loggedOut());
-            await firstValueFrom(effects.loggedOut$);
-
-            expect(httpServiceMock.createSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.getLoginUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.getSignupUrl).not.toHaveBeenCalled();
-            expect(httpServiceMock.reloadSession).not.toHaveBeenCalled();
-            expect(httpServiceMock.logOut).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
             expect(browserNavigationServiceMock.redirectToUrl).not.toHaveBeenCalled();
         });
     });

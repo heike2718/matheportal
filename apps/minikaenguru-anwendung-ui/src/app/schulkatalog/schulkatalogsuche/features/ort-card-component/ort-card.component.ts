@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, Input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Ort } from '../../model/schulkatalog.model';
 
 @Component({

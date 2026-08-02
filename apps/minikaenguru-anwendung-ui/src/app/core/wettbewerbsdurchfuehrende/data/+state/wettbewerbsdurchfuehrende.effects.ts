@@ -5,8 +5,9 @@ import { Router } from '@angular/router';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
-import { WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
+import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
 import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
+import { portalRoutes } from '@matheportal/portal-navigation';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -14,6 +15,35 @@ export class WettbewerbsdurchfuehrendeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(WettbewerbsdurchfuehrendeHttpService);
     #router = inject(Router);
+
+    durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt),
+            map(() =>
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: {
+                        durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                        schule: null,
+                    },
+                })
+            )
+        )
+    );
+
+    durchfuehrungsartSchuleGewaelt$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt),
+                tap(() => {
+                    this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.schulkatalogsuche,
+                    ]);
+                })
+            ),
+        { dispatch: false }
+    );
 
     durchfuehrendenAnlegen$ = createEffect(() => {
         return this.#actions.pipe(
@@ -50,10 +80,18 @@ export class WettbewerbsdurchfuehrendeEffects {
                 tap(({ responseDto }) => {
                     switch (responseDto.durchfuehrungsart) {
                         case 'PRIVAT':
-                            this.#router.navigateByUrl('/minikaenguru-anwendung/dashboard-privatperson');
+                            void this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                            ]);
                             break;
                         case 'SCHULE':
-                            this.#router.navigateByUrl('/minikaenguru-anwendung/dashboard-lehrperson');
+                            void this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                            ]);
                             break;
                         default:
                             // dieser Fall ist nur möglich, wenn eine weitere DURCHFUEHRUNGSART hinzugefügt wird.

@@ -16,7 +16,8 @@
     "../../libs/feedback/feedback-ui/src/index.ts",
     "../../libs/error-handling/error-handling-api/src/index.ts",
     "../../libs/composition/error-and-feedback/src/index.ts",
-    "../../libs/shared-utils/shared-utils/src/index.ts"
+    "../../libs/shared-utils/shared-utils/src/index.ts",
+    "../../libs/composition/portal-navigation/src/index.ts"
   ],
   "exclude": [
     "src/**/*.spec.ts",

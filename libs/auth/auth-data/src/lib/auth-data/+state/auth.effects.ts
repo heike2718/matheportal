@@ -18,7 +18,6 @@ import { LOCATION_HASH_SERVICE } from '../location-hash.service';
 })
 export class AuthEffects {
     #actions = inject(Actions);
-    #router = inject(Router);
     #authHttpService = inject(AuthHttpService);
     #browserNavigationService = inject(BrowserNavigationService);
     #locationHashService = inject(LOCATION_HASH_SERVICE);
@@ -171,44 +170,4 @@ export class AuthEffects {
             )
         );
     });
-
-    sessionValidationFailed$ = createEffect(
-        () =>
-            this.#actions.pipe(
-                ofType(authActions.sessionValidationFailed),
-                tap(({ reason }) => {
-                    switch (reason) {
-                        case 'expired': {
-                            this.#messagePublisher.publishWarning(
-                                'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
-                            );
-                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
-                            void this.#router.navigateByUrl('/home');
-                            break;
-                        }
-                        case 'missing':
-                            break;
-                        case 'technical': {
-                            this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
-                            // void ignoriert das Promise vom router. Dann hängt es bei einem error nicht blöd in der Gegend herum.
-                            void this.#router.navigateByUrl('/home');
-                            break;
-                        }
-                    }
-                })
-            ),
-        { dispatch: false }
-    );
-
-    loggedOut$ = createEffect(
-        () =>
-            this.#actions.pipe(
-                ofType(authActions.loggedOut),
-                tap(() => {
-                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
-                    void this.#router.navigateByUrl('/home');
-                })
-            ),
-        { dispatch: false }
-    );
 }
