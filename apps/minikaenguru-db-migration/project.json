@@ -1,0 +1,86 @@
+{
+    "name": "minikaenguru-db-migration",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/minikaenguru-db-migration/src",
+    "tags": ["platform:backend", "type:bff"],
+    "implicitDependencies": ["matheportal-bom", "auth-session", "matheportal-validation"],
+
+    "targets": {
+        "tech-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn clean quarkus:dev",
+                "envFile": "apps/minikaenguru-db-migration/.config/.env.dev"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn test",
+                "envFile": "apps/minikaenguru-db-migration/.config/.env.test"
+            }
+        },
+        "cleanup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
+            }
+        },
+        "analyze-quality": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+            }
+        },
+        "analyze-cve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn -DskipTests -Dnvd.api.key=${NVD_API_KEY} -DnvdApiDelay=8000 -Panalyze-securityScan verify"
+            }
+        },
+        "tech-package": {
+            "executor": "nx:run-commands",
+            "outputs": ["{workspaceRoot}/apps/minikaenguru-db-migration/target"],
+            "options": {
+                "cwd": "apps/minikaenguru-db-migration",
+                "command": "mvn clean package -DskipTests"
+            }
+        },
+        "prepare-deployment": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "target": "install",
+                    "projects": "dependencies"
+                },
+                {
+                    "projects": "self",
+                    "target": "tech-package",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "parallel": false,
+                "commands": [
+                    "rm -rf /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-db-migration/quarkus-app",
+                    "mv apps/minikaenguru-db-migration/target/quarkus-app /home/heike/deployments/x300-heikeqs/matheportal/minikaenguru-db-migration/"
+                ]
+            },
+            "configurations": {
+                "qs": {},
+                "production": {
+                    "commands": [
+                        "rm -rf /home/heike/deployments/vserver1/matheportal/minikaenguru-db-migration/quarkus-app",
+                        "mv apps/minikaenguru-db-migration/target/quarkus-app /home/heike/deployments/vserver1/matheportal/minikaenguru-db-migration"
+                    ]
+                }
+            }
+        }
+    }
+}

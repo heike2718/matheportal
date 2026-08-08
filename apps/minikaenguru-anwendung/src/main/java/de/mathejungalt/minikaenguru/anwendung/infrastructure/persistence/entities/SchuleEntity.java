@@ -21,10 +21,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "vw_schulen", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
         name = SchuleEntity.FIND_BY_ORT_ID,
-        query = "select s from SchuleEntity s where s.ortId = :ortId order by s.name") })
+        query = "select s from SchuleEntity s where s.ortId = :ortId order by s.name"),
+        @NamedQuery(
+                name = SchuleEntity.FIND_BY_KUERZEL,
+                query = "select s from SchuleEntity s where s.kuerzel = :kuerzel") })
 public class SchuleEntity {
 
+    /** Name der named query. */
     public static final String FIND_BY_ORT_ID = "SchuleEntity.FIND_BY_ORT_ID";
+
+    /** Name der named query. */
+    public static final String FIND_BY_KUERZEL = "SchuleEntity.FIND_BY_KUERZEL";
 
     @Id
     @Column(name = "kuerzel")

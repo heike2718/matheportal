@@ -8,6 +8,7 @@ import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
 import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { schuleSelected } from 'apps/minikaenguru-anwendung-ui/src/app/schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -23,7 +24,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                 wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: {
                         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                        schule: null,
+                        schulkuerzel: null,
                     },
                 })
             )
@@ -44,6 +45,17 @@ export class WettbewerbsdurchfuehrendeEffects {
             ),
         { dispatch: false }
     );
+
+    schuleSelected$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(schuleSelected),
+            map(({ schule }) =>
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: { durchfuehrungsart: DURCHFUEHRUNGSART.schule, schulkuerzel: schule.kuerzel },
+                })
+            )
+        );
+    });
 
     durchfuehrendenAnlegen$ = createEffect(() => {
         return this.#actions.pipe(

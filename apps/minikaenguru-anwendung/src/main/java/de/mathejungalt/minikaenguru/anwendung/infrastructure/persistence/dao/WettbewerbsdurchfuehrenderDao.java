@@ -46,7 +46,7 @@ public class WettbewerbsdurchfuehrenderDao {
                 .setParameter("userUuid", userUuid)
                 .getResultList();
 
-        log.info("Anzahl Treffer = {}", resultList.size());
+        log.debug("Anzahl Treffer = {}", resultList.size());
 
         return resultList.stream().findFirst();
     }

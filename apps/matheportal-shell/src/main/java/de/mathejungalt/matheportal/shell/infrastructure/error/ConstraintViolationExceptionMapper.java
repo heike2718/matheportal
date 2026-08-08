@@ -31,7 +31,7 @@ public final class ConstraintViolationExceptionMapper implements ExceptionMapper
                 .collect(Collectors.toList());
 
         final ErrorResponse errorResponse = new ErrorResponse("Die Anfrage ist nicht valide");
-        errorResponse.setConnstraintViolations(details);
+        errorResponse.setConstraintViolations(details);
 
         return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
     }

@@ -1,11 +1,12 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
+import lombok.extern.slf4j.Slf4j;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.OrtEntity;
@@ -15,6 +16,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entitie
  * SchulkatalogDao.
  */
 @ApplicationScoped
+@Slf4j
 public class SchulkatalogDao {
 
     @Inject
@@ -49,6 +51,31 @@ public class SchulkatalogDao {
                 .createNamedQuery(SchuleEntity.FIND_BY_ORT_ID, SchuleEntity.class)
                 .setParameter("ortId", ortId)
                 .getResultList();
+    }
+
+    /**
+     * Läd die Schule mit dem gegebenen kuerzel
+     * 
+     * @param kuerzel String
+     * @return Optional
+     */
+    public Optional<SchuleEntity> findSchuleByKuerzel(final String kuerzel) {
+
+        final List<SchuleEntity> resultList = entityManager
+                .createNamedQuery(SchuleEntity.FIND_BY_KUERZEL, SchuleEntity.class)
+                .setParameter("kuerzel", kuerzel)
+                .getResultList();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (resultList.size() > 1) {
+            log.error("mehr als eine Schule mit kuerzel {} im Schulkatalog - unmöglich wegen UK.", kuerzel);
+        }
+
+        return Optional.of(resultList.getFirst());
+
     }
 
 }

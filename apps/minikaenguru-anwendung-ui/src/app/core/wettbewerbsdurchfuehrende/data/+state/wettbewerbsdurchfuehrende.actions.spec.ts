@@ -1,7 +1,7 @@
 import {
     DURCHFUEHRUNGSART,
     WettbewerbsdurchfuehrenderDto,
-    WettbewerbsdurchfuerenderRequest,
+    WettbewerbsdurchfuehrenderRequest,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
@@ -22,9 +22,9 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         });
     });
     it('should create the durchfuehrendenAnlegen action', () => {
-        const requestDto: WettbewerbsdurchfuerenderRequest = {
+        const requestDto: WettbewerbsdurchfuehrenderRequest = {
             durchfuehrungsart: 'schule',
-            schule: 'A1234567',
+            schulkuerzel: 'A1234567',
         };
 
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto });

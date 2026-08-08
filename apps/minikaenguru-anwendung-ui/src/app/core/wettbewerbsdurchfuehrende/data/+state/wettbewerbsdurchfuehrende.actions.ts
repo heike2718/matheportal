@@ -1,7 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
     WettbewerbsdurchfuehrenderDto,
-    WettbewerbsdurchfuerenderRequest,
+    WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 
 export const wettbewerbsdurchfuehrendeActions = createActionGroup({
@@ -9,7 +9,7 @@ export const wettbewerbsdurchfuehrendeActions = createActionGroup({
     events: {
         durchfuehrungsartSchuleGewaehlt: emptyProps(),
         durchfuehrungsartPrivatGewaehlt: emptyProps(),
-        durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuerenderRequest }>(),
+        durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuehrenderRequest }>(),
         durchfuehrenderAngelegt: props<{ responseDto: WettbewerbsdurchfuehrenderDto }>(),
         durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
     },

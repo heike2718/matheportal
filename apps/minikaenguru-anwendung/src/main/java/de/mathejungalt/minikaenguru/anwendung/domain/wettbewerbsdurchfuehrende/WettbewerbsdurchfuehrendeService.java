@@ -23,9 +23,12 @@ import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruConfl
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruRuntimeException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ZugangsberechtigungUnterlagen;
 import de.mathejungalt.minikaenguru.anwendung.domain.kuerzelgenerierung.KuerzelGeneratorService;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkollegiumDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,9 @@ public class WettbewerbsdurchfuehrendeService {
 
     @Inject
     WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
+
+    @Inject
+    SchulkollegiumDao schulkollegiumDao;
 
     @Inject
     KuerzelGeneratorService kuerzelGeneratorService;
@@ -70,16 +76,31 @@ public class WettbewerbsdurchfuehrendeService {
     }
 
     /**
-     * Legt einen Wettbewerbsdurchfuehrenden mit Typ PRIVAT an.
+     * Legt einen Wettbewerbsdurchfuehrenden an.
      *
+     * @param request WettbewerbsdurchfuehrenderRequest
      * @return Wettbewerbsdurchfuehrender
      */
-    public Wettbewerbsdurchfuehrender privatpersonAnlegen() {
+    public Wettbewerbsdurchfuehrender wettbewerbsdurchfuehrendenAnlegen(
+            final WettbewerbsdurchfuehrenderRequest request) {
 
         if (loadDurchfuehrenden() != null) {
             throw new MinikaenguruConflictException(
                     "Dieser Benutzer ist bereits als Wettbewerbsdurchführender registriert");
         }
+
+        switch (request.getDurchfuehrungsart()) {
+        case PRIVAT:
+            return privatpersonAnlegen();
+        case SCHULE:
+            return lehrpersonAnlegen(request.getSchulkuerzel());
+        default:
+            throw new MinikaenguruRuntimeException("unerwartete durchfuehrungsart " + request.getDurchfuehrungsart());
+        }
+
+    }
+
+    Wettbewerbsdurchfuehrender privatpersonAnlegen() {
 
         for (int attempt = 1; attempt <= MAX_SAVE_RETRIES; attempt++) {
             try {
@@ -88,6 +109,9 @@ public class WettbewerbsdurchfuehrendeService {
                 final WettbewerbsdurchfuehrenderEntity result = wettbewerbsdurchfuehrenderDao.saveEntity(entity);
 
                 log.debug("anlegen hat nach Versuch {} geklappt", attempt);
+                log
+                        .info("privatperson angelegt - uuid = {}, teilnahmekuerzel = {}", result.getUserUuid(),
+                                result.getPrivatkuerzel());
 
                 return mapToWettbewerbsdurchfuehrender(result);
 
@@ -104,6 +128,37 @@ public class WettbewerbsdurchfuehrendeService {
         }
         throw new MinikaenguruRuntimeException("Konnte nach " + MAX_SAVE_RETRIES
                 + " Versuchen kein eindeutiges privatkuerzel für wettbewerbsdurchfuegernden generieren, gebe auf");
+    }
+
+    @Transactional
+    Wettbewerbsdurchfuehrender lehrpersonAnlegen(final String schulkuerzel) {
+
+        final LocalDateTime now = LocalDateTime.now(clock);
+
+        final WettbewerbsdurchfuehrenderEntity entity = WettbewerbsdurchfuehrenderEntity
+                .builder()
+                .schulkuerzel(schulkuerzel)
+                .userUuid(securityIdentity.getPrincipal().getName())
+                .typ(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .zugangsberechtigungUnterlagen(ZugangsberechtigungUnterlagen.STANDARD)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        final SchulkollegiumsmitgliedEntity schulkollegiumsmitgliedEntity = SchulkollegiumsmitgliedEntity
+                .builder()
+                .createdAt(now)
+                .userUuid(securityIdentity.getPrincipal().getName())
+                .schulkuerzel(schulkuerzel)
+                .build();
+
+        schulkollegiumDao.insertEntity(schulkollegiumsmitgliedEntity);
+
+        final WettbewerbsdurchfuehrenderEntity result = wettbewerbsdurchfuehrenderDao.saveEntity(entity);
+
+        log.info("lehrperson angelegt - uuid = {}, schulkuerzel = {}", result.getUserUuid(), schulkuerzel);
+
+        return mapToWettbewerbsdurchfuehrender(result);
     }
 
     Wettbewerbsdurchfuehrender mapToWettbewerbsdurchfuehrender(final WettbewerbsdurchfuehrenderEntity result) {

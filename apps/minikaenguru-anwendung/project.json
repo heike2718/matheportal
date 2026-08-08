@@ -65,6 +65,14 @@
                 "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
             }
         },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-anwendung",
+                "command": "mvn -Ptesting-coverage-reportOnly clean verify",
+                "envFile": "apps/minikaenguru-anwendung/.config/.env.test"
+            }
+        },
         "analyze-quality": {
             "executor": "nx:run-commands",
             "options": {

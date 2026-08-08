@@ -7,7 +7,7 @@ import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehren
 import {
     DURCHFUEHRUNGSART,
     WettbewerbsdurchfuehrenderDto,
-    WettbewerbsdurchfuerenderRequest,
+    WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,9 +24,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     let httpServiceMock: { createWettbewerbsdurchfuehrenden: ReturnType<typeof vi.fn> };
 
-    const requestDtoPrivat: WettbewerbsdurchfuerenderRequest = {
+    const requestDtoPrivat: WettbewerbsdurchfuehrenderRequest = {
         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-        schule: null,
+        schulkuerzel: null,
     };
 
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
@@ -119,14 +119,14 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         });
 
         it('should finish the first action not start the second request (exhaustMap)', async () => {
-            const firstRequestDto: WettbewerbsdurchfuerenderRequest = {
+            const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schule: null,
+                schulkuerzel: null,
             };
 
-            const secondRequestDto: WettbewerbsdurchfuerenderRequest = {
+            const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.schule,
-                schule: 'ABCDEFGH',
+                schulkuerzel: 'ABCDEFGH',
             };
 
             const responseDto1: WettbewerbsdurchfuehrenderDto = {
@@ -186,14 +186,14 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         });
 
         it('should accept a new action after the pending request completed', async () => {
-            const firstRequestDto: WettbewerbsdurchfuerenderRequest = {
+            const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schule: null,
+                schulkuerzel: null,
             };
 
-            const secondRequestDto: WettbewerbsdurchfuerenderRequest = {
+            const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.schule,
-                schule: 'ABCDEFGH',
+                schulkuerzel: 'ABCDEFGH',
             };
 
             const responseDto1: WettbewerbsdurchfuehrenderDto = {

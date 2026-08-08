@@ -35,7 +35,7 @@ export const initialWettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
     zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
 };
 
-export interface WettbewerbsdurchfuerenderRequest {
+export interface WettbewerbsdurchfuehrenderRequest {
     readonly durchfuehrungsart: string;
-    readonly schule: string | null;
+    readonly schulkuerzel: string | null;
 }

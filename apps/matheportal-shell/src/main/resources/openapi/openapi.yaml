@@ -204,7 +204,7 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
-                connstraintViolations:
+                constraintViolations:
                     type: array
                     items:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
