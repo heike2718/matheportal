@@ -3,8 +3,6 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.error;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.ConstraintViolationDetail;
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import jakarta.annotation.Priority;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -12,6 +10,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.ConstraintViolationDetail;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 
 /**
  * ConstraintViolationExceptionMapper.

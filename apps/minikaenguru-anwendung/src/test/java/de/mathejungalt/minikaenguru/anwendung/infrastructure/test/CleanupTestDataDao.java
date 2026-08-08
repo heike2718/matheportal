@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
+
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
 /**

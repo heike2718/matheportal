@@ -1,31 +1,29 @@
 package de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkatalogDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchuleEntity;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * WettbewerbsdurchfuehrenderRequestValidatorTest.
@@ -33,130 +31,130 @@ import jakarta.validation.Validator;
 @QuarkusTest
 public class WettbewerbsdurchfuehrenderRequestValidatorTest {
 
-        @Inject
-        Validator validator;
+    @Inject
+    Validator validator;
 
-        @InjectMock
-        SchulkatalogDao schulkatalogDao;
+    @InjectMock
+    SchulkatalogDao schulkatalogDao;
 
-        private class TestBean {
+    private class TestBean {
 
-                @ValidWettbewerbsdurchfuehrenderRequest
-                private final WettbewerbsdurchfuehrenderRequest request;
+        @ValidWettbewerbsdurchfuehrenderRequest
+        private final WettbewerbsdurchfuehrenderRequest request;
 
-                TestBean(final WettbewerbsdurchfuehrenderRequest request) {
-                        this.request = request;
-
-                }
+        TestBean(final WettbewerbsdurchfuehrenderRequest request) {
+            this.request = request;
 
         }
 
-        @Test
-        void should_pass_when_null() {
+    }
 
-                // arrange
-                final TestBean testBean = new TestBean(null);
+    @Test
+    void should_pass_when_null() {
 
-                // act
-                final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
+        // arrange
+        final TestBean testBean = new TestBean(null);
 
-                // assert
-                assertAll(() -> assertEquals(0, constraintViolations.size()),
-                                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
+        // act
+        final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
 
-        }
+        // assert
+        assertAll(() -> assertEquals(0, constraintViolations.size()),
+                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
 
-        @Test
-        void should_pass_when_valid_privat() {
+    }
 
-                // arrange
-                final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
-                                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.PRIVAT);
+    @Test
+    void should_pass_when_valid_privat() {
 
-                final TestBean testBean = new TestBean(request);
+        // arrange
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.PRIVAT);
 
-                // act
-                final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
+        final TestBean testBean = new TestBean(request);
 
-                // assert
-                assertAll(() -> assertEquals(0, constraintViolations.size()),
-                                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
+        // act
+        final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
 
-        }
+        // assert
+        assertAll(() -> assertEquals(0, constraintViolations.size()),
+                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
 
-        @Test
-        void should_pass_when_schule_and_known_schulkuerzel() {
+    }
 
-                // arrange
-                final String schulkuerzel = "A1234567";
+    @Test
+    void should_pass_when_schule_and_known_schulkuerzel() {
 
-                when(schulkatalogDao.findSchuleByKuerzel(schulkuerzel)).thenReturn(Optional.of(new SchuleEntity()));
+        // arrange
+        final String schulkuerzel = "A1234567";
 
-                final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
-                                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
-                                .schulkuerzel(schulkuerzel);
+        when(schulkatalogDao.findSchuleByKuerzel(schulkuerzel)).thenReturn(Optional.of(new SchuleEntity()));
 
-                final TestBean testBean = new TestBean(request);
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .schulkuerzel(schulkuerzel);
 
-                // act
-                final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
+        final TestBean testBean = new TestBean(request);
 
-                // assert
-                assertAll(() -> assertEquals(0, constraintViolations.size()),
-                                () -> verify(schulkatalogDao).findSchuleByKuerzel(schulkuerzel));
+        // act
+        final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
 
-        }
+        // assert
+        assertAll(() -> assertEquals(0, constraintViolations.size()),
+                () -> verify(schulkatalogDao).findSchuleByKuerzel(schulkuerzel));
 
-        @Test
-        void should_notPass_when_schule_and_schulkuerzel_null() {
+    }
 
-                // arrange
-                final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
-                                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE);
+    @Test
+    void should_notPass_when_schule_and_schulkuerzel_null() {
 
-                final TestBean testBean = new TestBean(request);
+        // arrange
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE);
 
-                // act
-                final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
+        final TestBean testBean = new TestBean(request);
 
-                // assert
-                assertEquals(1, constraintViolations.size());
+        // act
+        final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
 
-                final ConstraintViolation<TestBean> constraintViolation = constraintViolations.iterator().next();
+        // assert
+        assertEquals(1, constraintViolations.size());
 
-                assertAll(() -> assertEquals(
-                                "Bei Wettbewerbsdurchfuehrungsart SCHULE ist ein schulkuerzel erforderlich.",
-                                constraintViolation.getMessage()),
-                                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
+        final ConstraintViolation<TestBean> constraintViolation = constraintViolations.iterator().next();
 
-        }
+        assertAll(
+                () -> assertEquals("Bei Wettbewerbsdurchfuehrungsart SCHULE ist ein schulkuerzel erforderlich.",
+                        constraintViolation.getMessage()),
+                () -> verify(schulkatalogDao, never()).findSchuleByKuerzel(anyString()));
 
-        @Test
-        void should_notPass_when_schule_and_schulkuerzel_unknown() {
+    }
 
-                // arrange
+    @Test
+    void should_notPass_when_schule_and_schulkuerzel_unknown() {
 
-                final String schulkuerzel = "A1234567";
+        // arrange
 
-                final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
-                                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
-                                .schulkuerzel(schulkuerzel);
+        final String schulkuerzel = "A1234567";
 
-                final TestBean testBean = new TestBean(request);
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .schulkuerzel(schulkuerzel);
 
-                when(schulkatalogDao.findSchuleByKuerzel(schulkuerzel)).thenReturn(Optional.empty());
+        final TestBean testBean = new TestBean(request);
 
-                // act
-                final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
+        when(schulkatalogDao.findSchuleByKuerzel(schulkuerzel)).thenReturn(Optional.empty());
 
-                // assert
-                assertEquals(1, constraintViolations.size());
+        // act
+        final Set<ConstraintViolation<TestBean>> constraintViolations = validator.validate(testBean);
 
-                final ConstraintViolation<TestBean> constraintViolation = constraintViolations.iterator().next();
+        // assert
+        assertEquals(1, constraintViolations.size());
 
-                assertAll(() -> assertEquals("schulkuerzel A1234567 existiert nicht", constraintViolation.getMessage()),
-                                () -> verify(schulkatalogDao).findSchuleByKuerzel(anyString()));
+        final ConstraintViolation<TestBean> constraintViolation = constraintViolations.iterator().next();
 
-        }
+        assertAll(() -> assertEquals("schulkuerzel A1234567 existiert nicht", constraintViolation.getMessage()),
+                () -> verify(schulkatalogDao).findSchuleByKuerzel(anyString()));
+
+    }
 
 }

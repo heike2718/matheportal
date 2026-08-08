@@ -6,11 +6,13 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
+
 import io.quarkus.hibernate.orm.PersistenceUnit;
 
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.OrtEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchuleEntity;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SchulkatalogDao.
@@ -55,7 +57,7 @@ public class SchulkatalogDao {
 
     /**
      * Läd die Schule mit dem gegebenen kuerzel
-     * 
+     *
      * @param kuerzel String
      * @return Optional
      */

@@ -1,5 +1,8 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
+import java.util.List;
+import java.util.Optional;
+
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -7,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ConstraintViolationDetail;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
@@ -25,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Optional;
 
 @QuarkusTest
 @TestHTTPEndpoint(WettbewerbsdurchfuehrenderResource.class)
@@ -107,14 +108,13 @@ public class WettbewerbsdurchfuehrenderResourceTest {
                 () -> assertTrue(result.getTeilnahmenummern().contains("5SMMXW54")));
     }
 
-
     @Test
     @TestSecurity(user = UUID_MP_TEST_TO_PRIVATPERSON)
     void should_create_privatperson() {
 
         try {
 
-                final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
+            final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
                     .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.PRIVAT);
 
             final Wettbewerbsdurchfuehrender result = given()
@@ -137,96 +137,96 @@ public class WettbewerbsdurchfuehrenderResourceTest {
                             result.getZugangsberechtigungUnterlagen()),
                     () -> assertEquals(1, result.getTeilnahmenummern().size()));
 
-    } finally {
+        } finally {
             this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(UUID_MP_TEST_TO_PRIVATPERSON);
+        }
     }
-}
 
-@Test
-@TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
-void should_create_lehrperson() {
+    @Test
+    @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
+    void should_create_lehrperson() {
 
-    try {
+        try {
 
             final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
-                            .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
-                            .schulkuerzel(KUERZEL_GRUNDSCHULE_WIPPRA);
+                    .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                    .schulkuerzel(KUERZEL_GRUNDSCHULE_WIPPRA);
 
             final Wettbewerbsdurchfuehrender result = given()
-                            .accept(ContentType.JSON)
-                            .contentType(ContentType.JSON)
-                            .body(requestPayload)
-                            .post()
-                            .then()
-                            .statusCode(201)
-                            .and()
-                            .assertThat()
-                            .contentType(ContentType.JSON)
-                            .and()
-                            .extract()
-                            .as(Wettbewerbsdurchfuehrender.class);
-
-            // assert
-            final Optional<SchulkollegiumsmitgliedEntity> opt = schulkollegiumDao
-                            .findForUserAndSchule(UUID_MP_TEST_TO_LEHRPERSON, KUERZEL_GRUNDSCHULE_WIPPRA);
-
-            assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
-                            () -> assertFalse(result.getNewsletter()),
-                            () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD,
-                                            result.getZugangsberechtigungUnterlagen()),
-                            () -> assertEquals(1, result.getTeilnahmenummern().size()), () -> opt.isPresent());
-
-    } finally {
-            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(UUID_MP_TEST_TO_LEHRPERSON);
-            this.cleanupDao.deleteSchulkollegiumMitglied(UUID_MP_TEST_TO_LEHRPERSON);
-    }
-}
-
-@Test
-@TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
-void should_return_400_when_schulkuerzel_invaid() {
-
-    final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
-                    .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
-                    .schulkuerzel("äöü456789");
-
-    final ErrorResponse result = given()
                     .accept(ContentType.JSON)
                     .contentType(ContentType.JSON)
                     .body(requestPayload)
                     .post()
                     .then()
-                    .statusCode(400)
+                    .statusCode(201)
                     .and()
                     .assertThat()
                     .contentType(ContentType.JSON)
                     .and()
                     .extract()
-                    .as(ErrorResponse.class);
+                    .as(Wettbewerbsdurchfuehrender.class);
 
-    // assert
-    final List<ConstraintViolationDetail> details = result.getConstraintViolations();
+            // assert
+            final Optional<SchulkollegiumsmitgliedEntity> opt = schulkollegiumDao
+                    .findForUserAndSchule(UUID_MP_TEST_TO_LEHRPERSON, KUERZEL_GRUNDSCHULE_WIPPRA);
 
-    final Optional<ConstraintViolationDetail> optSize = details
-                    .stream()
-                    .filter(cv -> "Größe muss zwischen 0 und 8 sein".equals(cv.getMessage()))
-                    .findFirst();
+            assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
+                    () -> assertFalse(result.getNewsletter()),
+                    () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD,
+                            result.getZugangsberechtigungUnterlagen()),
+                    () -> assertEquals(1, result.getTeilnahmenummern().size()), () -> opt.isPresent());
 
-    final Optional<ConstraintViolationDetail> optPattern = details
-                    .stream()
-                    .filter(cv -> "muss mit \"^[A-Z0-9]*$\" übereinstimmen".equals(cv.getMessage()))
-                    .findFirst();
+        } finally {
+            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(UUID_MP_TEST_TO_LEHRPERSON);
+            this.cleanupDao.deleteSchulkollegiumMitglied(UUID_MP_TEST_TO_LEHRPERSON);
+        }
+    }
 
-    final Optional<ConstraintViolationDetail> optCross = details
-                    .stream()
-                    .filter(cv -> "wettbewerbsdurchfuehrenderRequest".equals(cv.getField()))
-                    .findFirst();
+    @Test
+    @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
+    void should_return_400_when_schulkuerzel_invaid() {
 
-    assertAll(() -> assertEquals("Die Anfrage ist nicht valide.", result.getMessage()),
-                    () -> assertEquals(3, details.size()), () -> assertTrue(optSize.isPresent()),
-                    () -> assertTrue(optPattern.isPresent()), () -> assertTrue(optCross.isPresent()),
-                    () -> assertEquals("schulkuerzel", optSize.get().getField()),
-                    () -> assertEquals("schulkuerzel", optPattern.get().getField()),
-                    () -> assertEquals("schulkuerzel äöü456789 existiert nicht", optCross.get().getMessage()));
-}
+        final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .schulkuerzel("äöü456789");
+
+        final ErrorResponse result = given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(requestPayload)
+                .post()
+                .then()
+                .statusCode(400)
+                .and()
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        // assert
+        final List<ConstraintViolationDetail> details = result.getConstraintViolations();
+
+        final Optional<ConstraintViolationDetail> optSize = details
+                .stream()
+                .filter(cv -> "Größe muss zwischen 0 und 8 sein".equals(cv.getMessage()))
+                .findFirst();
+
+        final Optional<ConstraintViolationDetail> optPattern = details
+                .stream()
+                .filter(cv -> "muss mit \"^[A-Z0-9]*$\" übereinstimmen".equals(cv.getMessage()))
+                .findFirst();
+
+        final Optional<ConstraintViolationDetail> optCross = details
+                .stream()
+                .filter(cv -> "wettbewerbsdurchfuehrenderRequest".equals(cv.getField()))
+                .findFirst();
+
+        assertAll(() -> assertEquals("Die Anfrage ist nicht valide.", result.getMessage()),
+                () -> assertEquals(3, details.size()), () -> assertTrue(optSize.isPresent()),
+                () -> assertTrue(optPattern.isPresent()), () -> assertTrue(optCross.isPresent()),
+                () -> assertEquals("schulkuerzel", optSize.get().getField()),
+                () -> assertEquals("schulkuerzel", optPattern.get().getField()),
+                () -> assertEquals("schulkuerzel äöü456789 existiert nicht", optCross.get().getMessage()));
+    }
 }

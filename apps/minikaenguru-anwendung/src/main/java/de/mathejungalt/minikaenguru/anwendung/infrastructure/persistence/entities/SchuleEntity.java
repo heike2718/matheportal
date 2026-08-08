@@ -19,9 +19,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "vw_schulen", schema = "minikaenguru")
-@NamedQueries({ @NamedQuery(
-        name = SchuleEntity.FIND_BY_ORT_ID,
-        query = "select s from SchuleEntity s where s.ortId = :ortId order by s.name"),
+@NamedQueries({
+        @NamedQuery(
+                name = SchuleEntity.FIND_BY_ORT_ID,
+                query = "select s from SchuleEntity s where s.ortId = :ortId order by s.name"),
         @NamedQuery(
                 name = SchuleEntity.FIND_BY_KUERZEL,
                 query = "select s from SchuleEntity s where s.kuerzel = :kuerzel") })

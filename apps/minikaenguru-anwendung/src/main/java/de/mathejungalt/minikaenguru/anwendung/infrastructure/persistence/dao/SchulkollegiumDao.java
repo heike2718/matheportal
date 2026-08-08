@@ -1,16 +1,17 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+
+import io.quarkus.hibernate.orm.PersistenceUnit;
 
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
-import io.quarkus.hibernate.orm.PersistenceUnit;
+
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
 @Slf4j
@@ -21,9 +22,8 @@ public class SchulkollegiumDao {
     EntityManager entityManager;
 
     /**
-     * Gibt eine Liste von SchulkollegiumsmitgliedEntity mit der gegebenen userUuid
-     * zurück.
-     * 
+     * Gibt eine Liste von SchulkollegiumsmitgliedEntity mit der gegebenen userUuid zurück.
+     *
      * @param userUuid
      * @return List
      */
@@ -36,9 +36,8 @@ public class SchulkollegiumDao {
     }
 
     /**
-     * Gibt eine Liste von SchulkollegiumsmitgliedEntity mit der gegebenen userUuid
-     * zurück.
-     * 
+     * Gibt eine Liste von SchulkollegiumsmitgliedEntity mit der gegebenen userUuid zurück.
+     *
      * @param userUuid
      * @return List
      */
@@ -52,9 +51,8 @@ public class SchulkollegiumDao {
     }
 
     /**
-     * Sucht den eindeutig durch das schulkuerzel und die userUuid bestimmten
-     * Eintrag.
-     * 
+     * Sucht den eindeutig durch das schulkuerzel und die userUuid bestimmten Eintrag.
+     *
      * @param userUuid     String
      * @param schulkuerzel String
      * @return Optional
@@ -84,7 +82,7 @@ public class SchulkollegiumDao {
 
     /**
      * Erzeugt einen neuen Eintrag in schulkollegien
-     * 
+     *
      * @param entity SchulkollegiumsmitgliedEntity
      * @return Long die technische Id
      */
