@@ -7,7 +7,6 @@ import { provideStore } from '@ngrx/store';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Router } from '@angular/router';
 
-// expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
 describe('PortalNavigationEffects tests', () => {
     let action$: ReplaySubject<unknown>;
     let effects: PortalNavigationEffects;
@@ -22,7 +21,7 @@ describe('PortalNavigationEffects tests', () => {
     };
 
     const routerMock = {
-        navigateByUrl: vi.fn(),
+        navigate: vi.fn(),
     };
 
     beforeEach(() => {
@@ -55,16 +54,18 @@ describe('PortalNavigationEffects tests', () => {
                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
             );
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
 
-        it('should show nothing when session validation failed with missing, but not redirect to home', async () => {
+        it('should show nothing when session validation failed with missing, and redirect to home', async () => {
             action$.next(sessionValidationFailed({ reason: 'missing' }));
             await firstValueFrom(effects.sessionValidationFailed$);
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
 
         it('should show error when session validation failed with technical and redirect to home', async () => {
@@ -75,7 +76,8 @@ describe('PortalNavigationEffects tests', () => {
             expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
     });
 
@@ -87,7 +89,8 @@ describe('PortalNavigationEffects tests', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
-            expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/home');
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
     });
 });
