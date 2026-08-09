@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "wettbewerbsdurchfuehrende", schema = "schulkollegien")
+@Table(name = "schulkollegien", schema = "minikaenguru")
 @NamedQueries({
         @NamedQuery(
                 name = SchulkollegiumsmitgliedEntity.FIND_BY_UUID,

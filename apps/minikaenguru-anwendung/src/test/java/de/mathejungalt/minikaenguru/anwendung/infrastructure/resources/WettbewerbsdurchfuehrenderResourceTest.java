@@ -138,7 +138,7 @@ public class WettbewerbsdurchfuehrenderResourceTest {
                     () -> assertEquals(1, result.getTeilnahmenummern().size()));
 
         } finally {
-            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(UUID_MP_TEST_TO_PRIVATPERSON);
+            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuid(UUID_MP_TEST_TO_PRIVATPERSON);
         }
     }
 
@@ -170,14 +170,16 @@ public class WettbewerbsdurchfuehrenderResourceTest {
             final Optional<SchulkollegiumsmitgliedEntity> opt = schulkollegiumDao
                     .findForUserAndSchule(UUID_MP_TEST_TO_LEHRPERSON, KUERZEL_GRUNDSCHULE_WIPPRA);
 
-            assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
+            assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.SCHULE, result.getDurchfuehrungsart()),
                     () -> assertFalse(result.getNewsletter()),
                     () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD,
                             result.getZugangsberechtigungUnterlagen()),
+                    () -> assertEquals(1, result.getTeilnahmenummern().size()),
+                    () -> assertEquals("6V5AHV38", result.getTeilnahmenummern().iterator().next()),
                     () -> assertEquals(1, result.getTeilnahmenummern().size()), () -> opt.isPresent());
 
         } finally {
-            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(UUID_MP_TEST_TO_LEHRPERSON);
+            this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuid(UUID_MP_TEST_TO_LEHRPERSON);
             this.cleanupDao.deleteSchulkollegiumMitglied(UUID_MP_TEST_TO_LEHRPERSON);
         }
     }
