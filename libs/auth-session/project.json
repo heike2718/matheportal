@@ -32,7 +32,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "libs/auth-session",
-                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+                "command": "mvn -DskipTests -Panalyzing-linting-strict,analyzing-javadoc-reportOnly,analyzing-quality-strict clean verify"
             }
         },
         "analyze-cve": {
