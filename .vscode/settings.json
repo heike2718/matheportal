@@ -66,5 +66,6 @@
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "eslint.workingDirectories": [{ "mode": "auto" }],
     "eslint.run": "onSave",
-    "eslint.probe": ["typescript", "typescriptreact", "javascript", "javascriptreact"]
+    "eslint.probe": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+    "coverage-gutters.coverageFileNames": ["jacoco.xml"]
 }

@@ -1,0 +1,27 @@
+services:
+    mariadb:
+        image: mariadb:...
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    minikaenguru-db-migration:
+        image: minikaenguru-db-migration:latest
+        restart: 'no'
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+    minikaenguru-anwendung:
+        image: minikaenguru-anwendung:latest
+        depends_on:
+            minikaenguru-db-migration:
+                condition: service_completed_successfully
+
+    minikaenguru-admin:
+        image: minikaenguru-admin:latest
+        depends_on:
+            minikaenguru-db-migration:
+                condition: service_completed_successfully

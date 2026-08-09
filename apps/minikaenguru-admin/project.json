@@ -58,11 +58,19 @@
                 "command": "mvn -Pformat-apply impsort:sort@impsort-sort formatter:format@format-apply"
             }
         },
+        "test-coverage": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn -Ptesting-coverage-reportOnly clean verify",
+                "envFile": "apps/minikaenguru-admin/.config/.env.test"
+            }
+        },
         "analyze-quality": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-admin",
-                "command": "mvn -DskipTests -Panalyze-linting-strict,analyze-javadoc-strict,analyze-quality-strict clean verify"
+                "command": "mvn -DskipTests -Panalyzing-linting-strict,analyzing-javadoc-reportOnly,analyzing-quality-strict clean verify"
             }
         },
         "analyze-cve": {

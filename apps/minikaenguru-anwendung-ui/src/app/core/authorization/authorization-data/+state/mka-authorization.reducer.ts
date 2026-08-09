@@ -6,7 +6,8 @@ import {
 } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { resolveBerechtigungstyp } from '../mka-authorization.utils';
+import { mapToBerechtigungstyp, resolveBerechtigungstyp } from '../mka-authorization.utils';
+import { durchfuehrenderAngelegt } from '../../../wettbewerbsdurchfuehrende/data/wettbewerbsdurchfuehrende-store.events';
 
 const MKA_AUTHORIZATION_FEATURE_KEY = 'mkaAuthorization';
 
@@ -30,6 +31,10 @@ export const mkaAuthorizationFeature = createFeature({
         }),
         on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };
+        }),
+        on(durchfuehrenderAngelegt, (state, { responseDto }) => {
+            const berechtigungstyp = mapToBerechtigungstyp(responseDto);
+            return { ...state, berechtigungstyp: berechtigungstyp, authorizationLoadState: 'loaded' };
         }),
         on(userLoggedOut, () => initialMkaAuthorizationState)
     ),

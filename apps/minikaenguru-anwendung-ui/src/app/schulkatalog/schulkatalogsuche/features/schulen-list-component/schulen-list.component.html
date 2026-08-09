@@ -1,0 +1,31 @@
+<div class="mka-schulen-list">
+    <button class="mka-schulen-list__back" type="button" (click)="ortssucheRequested.emit()">
+        <svg class="mka-schulen-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2" />
+        </svg>
+
+        <span>Zurück zur Ortssuche</span>
+    </button>
+
+    <h2 class="mka-schulen-list__title">Schulen in {{ nameSelectedOrt() }} suchen</h2>
+    <label class="mka-schulen-list__label" for="term">Name</label>
+    <input id="term" class="mka-schulen-list__input" type="text" [formField]="searchForm.term" />
+
+    @if (schulenLoaded()) {
+        <p class="mka-schulen-list__result-count">Anzahl: {{ filteredSchulen().length }}</p>
+
+        <div class="mka-schulen-list__results">
+            @for (schule of filteredSchulen(); track schule.kuerzel) {
+                <mka-schule-card [schule]="schule" (schuleSelected)="schuleSelected.emit($event)" />
+            }
+        </div>
+    } @else {
+        <p class="mka-schulen-list__result-count">Lade Schulen ...</p>
+    }
+</div>

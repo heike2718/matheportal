@@ -79,7 +79,7 @@ public class SessionFacade {
      */
     public void augmentSession(final String sessionId, final Set<String> berechtigungen) {
         try {
-            sessionService.augmentSessionQuietlySessionQuietly(sessionId, berechtigungen);
+            sessionService.augmentSessionQuietly(sessionId, berechtigungen);
         } catch (final PersistenceException e) {
             log.error("session: Berechtigungen konnten nicht aktualisiert werden: {}", e.getMessage(), e);
         }

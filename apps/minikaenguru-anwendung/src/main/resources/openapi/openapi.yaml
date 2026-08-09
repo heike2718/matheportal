@@ -75,7 +75,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/WettbewerbsdurchfuerenderRequest'
+                            $ref: '#/components/schemas/WettbewerbsdurchfuehrenderRequest'
             security:
                 - mpSession: []
             responses:
@@ -121,7 +121,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/WettbewerbsdurchfuerenderRequest'
+                            $ref: '#/components/schemas/WettbewerbsdurchfuehrenderRequest'
             security:
                 - mpSession: []
             responses:
@@ -264,8 +264,9 @@ components:
                 - STANDARD
                 - ERTEILT
                 - ENTZOGEN
-        WettbewerbsdurchfuerenderRequest:
+        WettbewerbsdurchfuehrenderRequest:
             type: object
+            x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
             required:
                 - typ
             description: Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden.
@@ -273,8 +274,10 @@ components:
                 durchfuehrungsart:
                     type: object
                     $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                schule:
+                schulkuerzel:
                     type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
                     description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
         Wettbewerbsdurchfuehrender:
             type: object
@@ -319,6 +322,7 @@ components:
                     items:
                         type: string
                         pattern: '^[A-Z]+(_[A-Z]+)*$'
+                        maxLength: 150
                     example:
                         - STANDARD
                         - ADMIN
@@ -344,7 +348,7 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
-                connstraintViolations:
+                constraintViolations:
                     type: array
                     items:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
@@ -354,9 +358,11 @@ components:
                 kuerzel:
                     type: string
                     pattern: '^[A-Z\-]*$'
+                    maxLength: 10
                 name:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
                 anzahlOrte:
                     type: integer
         Ort:
@@ -367,9 +373,11 @@ components:
                 kuerzel:
                     type: string
                     pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
                 name:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
                 anzahlSchulen:
                     type: integer
         Schule:
@@ -380,9 +388,11 @@ components:
                 kuerzel:
                     type: string
                     pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
                 name:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
         ArrayOfOrte:
             type: array
             items:

@@ -5,8 +5,11 @@ import { Router } from '@angular/router';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
-import { WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
+import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
 import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
+import { portalRoutes } from '@matheportal/portal-navigation';
+import { AuthSessionFacade } from '@matheportal/auth-api';
+import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -14,6 +17,47 @@ export class WettbewerbsdurchfuehrendeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(WettbewerbsdurchfuehrendeHttpService);
     #router = inject(Router);
+    #authSessionFacade = inject(AuthSessionFacade);
+
+    durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt),
+            map(() =>
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: {
+                        durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                        schulkuerzel: null,
+                    },
+                })
+            )
+        )
+    );
+
+    durchfuehrungsartSchuleGewaelt$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt),
+                tap(() => {
+                    this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.schulkatalogsuche,
+                    ]);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    schuleSelected$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(schuleSelected),
+            map(({ schule }) =>
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                    requestDto: { durchfuehrungsart: DURCHFUEHRUNGSART.schule, schulkuerzel: schule.kuerzel },
+                })
+            )
+        );
+    });
 
     durchfuehrendenAnlegen$ = createEffect(() => {
         return this.#actions.pipe(
@@ -50,10 +94,20 @@ export class WettbewerbsdurchfuehrendeEffects {
                 tap(({ responseDto }) => {
                     switch (responseDto.durchfuehrungsart) {
                         case 'PRIVAT':
-                            this.#router.navigateByUrl('/minikaenguru-anwendung/dashboard-privatperson');
+                            void this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                            ]);
+                            this.#authSessionFacade.validateSession();
                             break;
                         case 'SCHULE':
-                            this.#router.navigateByUrl('/minikaenguru-anwendung/dashboard-lehrperson');
+                            void this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                            ]);
+                            this.#authSessionFacade.validateSession();
                             break;
                         default:
                             // dieser Fall ist nur möglich, wenn eine weitere DURCHFUEHRUNGSART hinzugefügt wird.

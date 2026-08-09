@@ -10,7 +10,7 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
 /**
- * CleanupTestDataDao
+ * CleanupTestDataDao.
  */
 @ApplicationScoped
 public class CleanupTestDataDao {
@@ -20,7 +20,7 @@ public class CleanupTestDataDao {
     EntityManager entityManager;
 
     @Transactional
-    public void deleteWettbewerbsdurchfuehrendeByUserUuidQuietly(final String userUuid) {
+    public void deleteWettbewerbsdurchfuehrendeByUserUuid(final String userUuid) {
 
         final WettbewerbsdurchfuehrenderEntity entity = entityManager
                 .createNamedQuery(WettbewerbsdurchfuehrenderEntity.FIND_BY_USER_UUID,
@@ -31,5 +31,13 @@ public class CleanupTestDataDao {
         if (entity != null) {
             this.entityManager.remove(entity);
         }
+    }
+
+    @Transactional
+    public void deleteSchulkollegiumMitglied(final String userUuid) {
+        entityManager
+                .createNativeQuery("delete from schulkollegien where user_uuid = :userUuid")
+                .setParameter("userUuid", userUuid)
+                .executeUpdate();
     }
 }

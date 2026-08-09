@@ -56,10 +56,10 @@ public class WettbewerbsdurchfuehrenderEntity {
     @Column(name = "user_uuid", nullable = false, length = 36)
     private String userUuid;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "typ", nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     @EqualsAndHashCode.Exclude
-    private Wettbewerbsdurchfuehrungsart typ;
+    private Wettbewerbsdurchfuehrungsart art;
 
     @Column(name = "newsletter")
     @EqualsAndHashCode.Exclude
@@ -92,7 +92,7 @@ public class WettbewerbsdurchfuehrenderEntity {
 
     @Override
     public String toString() {
-        return "WettbewerbsdurchfuehrenderEntity [id=" + id + ", userUuid=" + userUuid + ", typ=" + typ
+        return "WettbewerbsdurchfuehrenderEntity [id=" + id + ", userUuid=" + userUuid + ", typ=" + art
                 + ", newsletterEmpfaenger=" + newsletterEmpfaenger + ", zugangsberechtigungUnterlagen="
                 + zugangsberechtigungUnterlagen + "]";
     }

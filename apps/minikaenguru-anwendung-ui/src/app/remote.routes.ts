@@ -7,9 +7,10 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from './config/minikaenguru-anwe
 import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
-import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
+import { portalRoutes } from '@matheportal/portal-navigation';
+import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -21,17 +22,23 @@ export const remoteRoutes: Routes = [
                 component: StartComponent,
             },
             {
-                path: 'guests',
+                path: portalRoutes.minikaenguruAnwendung.guests,
                 component: GuestInfoComponent,
             },
             {
-                path: 'dashboard-privatperson',
-                canActivate: [mkaPrivatpersonGuard()],
-                canActivateChild: [mkaPrivatpersonGuard()],
+                path: portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                // canActivate: [mkaPrivatpersonGuard()],
+                // canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
             },
             {
-                path: 'schulkatalogsuche',
+                path: portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                component: DashboardLehrpersonComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.schulkatalogsuche,
+                // canActivate: [mkaSchulkatalogsucheGuard()],
+                // canActivateChild: [mkaSchulkatalogsucheGuard()],
                 component: SchulkatalogsucheComponent,
             },
         ],

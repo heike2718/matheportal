@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { SCHULKATALOG_LOADING_STATE } from '../model/schulkatalog.model';
+import { Ort, SCHULKATALOG_LOADING_STATE } from '../model/schulkatalog.model';
 
 export type SCHULKATALOG_LOAD_ERROR_STATE = 'unauthorized' | 'technical' | 'not-found';
 
@@ -26,4 +26,12 @@ export function normalizeSearchTerm(term: string): string {
 export function isTermSearchable(term: string): boolean {
     const normalizedTerm = normalizeSearchTerm(term);
     return normalizedTerm.length >= 3;
+}
+
+export function getBeschreibungSelectedOrt(ort: Ort): string {
+    if (ort.name === ort.land.name) {
+        return ort.name;
+    }
+
+    return ort.name + ' (' + ort.land.name + ')';
 }

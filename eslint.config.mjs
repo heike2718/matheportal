@@ -151,6 +151,10 @@ export default [
                                 'scope:shared',
                             ],
                         },
+                        {
+                            sourceTag: 'domain:composition-portal-navigation',
+                            onlyDependOnLibsWithTags: ['domain:shared', 'scope:shared'],
+                        },
 
                         // shared darf nicht auf fachliche Domains zugreifen –
                         // sonst entsteht eine versteckte Kopplung
@@ -177,6 +181,7 @@ export default [
                                 'domain:shared',
                                 'domain:error-handling',
                                 'domain:composition-error-and-feedback',
+                                'domain:composition-portal-navigation',
                                 'scope:shared',
                             ],
                         },
@@ -191,6 +196,7 @@ export default [
                                 'domain:shared',
                                 'domain:error-handling',
                                 'scope:shared',
+                                'domain:composition-portal-navigation',
                             ],
                         },
 
@@ -202,6 +208,7 @@ export default [
                                 'domain:shared',
                                 'domain:error-handling',
                                 'scope:shared',
+                                'domain:composition-portal-navigation',
                             ],
                         },
                         {
@@ -212,6 +219,7 @@ export default [
                                 'domain:shared',
                                 'domain:error-handling',
                                 'scope:shared',
+                                'domain:composition-portal-navigation',
                             ],
                         },
                     ],

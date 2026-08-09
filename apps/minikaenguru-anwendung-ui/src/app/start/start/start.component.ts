@@ -30,11 +30,13 @@ export class StartComponent implements OnInit {
     handleDurchfuehrungsartGewaehlt(gewaehlteDurchfuehrungsart: GewaehlteDurchfuehrungsart): void {
         switch (gewaehlteDurchfuehrungsart) {
             case 'privat':
-                this.#wettbewerbsdurchfuehrendeFacade.privatpersonAnlegen();
+                this.#wettbewerbsdurchfuehrendeFacade.durchfuehrungsartPrivatGewaehlt();
                 break;
             case 'schule':
-                console.log('zur Schulauswahl navigieren');
+                this.#wettbewerbsdurchfuehrendeFacade.durchfuehrungsartSchuleGewaehlt();
                 break;
+            default:
+                throw new Error('unbekannte Durchführungsart');
         }
     }
 }

@@ -47,7 +47,7 @@ public final class WettbewerbsdurchfuehrenderEntityAugmentor {
         if (opt.isPresent()) {
             final WettbewerbsdurchfuehrenderEntity entity = opt.get();
 
-            final String berechtigung = entity.getTyp().name();
+            final String berechtigung = entity.getArt().name();
             builder.addRole(berechtigung);
             final Set<String> berechtigungen = new HashSet<>(identity.getRoles());
             berechtigungen.add(berechtigung);

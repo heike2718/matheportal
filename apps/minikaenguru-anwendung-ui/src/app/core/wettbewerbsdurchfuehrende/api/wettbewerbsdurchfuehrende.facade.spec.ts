@@ -3,7 +3,6 @@ import { WettbewerbsdurchfuehrendeFacade } from './wettbewerbsdurchfuehrende.fac
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { wettbewerbsdurchfuehrendeActions } from '../data/+state/wettbewerbsdurchfuehrende.actions';
-import { DURCHFUEHRUNGSART, WettbewerbsdurchfuerenderRequest } from '../model/wettbewerbsdurchfuehrende.model';
 
 describe('WettbewerbsdurchfuehrendeFacade tests', () => {
     let facade: WettbewerbsdurchfuehrendeFacade;
@@ -20,17 +19,17 @@ describe('WettbewerbsdurchfuehrendeFacade tests', () => {
         dispatchSpy = vi.spyOn(store, 'dispatch');
     });
 
-    it('privatpersonAnlegen should dispatch the expected action', () => {
-        const requestDto: WettbewerbsdurchfuerenderRequest = {
-            durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-            schule: null,
-        };
-
-        facade.privatpersonAnlegen();
+    it('durchfuehrungsartPrivatGewaehlt should dispatch the expected action', () => {
+        facade.durchfuehrungsartPrivatGewaehlt();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto })
-        );
+        expect(dispatchSpy).toHaveBeenCalledWith(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
+    });
+
+    it('durchfuehrungsartSchuleGewaehlt should dispatch the expected action', () => {
+        facade.durchfuehrungsartSchuleGewaehlt();
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
     });
 });

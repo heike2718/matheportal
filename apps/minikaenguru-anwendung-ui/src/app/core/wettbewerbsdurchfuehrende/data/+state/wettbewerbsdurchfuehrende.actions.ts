@@ -1,13 +1,15 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
     WettbewerbsdurchfuehrenderDto,
-    WettbewerbsdurchfuerenderRequest,
+    WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 
 export const wettbewerbsdurchfuehrendeActions = createActionGroup({
-    source: 'wettbewerbsdurchfuehrendeActions',
+    source: 'MKA Wettbewerbsdurchfuerende API',
     events: {
-        durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuerenderRequest }>(),
+        durchfuehrungsartSchuleGewaehlt: emptyProps(),
+        durchfuehrungsartPrivatGewaehlt: emptyProps(),
+        durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuehrenderRequest }>(),
         durchfuehrenderAngelegt: props<{ responseDto: WettbewerbsdurchfuehrenderDto }>(),
         durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
     },

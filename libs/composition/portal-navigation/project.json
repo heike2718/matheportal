@@ -1,0 +1,20 @@
+{
+    "name": "portal-navigation",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/composition/portal-navigation/src",
+    "prefix": "mp",
+    "projectType": "library",
+    "tags": ["domain:composition-portal-navigation", "type:model"],
+    "targets": {
+        "test": {
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
+            "options": {
+                "reportsDirectory": "coverage/libs/composition/portal-navigation"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint"
+        }
+    }
+}

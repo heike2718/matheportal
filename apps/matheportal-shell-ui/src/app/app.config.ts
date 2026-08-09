@@ -13,6 +13,7 @@ import { globalTechnicalHttpErrorInterceptor } from '@matheportal/error-handling
 import { loadingInterceptor } from '@matheportal/feedback-api';
 import { errorAndFeedbackProvider } from '@matheportal/error-and-feedback';
 import { DEFAULT_DIALOG_CONFIG, DialogConfig } from '@angular/cdk/dialog';
+import { PortalNavigationEffects } from './navigation/portal-navigation.effects';
 
 function getEnvironmentSpecificProviders(): Array<Provider | EnvironmentProviders> {
     const providers: Array<Provider | EnvironmentProviders> = [];
@@ -35,7 +36,7 @@ export const appConfig: ApplicationConfig = {
         provideBrowserGlobalErrorListeners(),
         provideRouter(appRoutes),
         provideStore({}),
-        provideEffects(),
+        provideEffects(PortalNavigationEffects),
         ...getEnvironmentSpecificProviders(),
         authDataProvider,
         { provide: AUTH_CONFIGURATION, useValue: { apiUrl: matheportalShellConfiguration.apiUrl } },

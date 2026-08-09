@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response.Status;
 import io.quarkus.security.Authenticated;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuerenderRequest;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.WettbewerbsdurchfuehrendeService;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.WettbewerbsdurchfuehrenderApi;
 
@@ -33,14 +33,15 @@ public class WettbewerbsdurchfuehrenderResource implements Wettbewerbsdurchfuehr
 
     @Override
     public Response createWettbewerbsdurchfuehrenden(
-            @Valid @NotNull final WettbewerbsdurchfuerenderRequest wettbewerbsdurchfuerenderRequest) {
-        final Wettbewerbsdurchfuehrender responsePayload = wettbewerbsdurchfuehrendeService.privatpersonAnlegen();
+            @Valid @NotNull final WettbewerbsdurchfuehrenderRequest wettbewerbsdurchfuehrenderRequest) {
+        final Wettbewerbsdurchfuehrender responsePayload = wettbewerbsdurchfuehrendeService
+                .wettbewerbsdurchfuehrendenAnlegen(wettbewerbsdurchfuehrenderRequest);
         return Response.status(Status.CREATED).entity(responsePayload).build();
     }
 
     @Override
     public Response updateWettbewerbsdurchfuehrenden(
-            @Valid @NotNull final WettbewerbsdurchfuerenderRequest wettbewerbsdurchfuerenderRequest) {
+            @Valid @NotNull final WettbewerbsdurchfuehrenderRequest wettbewerbsdurchfuehrenderRequest) {
         // TODO Auto-generated method stub
         return null;
     }
