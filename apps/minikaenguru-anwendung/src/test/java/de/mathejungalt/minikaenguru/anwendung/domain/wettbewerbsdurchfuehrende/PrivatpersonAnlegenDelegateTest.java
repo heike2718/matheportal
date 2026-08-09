@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -61,9 +60,6 @@ public class PrivatpersonAnlegenDelegateTest {
     WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
 
     @Mock
-    AugmentSessionDelegate augmentationDelegate;
-
-    @Mock
     Clock clock;
 
     @InjectMocks
@@ -83,8 +79,6 @@ public class PrivatpersonAnlegenDelegateTest {
 
         when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter("uuid-1"));
 
-        doNothing().when(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT);
-
         final WettbewerbsdurchfuehrenderEntity entity = WettbewerbsdurchfuehrenderEntity
                 .builder()
                 .newsletterEmpfaenger(false)
@@ -103,8 +97,7 @@ public class PrivatpersonAnlegenDelegateTest {
         assertAll(() -> assertNotNull(result),
                 () -> verify(kuerzelGeneratorService, times(1)).generatePrivatteilnahmekuerzel(),
                 () -> verify(kuerzelGeneratorService, never()).generateSchulkatalogKuerzel(),
-                () -> verify(securityIdentity, times(2)).getPrincipal(),
-                () -> verify(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT));
+                () -> verify(securityIdentity, times(2)).getPrincipal());
     }
 
     @Test
@@ -115,8 +108,6 @@ public class PrivatpersonAnlegenDelegateTest {
         doReturn(fixedClock.getZone()).when(clock).getZone();
 
         when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter("uuid-1"));
-
-        doNothing().when(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT);
 
         when(kuerzelGeneratorService.generatePrivatteilnahmekuerzel())
                 .thenReturn("A123456789", "B123456789", "C123456789", "D123456789", "E123456789");
@@ -137,8 +128,7 @@ public class PrivatpersonAnlegenDelegateTest {
         // assert
         assertAll(() -> assertEquals("E123456789", result.getTeilnahmenummern().iterator().next()),
                 () -> verify(wettbewerbsdurchfuehrenderDao, times(5))
-                        .saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)),
-                () -> verify(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT));
+                        .saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)));
     }
 
     @Test
@@ -189,8 +179,7 @@ public class PrivatpersonAnlegenDelegateTest {
                 () -> verify(wettbewerbsdurchfuehrenderDao, times(5))
                         .saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)),
                 () -> verify(securityIdentity, never()).getAttribute(anyString()),
-                () -> verify(securityIdentity, never()).getRoles(),
-                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+                () -> verify(securityIdentity, never()).getRoles());
     }
 
     @Test
@@ -220,8 +209,7 @@ public class PrivatpersonAnlegenDelegateTest {
                         exception.getMessage()),
                 () -> verify(wettbewerbsdurchfuehrenderDao).saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)),
                 () -> verify(securityIdentity, never()).getAttribute(anyString()),
-                () -> verify(securityIdentity, never()).getRoles(), () -> verify(securityIdentity, never()).getRoles(),
-                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+                () -> verify(securityIdentity, never()).getRoles(), () -> verify(securityIdentity, never()).getRoles());
     }
 
     @Test
@@ -247,7 +235,6 @@ public class PrivatpersonAnlegenDelegateTest {
                         exception.getMessage()),
                 () -> verify(wettbewerbsdurchfuehrenderDao).saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)),
                 () -> verify(securityIdentity, never()).getAttribute(anyString()),
-                () -> verify(securityIdentity, never()).getRoles(), () -> verify(securityIdentity, never()).getRoles(),
-                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+                () -> verify(securityIdentity, never()).getRoles(), () -> verify(securityIdentity, never()).getRoles());
     }
 }

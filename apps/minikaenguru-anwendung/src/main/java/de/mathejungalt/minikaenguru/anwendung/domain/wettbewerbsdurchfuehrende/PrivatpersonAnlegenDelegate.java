@@ -44,9 +44,6 @@ public class PrivatpersonAnlegenDelegate {
     SecurityIdentity securityIdentity;
 
     @Inject
-    AugmentSessionDelegate augmentSessionDelegate;
-
-    @Inject
     Clock clock;
 
     @Transactional
@@ -62,8 +59,6 @@ public class PrivatpersonAnlegenDelegate {
                 log
                         .info("privatperson angelegt - uuid = {}, teilnahmekuerzel = {}", result.getUserUuid(),
                                 result.getPrivatkuerzel());
-
-                this.augmentSessionDelegate.augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT);
 
                 return this.mappingDelegate
                         .mapToWettbewerbsdurchfuehrender(result, securityIdentity.getPrincipal().getName());

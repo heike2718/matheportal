@@ -3,7 +3,6 @@ import {
     Durchfuehrungsart,
     Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderDto,
-    WettbewerbsdurchfuehrenderRequest,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
     ZugangsberechtigungUnterlagen,
 } from '../model/wettbewerbsdurchfuehrende.model';

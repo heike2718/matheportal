@@ -1,5 +1,6 @@
 package de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,8 +27,9 @@ public class AugmentSessionDelegate {
     void augmentSession(final Wettbewerbsdurchfuehrungsart wettbewerbsdurchfuehrungsart) {
         final String sessionId = securityIdentity.getAttribute(SecurityIdentityAttributeKeys.SESSION_ID);
         final Set<String> roles = securityIdentity.getRoles();
-        roles.add(wettbewerbsdurchfuehrungsart.toString());
+        final Set<String> neueRollen = new HashSet<>(roles);
+        neueRollen.add(wettbewerbsdurchfuehrungsart.toString());
 
-        this.sessionFacade.augmentSession(sessionId, roles);
+        this.sessionFacade.augmentSession(sessionId, neueRollen);
     }
 }

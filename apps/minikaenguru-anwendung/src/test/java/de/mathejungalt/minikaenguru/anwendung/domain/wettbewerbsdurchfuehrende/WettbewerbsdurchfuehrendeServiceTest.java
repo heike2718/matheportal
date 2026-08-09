@@ -26,7 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +48,9 @@ public class WettbewerbsdurchfuehrendeServiceTest {
 
     @Mock
     WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
+
+    @Mock
+    AugmentSessionDelegate augmentationDelegate;
 
     @InjectMocks
     WettbewerbsdurchfuehrendeService service;
@@ -105,9 +110,89 @@ public class WettbewerbsdurchfuehrendeServiceTest {
                 () -> service.wettbewerbsdurchfuehrendenAnlegen(request));
 
         // assert
-        assertEquals("Dieser Benutzer ist bereits als Wettbewerbsdurchführender registriert.", exception.getMessage());
-        verify(privatpersonAnlegenDelegate, never()).privatpersonAnlegen();
-        verify(lehrpersonAnlegenDelegate, never()).lehrpersonAnlegen(anyString());
+        assertAll(
+                () -> assertEquals("Dieser Benutzer ist bereits als Wettbewerbsdurchführender registriert.",
+                        exception.getMessage()),
+                () -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(privatpersonAnlegenDelegate, never()).privatpersonAnlegen(),
+                () -> verify(lehrpersonAnlegenDelegate, never()).lehrpersonAnlegen(anyString()),
+                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+    }
+
+    @Test
+    void should_wettbewerbsdurchfuehrendenAnlegen_propagateException_from_load() {
+
+        // arrange
+        final String uuid = "uuid-1";
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.PRIVAT);
+
+        final RuntimeException runtimeException = new RuntimeException("schlimmer fehler");
+
+        when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
+        when(wettbewerbsdurchfuehrenderDao.findByUserUuid(uuid)).thenThrow(runtimeException);
+
+        // act
+        final RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.wettbewerbsdurchfuehrendenAnlegen(request));
+
+        // assert
+        assertAll(() -> assertEquals("schlimmer fehler", exception.getMessage()),
+                () -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(privatpersonAnlegenDelegate, never()).privatpersonAnlegen(),
+                () -> verify(lehrpersonAnlegenDelegate, never()).lehrpersonAnlegen(anyString()),
+                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+    }
+
+    @Test
+    void should_wettbewerbsdurchfuehrendenAnlegen_propagateException_from_privat() {
+
+        // arrange
+        final String uuid = "uuid-1";
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.PRIVAT);
+
+        final RuntimeException runtimeException = new RuntimeException("schlimmer fehler");
+
+        when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
+        when(wettbewerbsdurchfuehrenderDao.findByUserUuid(uuid)).thenReturn(Optional.empty());
+        when(privatpersonAnlegenDelegate.privatpersonAnlegen()).thenThrow(runtimeException);
+
+        // act
+        final RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.wettbewerbsdurchfuehrendenAnlegen(request));
+
+        // assert
+        assertAll(() -> assertEquals("schlimmer fehler", exception.getMessage()),
+                () -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(privatpersonAnlegenDelegate).privatpersonAnlegen(),
+                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
+    }
+
+    @Test
+    void should_wettbewerbsdurchfuehrendenAnlegen_propagateException_from_lehrer() {
+
+        // arrange
+        final String uuid = "uuid-1";
+        final WettbewerbsdurchfuehrenderRequest request = new WettbewerbsdurchfuehrenderRequest()
+                .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .schulkuerzel("A1234567");
+
+        final RuntimeException runtimeException = new RuntimeException("schlimmer fehler");
+
+        when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
+        when(wettbewerbsdurchfuehrenderDao.findByUserUuid(uuid)).thenReturn(Optional.empty());
+        when(lehrpersonAnlegenDelegate.lehrpersonAnlegen("A1234567")).thenThrow(runtimeException);
+
+        // act
+        final RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.wettbewerbsdurchfuehrendenAnlegen(request));
+
+        // assert
+        assertAll(() -> assertEquals("schlimmer fehler", exception.getMessage()),
+                () -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(lehrpersonAnlegenDelegate).lehrpersonAnlegen(anyString()),
+                () -> verify(augmentationDelegate, never()).augmentSession(any(Wettbewerbsdurchfuehrungsart.class)));
     }
 
     @Test
@@ -121,12 +206,15 @@ public class WettbewerbsdurchfuehrendeServiceTest {
         when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
         when(wettbewerbsdurchfuehrenderDao.findByUserUuid(uuid)).thenReturn(Optional.empty());
         when(privatpersonAnlegenDelegate.privatpersonAnlegen()).thenReturn(new Wettbewerbsdurchfuehrender());
+        doNothing().when(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT);
 
         // act
         service.wettbewerbsdurchfuehrendenAnlegen(request);
 
         // assert
-        verify(privatpersonAnlegenDelegate).privatpersonAnlegen();
+        assertAll(() -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(privatpersonAnlegenDelegate).privatpersonAnlegen(),
+                () -> verify(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT));
     }
 
     @Test
@@ -141,12 +229,15 @@ public class WettbewerbsdurchfuehrendeServiceTest {
         when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
         when(wettbewerbsdurchfuehrenderDao.findByUserUuid(uuid)).thenReturn(Optional.empty());
         when(lehrpersonAnlegenDelegate.lehrpersonAnlegen("A1234567")).thenReturn(new Wettbewerbsdurchfuehrender());
+        doNothing().when(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.SCHULE);
 
         // act
         service.wettbewerbsdurchfuehrendenAnlegen(request);
 
         // assert
-        verify(lehrpersonAnlegenDelegate).lehrpersonAnlegen("A1234567");
+        assertAll(() -> verify(wettbewerbsdurchfuehrenderDao).findByUserUuid(uuid),
+                () -> verify(lehrpersonAnlegenDelegate).lehrpersonAnlegen("A1234567"),
+                () -> verify(augmentationDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.SCHULE));
     }
 
     private WettbewerbsdurchfuehrenderEntity createEntity() {

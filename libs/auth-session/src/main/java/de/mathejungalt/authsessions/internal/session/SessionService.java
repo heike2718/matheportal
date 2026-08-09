@@ -189,15 +189,17 @@ public class SessionService {
      * @param berechtigungen Set
      */
     @Transactional
-    public void augmentSessionQuietlySessionQuietly(final String sessionId, final Set<String> berechtigungen) {
+    public void augmentSessionQuietly(final String sessionId, final Set<String> berechtigungen) {
         final Optional<SessionEntity> opt = sessionRepository.findBySessionId(sessionId);
         if (opt.isEmpty()) {
             LOGGER.debug("session ist nicht mehr da");
         }
         final SessionEntity sessionEntity = opt.get();
-        sessionEntity.setBerechtigungen(String.join(",", berechtigungen));
+        final String roles = String.join(",", berechtigungen);
+        sessionEntity.setBerechtigungen(roles);
         sessionEntity.setAugmentationState(SecurityIdentityAugmentationState.AUGMENTED);
         sessionRepository.saveSession(sessionEntity);
+        LOGGER.warn("====> session has been augmented: {}", roles);
     }
 
     /**

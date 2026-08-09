@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
@@ -38,12 +37,14 @@ public class WettbewerbsdurchfuehrendeService {
     @Inject
     SecurityIdentity securityIdentity;
 
+    @Inject
+    AugmentSessionDelegate augmentSessionDelegate;
+
     /**
      * Läd den Wettbewerbsdurchfuehrenden anhand der userUuid aus der SecurityIdentity.
      *
      * @return Wettbewerbsdurchfuehrender oder null
      */
-    @Transactional
     public Wettbewerbsdurchfuehrender loadDurchfuehrenden() {
 
         final Optional<WettbewerbsdurchfuehrenderEntity> opt = wettbewerbsdurchfuehrenderDao
@@ -63,7 +64,6 @@ public class WettbewerbsdurchfuehrendeService {
      * @param request WettbewerbsdurchfuehrenderRequest
      * @return Wettbewerbsdurchfuehrender
      */
-    @Transactional
     public Wettbewerbsdurchfuehrender wettbewerbsdurchfuehrendenAnlegen(
             final WettbewerbsdurchfuehrenderRequest request) {
 
@@ -72,14 +72,22 @@ public class WettbewerbsdurchfuehrendeService {
                     "Dieser Benutzer ist bereits als Wettbewerbsdurchführender registriert.");
         }
 
+        Wettbewerbsdurchfuehrender result = null;
+
         switch (request.getDurchfuehrungsart()) {
         case PRIVAT:
-            return privatpersonAnlegenDelegate.privatpersonAnlegen();
+            result = privatpersonAnlegenDelegate.privatpersonAnlegen();
+            break;
         case SCHULE:
-            return lehrpersonAnlegenDelegate.lehrpersonAnlegen(request.getSchulkuerzel());
+            result = lehrpersonAnlegenDelegate.lehrpersonAnlegen(request.getSchulkuerzel());
+            break;
         default:
             throw new MinikaenguruRuntimeException(
                     "unerwartete wettbewerbsdurchfuehrungsart " + request.getDurchfuehrungsart());
         }
+
+        augmentSessionDelegate.augmentSession(request.getDurchfuehrungsart());
+
+        return result;
     }
 }

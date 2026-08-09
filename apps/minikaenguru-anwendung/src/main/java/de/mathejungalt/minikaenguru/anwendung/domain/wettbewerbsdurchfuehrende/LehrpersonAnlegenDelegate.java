@@ -37,36 +37,31 @@ public class LehrpersonAnlegenDelegate {
     SecurityIdentity securityIdentity;
 
     @Inject
-    AugmentSessionDelegate augmentSessionDelegate;
-
-    @Inject
     Clock clock;
 
     @Transactional
     Wettbewerbsdurchfuehrender lehrpersonAnlegen(final String schulkuerzel) {
 
         final LocalDateTime now = LocalDateTime.now(clock);
+        final String userUuid = securityIdentity.getPrincipal().getName();
 
         final WettbewerbsdurchfuehrenderEntity entity = this.mappingDelegate
-                .createWettbewerbsdurchfuehrendeEntity(securityIdentity.getPrincipal().getName(), schulkuerzel,
-                        Wettbewerbsdurchfuehrungsart.SCHULE, now);
+                .createWettbewerbsdurchfuehrendeEntity(userUuid, schulkuerzel, Wettbewerbsdurchfuehrungsart.SCHULE,
+                        now);
 
         final SchulkollegiumsmitgliedEntity schulkollegiumsmitgliedEntity = SchulkollegiumsmitgliedEntity
                 .builder()
                 .createdAt(now)
-                .userUuid(securityIdentity.getPrincipal().getName())
+                .userUuid(userUuid)
                 .schulkuerzel(schulkuerzel)
                 .build();
 
         schulkollegiumDao.insertEntity(schulkollegiumsmitgliedEntity);
 
         final WettbewerbsdurchfuehrenderEntity result = wettbewerbsdurchfuehrenderDao.saveEntity(entity);
-
-        this.augmentSessionDelegate.augmentSession(Wettbewerbsdurchfuehrungsart.SCHULE);
-
         log.info("lehrperson angelegt - uuid = {}, schulkuerzel = {}", result.getUserUuid(), schulkuerzel);
 
-        return this.mappingDelegate.mapToWettbewerbsdurchfuehrender(result, securityIdentity.getPrincipal().getName());
+        return this.mappingDelegate.mapToWettbewerbsdurchfuehrender(result, userUuid);
     }
 
 }

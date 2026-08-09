@@ -13,6 +13,7 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let action$: ReplaySubject<unknown>;
@@ -32,6 +33,8 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
 
     let routerMock: { navigate: ReturnType<typeof vi.fn> };
+
+    let authSesisonFacadeMock: { validateSession: ReturnType<typeof vi.fn> };
 
     const conflictErrorResponse = new HttpErrorResponse({
         status: 409,
@@ -61,6 +64,10 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             navigate: vi.fn(),
         };
 
+        authSesisonFacadeMock = {
+            validateSession: vi.fn(),
+        };
+
         TestBed.configureTestingModule({
             providers: [
                 WettbewerbsdurchfuehrendeEffects,
@@ -73,6 +80,10 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 {
                     provide: WettbewerbsdurchfuehrendeHttpService,
                     useValue: httpServiceMock,
+                },
+                {
+                    provide: AuthSessionFacade,
+                    useValue: authSesisonFacadeMock,
                 },
             ],
         });
@@ -314,6 +325,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-privatperson']);
+            expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
 
         it('should route to dashboard-lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
@@ -331,6 +343,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-lehrperson']);
+            expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
     });
 });

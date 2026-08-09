@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.InjectMocks;
@@ -12,9 +13,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.ZugangsberechtigungUnterlagen;
 import de.mathejungalt.minikaenguru.anwendung.domain.kuerzelgenerierung.KuerzelGeneratorService;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkollegiumDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.TestPrincipalAdapter;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LehrpersonAnlegenDelegateTest {
@@ -41,9 +56,35 @@ public class LehrpersonAnlegenDelegateTest {
     Clock clock;
 
     @InjectMocks
-    LehrpersonAnlegenDelegate service;
+    LehrpersonAnlegenDelegate delegate;
 
-    @Mock
-    AugmentSessionDelegate augmentationDelegate;
+    @Test
+    void should_lehrpersonAnlegen_work() {
+
+        // arrange
+        final String uuid = "uuid-1";
+        final WettbewerbsdurchfuehrenderEntity entity = WettbewerbsdurchfuehrenderEntity
+                .builder()
+                .newsletterEmpfaenger(false)
+                .schulkuerzel("A1234567")
+                .zugangsberechtigungUnterlagen(ZugangsberechtigungUnterlagen.STANDARD)
+                .art(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .userUuid(uuid)
+                .build();
+
+        when(wettbewerbsdurchfuehrenderDao.saveEntity(any(WettbewerbsdurchfuehrenderEntity.class))).thenReturn(entity);
+        doNothing().when(schulkollegiumDao).insertEntity(any(SchulkollegiumsmitgliedEntity.class));
+        when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
+
+        // act
+        final Wettbewerbsdurchfuehrender result = delegate.lehrpersonAnlegen("A12345678");
+
+        // assert
+        assertAll(() -> assertNotNull(result),
+                () -> verify(wettbewerbsdurchfuehrenderDao).saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)),
+                () -> verify(schulkollegiumDao).insertEntity(any(SchulkollegiumsmitgliedEntity.class)),
+                () -> verify(securityIdentity).getPrincipal());
+
+    }
 
 }

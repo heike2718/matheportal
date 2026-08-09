@@ -8,7 +8,8 @@ import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
 import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { schuleSelected } from 'apps/minikaenguru-anwendung-ui/src/app/schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
+import { AuthSessionFacade } from '@matheportal/auth-api';
+import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -16,6 +17,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(WettbewerbsdurchfuehrendeHttpService);
     #router = inject(Router);
+    #authSessionFacade = inject(AuthSessionFacade);
 
     durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
         this.#actions.pipe(
@@ -97,6 +99,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                                 portalRoutes.minikaenguruAnwendung.root,
                                 portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
                             ]);
+                            this.#authSessionFacade.validateSession();
                             break;
                         case 'SCHULE':
                             void this.#router.navigate([
@@ -104,6 +107,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                                 portalRoutes.minikaenguruAnwendung.root,
                                 portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
                             ]);
+                            this.#authSessionFacade.validateSession();
                             break;
                         default:
                             // dieser Fall ist nur möglich, wenn eine weitere DURCHFUEHRUNGSART hinzugefügt wird.
