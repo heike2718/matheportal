@@ -24,7 +24,12 @@ public class AugmentSessionDelegate {
     @Inject
     SessionFacade sessionFacade;
 
-    void augmentSession(final Wettbewerbsdurchfuehrungsart wettbewerbsdurchfuehrungsart) {
+    /**
+     * Augmentiert eine vorhandene Session umd die Pseudorolle.
+     *
+     * @param wettbewerbsdurchfuehrungsart Wettbewerbsdurchfuehrungsart
+     */
+    public void augmentSession(final Wettbewerbsdurchfuehrungsart wettbewerbsdurchfuehrungsart) {
         final String sessionId = securityIdentity.getAttribute(SecurityIdentityAttributeKeys.SESSION_ID);
         final Set<String> roles = securityIdentity.getRoles();
         final Set<String> neueRollen = new HashSet<>(roles);

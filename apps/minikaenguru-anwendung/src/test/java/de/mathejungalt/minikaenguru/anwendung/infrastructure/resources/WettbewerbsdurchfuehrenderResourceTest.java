@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -17,6 +18,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchf
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ZugangsberechtigungUnterlagen;
+import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.AugmentSessionDelegate;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkollegiumDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.CleanupTestDataDao;
@@ -30,9 +32,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import static org.mockito.Mockito.doNothing;
+
 @QuarkusTest
 @TestHTTPEndpoint(WettbewerbsdurchfuehrenderResource.class)
 public class WettbewerbsdurchfuehrenderResourceTest {
+
+    @Mock
+    AugmentSessionDelegate augmentSessionDelegate;
 
     @Inject
     CleanupTestDataDao cleanupDao;
@@ -112,6 +119,8 @@ public class WettbewerbsdurchfuehrenderResourceTest {
     @TestSecurity(user = UUID_MP_TEST_TO_PRIVATPERSON)
     void should_create_privatperson() {
 
+        doNothing().when(augmentSessionDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.PRIVAT);
+
         try {
 
             final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
@@ -145,6 +154,8 @@ public class WettbewerbsdurchfuehrenderResourceTest {
     @Test
     @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
     void should_create_lehrperson() {
+
+        doNothing().when(augmentSessionDelegate).augmentSession(Wettbewerbsdurchfuehrungsart.SCHULE);
 
         try {
 

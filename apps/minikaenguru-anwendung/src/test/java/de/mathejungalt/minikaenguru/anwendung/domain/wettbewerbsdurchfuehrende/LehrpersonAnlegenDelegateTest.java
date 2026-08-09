@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,8 +73,11 @@ public class LehrpersonAnlegenDelegateTest {
                 .build();
 
         when(wettbewerbsdurchfuehrenderDao.saveEntity(any(WettbewerbsdurchfuehrenderEntity.class))).thenReturn(entity);
-        doNothing().when(schulkollegiumDao).insertEntity(any(SchulkollegiumsmitgliedEntity.class));
+        when(schulkollegiumDao.insertEntity(any(SchulkollegiumsmitgliedEntity.class))).thenReturn(314L);
         when(securityIdentity.getPrincipal()).thenReturn(new TestPrincipalAdapter(uuid));
+
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
 
         // act
         final Wettbewerbsdurchfuehrender result = delegate.lehrpersonAnlegen("A12345678");
