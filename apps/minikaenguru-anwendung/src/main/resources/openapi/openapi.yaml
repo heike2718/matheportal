@@ -293,6 +293,7 @@ components:
                     items:
                         type: string
                         pattern: '^[A-Z0-9]*$'
+                        maxLength: 10
                     example:
                         - V8DDP4X9ZY
                         - SSBXQUBN
