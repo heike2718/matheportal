@@ -6,7 +6,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/app/config/index.ts",
+    "../matheportal-shell-ui/src/app/config/index.ts",
     "../../libs/shared-runtime-config/src/index.ts",
     "../../libs/testing/src/index.ts",
     "../../libs/auth/auth-model/src/index.ts",

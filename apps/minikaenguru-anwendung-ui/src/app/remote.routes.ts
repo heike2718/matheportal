@@ -11,6 +11,8 @@ import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuc
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
+import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
+import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -27,19 +29,25 @@ export const remoteRoutes: Routes = [
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
-                // canActivate: [mkaPrivatpersonGuard()],
-                // canActivateChild: [mkaPrivatpersonGuard()],
+                canActivate: [mkaPrivatpersonGuard()],
+                canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                // canActivate: fehlt noch
+                // canActivateChild: fehlt noch
                 component: DashboardLehrpersonComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.schulkatalogsuche,
-                // canActivate: [mkaSchulkatalogsucheGuard()],
-                // canActivateChild: [mkaSchulkatalogsucheGuard()],
+                canActivate: [mkaSchulkatalogsucheGuard()],
+                canActivateChild: [mkaSchulkatalogsucheGuard()],
                 component: SchulkatalogsucheComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.unknown,
+                redirectTo: '',
             },
         ],
         providers: [
