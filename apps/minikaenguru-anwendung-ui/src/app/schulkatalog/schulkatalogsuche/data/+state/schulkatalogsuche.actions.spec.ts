@@ -36,7 +36,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.findOrte({ name });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findOrte',
+            type: '[MKA Schulkatalogsuche] findOrte',
             name,
         });
     });
@@ -45,7 +45,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.findOrteSucceeded({ orte });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findOrteSucceeded',
+            type: '[MKA Schulkatalogsuche] findOrteSucceeded',
             orte,
         });
     });
@@ -54,7 +54,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.findOrteFailed({ error: httpServerErrorResponse });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] findOrteFailed',
+            type: '[MKA Schulkatalogsuche] findOrteFailed',
             error: httpServerErrorResponse,
         });
     });
@@ -63,7 +63,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.loadSchulen({ ort: orte[0] });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] loadSchulen',
+            type: '[MKA Schulkatalogsuche] loadSchulen',
             ort: orte[0],
         });
     });
@@ -80,7 +80,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] loadSchulenSucceeded',
+            type: '[MKA Schulkatalogsuche] loadSchulenSucceeded',
             ortId,
             schulen,
         });
@@ -91,7 +91,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.loadSchulenFailed({ error });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] loadSchulenFailed',
+            type: '[MKA Schulkatalogsuche] loadSchulenFailed',
             error,
         });
     });
@@ -101,7 +101,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.ortSelected({ ort });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] ortSelected',
+            type: '[MKA Schulkatalogsuche] ortSelected',
             ort,
         });
     });
@@ -110,7 +110,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.orteCleared();
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] orteCleared',
+            type: '[MKA Schulkatalogsuche] orteCleared',
         });
     });
 
@@ -118,7 +118,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.schulenCleared();
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] schulenCleared',
+            type: '[MKA Schulkatalogsuche] schulenCleared',
         });
     });
 
@@ -131,7 +131,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.schuleSelected({ schule });
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] schuleSelected',
+            type: '[MKA Schulkatalogsuche] schuleSelected',
             schule,
         });
     });
@@ -140,7 +140,7 @@ describe('schulkatalogsucheActions', () => {
         const action = schulkatalogsucheActions.resetSuche();
 
         expect(action).toEqual({
-            type: '[Schulkatalogsuche] resetSuche',
+            type: '[MKA Schulkatalogsuche] resetSuche',
         });
     });
 });

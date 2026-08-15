@@ -2,7 +2,7 @@ import { anonymousUser, User } from '@matheportal/auth-model';
 import { on, createFeature, createReducer } from '@ngrx/store';
 import { authActions } from './auth.actions';
 
-const AUTH_FEATURE_KEY = 'mpAuth';
+const AUTH_FEATURE_KEY = 'MPAuth';
 
 export interface AuthState {
     readonly user: User;

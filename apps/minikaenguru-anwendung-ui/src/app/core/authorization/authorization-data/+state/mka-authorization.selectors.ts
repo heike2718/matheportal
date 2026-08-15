@@ -1,10 +1,10 @@
 import { createSelector } from '@ngrx/store';
 import { mkaAuthorizationFeature } from './mka-authorization.reducer';
 
-const { selectMkaAuthorizationState } = mkaAuthorizationFeature;
+const { selectMKAAuthorizationState } = mkaAuthorizationFeature;
 
-const berechtigungstyp = createSelector(selectMkaAuthorizationState, state => state.berechtigungstyp);
-const authorizationLoadState = createSelector(selectMkaAuthorizationState, state => state.authorizationLoadState);
+const berechtigungstyp = createSelector(selectMKAAuthorizationState, state => state.berechtigungstyp);
+const authorizationLoadState = createSelector(selectMKAAuthorizationState, state => state.authorizationLoadState);
 
 export const fromMkaAuthorization = {
     berechtigungstyp: berechtigungstyp,

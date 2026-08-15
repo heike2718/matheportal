@@ -1,11 +1,11 @@
 import { createSelector } from '@ngrx/store';
 import { authFeature } from './auth.reducer';
 
-const { selectMpAuthState } = authFeature;
+const { selectMPAuthState } = authFeature;
 
-const user = createSelector(selectMpAuthState, state => state.user);
+const user = createSelector(selectMPAuthState, state => state.user);
 
-const hasSession = createSelector(selectMpAuthState, state => !state.user.anonym);
+const hasSession = createSelector(selectMPAuthState, state => !state.user.anonym);
 
 const isAdmin = createSelector(user, user => user.berechtigungen.indexOf('ADMIN') >= 0);
 
