@@ -14,7 +14,7 @@ describe('authActions', () => {
         const action = authActions.requestLoginUrl();
 
         expect(action).toEqual({
-            type: '[Auth] requestLoginUrl',
+            type: '[MP Auth] requestLoginUrl',
         });
     });
 
@@ -22,7 +22,7 @@ describe('authActions', () => {
         const action = authActions.requestLoginUrlFailed();
 
         expect(action).toEqual({
-            type: '[Auth] requestLoginUrlFailed',
+            type: '[MP Auth] requestLoginUrlFailed',
         });
     });
 
@@ -30,7 +30,7 @@ describe('authActions', () => {
         const action = authActions.requestSignupUrl();
 
         expect(action).toEqual({
-            type: '[Auth] requestSignupUrl',
+            type: '[MP Auth] requestSignupUrl',
         });
     });
 
@@ -38,7 +38,7 @@ describe('authActions', () => {
         const action = authActions.requestSignupUrlFailed();
 
         expect(action).toEqual({
-            type: '[Auth] requestSignupUrlFailed',
+            type: '[MP Auth] requestSignupUrlFailed',
         });
     });
 
@@ -48,7 +48,7 @@ describe('authActions', () => {
         const action = authActions.redirectToIam({ iamUrl });
 
         expect(action).toEqual({
-            type: '[Auth] redirectToIam',
+            type: '[MP Auth] redirectToIam',
             iamUrl,
         });
     });
@@ -57,7 +57,7 @@ describe('authActions', () => {
         const action = authActions.invalidOAuthFlowHash();
 
         expect(action).toEqual({
-            type: '[Auth] invalidOAuthFlowHash',
+            type: '[MP Auth] invalidOAuthFlowHash',
         });
     });
 
@@ -67,7 +67,7 @@ describe('authActions', () => {
         const action = authActions.createSession({ idToken });
 
         expect(action).toEqual({
-            type: '[Auth] createSession',
+            type: '[MP Auth] createSession',
             idToken,
         });
     });
@@ -76,7 +76,7 @@ describe('authActions', () => {
         const action = authActions.createSessionFailed();
 
         expect(action).toEqual({
-            type: '[Auth] createSessionFailed',
+            type: '[MP Auth] createSessionFailed',
         });
     });
 
@@ -84,7 +84,7 @@ describe('authActions', () => {
         const action = authActions.sessionCreated({ user });
 
         expect(action).toEqual({
-            type: '[Auth] sessionCreated',
+            type: '[MP Auth] sessionCreated',
             user,
         });
     });
@@ -93,7 +93,7 @@ describe('authActions', () => {
         const action = authActions.validateSession();
 
         expect(action).toEqual({
-            type: '[Auth] validateSession',
+            type: '[MP Auth] validateSession',
         });
     });
 
@@ -101,7 +101,7 @@ describe('authActions', () => {
         const action = authActions.sessionValidated({ user });
 
         expect(action).toEqual({
-            type: '[Auth] sessionValidated',
+            type: '[MP Auth] sessionValidated',
             user,
         });
     });
@@ -112,7 +112,7 @@ describe('authActions', () => {
         });
 
         expect(action).toEqual({
-            type: '[Auth] sessionValidationFailed',
+            type: '[MP Auth] sessionValidationFailed',
             reason: 'expired',
         });
     });
@@ -123,7 +123,7 @@ describe('authActions', () => {
         });
 
         expect(action).toEqual({
-            type: '[Auth] sessionValidationFailed',
+            type: '[MP Auth] sessionValidationFailed',
             reason: 'missing',
         });
     });
@@ -132,7 +132,7 @@ describe('authActions', () => {
         const action = authActions.userAugmented({ user });
 
         expect(action).toEqual({
-            type: '[Auth] userAugmented',
+            type: '[MP Auth] userAugmented',
             user,
         });
     });
@@ -141,7 +141,7 @@ describe('authActions', () => {
         const action = authActions.signedUp();
 
         expect(action).toEqual({
-            type: '[Auth] signedUp',
+            type: '[MP Auth] signedUp',
         });
     });
 
@@ -149,7 +149,7 @@ describe('authActions', () => {
         const action = authActions.logOut();
 
         expect(action).toEqual({
-            type: '[Auth] logOut',
+            type: '[MP Auth] logOut',
         });
     });
 
@@ -157,7 +157,7 @@ describe('authActions', () => {
         const action = authActions.loggedOut();
 
         expect(action).toEqual({
-            type: '[Auth] loggedOut',
+            type: '[MP Auth] loggedOut',
         });
     });
 });

@@ -2,7 +2,7 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Ort, Schule } from '../../model/schulkatalog.model';
 
 export const schulkatalogsucheActions = createActionGroup({
-    source: 'Schulkatalogsuche',
+    source: 'MKA Schulkatalogsuche',
     events: {
         findOrte: props<{ name: string }>(),
         findOrteSucceeded: props<{ orte: Ort[] }>(),

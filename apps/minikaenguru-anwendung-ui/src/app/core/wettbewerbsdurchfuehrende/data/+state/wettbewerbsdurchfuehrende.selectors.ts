@@ -2,10 +2,10 @@ import { createSelector } from '@ngrx/store';
 import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.reducer';
 import { assertDefined } from '@matheportal/shared-utils';
 
-const { selectWettbewerbsdurchfuehrendeState } = wettbewerbsdurchfuehrendeFeature;
+const { selectMKAWettbewerbsdurchfuehrendeState } = wettbewerbsdurchfuehrendeFeature;
 
 const wettbewerbsdurchfuehrender = createSelector(
-    selectWettbewerbsdurchfuehrendeState,
+    selectMKAWettbewerbsdurchfuehrendeState,
     state => state.wettbewerbsdurchfuehrender
 );
 

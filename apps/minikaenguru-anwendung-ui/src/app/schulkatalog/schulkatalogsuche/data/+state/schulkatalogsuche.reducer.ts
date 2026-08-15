@@ -4,7 +4,7 @@ import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToSchulkatalogLoadingState } from '../schulkatalogsuche-data.utils';
 
-const SCHULKATALOGSUCHE_FEATURE_KEY = 'Schulkatalogsuche';
+const SCHULKATALOGSUCHE_FEATURE_KEY = 'MKASchulkatalogsuche';
 
 export interface SchulkatalogsucheState {
     readonly orte: Ort[];

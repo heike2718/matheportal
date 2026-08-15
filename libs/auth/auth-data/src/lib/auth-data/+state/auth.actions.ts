@@ -3,7 +3,7 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { SESSION_VALIDATION_FAILED_REASON } from '../auth-data.utils';
 
 export const authActions = createActionGroup({
-    source: 'Auth',
+    source: 'MP Auth',
     events: {
         requestLoginUrl: emptyProps(),
         requestLoginUrlFailed: emptyProps(),

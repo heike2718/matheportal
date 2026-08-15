@@ -4,7 +4,7 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapDto } from '../wettbewerbsdurchfuehrende-data.utils';
 
-const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'wettbewerbsdurchfuehrende';
+const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'MKAWettbewerbsdurchfuehrende';
 
 export interface WettbewerbsdurchfuehrendeState {
     wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender | undefined;

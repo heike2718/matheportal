@@ -8,6 +8,8 @@ import jakarta.inject.Inject;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import de.mathejungalt.authsessions.api.SessionFacade;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.security.SecurityIdentityAttributeKeys;
@@ -17,6 +19,9 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.security.SecurityId
  */
 @ApplicationScoped
 public class AugmentSessionDelegate {
+
+    @ConfigProperty(name = "mock.augment.session")
+    boolean mockAugmentSession;
 
     @Inject
     SecurityIdentity securityIdentity;
@@ -30,6 +35,11 @@ public class AugmentSessionDelegate {
      * @param wettbewerbsdurchfuehrungsart Wettbewerbsdurchfuehrungsart
      */
     public void augmentSession(final Wettbewerbsdurchfuehrungsart wettbewerbsdurchfuehrungsart) {
+
+        if (mockAugmentSession) {
+            return;
+        }
+
         final String sessionId = securityIdentity.getAttribute(SecurityIdentityAttributeKeys.SESSION_ID);
         final Set<String> roles = securityIdentity.getRoles();
         final Set<String> neueRollen = new HashSet<>(roles);
