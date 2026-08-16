@@ -1,17 +1,18 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { Ort, Schule, SCHULKATALOG_LOADING_STATE } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { mapErrorToSchulkatalogLoadingState } from '../schulkatalogsuche-data.utils';
+import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
+import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 const SCHULKATALOGSUCHE_FEATURE_KEY = 'MKASchulkatalogsuche';
 
 export interface SchulkatalogsucheState {
     readonly orte: Ort[];
-    readonly orteLoadingState: SCHULKATALOG_LOADING_STATE;
+    readonly orteLoadingState: RESOURCE_LOAD_STATE;
     readonly selectedOrt: Ort | undefined;
     readonly schulen: Schule[];
-    readonly schulenLoadingState: SCHULKATALOG_LOADING_STATE;
+    readonly schulenLoadingState: RESOURCE_LOAD_STATE;
     readonly selectedSchule: Schule | undefined;
 }
 
@@ -38,7 +39,7 @@ export const schulkatalogsucheFeature = createFeature({
             selectedSchule: undefined,
         })),
         on(schulkatalogsucheActions.findOrteFailed, (state, { error }) => {
-            return { ...state, orteLoadingState: mapErrorToSchulkatalogLoadingState(error), selectedOrt: undefined };
+            return { ...state, orteLoadingState: mapErrorResourceLoadingState(error), selectedOrt: undefined };
         }),
         on(schulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
@@ -57,7 +58,7 @@ export const schulkatalogsucheFeature = createFeature({
         on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
-                schulenLoadingState: mapErrorToSchulkatalogLoadingState(error),
+                schulenLoadingState: mapErrorResourceLoadingState(error),
                 selectedSchule: undefined,
             };
         }),

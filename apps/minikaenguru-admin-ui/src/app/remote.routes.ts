@@ -5,6 +5,7 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { minikaenguruAdminConfiguration } from './config/configuration';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { minikaenguruAdminGuard } from './core/authorization/minikaenguru-admin.guard';
+import { schulkatalogDataProvider } from './schulkatalog/api/schulkatalog-data.provider';
 
 export const remoteRoutes: Route[] = [
     {
@@ -28,6 +29,7 @@ export const remoteRoutes: Route[] = [
                 provide: MINIKAENGURU_ADMIN_CONFIGURATION,
                 useValue: minikaenguruAdminConfiguration,
             },
+            ...schulkatalogDataProvider,
         ],
     },
 ];

@@ -5,8 +5,8 @@ import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { Ort, Schule } from '../../model/schulkatalog.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { mapErrorToMessage } from '../../../../core/error/minikaenguru-error-mapper';
 import { isTermSearchable, normalizeSearchTerm } from '../schulkatalogsuche-data.utils';
+import { mapErrorToMessage } from '@matheportal/shared-utils';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden.
 export class SchulkatalogsucheEffects {

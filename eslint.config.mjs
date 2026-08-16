@@ -92,6 +92,11 @@ export default [
                             ],
                         },
 
+                        {
+                            sourceTag: 'type:utils',
+                            onlyDependOnLibsWithTags: ['type:model'],
+                        },
+
                         // Reine Typen/Interfaces – keine fachlichen Abhängigkeiten außer shared
                         {
                             sourceTag: 'type:model',

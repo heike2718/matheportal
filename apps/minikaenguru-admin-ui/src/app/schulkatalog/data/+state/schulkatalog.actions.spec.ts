@@ -89,11 +89,11 @@ describe('schulkatalogActions', () => {
     });
     describe('schulkatalog: orte actions', () => {
         it('should create the loadOrte action', () => {
-            const action = schulkatalogActions.loadOrte({ landId: laender[1].kuerzel });
+            const action = schulkatalogActions.loadOrte({ land: laender[1] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadOrte',
-                landId: 'LAND-2',
+                land: laender[1],
             });
         });
 
@@ -126,11 +126,11 @@ describe('schulkatalogActions', () => {
     });
     describe('schulkatalog: schulen actions', () => {
         it('should create the loadSchulen action', () => {
-            const action = schulkatalogActions.loadSchulen({ ortId: orte[0].kuerzel });
+            const action = schulkatalogActions.loadSchulen({ ort: orte[0] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadSchulen',
-                ortId: 'ORT-21',
+                ort: orte[0],
             });
         });
 

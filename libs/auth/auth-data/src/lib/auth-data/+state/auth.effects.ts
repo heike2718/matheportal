@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
 import { authActions } from './auth.actions';
@@ -9,7 +8,7 @@ import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
+import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 import { SESSION_VALIDATION_FAILED_REASON } from '../auth-data.utils';
 import { LOCATION_HASH_SERVICE } from '../location-hash.service';
 
