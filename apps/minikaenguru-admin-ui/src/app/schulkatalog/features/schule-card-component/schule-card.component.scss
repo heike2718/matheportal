@@ -28,14 +28,14 @@
 
     &:hover {
         border-color: mp-theme.$mp-border-color-interactive-hover;
-        background-color: mp-theme.mp-brand-hover(minikaenguru);
+        background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
         box-shadow: mp-theme.$mp-shadow-1;
     }
 
     &:focus-visible {
-        outline: 3px solid mp-theme.mp-brand(minikaenguru);
+        outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
         outline-offset: mp-theme.$mp-space-1;
-        border-color: mp-theme.mp-brand(minikaenguru);
+        border-color: mp-theme.mp-brand(minikaenguru-admin);
     }
 
     &:active {
@@ -51,7 +51,7 @@
 
     &__name {
         overflow: hidden;
-        color: mp-theme.mp-brand(minikaenguru);
+        color: mp-theme.mp-brand(minikaenguru-admin);
         font-size: mp-theme.$mp-font-size-m;
         font-weight: 700;
         line-height: mp-theme.$mp-line-height-tight;
@@ -65,7 +65,7 @@
     }
 
     &__arrow {
-        color: mp-theme.mp-brand(minikaenguru);
+        color: mp-theme.mp-brand(minikaenguru-admin);
         font-size: 1.75rem;
         font-weight: 300;
         line-height: 1;

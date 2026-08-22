@@ -5,7 +5,7 @@
     display: block;
 }
 
-.mka-schule-card {
+.mk-admin-ort-card {
     box-sizing: border-box;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto;
@@ -28,14 +28,14 @@
 
     &:hover {
         border-color: mp-theme.$mp-border-color-interactive-hover;
-        background-color: mp-theme.mp-brand-hover(minikaenguru);
+        background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
         box-shadow: mp-theme.$mp-shadow-1;
     }
 
     &:focus-visible {
-        outline: 3px solid mp-theme.mp-brand(minikaenguru);
+        outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
         outline-offset: mp-theme.$mp-space-1;
-        border-color: mp-theme.mp-brand(minikaenguru);
+        border-color: mp-theme.mp-brand(minikaenguru-admin);
     }
 
     &:active {
@@ -51,7 +51,7 @@
 
     &__name {
         overflow: hidden;
-        color: mp-theme.mp-brand(minikaenguru);
+        color: mp-theme.mp-brand(minikaenguru-admin);
         font-size: mp-theme.$mp-font-size-m;
         font-weight: 700;
         line-height: mp-theme.$mp-line-height-tight;
@@ -59,13 +59,18 @@
         white-space: nowrap;
     }
 
-    &__land {
+    &__land,
+    &__school-count {
         font-size: mp-theme.$mp-font-size-m;
         line-height: mp-theme.$mp-line-height-normal;
     }
 
+    &__school-count {
+        white-space: nowrap;
+    }
+
     &__arrow {
-        color: mp-theme.mp-brand(minikaenguru);
+        color: mp-theme.mp-brand(minikaenguru-admin);
         font-size: 1.75rem;
         font-weight: 300;
         line-height: 1;
@@ -73,13 +78,18 @@
 }
 
 @media (width <= 480px) {
-    .mka-schule-card {
+    .mk-admin-ort-card {
         grid-template-columns: minmax(0, 1fr) auto;
         gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;
 
-        &__land {
+        &__land,
+        &__school-count {
             font-size: mp-theme.$mp-font-size-s;
+        }
+
+        &__school-count {
+            grid-column: 1;
         }
 
         &__arrow {

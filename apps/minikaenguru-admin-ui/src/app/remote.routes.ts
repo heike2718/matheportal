@@ -6,6 +6,7 @@ import { minikaenguruAdminConfiguration } from './config/configuration';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { minikaenguruAdminGuard } from './core/authorization/minikaenguru-admin.guard';
 import { schulkatalogDataProvider } from './schulkatalog/api/schulkatalog-data.provider';
+import { SchulkatalogComponent } from './schulkatalog/features/schulkatalog-component/schulkatalog.component';
 
 export const remoteRoutes: Route[] = [
     {
@@ -18,6 +19,10 @@ export const remoteRoutes: Route[] = [
             {
                 path: '',
                 component: DashboardComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAdmin.schulkatalog,
+                component: SchulkatalogComponent,
             },
             {
                 path: portalRoutes.minikaenguruAdmin.unknown,

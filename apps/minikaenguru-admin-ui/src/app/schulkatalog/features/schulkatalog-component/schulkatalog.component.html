@@ -1,0 +1,22 @@
+<div class="mk-admin-schulkatalog">
+    @if (isSchulenLoaded()) {
+        <mk-admin-schulen-list
+            [selectedOrt]="beschreibungSelectedOrt()"
+            [schulen]="schulen()"
+            [schulenLoaded]="isSchulenLoaded()"
+            (schuleSelected)="onSchuleSelected($event)" />
+    } @else {
+        @if (isOrteLoaded()) {
+            <mk-admin-orte-list
+                [selectedLand]="nameSelectedLand()"
+                [orte]="orte()"
+                [orteLoaded]="isOrteLoaded()"
+                (ortSelected)="onOrtSelected($event)" />
+        } @else {
+            <mk-admin-laender-list
+                [laender]="laender()"
+                [laenderLoaded]="isLaenderLoaded()"
+                (landSelected)="onLandSelected($event)" />
+        }
+    }
+</div>

@@ -1,0 +1,17 @@
+<div class="mk-admin-laender-list">
+    <h2 class="mk-admin-laender-list__title">Länder</h2>
+    <label class="mk-admin-laender-list__label" for="term">Name</label>
+    <input id="term" class="mk-admin-laender-list__input" type="text" [formField]="searchForm.term" />
+
+    @if (laenderLoaded()) {
+        <p class="mk-admin-laender-list__result-count">Anzahl: {{ filteredLaender().length }}</p>
+
+        <div class="mk-admin-laender-list__results">
+            @for (land of filteredLaender(); track land.kuerzel) {
+                <mk-admin-land-card [land]="land" (landSelected)="landSelected.emit($event)" />
+            }
+        </div>
+    } @else {
+        <p class="mk-admin-laender-list__result-count">Lade Länder ...</p>
+    }
+</div>

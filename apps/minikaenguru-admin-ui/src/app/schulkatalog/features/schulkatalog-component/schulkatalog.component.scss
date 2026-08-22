@@ -1,0 +1,21 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.mk-admin-schulkatalog {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    padding: mp-theme.$mp-space-6;
+
+    @media (max-width: 37.5rem) {
+        padding-inline: mp-theme.$mp-space-1;
+        padding-block: mp-theme.$mp-space-4;
+    }
+}

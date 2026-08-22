@@ -1,32 +1,21 @@
-import {
-    afterRenderEffect,
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    computed,
-    input,
-    output,
-    signal,
-} from '@angular/core';
-import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
-import { Schule } from '../../model/schulkatalog.model';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { Ort, Schule } from '../../model/schulkatalog.model';
 import { debounce, form, FormField } from '@angular/forms/signals';
+import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
 
 @Component({
-    selector: 'mka-schulen-list',
+    selector: 'mk-admin-schulen-list',
     imports: [FormField, SchuleCardComponent],
     templateUrl: './schulen-list.component.html',
     styleUrl: './schulen-list.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SchulenListComponent {
-    readonly nameSelectedOrt = input.required<string>();
-
+    readonly selectedOrt = input.required<string>();
     readonly schulen = input.required<Schule[]>();
     readonly schulenLoaded = input.required<boolean>();
 
     readonly schuleSelected = output<Schule>();
-    readonly ortssucheRequested = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
         term: '',

@@ -1,0 +1,17 @@
+<div class="mk-admin-orte-list">
+    <h2 class="mk-admin-orte-list__title">Orte in {{ selectedLand() }} suchen</h2>
+    @if (orteLoaded()) {
+        <label class="mk-admin-orte-list__label" for="term">Name</label>
+        <input id="term" class="mk-admin-orte-list__input" type="text" [formField]="searchForm.term" />
+
+        <p class="mk-admin-orte-list__result-count">Anzahl: {{ filteredOrte().length }}</p>
+
+        <div class="mk-admin-orte-list__results">
+            @for (ort of filteredOrte(); track ort.kuerzel) {
+                <mk-admin-ort-card [ort]="ort" (ortSelected)="ortSelected.emit($event)" />
+            }
+        </div>
+    } @else {
+        <p class="mk-admin-orte-list__result-count">Lade Orte ...</p>
+    }
+</div>

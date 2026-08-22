@@ -57,95 +57,120 @@ describe('SchulenListComponentComponent', () => {
         vi.restoreAllMocks();
     });
 
-    it('create tests when schulen loaded', () => {
-        fixture.componentRef.setInput('schulen', schulen);
-        fixture.componentRef.setInput('schulenLoaded', true);
+    describe('schulen loaded', () => {
+        beforeEach(async () => {
+            fixture.componentRef.setInput('schulen', schulen);
+            fixture.componentRef.setInput('schulenLoaded', true);
 
-        fixture.detectChanges();
-        expect(component).toBeTruthy();
+            await fixture.whenStable();
 
-        const backButtonDe = fixture.debugElement.query(By.css('.mka-schulen-list__back'));
-        expect(backButtonDe).toBeTruthy();
+            fixture.detectChanges();
+        });
 
-        const titleDe = fixture.debugElement.query(By.css('.mka-schulen-list__title'));
-        expect(titleDe.nativeElement.textContent.trim()).toBe('Schulen in Ort 1 (Hessen) suchen');
+        it('should show an input and the schulen when schulenLoaded', async () => {
+            fixture.componentRef.setInput('schulen', schulen);
+            fixture.componentRef.setInput('schulenLoaded', true);
 
-        const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
-        expect(resultCountDe).toBeTruthy();
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
+            expect(component).toBeTruthy();
 
-        const schuleCardsDe = getSchuleCards();
+            const backButtonDe = fixture.debugElement.query(By.css('.mka-schulen-list__back'));
+            expect(backButtonDe).toBeTruthy();
 
-        expect(schuleCardsDe).toHaveLength(2);
-        expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[0]);
-        expect(ngMocks.input(schuleCardsDe[1], 'schule')).toEqual(schulen[1]);
+            const titleDe = fixture.debugElement.query(By.css('.mka-schulen-list__title'));
+            expect(titleDe.nativeElement.textContent.trim()).toBe('Schulen in Ort 1 (Hessen) suchen');
+
+            const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
+            expect(resultCountDe).toBeTruthy();
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
+
+            const schuleCardsDe = getSchuleCards();
+
+            expect(schuleCardsDe).toHaveLength(2);
+            expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[0]);
+            expect(ngMocks.input(schuleCardsDe[1], 'schule')).toEqual(schulen[1]);
+
+            const inputDe = fixture.debugElement.query(By.css('.mka-schulen-list__input'));
+            expect(inputDe).toBeTruthy();
+
+            // fokus prüfen
+            expect(document.activeElement).toBe(inputDe.nativeElement);
+        });
+
+        it('should filter schulen by name', async () => {
+            const searchTerm = 'st';
+            await enterSearchTerm(searchTerm);
+
+            const schuleCardsDe = getSchuleCards();
+
+            expect(schuleCardsDe).toHaveLength(1);
+            expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[0]);
+
+            const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
+        });
+
+        it('should filter schools case-insensitively', async () => {
+            await enterSearchTerm('ZWEITE');
+
+            const schuleCardsDe = getSchuleCards();
+
+            expect(schuleCardsDe).toHaveLength(1);
+            expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[1]);
+
+            const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
+        });
+
+        it('should show all schools again when the filter is cleared', async () => {
+            await enterSearchTerm('erste');
+            expect(getSchuleCards()).toHaveLength(1);
+
+            const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
+
+            await enterSearchTerm('');
+            expect(getSchuleCards()).toHaveLength(2);
+
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
+        });
+
+        it('should re-emit schuleSelected when SchuleCardComponent emits schuleSelected', () => {
+            const ortSelectedSpy = vi.spyOn(component.schuleSelected, 'emit');
+
+            const ortCardsDe = fixture.debugElement.queryAll(By.directive(SchuleCardComponent));
+
+            expect(ortCardsDe).toHaveLength(2);
+
+            ngMocks.output(ortCardsDe[0], 'schuleSelected').emit(schulen[0]);
+            expect(ortSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[0]);
+        });
     });
 
-    it('create tests when schulen not loaded', () => {
-        fixture.componentRef.setInput('schulen', []);
-        fixture.componentRef.setInput('schulenLoaded', false);
-        fixture.detectChanges();
-        expect(component).toBeTruthy();
+    describe('schulen not loaded', () => {
+        it('should not show an input and but show a loading info when schulen not loaded', async () => {
+            fixture.componentRef.setInput('nameSelectedOrt', undefined);
+            fixture.componentRef.setInput('schulen', []);
+            fixture.componentRef.setInput('schulenLoaded', false);
 
-        const backButtonDe = fixture.debugElement.query(By.css('.mka-schulen-list__back'));
-        expect(backButtonDe).toBeTruthy();
+            fixture.detectChanges();
+            await fixture.whenStable();
 
-        const titleDe = fixture.debugElement.query(By.css('.mka-schulen-list__title'));
-        expect(titleDe.nativeElement.textContent.trim()).toBe('Schulen in Ort 1 (Hessen) suchen');
+            const inputDe = fixture.debugElement.query(By.css('.mka-schulen-list__input'));
+            expect(inputDe).toBeFalsy();
 
-        const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
-        expect(resultCountDe).toBeTruthy();
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Lade Schulen ...');
+            const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
+            expect(resultCountDe).toBeTruthy();
+            expect(resultCountDe.nativeElement.textContent.trim()).toBe('Lade Schulen ...');
 
-        const schuleCardsDe = getSchuleCards();
-        expect(schuleCardsDe).toHaveLength(0);
-    });
-    it('should show an input', () => {
-        fixture.detectChanges();
+            const backButtonDe = fixture.debugElement.query(By.css('.mka-schulen-list__back'));
+            expect(backButtonDe).toBeTruthy();
 
-        const inputDe = fixture.debugElement.query(By.css('.mka-schulen-list__input'));
-        expect(inputDe).toBeTruthy();
+            const titleDe = fixture.debugElement.query(By.css('.mka-schulen-list__title'));
+            expect(titleDe.nativeElement.textContent.trim()).toBe('Schulen suchen');
 
-        // fokus prüfen
-        expect(document.activeElement).toBe(inputDe.nativeElement);
-    });
-
-    it('should filter schulen by name', async () => {
-        const searchTerm = 'st';
-        await enterSearchTerm(searchTerm);
-
-        const schuleCardsDe = getSchuleCards();
-
-        expect(schuleCardsDe).toHaveLength(1);
-        expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[0]);
-
-        const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
-    });
-
-    it('should filter schools case-insensitively', async () => {
-        await enterSearchTerm('ZWEITE');
-
-        const schuleCardsDe = getSchuleCards();
-
-        expect(schuleCardsDe).toHaveLength(1);
-        expect(ngMocks.input(schuleCardsDe[0], 'schule')).toEqual(schulen[1]);
-
-        const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
-    });
-
-    it('should show all schools again when the filter is cleared', async () => {
-        await enterSearchTerm('erste');
-        expect(getSchuleCards()).toHaveLength(1);
-
-        const resultCountDe = fixture.debugElement.query(By.css('.mka-schulen-list__result-count'));
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 1');
-
-        await enterSearchTerm('');
-        expect(getSchuleCards()).toHaveLength(2);
-
-        expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
+            const schuleCardsDe = getSchuleCards();
+            expect(schuleCardsDe).toHaveLength(0);
+        });
     });
 
     function getSchuleCards() {

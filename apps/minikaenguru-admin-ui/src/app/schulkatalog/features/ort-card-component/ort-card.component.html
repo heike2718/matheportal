@@ -1,0 +1,13 @@
+<button type="button" class="mk-admin-ort-card" (click)="ortSelected.emit(ort())">
+    <span class="mk-admin-ort-card__content">
+        <span class="mk-admin-ort-card__name"> {{ ort().name }} ({{ ort().kuerzel }}) </span>
+
+        <span class="mk-admin-ort-card__land">
+            {{ ort().land.name }}
+        </span>
+    </span>
+
+    <span class="mk-admin-ort-card__school-count"> Anzahl Schulen: {{ ort().anzahlSchulen }} </span>
+
+    <span class="mk-admin-ort-card__arrow" aria-hidden="true"> › </span>
+</button>

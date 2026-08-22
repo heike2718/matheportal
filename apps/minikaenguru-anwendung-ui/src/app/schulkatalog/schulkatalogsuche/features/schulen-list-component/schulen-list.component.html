@@ -13,9 +13,13 @@
         <span>Zurück zur Ortssuche</span>
     </button>
 
-    <h2 class="mka-schulen-list__title">Schulen in {{ nameSelectedOrt() }} suchen</h2>
-    <label class="mka-schulen-list__label" for="term">Name</label>
-    <input id="term" class="mka-schulen-list__input" type="text" [formField]="searchForm.term" />
+    @if (schulenLoaded()) {
+        <h2 class="mka-schulen-list__title">Schulen in {{ nameSelectedOrt() }} suchen</h2>
+        <label class="mka-schulen-list__label" for="term">Name</label>
+        <input id="term" class="mka-schulen-list__input" type="text" [formField]="searchForm.term" />
+    } @else {
+        <h2 class="mka-schulen-list__title">Schulen suchen</h2>
+    }
 
     @if (schulenLoaded()) {
         <p class="mka-schulen-list__result-count">Anzahl: {{ filteredSchulen().length }}</p>

@@ -1,0 +1,17 @@
+<div class="mk-admin-schulen-list">
+    <h2 class="mk-admin-schulen-list__title">Schulen in {{ selectedOrt() }} suchen</h2>
+    @if (schulenLoaded()) {
+        <label class="mk-admin-schulen-list__label" for="term">Name</label>
+        <input id="term" class="mk-admin-schulen-list__input" type="text" [formField]="searchForm.term" />
+
+        <p class="mk-admin-schulen-list__result-count">Anzahl: {{ filteredSchulen().length }}</p>
+
+        <div class="mk-admin-schulen-list__results">
+            @for (schule of filteredSchulen(); track schule.kuerzel) {
+                <mk-admin-schule-card [schule]="schule" (schuleSelected)="schuleSelected.emit($event)" />
+            }
+        </div>
+    } @else {
+        <p class="mk-admin-schulen-list__result-count">Lade Schulen ...</p>
+    }
+</div>

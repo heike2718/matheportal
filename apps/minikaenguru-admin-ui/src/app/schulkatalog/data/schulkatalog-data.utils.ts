@@ -1,4 +1,4 @@
-import { Ort } from '../model/schulkatalog.model';
+import { Land, Ort } from '../model/schulkatalog.model';
 
 export function getBeschreibungSelectedOrt(ort: Ort | undefined): string {
     if (!ort) {
@@ -9,4 +9,12 @@ export function getBeschreibungSelectedOrt(ort: Ort | undefined): string {
     }
 
     return ort.name + ' (' + ort.land.name + ')';
+}
+
+export function getNameSelectedLand(land: Land | undefined): string {
+    if (!land) {
+        return '';
+    }
+
+    return land.name;
 }

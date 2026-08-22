@@ -76,6 +76,7 @@ describe('SchulkatalogFacade', () => {
     ];
 
     const beschreibungSelectedOrt = 'zweiter Ort, erstes Land';
+    const nameSelectedLand = 'erstes Land';
 
     beforeEach(() => {
         selectorSignals = new Map<unknown, Signal<unknown>>();
@@ -92,6 +93,7 @@ describe('SchulkatalogFacade', () => {
         selectorSignals.set(fromSchulkatalog.selectOrtSelected, signal(true));
         selectorSignals.set(fromSchulkatalog.selectSchuleSelected, signal(true));
 
+        selectorSignals.set(fromSchulkatalog.selectNameSelectedLand, signal(nameSelectedLand));
         selectorSignals.set(fromSchulkatalog.selectBeschreibungSelectedOrt, signal(beschreibungSelectedOrt));
 
         storeMock = {
@@ -161,9 +163,14 @@ describe('SchulkatalogFacade', () => {
             expect(storeMock.selectSignal).toHaveBeenCalledWith(fromSchulkatalog.selectOrtSelected);
         });
 
-        it('should expose isSchukeSelected', () => {
-            expect(facade.isSchukeSelected()).toBe(true);
+        it('should expose isSchuleSelected', () => {
+            expect(facade.isSchuleSelected()).toBe(true);
             expect(storeMock.selectSignal).toHaveBeenCalledWith(fromSchulkatalog.selectSchuleSelected);
+        });
+
+        it('should expose nameSelectedLand', () => {
+            expect(facade.nameSelectedLand()).toBe(nameSelectedLand);
+            expect(storeMock.selectSignal).toHaveBeenCalledWith(fromSchulkatalog.selectNameSelectedLand);
         });
 
         it('should expose beschreibungSelectedOrt', () => {

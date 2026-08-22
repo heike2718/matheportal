@@ -18,8 +18,13 @@ export class SchulkatalogFacade {
 
     readonly isLandSelected = this.#store.selectSignal(fromSchulkatalog.selectLandSelected);
     readonly isOrtSelected = this.#store.selectSignal(fromSchulkatalog.selectOrtSelected);
-    readonly isSchukeSelected = this.#store.selectSignal(fromSchulkatalog.selectSchuleSelected);
+    readonly isSchuleSelected = this.#store.selectSignal(fromSchulkatalog.selectSchuleSelected);
 
+    readonly selectedLand = this.#store.selectSignal(fromSchulkatalog.selectSelectedLand);
+    readonly selectedOrt = this.#store.selectSignal(fromSchulkatalog.selectSelectedOrt);
+    readonly selectedSchule = this.#store.selectSignal(fromSchulkatalog.selectSelectedSchule);
+
+    readonly nameSelectedLand = this.#store.selectSignal(fromSchulkatalog.selectNameSelectedLand);
     readonly beschreibungSelectedOrt = this.#store.selectSignal(fromSchulkatalog.selectBeschreibungSelectedOrt);
 
     public loadLaender(): void {

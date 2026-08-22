@@ -15,18 +15,12 @@ export class SchulkatalogsucheComponent {
     private facade = inject(SchulkatalogsucheFacade);
 
     readonly orte = this.facade.orte;
-
     readonly isOrteLoaded = this.facade.isOrteLoaded;
-
     readonly selectedOrt = this.facade.selectedOrt;
-
     readonly nameSelectedOrt = this.facade.nameSelectedOrt;
 
     readonly schulen = this.facade.schulen;
-
     readonly isSchulenLoaded = this.facade.isSchulenLoaded;
-
-    readonly nameOrt = computed(() => this.selectedOrt()?.name);
 
     onSearchTermOrtChanged(term: string): void {
         this.facade.findOrte(term);

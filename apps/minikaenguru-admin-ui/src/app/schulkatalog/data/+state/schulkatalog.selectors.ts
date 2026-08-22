@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { schulkatalogFeature } from './schulkatalog.reducer';
-import { getBeschreibungSelectedOrt } from '../schulkatalog-data.utils';
+import { getBeschreibungSelectedOrt, getNameSelectedLand } from '../schulkatalog-data.utils';
 
 const { selectMKAdminSchulkatalogState } = schulkatalogFeature;
 
@@ -12,6 +12,8 @@ const selectLaenderLoadad = createSelector(
 );
 
 const selectSelectedLand = createSelector(selectMKAdminSchulkatalogState, state => state.selectedLand);
+
+const selectNameSelectedLand = createSelector(selectSelectedLand, land => getNameSelectedLand(land));
 
 const selectLandSelected = createSelector(selectSelectedLand, land => land !== undefined);
 
@@ -43,6 +45,7 @@ export const fromSchulkatalog = {
     selectLaenderLoadad,
     selectLandSelected,
     selectSelectedLand,
+    selectNameSelectedLand,
     selectOrte,
     selectOrteLoaded,
     selectOrtSelected,
