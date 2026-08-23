@@ -15,7 +15,7 @@ export const schulkatalogActions = createActionGroup({
         loadSchulen: props<{ ort: Ort }>(),
         loadSchulenSucceeded: props<{ schulen: Schule[] }>(),
         loadSchulenFailed: props<{ error: Error }>(),
-        schuleSelected: props<{ schule: Schule }>(),
+        schuleUmbenennenSelected: props<{ schule: Schule }>(),
         resetSchulkatalog: emptyProps(),
     },
 });

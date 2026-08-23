@@ -54,13 +54,14 @@ describe('SchuleCardComponent', () => {
         expect(ortDe.nativeElement.textContent.trim()).toBe('Sangerhausen (DE-SA)');
     });
 
-    it('should emit schuleSelected when clicked', () => {
+    it('should emit schuleUmbenennenSelected when clicked', () => {
         fixture.detectChanges();
-        const emitSpy = vi.spyOn(component.schuleSelected, 'emit');
-        const buttonDe = fixture.debugElement.query(By.css('.mk-admin-schule-card'));
-        expect(buttonDe).toBeTruthy();
+        const emitSpy = vi.spyOn(component.schuleUmbenennenSelected, 'emit');
+        const buttonUmbenennenDe = fixture.debugElement.query(By.css('.mk-admin-schule-card__action'));
+        expect(buttonUmbenennenDe).toBeTruthy();
+        expect(buttonUmbenennenDe.nativeElement.textContent.trim()).toBe('umbenennen');
 
-        buttonDe.triggerEventHandler('click', null);
+        buttonUmbenennenDe.triggerEventHandler('click', null);
         expect(emitSpy).toHaveBeenCalledOnce();
 
         expect(emitSpy).toHaveBeenCalledWith(schule);

@@ -41,7 +41,7 @@ describe('LandCardComponent', () => {
         expect(anzahlOrteDe.nativeElement.textContent.trim()).toBe('Anzahl Orte: 367');
     });
 
-    it('should emit schuleSelected when clicked', () => {
+    it('should emit landSelected when clicked', () => {
         fixture.detectChanges();
         const emitSpy = vi.spyOn(component.landSelected, 'emit');
         const buttonDe = fixture.debugElement.query(By.css('.mk-admin-land-card'));

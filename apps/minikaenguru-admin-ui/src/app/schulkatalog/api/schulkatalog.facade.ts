@@ -39,7 +39,7 @@ export class SchulkatalogFacade {
         this.#store.dispatch(schulkatalogActions.ortSelected({ ort }));
     }
 
-    public schuleSelected(schule: Schule): void {
-        this.#store.dispatch(schulkatalogActions.schuleSelected({ schule }));
+    public schuleUmbenennenSelected(schule: Schule): void {
+        this.#store.dispatch(schulkatalogActions.schuleUmbenennenSelected({ schule }));
     }
 }

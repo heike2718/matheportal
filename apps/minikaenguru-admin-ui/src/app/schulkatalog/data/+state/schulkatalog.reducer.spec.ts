@@ -528,7 +528,7 @@ describe('schulkatalogReducer tests', () => {
                 });
             });
         });
-        it('should set the selectedSchule', () => {
+        it('should set the selectedSchule when schuleUmbenennenSelected', () => {
             const previousState = createState({
                 laender,
                 laenderLoadingState: 'loaded',
@@ -543,7 +543,7 @@ describe('schulkatalogReducer tests', () => {
 
             const state = schulkatalogFeature.reducer(
                 previousState,
-                schulkatalogActions.schuleSelected({ schule: schulen[1] })
+                schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[1] })
             );
 
             expect(state).toEqual({

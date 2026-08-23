@@ -40,7 +40,7 @@ export class SchulkatalogComponent implements OnInit {
         this.facade.ortSelected(ort);
     }
 
-    onSchuleSelected(schule: Schule): void {
-        this.facade.schuleSelected(schule);
+    onSchuleUmbenennenSelected(schule: Schule): void {
+        this.facade.schuleUmbenennenSelected(schule);
     }
 }

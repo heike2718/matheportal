@@ -1,9 +1,13 @@
-<button type="button" class="mk-admin-schule-card" (click)="schuleSelected.emit(schule())">
-    <span class="mk-admin-schule-card__content">
+<article class="mk-admin-schule-card">
+    <div class="mk-admin-schule-card__content">
         <span class="mk-admin-schule-card__name"> {{ schule().name }} ({{ schule().kuerzel }}) </span>
 
         <span class="mk-admin-schule-card__ort"> {{ schule().ort.name }} ({{ schule().ort.land.kuerzel }}) </span>
-    </span>
+    </div>
 
-    <span class="mk-admin-schule-card__arrow" aria-hidden="true"> › </span>
-</button>
+    <footer class="mk-admin-schule-card__actions">
+        <button type="button" class="mk-admin-schule-card__action" (click)="schuleUmbenennenSelected.emit(schule())">
+            umbenennen
+        </button>
+    </footer>
+</article>

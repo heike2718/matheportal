@@ -69,7 +69,7 @@ describe('SchulkatalogComponent', () => {
         loadLaender: ReturnType<typeof vi.fn>;
         landSelected: ReturnType<typeof vi.fn>;
         ortSelected: ReturnType<typeof vi.fn>;
-        schuleSelected: ReturnType<typeof vi.fn>;
+        schuleUmbenennenSelected: ReturnType<typeof vi.fn>;
     };
 
     let laenderSignal: WritableSignal<Land[]>;
@@ -116,7 +116,7 @@ describe('SchulkatalogComponent', () => {
             loadLaender: vi.fn(),
             landSelected: vi.fn(),
             ortSelected: vi.fn(),
-            schuleSelected: vi.fn(),
+            schuleUmbenennenSelected: vi.fn(),
         };
 
         await TestBed.configureTestingModule({
@@ -279,13 +279,13 @@ describe('SchulkatalogComponent', () => {
             expect(ngMocks.input(schulenListDe, 'schulenLoaded')).toBe(true);
         });
 
-        it('should trigger facade.schuleSelected when mock emmits schuleSelected', () => {
+        it('should trigger facade.schuleUmbenennenSelected when mock emmits schuleUmbenennenSelected', () => {
             const schulenListDe = fixture.debugElement.query(By.directive(SchulenListComponent));
 
-            ngMocks.output(schulenListDe, 'schuleSelected').emit(schulen[0]);
+            ngMocks.output(schulenListDe, 'schuleUmbenennenSelected').emit(schulen[0]);
 
-            expect(schulkatalogFacadeMock.schuleSelected).toHaveBeenCalledOnce();
-            expect(schulkatalogFacadeMock.schuleSelected).toHaveBeenCalledWith(schulen[0]);
+            expect(schulkatalogFacadeMock.schuleUmbenennenSelected).toHaveBeenCalledOnce();
+            expect(schulkatalogFacadeMock.schuleUmbenennenSelected).toHaveBeenCalledWith(schulen[0]);
         });
     });
 });

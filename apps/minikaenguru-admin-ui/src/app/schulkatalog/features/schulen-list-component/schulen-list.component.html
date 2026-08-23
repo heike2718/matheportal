@@ -6,11 +6,15 @@
 
         <p class="mk-admin-schulen-list__result-count">Anzahl: {{ filteredSchulen().length }}</p>
 
-        <div class="mk-admin-schulen-list__results">
+        <ul class="mk-admin-schulen-list__results">
             @for (schule of filteredSchulen(); track schule.kuerzel) {
-                <mk-admin-schule-card [schule]="schule" (schuleSelected)="schuleSelected.emit($event)" />
+                <li class="mk-admin-schulen-list__result">
+                    <mk-admin-schule-card
+                        [schule]="schule"
+                        (schuleUmbenennenSelected)="schuleUmbenennenSelected.emit($event)" />
+                </li>
             }
-        </div>
+        </ul>
     } @else {
         <p class="mk-admin-schulen-list__result-count">Lade Schulen ...</p>
     }

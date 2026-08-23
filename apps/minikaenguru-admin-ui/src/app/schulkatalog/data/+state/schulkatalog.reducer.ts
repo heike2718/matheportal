@@ -114,7 +114,7 @@ export const schulkatalogFeature = createFeature({
             schulenLoadingState: mapErrorResourceLoadingState(error),
             selectedSchule: undefined,
         })),
-        on(schulkatalogActions.schuleSelected, (state, { schule }) => ({ ...state, selectedSchule: schule })),
+        on(schulkatalogActions.schuleUmbenennenSelected, (state, { schule }) => ({ ...state, selectedSchule: schule })),
         on(schulkatalogActions.resetSchulkatalog, userLoggedOut, () => initialSchulkatalogState)
     ),
 });

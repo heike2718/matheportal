@@ -127,14 +127,14 @@ describe('SchulenListComponent', () => {
             expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
         });
 
-        it('should re-emit schuleSelected when SchuleCardComponent emits schuleSelected', () => {
-            const schuleSelectedSpy = vi.spyOn(component.schuleSelected, 'emit');
+        it('should re-emit schuleUmbenennenSelected when SchuleCardComponent emits schuleUmbenennenSelected', () => {
+            const schuleUmbenennenSelectedSpy = vi.spyOn(component.schuleUmbenennenSelected, 'emit');
 
             const schuleCardsDe = getSchuleCards();
             expect(schuleCardsDe).toHaveLength(2);
 
-            ngMocks.output(schuleCardsDe[1], 'schuleSelected').emit(schulen[1]);
-            expect(schuleSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[1]);
+            ngMocks.output(schuleCardsDe[1], 'schuleUmbenennenSelected').emit(schulen[1]);
+            expect(schuleUmbenennenSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[1]);
         });
     });
 

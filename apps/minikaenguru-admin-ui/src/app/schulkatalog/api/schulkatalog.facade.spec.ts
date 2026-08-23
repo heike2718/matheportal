@@ -202,12 +202,12 @@ describe('SchulkatalogFacade', () => {
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.ortSelected({ ort }));
         });
 
-        it('should dispatch schuleSelected', () => {
+        it('should dispatch schuleUmbenennenSelected', () => {
             const schule = schulen[2];
 
-            facade.schuleSelected(schule);
+            facade.schuleUmbenennenSelected(schule);
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.schuleSelected({ schule }));
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.schuleUmbenennenSelected({ schule }));
         });
     });
 });

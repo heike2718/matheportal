@@ -151,11 +151,11 @@ describe('schulkatalogActions', () => {
                 error: httpServerErrorResponse,
             });
         });
-        it('should create the schuleSelected action', () => {
-            const action = schulkatalogActions.schuleSelected({ schule: schulen[0] });
+        it('should create the schuleUmbenennenSelected action', () => {
+            const action = schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[0] });
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleSelected',
+                type: '[MKAdmin Schulkatalog] schuleUmbenennenSelected',
                 schule: schulen[0],
             });
         });

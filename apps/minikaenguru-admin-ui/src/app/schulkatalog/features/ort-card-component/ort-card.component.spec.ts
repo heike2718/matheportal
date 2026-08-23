@@ -52,7 +52,7 @@ describe('OrtCardComponent', () => {
         expect(anzahlSchulenDe.nativeElement.textContent.trim()).toBe('Anzahl Schulen: 10');
     });
 
-    it('should emit schuleSelected when clicked', () => {
+    it('should emit ortSelected when clicked', () => {
         fixture.detectChanges();
         const emitSpy = vi.spyOn(component.ortSelected, 'emit');
         const buttonDe = fixture.debugElement.query(By.css('.mk-admin-ort-card'));
