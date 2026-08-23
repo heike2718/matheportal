@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { SchulkatalogFacade } from '../../api/schulkatalog.facade';
 import { Land, Ort, Schule } from '../../model/schulkatalog.model';
 import { LaenderListComponent } from '../laender-list-component/laender-list.component';
@@ -12,7 +12,7 @@ import { SchulenListComponent } from '../schulen-list-component/schulen-list.com
     styleUrl: './schulkatalog.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SchulkatalogComponent {
+export class SchulkatalogComponent implements OnInit {
     private readonly facade = inject(SchulkatalogFacade);
 
     readonly laender = this.facade.laender;
@@ -27,6 +27,10 @@ export class SchulkatalogComponent {
 
     readonly schulen = this.facade.schulen;
     readonly isSchulenLoaded = this.facade.isSchulenLoaded;
+
+    ngOnInit(): void {
+        this.facade.loadLaender();
+    }
 
     onLandSelected(land: Land): void {
         this.facade.landSelected(land);

@@ -5,7 +5,7 @@
     display: block;
 }
 
-.mka-schule-card {
+.mk-admin-schule-card {
     box-sizing: border-box;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto;
@@ -73,7 +73,7 @@
 }
 
 @media (width <= 480px) {
-    .mka-schule-card {
+    .mk-admin-schule-card {
         grid-template-columns: minmax(0, 1fr) auto;
         gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;

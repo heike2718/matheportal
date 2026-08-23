@@ -1,5 +1,5 @@
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Schule } from '../../model/schulkatalog.model';
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
 

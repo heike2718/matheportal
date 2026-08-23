@@ -1,3 +1,108 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+@use 'libs/shared-ui-theme/src/lib/styles/_functions.scss' as functions;
+
 :host {
     display: block;
+    min-width: 0;
+}
+
+.mk-admin-schulen-list {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: mp-theme.$mp-space-5;
+    padding: mp-theme.$mp-space-6;
+    font-family: mp-theme.$mp-font-family;
+
+    &__title {
+        margin: 0;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-l;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__search-field {
+        display: flex;
+        flex-direction: column;
+        width: min(100%, 32rem);
+        gap: mp-theme.$mp-space-2;
+    }
+
+    &__label {
+        font-size: mp-theme.$mp-font-size-m;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__input {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 2.75rem;
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+        border: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-interactive;
+        border-radius: mp-theme.$mp-radius-m;
+        background-color: mp-theme.$mp-color-surface;
+        color: inherit;
+        font: inherit;
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+        transition:
+            background-color 140ms ease,
+            border-color 140ms ease,
+            box-shadow 140ms ease;
+
+        &:hover {
+            border-color: mp-theme.$mp-border-color-interactive-hover;
+        }
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru);
+            outline-offset: mp-theme.$mp-space-1;
+            border-color: mp-theme.mp-brand(minikaenguru);
+            box-shadow: mp-theme.$mp-shadow-1;
+        }
+    }
+
+    &__result-count {
+        margin: 0;
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+    }
+
+    &__results {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-3;
+    }
+
+    &__result-count,
+    &__results {
+        width: min(100%, 44rem);
+    }
+}
+
+@media (width <= 480px) {
+    .mk-admin-schulen-list {
+        gap: mp-theme.$mp-space-4;
+        padding: mp-theme.$mp-space-4;
+
+        &__title {
+            font-size: mp-theme.$mp-font-size-m;
+        }
+
+        &__label,
+        &__input,
+        &__result-count {
+            font-size: mp-theme.$mp-font-size-s;
+        }
+
+        &__input {
+            padding: mp-theme.$mp-space-3;
+        }
+    }
 }
