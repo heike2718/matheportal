@@ -26,18 +26,21 @@
     }
 
     &__name {
-        overflow: hidden;
+        margin: 0;
+
         color: mp-theme.mp-brand(minikaenguru-admin);
-        font-size: mp-theme.$mp-font-size-m;
-        font-weight: 700;
-        line-height: mp-theme.$mp-line-height-tight;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+
+        @include mp-theme.mp-headline-small;
     }
 
-    &__ort {
-        font-size: mp-theme.$mp-font-size-m;
-        line-height: mp-theme.$mp-line-height-normal;
+    &__meta {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-1;
+
+        color: rgb(0 0 0 / 62%);
+
+        @include mp-theme.mp-body-small;
     }
 
     &__actions {
@@ -84,7 +87,7 @@
         gap: mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;
 
-        &__ort {
+        &__meta {
             font-size: mp-theme.$mp-font-size-s;
         }
 

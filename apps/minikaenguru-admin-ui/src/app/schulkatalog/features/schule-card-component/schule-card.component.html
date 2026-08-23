@@ -1,8 +1,14 @@
 <article class="mk-admin-schule-card">
     <div class="mk-admin-schule-card__content">
-        <span class="mk-admin-schule-card__name"> {{ schule().name }} ({{ schule().kuerzel }}) </span>
+        <h3 class="mk-admin-schule-card__name">
+            {{ schule().name }}
+        </h3>
 
-        <span class="mk-admin-schule-card__ort"> {{ schule().ort.name }} ({{ schule().ort.land.kuerzel }}) </span>
+        <div class="mk-admin-schule-card__meta">
+            <span>{{ schule().kuerzel }}</span>
+            <span>{{ schule().ort.name }} ({{ schule().ort.kuerzel }})</span>
+            <span>{{ schule().ort.land.kuerzel }}</span>
+        </div>
     </div>
 
     <footer class="mk-admin-schule-card__actions">
