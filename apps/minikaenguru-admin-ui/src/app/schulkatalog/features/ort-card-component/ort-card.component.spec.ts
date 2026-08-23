@@ -41,11 +41,15 @@ describe('OrtCardComponent', () => {
         fixture.detectChanges();
         const nameDe = fixture.debugElement.query(By.css('.mk-admin-ort-card__name'));
         expect(nameDe).toBeTruthy();
-        expect(nameDe.nativeElement.textContent.trim()).toBe('Sangerhausen (F2314G7H)');
+        expect(nameDe.nativeElement.textContent.trim()).toBe('Sangerhausen');
 
-        const landDe = fixture.debugElement.query(By.css('.mk-admin-ort-card__land'));
-        expect(landDe).toBeTruthy();
-        expect(landDe.nativeElement.textContent.trim()).toBe('Sachsen-Anhalt');
+        const metaDe = fixture.debugElement.query(By.css('.mk-admin-ort-card__meta'));
+        expect(metaDe).toBeTruthy();
+        const spans = metaDe.queryAll(By.css('span'));
+
+        expect(spans.length).toBe(3);
+        expect(spans[0].nativeElement.textContent.trim()).toBe('F2314G7H');
+        expect(spans[1].nativeElement.textContent.trim()).toBe('DE-SA');
 
         const anzahlSchulenDe = fixture.debugElement.query(By.css('.mk-admin-ort-card__school-count'));
         expect(anzahlSchulenDe).toBeTruthy();
@@ -55,7 +59,7 @@ describe('OrtCardComponent', () => {
     it('should emit ortSelected when clicked', () => {
         fixture.detectChanges();
         const emitSpy = vi.spyOn(component.ortSelected, 'emit');
-        const buttonDe = fixture.debugElement.query(By.css('.mk-admin-ort-card'));
+        const buttonDe = fixture.debugElement.query(By.css('.mk-admin-ort-card__action'));
         expect(buttonDe).toBeTruthy();
 
         buttonDe.triggerEventHandler('click', null);

@@ -47,11 +47,17 @@ describe('SchuleCardComponent', () => {
         fixture.detectChanges();
         const nameDe = fixture.debugElement.query(By.css('.mk-admin-schule-card__name'));
         expect(nameDe).toBeTruthy();
-        expect(nameDe.nativeElement.textContent.trim()).toBe('Goetheschule (5FE42L89)');
+        expect(nameDe.nativeElement.textContent.trim()).toBe('Goetheschule');
 
-        const ortDe = fixture.debugElement.query(By.css('.mk-admin-schule-card__ort'));
-        expect(ortDe).toBeTruthy();
-        expect(ortDe.nativeElement.textContent.trim()).toBe('Sangerhausen (DE-SA)');
+        const metaDe = fixture.debugElement.query(By.css('.mk-admin-schule-card__meta'));
+        expect(metaDe).toBeTruthy();
+
+        const spans = metaDe.queryAll(By.css('span'));
+        expect(spans.length).toBe(3);
+
+        expect(spans[0].nativeElement.textContent.trim()).toBe('5FE42L89');
+        expect(spans[1].nativeElement.textContent.trim()).toBe('Sangerhausen (F2314G7H)');
+        expect(spans[2].nativeElement.textContent.trim()).toBe('DE-SA');
     });
 
     it('should emit schuleUmbenennenSelected when clicked', () => {
