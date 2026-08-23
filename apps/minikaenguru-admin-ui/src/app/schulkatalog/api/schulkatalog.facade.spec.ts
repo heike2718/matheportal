@@ -194,12 +194,24 @@ describe('SchulkatalogFacade', () => {
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landSelected({ land }));
         });
 
+        it('should dispatch backToLaenderRequested', () => {
+            facade.backToLaenderRequested();
+
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToLaenderRequested());
+        });
+
         it('should dispatch ortSelected', () => {
             const ort = orte[1];
 
             facade.ortSelected(ort);
 
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.ortSelected({ ort }));
+        });
+
+        it('should dispatch backToOrteRequested', () => {
+            facade.backToOrteRequested();
+
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToOrteRequested());
         });
 
         it('should dispatch schuleUmbenennenSelected', () => {

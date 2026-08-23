@@ -16,6 +16,7 @@ export class SchulenListComponent {
     readonly schulenLoaded = input.required<boolean>();
 
     readonly schuleUmbenennenSelected = output<Schule>();
+    readonly backToOrteRequested = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
         term: '',

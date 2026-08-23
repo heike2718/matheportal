@@ -1,4 +1,18 @@
 <div class="mk-admin-orte-list">
+    <button class="mk-admin-orte-list__back" type="button" (click)="backToLaenderRequested.emit()">
+        <svg class="mk-admin-orte-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2" />
+        </svg>
+
+        <span>zurück zu den Ländern</span>
+    </button>
+
     <h2 class="mk-admin-orte-list__title">Orte in {{ selectedLand() }} suchen</h2>
     @if (orteLoaded()) {
         <label class="mk-admin-orte-list__label" for="term">Name</label>

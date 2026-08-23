@@ -46,6 +46,26 @@
     @error 'mp-brand: unbekannter Branding-Kontext: #{$context}';
 }
 
+@function mp-brand-soft($context) {
+    @if $context == minikaenguru {
+        @return branding.$mp-brand-minikaenguru-soft;
+    }
+
+    @if $context == raetselbaukasten {
+        @return branding.$mp-brand-raetselbaukasten-soft;
+    }
+
+    @if $context == minikaenguru-statistik {
+        @return branding.$mp-brand-minikaenguru-statistik-soft;
+    }
+
+    @if $context == minikaenguru-admin {
+        @return branding.$mp-brand-minikaenguru-admin-soft;
+    }
+
+    @error 'mp-brand-soft: unbekannter Branding-Kontext: #{$context}';
+}
+
 @function mp-brand-hover($context) {
     @if $context == minikaenguru {
         @return branding.$mp-brand-minikaenguru-hover;

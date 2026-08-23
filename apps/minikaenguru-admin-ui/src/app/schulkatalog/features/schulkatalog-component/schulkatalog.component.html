@@ -4,6 +4,7 @@
             [selectedOrt]="beschreibungSelectedOrt()"
             [schulen]="schulen()"
             [schulenLoaded]="isSchulenLoaded()"
+            (backToOrteRequested)="onBackToOrteRequested()"
             (schuleUmbenennenSelected)="onSchuleUmbenennenSelected($event)" />
     } @else {
         @if (isOrteLoaded()) {
@@ -11,6 +12,7 @@
                 [selectedLand]="nameSelectedLand()"
                 [orte]="orte()"
                 [orteLoaded]="isOrteLoaded()"
+                (backToLaenderRequested)="onBackToLaenderRequested()"
                 (ortSelected)="onOrtSelected($event)" />
         } @else {
             <mk-admin-laender-list

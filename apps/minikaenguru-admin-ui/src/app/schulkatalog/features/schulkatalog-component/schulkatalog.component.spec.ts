@@ -68,7 +68,9 @@ describe('SchulkatalogComponent', () => {
         selectedSchule: Signal<Schule | undefined>;
         loadLaender: ReturnType<typeof vi.fn>;
         landSelected: ReturnType<typeof vi.fn>;
+        backToLaenderRequested: ReturnType<typeof vi.fn>;
         ortSelected: ReturnType<typeof vi.fn>;
+        backToOrteRequested: ReturnType<typeof vi.fn>;
         schuleUmbenennenSelected: ReturnType<typeof vi.fn>;
     };
 
@@ -115,7 +117,9 @@ describe('SchulkatalogComponent', () => {
             selectedSchule: selectedSchuleSignal,
             loadLaender: vi.fn(),
             landSelected: vi.fn(),
+            backToLaenderRequested: vi.fn(),
             ortSelected: vi.fn(),
+            backToOrteRequested: vi.fn(),
             schuleUmbenennenSelected: vi.fn(),
         };
 
@@ -235,6 +239,14 @@ describe('SchulkatalogComponent', () => {
             expect(ngMocks.input(orteListDe, 'orteLoaded')).toBe(true);
         });
 
+        it('should trigger facade.backToLaenderRequested when mock emmits backToLaenderRequested', () => {
+            const schulenListDe = fixture.debugElement.query(By.directive(OrteListComponent));
+
+            ngMocks.output(schulenListDe, 'backToLaenderRequested').emit();
+
+            expect(schulkatalogFacadeMock.backToLaenderRequested).toHaveBeenCalledOnce();
+        });
+
         it('should trigger facade.ortSelected when mock emmits ortSelected', () => {
             const orteListDe = fixture.debugElement.query(By.directive(OrteListComponent));
 
@@ -277,6 +289,14 @@ describe('SchulkatalogComponent', () => {
             expect(ngMocks.input(schulenListDe, 'selectedOrt')).toBe('zweiter Ort (LAND-1)');
             expect(ngMocks.input(schulenListDe, 'schulen')).toBe(schulen);
             expect(ngMocks.input(schulenListDe, 'schulenLoaded')).toBe(true);
+        });
+
+        it('should trigger facade.backToOrteRequested when mock emmits backToOrteRequested', () => {
+            const schulenListDe = fixture.debugElement.query(By.directive(SchulenListComponent));
+
+            ngMocks.output(schulenListDe, 'backToOrteRequested').emit();
+
+            expect(schulkatalogFacadeMock.backToOrteRequested).toHaveBeenCalledOnce();
         });
 
         it('should trigger facade.schuleUmbenennenSelected when mock emmits schuleUmbenennenSelected', () => {

@@ -91,6 +91,12 @@ export const schulkatalogFeature = createFeature({
             schulenLoadingState: 'not-loaded',
             selectedSchule: undefined,
         })),
+        on(schulkatalogActions.backToLaenderRequested, state => ({
+            ...state,
+            orteLoadingState: 'not-loaded',
+            orte: [],
+            selectedOrt: undefined,
+        })),
         on(schulkatalogActions.ortSelected, (state, { ort }) => ({
             ...state,
             selectedOrt: ort,
@@ -112,6 +118,12 @@ export const schulkatalogFeature = createFeature({
         on(schulkatalogActions.loadSchulenFailed, (state, { error }) => ({
             ...state,
             schulenLoadingState: mapErrorResourceLoadingState(error),
+            selectedSchule: undefined,
+        })),
+        on(schulkatalogActions.backToOrteRequested, state => ({
+            ...state,
+            schulenLoadingState: 'not-loaded',
+            schulen: [],
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.schuleUmbenennenSelected, (state, { schule }) => ({ ...state, selectedSchule: schule })),

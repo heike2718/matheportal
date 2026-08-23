@@ -64,6 +64,13 @@ describe('SchulenListComponent', () => {
         vi.restoreAllMocks();
     });
 
+    describe('page navigation', () => {
+        it('should show the back to orte link', () => {
+            const backLinkDe = fixture.debugElement.query(By.css('.mk-admin-schulen-list__back'));
+            expect(backLinkDe).toBeTruthy();
+        });
+    });
+
     describe('schulen loaded', () => {
         beforeEach(async () => {
             fixture.componentRef.setInput('selectedOrt', ort.name);

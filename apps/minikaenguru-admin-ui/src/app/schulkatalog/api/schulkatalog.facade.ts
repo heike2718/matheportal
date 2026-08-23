@@ -35,8 +35,16 @@ export class SchulkatalogFacade {
         this.#store.dispatch(schulkatalogActions.landSelected({ land }));
     }
 
+    public backToLaenderRequested(): void {
+        this.#store.dispatch(schulkatalogActions.backToLaenderRequested());
+    }
+
     public ortSelected(ort: Ort): void {
         this.#store.dispatch(schulkatalogActions.ortSelected({ ort }));
+    }
+
+    public backToOrteRequested(): void {
+        this.#store.dispatch(schulkatalogActions.backToOrteRequested());
     }
 
     public schuleUmbenennenSelected(schule: Schule): void {

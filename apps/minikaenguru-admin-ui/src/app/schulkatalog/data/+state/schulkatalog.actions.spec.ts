@@ -115,6 +115,14 @@ describe('schulkatalogActions', () => {
             });
         });
 
+        it('should create the backToLaenderRequested action', () => {
+            const action = schulkatalogActions.backToLaenderRequested();
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] backToLaenderRequested',
+            });
+        });
+
         it('should create the landSelected action', () => {
             const action = schulkatalogActions.ortSelected({ ort: orte[0] });
 
@@ -151,6 +159,15 @@ describe('schulkatalogActions', () => {
                 error: httpServerErrorResponse,
             });
         });
+
+        it('should create the backToOrteRequested action', () => {
+            const action = schulkatalogActions.backToOrteRequested();
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] backToOrteRequested',
+            });
+        });
+
         it('should create the schuleUmbenennenSelected action', () => {
             const action = schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[0] });
 

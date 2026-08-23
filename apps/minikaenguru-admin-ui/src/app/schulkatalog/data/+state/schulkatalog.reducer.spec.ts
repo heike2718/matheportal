@@ -162,7 +162,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedSchule: undefined,
             });
 
-            it('should set laenderLoadedState correctly when loadLaenderFailed with 403', () => {
+            it('should set laenderLoadingState correctly when loadLaenderFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
                     schulkatalogActions.loadLaenderFailed({ error: httpServerAuthErroResponse })
@@ -181,7 +181,7 @@ describe('schulkatalogReducer tests', () => {
                 });
             });
 
-            it('should set laenderLoadedState correctly when loadLaenderFailed with 500', () => {
+            it('should set laenderLoadingState correctly when loadLaenderFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
                     schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse })
@@ -367,7 +367,35 @@ describe('schulkatalogReducer tests', () => {
             });
         });
 
-        it('should set the selectedOrt and reset schulen', () => {
+        it('should set reset the orte loading state when backToLaenderRequested', () => {
+            const previousState = createState({
+                laender,
+                laenderLoadingState: 'loaded',
+                selectedLand: laender[1],
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[0],
+                schulen: [],
+                schulenLoadingState: 'not-loaded',
+                selectedSchule: undefined,
+            });
+
+            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.backToLaenderRequested());
+
+            expect(state).toEqual({
+                laender,
+                laenderLoadingState: 'loaded',
+                selectedLand: laender[1],
+                orte: [],
+                orteLoadingState: 'not-loaded',
+                selectedOrt: undefined,
+                schulen: [],
+                schulenLoadingState: 'not-loaded',
+                selectedSchule: undefined,
+            });
+        });
+
+        it('should set the selectedOrt and reset schulen when ortSelected', () => {
             const previousState = createState({
                 laender,
                 laenderLoadingState: 'loaded',
@@ -526,6 +554,33 @@ describe('schulkatalogReducer tests', () => {
                     schulenLoadingState: 'technical-error',
                     selectedSchule: undefined,
                 });
+            });
+        });
+        it('should reset the schulen state when backToOrteRequested', () => {
+            const previousState = createState({
+                laender,
+                laenderLoadingState: 'loaded',
+                selectedLand: laender[1],
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[0],
+                schulen,
+                schulenLoadingState: 'loaded',
+                selectedSchule: undefined,
+            });
+
+            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.backToOrteRequested());
+
+            expect(state).toEqual({
+                laender,
+                laenderLoadingState: 'loaded',
+                selectedLand: laender[1],
+                orte,
+                orteLoadingState: 'loaded',
+                selectedOrt: orte[0],
+                schulen: [],
+                schulenLoadingState: 'not-loaded',
+                selectedSchule: undefined,
             });
         });
         it('should set the selectedSchule when schuleUmbenennenSelected', () => {
