@@ -7,6 +7,13 @@
     "implicitDependencies": ["matheportal-bom", "auth-session"],
 
     "targets": {
+        "tech-generate-sources": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn clean generate-sources"
+            }
+        },
         "tech-dev": {
             "executor": "nx:run-commands",
             "options": {
@@ -42,6 +49,26 @@
                     "npx nx run minikaenguru-admin:tech-debug"
                 ]
             }
+        },
+        "serve-embedded": {
+            "executor": "nx:run-commands",
+            "dependsOn": [
+                {
+                    "projects": "self",
+                    "target": "tech-embed-frontend",
+                    "params": "forward"
+                }
+            ],
+            "options": {
+                "cwd": "apps/minikaenguru-admin",
+                "command": "mvn quarkus:dev",
+                "envFile": "apps/minikaenguru-admin/.config/.env.dev-embedded"
+            },
+            "configurations": {
+                "development": {}
+            },
+            "defaultConfiguration": "development",
+            "continuous": true
         },
         "test": {
             "executor": "nx:run-commands",
@@ -102,26 +129,6 @@
                 "qs": {},
                 "production": {}
             }
-        },
-        "serve-embedded": {
-            "executor": "nx:run-commands",
-            "dependsOn": [
-                {
-                    "projects": "self",
-                    "target": "tech-embed-frontend",
-                    "params": "forward"
-                }
-            ],
-            "options": {
-                "cwd": "apps/minikaenguru-admin",
-                "command": "mvn quarkus:dev",
-                "envFile": "apps/minikaenguru-admin/.config/.env.dev-embedded"
-            },
-            "configurations": {
-                "development": {}
-            },
-            "defaultConfiguration": "development",
-            "continuous": true
         },
         "tech-package": {
             "executor": "nx:run-commands",

@@ -1,0 +1,92 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+}
+
+.mk-admin-land-card {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    width: 100%;
+    gap: mp-theme.$mp-space-3;
+    padding: mp-theme.$mp-space-4;
+    border: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-interactive;
+    border-radius: mp-theme.$mp-radius-m;
+    background-color: mp-theme.$mp-color-surface;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background-color 140ms ease,
+        border-color 140ms ease,
+        box-shadow 140ms ease,
+        transform 140ms ease;
+
+    &:hover {
+        border-color: mp-theme.$mp-border-color-interactive-hover;
+        background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
+        box-shadow: mp-theme.$mp-shadow-1;
+    }
+
+    &:focus-visible {
+        outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
+        outline-offset: mp-theme.$mp-space-1;
+        border-color: mp-theme.mp-brand(minikaenguru-admin);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        gap: mp-theme.$mp-space-1;
+    }
+
+    &__name {
+        overflow: hidden;
+        color: mp-theme.mp-brand(minikaenguru-admin);
+        font-size: mp-theme.$mp-font-size-m;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__ort-count {
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+        white-space: nowrap;
+    }
+
+    &__arrow {
+        color: mp-theme.mp-brand(minikaenguru-admin);
+        font-size: 1.75rem;
+        font-weight: 300;
+        line-height: 1;
+    }
+}
+
+@media (width <= 480px) {
+    .mk-admin-land-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+        padding: mp-theme.$mp-space-3;
+
+        &__ort-count {
+            font-size: mp-theme.$mp-font-size-s;
+            grid-column: 1;
+        }
+
+        &__arrow {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+        }
+    }
+}

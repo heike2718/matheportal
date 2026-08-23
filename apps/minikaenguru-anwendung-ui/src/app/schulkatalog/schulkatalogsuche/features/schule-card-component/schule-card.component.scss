@@ -59,14 +59,9 @@
         white-space: nowrap;
     }
 
-    &__land,
-    &__ort {
+    &__land {
         font-size: mp-theme.$mp-font-size-m;
         line-height: mp-theme.$mp-line-height-normal;
-    }
-
-    &__ort {
-        white-space: nowrap;
     }
 
     &__arrow {
@@ -83,13 +78,8 @@
         gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;
 
-        &__land,
-        &__ort {
+        &__land {
             font-size: mp-theme.$mp-font-size-s;
-        }
-
-        &__ort {
-            grid-column: 1;
         }
 
         &__arrow {

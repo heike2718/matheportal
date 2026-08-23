@@ -58,6 +58,8 @@ apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten
 
 .database/datenmigration/dumps
 
+**/tsconfig.federation.json
+
 vitest.config.*.timestamp*
 
 /.quarkus/cli/

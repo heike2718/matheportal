@@ -1,0 +1,216 @@
+openapi: '3.0.3'
+info:
+    title: minikaenguru-admin API
+    version: 1.0.0
+    description: API für minikaenguru-admin.
+paths:
+    /api/schulkatalog/laender:
+        get:
+            tags:
+                - Schulkatalog
+            summary: 'Laden der Länder des Schulkatalogs'
+            description: 'alle Länder des Schulkatalogs werden geladen'
+            operationId: loadLaender
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfLaenderReadonly'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/laender/{kuerzelLand}/orte:
+        get:
+            tags:
+                - Schulkatalog
+            summary: 'Laden von Orten des Schulkatalogs'
+            description: 'alle Orte eines Landes des Schulkatalogs werden geladen'
+            operationId: loadOrte
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: kuerzelLand
+                  schema:
+                      type: string
+                      pattern: '^[A-Z-]*$'
+                      maxLength: 5
+                  required: true
+                  description: kuerzel des Landes
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfOrtReadonly'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/orte/{kuerzelOrt}/schulen:
+        get:
+            tags:
+                - Schulkatalog
+            summary: Laden von Schulen des Schulkatalogs
+            description: alle Schulen eines Ortes des Schulkatalogs werden geladen
+            operationId: loadSchulen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: kuerzelOrt
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel des Ortes
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfSchuleReadonly'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+components:
+    securitySchemes:
+        mpSession:
+            type: apiKey
+            in: cookie
+            name: MPSESSIONID
+            description: Session-Cookie der Matheportal-Sitzung
+    schemas:
+        ConstraintViolationDetail:
+            type: object
+            properties:
+                field:
+                    type: string
+                    description: Feldname der verletzten Constraint.
+                    example: clientId
+                message:
+                    type: string
+                    description: Fehlermeldung zur verletzten Constraint.
+                    example: clientId ist ungueltig.
+        ErrorResponse:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    type: string
+                    example: Irgendein Fehler ist aufgetreten
+                constraintViolations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ConstraintViolationDetail'
+        LandReadonly:
+            type: object
+            properties:
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z\-]*$'
+                    maxLength: 5
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                anzahlOrte:
+                    type: integer
+        OrtReadonly:
+            type: object
+            properties:
+                land:
+                    $ref: '#/components/schemas/LandReadonly'
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                anzahlSchulen:
+                    type: integer
+        SchuleReadonly:
+            type: object
+            properties:
+                ort:
+                    $ref: '#/components/schemas/OrtReadonly'
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+        ArrayOfLaenderReadonly:
+            type: array
+            items:
+                $ref: '#/components/schemas/LandReadonly'
+        ArrayOfOrtReadonly:
+            type: array
+            items:
+                $ref: '#/components/schemas/OrtReadonly'
+        ArrayOfSchuleReadonly:
+            type: array
+            items:
+                $ref: '#/components/schemas/SchuleReadonly'

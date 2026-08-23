@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { sessionValidationFailed, userLoggedOut } from '@matheportal/auth-api';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { SESSION_EXPIRED_MESSAGE, TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-utils';
+import { SESSION_EXPIRED_MESSAGE, TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs';
 

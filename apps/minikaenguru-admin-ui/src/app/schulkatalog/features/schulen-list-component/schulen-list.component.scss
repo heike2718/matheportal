@@ -1,0 +1,166 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+@use 'libs/shared-ui-theme/src/lib/styles/_functions.scss' as functions;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.mk-admin-schulen-list {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: mp-theme.$mp-space-5;
+    padding: mp-theme.$mp-space-6;
+
+    font-family: mp-theme.$mp-font-family;
+
+    &__back {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: mp-theme.$mp-space-1;
+
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+
+        color: mp-theme.mp-brand(minikaenguru-admin);
+        font: inherit;
+
+        background-color: transparent;
+        border: mp-theme.$mp-border-width solid transparent;
+        border-radius: 999px;
+
+        cursor: pointer;
+
+        &:hover {
+            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
+            border-color: mp-theme.mp-brand-border(minikaenguru-admin);
+        }
+
+        &:active {
+            background-color: mp-theme.mp-brand-soft(minikaenguru-admin);
+            border-color: mp-theme.mp-brand-border-hover(minikaenguru-admin);
+        }
+
+        &:focus-visible {
+            outline: 2px solid mp-theme.mp-brand(minikaenguru-admin);
+            outline-offset: 2px;
+        }
+    }
+
+    &__back-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    &__title {
+        margin: 0;
+
+        color: mp-theme.mp-brand(minikaenguru-admin);
+        font-size: mp-theme.$mp-font-size-l;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__label {
+        font-size: mp-theme.$mp-font-size-m;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__input {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 2.75rem;
+
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+
+        color: inherit;
+        font: inherit;
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+
+        background-color: mp-theme.$mp-color-surface;
+        border: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-interactive;
+        border-radius: mp-theme.$mp-radius-m;
+
+        transition:
+            background-color 140ms ease,
+            border-color 140ms ease,
+            box-shadow 140ms ease;
+
+        &:hover {
+            border-color: mp-theme.$mp-border-color-interactive-hover;
+        }
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
+            outline-offset: mp-theme.$mp-space-1;
+
+            border-color: mp-theme.mp-brand(minikaenguru-admin);
+            box-shadow: mp-theme.$mp-shadow-1;
+        }
+    }
+
+    &__result-count {
+        width: min(100%, 44rem);
+        margin: 0;
+
+        font-size: mp-theme.$mp-font-size-m;
+        line-height: mp-theme.$mp-line-height-normal;
+    }
+
+    &__results {
+        display: flex;
+        flex-direction: column;
+
+        width: min(100%, 44rem);
+        gap: mp-theme.$mp-space-3;
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    &__result {
+        margin: 0;
+    }
+}
+
+@media (width <= 480px) and (hover: none) {
+    .mk-admin-schulen-list {
+        gap: mp-theme.$mp-space-4;
+        padding: mp-theme.$mp-space-4;
+
+        &__back {
+            min-height: 2.75rem;
+            padding-inline: 0;
+
+            background-color: transparent;
+            border: 0;
+            border-radius: 0;
+
+            &:active {
+                background-color: transparent;
+            }
+        }
+
+        &__title {
+            font-size: mp-theme.$mp-font-size-m;
+        }
+
+        &__label,
+        &__input,
+        &__result-count {
+            font-size: mp-theme.$mp-font-size-s;
+        }
+
+        &__input {
+            padding: mp-theme.$mp-space-3;
+        }
+    }
+}

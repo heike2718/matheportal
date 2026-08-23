@@ -21,43 +21,39 @@
     &__back {
         display: inline-flex;
         align-items: center;
-        min-height: 2.75rem;
-        margin: 0 0 0.5rem -0.5rem;
-        padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+        align-self: flex-start;
+        gap: mp-theme.$mp-space-1;
 
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+
+        color: mp-theme.mp-brand(minikaenguru);
         font: inherit;
-        font-weight: 500;
-        color: mp-theme.mp-primary(700);
 
-        background: transparent;
-        border: 0;
+        background-color: transparent;
+        border: mp-theme.$mp-border-width solid transparent;
         border-radius: 999px;
+
         cursor: pointer;
 
-        transition:
-            background-color 150ms ease,
-            transform 100ms ease;
-
         &:hover {
-            background-color: rgba(mp-theme.mp-primary(700), 0.08);
+            background-color: mp-theme.mp-brand-hover(minikaenguru);
+            border-color: mp-theme.mp-brand-border(minikaenguru);
         }
 
         &:active {
-            background-color: rgba(mp-theme.mp-primary(700), 0.14);
-            transform: translateX(-1px);
+            background-color: mp-theme.mp-brand-soft(minikaenguru);
+            border-color: mp-theme.mp-brand-border-hover(minikaenguru);
         }
 
         &:focus-visible {
-            outline: 2px solid mp-theme.mp-primary(700);
+            outline: 2px solid mp-theme.mp-brand(minikaenguru);
             outline-offset: 2px;
         }
     }
 
     &__back-icon {
-        flex: 0 0 auto;
         width: 1.5rem;
         height: 1.5rem;
-        margin-right: 0.25rem;
     }
 
     &__title {
@@ -128,10 +124,23 @@
     }
 }
 
-@media (width <= 480px) {
-    .mka-orte-suchen {
+@media (width <= 480px) and (hover: none) {
+    .mka-schulen-list {
         gap: mp-theme.$mp-space-4;
         padding: mp-theme.$mp-space-4;
+
+        &__back {
+            min-height: 2.75rem;
+            padding-inline: 0;
+
+            background-color: transparent;
+            border: 0;
+            border-radius: 0;
+
+            &:active {
+                background-color: transparent;
+            }
+        }
 
         &__title {
             font-size: mp-theme.$mp-font-size-m;

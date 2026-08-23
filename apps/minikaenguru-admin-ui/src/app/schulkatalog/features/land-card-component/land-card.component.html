@@ -1,0 +1,9 @@
+<button type="button" class="mk-admin-land-card" (click)="landSelected.emit(land())">
+    <span class="mk-admin-land-card__content">
+        <span class="mk-admin-land-card__name"> {{ land().name }} ({{ land().kuerzel }}) </span>
+    </span>
+
+    <span class="mk-admin-land-card__ort-count"> Anzahl Orte: {{ land().anzahlOrte }} </span>
+
+    <span class="mk-admin-land-card__arrow" aria-hidden="true"> › </span>
+</button>

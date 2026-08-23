@@ -288,7 +288,7 @@ describe('schulkatalogsucheFeature tests', () => {
         });
         const previousState = createState({ orte, orteLoadingState: 'loaded', selectedOrt: orte[1] });
         it('should set schulenLoadedState correctly when findSchulenFailed', () => {
-            // schulkatalogsuche-data.utils is responsible for the correct mapping and therefore comletely tested in its own spec
+            // schulkatalogsuche-data.utils is responsible for the correct mapping and therefore completely tested in its own spec
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
                 schulkatalogsucheActions.loadSchulenFailed({ error: httpServerErrorResponse })

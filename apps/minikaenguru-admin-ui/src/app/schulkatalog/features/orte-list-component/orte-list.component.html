@@ -1,0 +1,31 @@
+<div class="mk-admin-orte-list">
+    <button class="mk-admin-orte-list__back" type="button" (click)="backToLaenderRequested.emit()">
+        <svg class="mk-admin-orte-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2" />
+        </svg>
+
+        <span>zurück zu den Ländern</span>
+    </button>
+
+    <h2 class="mk-admin-orte-list__title">Orte in {{ selectedLand() }} suchen</h2>
+    @if (orteLoaded()) {
+        <label class="mk-admin-orte-list__label" for="term">Name</label>
+        <input id="term" class="mk-admin-orte-list__input" type="text" [formField]="searchForm.term" />
+
+        <p class="mk-admin-orte-list__result-count">Anzahl: {{ filteredOrte().length }}</p>
+
+        <div class="mk-admin-orte-list__results">
+            @for (ort of filteredOrte(); track ort.kuerzel) {
+                <mk-admin-ort-card [ort]="ort" (ortSelected)="ortSelected.emit($event)" />
+            }
+        </div>
+    } @else {
+        <p class="mk-admin-orte-list__result-count">Lade Orte ...</p>
+    }
+</div>

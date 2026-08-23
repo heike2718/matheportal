@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    afterRenderEffect,
     ChangeDetectionStrategy,
     Component,
     computed,
@@ -24,7 +24,7 @@ import {
     styleUrl: './orte-suchen.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrteSuchenComponent implements AfterViewInit {
+export class OrteSuchenComponent {
     private previousTerm = '';
 
     protected readonly componentModel = signal<{ term: string }>({
@@ -58,10 +58,7 @@ export class OrteSuchenComponent implements AfterViewInit {
 
     constructor() {
         this.registerSearchTermEffect();
-    }
-
-    ngAfterViewInit(): void {
-        this.searchForm.term().focusBoundControl();
+        this.registerSearchInputFocusEffect();
     }
 
     private registerSearchTermEffect(): void {
@@ -78,6 +75,14 @@ export class OrteSuchenComponent implements AfterViewInit {
 
             this.previousTerm = term;
             this.searchTermOrtChanged.emit(term);
+        });
+    }
+
+    private registerSearchInputFocusEffect(): void {
+        afterRenderEffect({
+            write: () => {
+                this.searchForm.term().focusBoundControl();
+            },
         });
     }
 }

@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+    afterRenderEffect,
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    input,
+    output,
+    signal,
+} from '@angular/core';
 import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
 import { Schule } from '../../model/schulkatalog.model';
 import { debounce, form, FormField } from '@angular/forms/signals';
@@ -10,15 +19,13 @@ import { debounce, form, FormField } from '@angular/forms/signals';
     styleUrl: './schulen-list.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SchulenListComponent implements AfterViewInit {
+export class SchulenListComponent {
     readonly nameSelectedOrt = input.required<string>();
 
     readonly schulen = input.required<Schule[]>();
-
     readonly schulenLoaded = input.required<boolean>();
 
     readonly schuleSelected = output<Schule>();
-
     readonly ortssucheRequested = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
@@ -39,7 +46,17 @@ export class SchulenListComponent implements AfterViewInit {
         return this.schulen().filter(schule => schule.name.toLocaleLowerCase('de').includes(term));
     });
 
-    ngAfterViewInit(): void {
-        this.searchForm.term().focusBoundControl();
+    constructor() {
+        this.registerSearchInputFocusEffect();
+    }
+
+    private registerSearchInputFocusEffect(): void {
+        afterRenderEffect({
+            write: () => {
+                if (this.schulenLoaded()) {
+                    this.searchForm.term().focusBoundControl();
+                }
+            },
+        });
     }
 }

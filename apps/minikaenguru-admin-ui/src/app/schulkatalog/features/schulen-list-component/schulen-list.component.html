@@ -1,0 +1,35 @@
+<div class="mk-admin-schulen-list">
+    <button class="mk-admin-schulen-list__back" type="button" (click)="backToOrteRequested.emit()">
+        <svg class="mk-admin-schulen-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2" />
+        </svg>
+
+        <span>zurück zu den Orten</span>
+    </button>
+
+    <h2 class="mk-admin-schulen-list__title">Schulen in {{ selectedOrt() }} suchen</h2>
+    @if (schulenLoaded()) {
+        <label class="mk-admin-schulen-list__label" for="term">Name</label>
+        <input id="term" class="mk-admin-schulen-list__input" type="text" [formField]="searchForm.term" />
+
+        <p class="mk-admin-schulen-list__result-count">Anzahl: {{ filteredSchulen().length }}</p>
+
+        <ul class="mk-admin-schulen-list__results">
+            @for (schule of filteredSchulen(); track schule.kuerzel) {
+                <li class="mk-admin-schulen-list__result">
+                    <mk-admin-schule-card
+                        [schule]="schule"
+                        (schuleUmbenennenSelected)="schuleUmbenennenSelected.emit($event)" />
+                </li>
+            }
+        </ul>
+    } @else {
+        <p class="mk-admin-schulen-list__result-count">Lade Schulen ...</p>
+    }
+</div>

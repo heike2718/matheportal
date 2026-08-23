@@ -38,13 +38,6 @@ describe('SchulkatalosucheFacade tests', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.findOrte({ name }));
     });
 
-    it('loadOrte should dispatch the expected action', () => {
-        facade.loadSchulen(ort);
-
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.loadSchulen({ ort }));
-    });
-
     it('ortSelected should dispatch the expected action', () => {
         facade.ortSelected(ort);
 

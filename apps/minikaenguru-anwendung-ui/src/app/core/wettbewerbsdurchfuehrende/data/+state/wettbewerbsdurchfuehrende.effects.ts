@@ -6,10 +6,10 @@ import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehren
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
-import { mapErrorToMessage } from '../../../error/minikaenguru-error-mapper';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
+import { mapErrorToMessage } from '@matheportal/shared-utils';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {

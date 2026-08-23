@@ -34,10 +34,6 @@ export class SchulkatalogsucheFacade {
         this.#store.dispatch(schulkatalogsucheActions.ortSelected({ ort }));
     }
 
-    public loadSchulen(ort: Ort): void {
-        this.#store.dispatch(schulkatalogsucheActions.loadSchulen({ ort }));
-    }
-
     public schuleSelected(schule: Schule): void {
         this.#store.dispatch(schulkatalogsucheActions.schuleSelected({ schule }));
     }
