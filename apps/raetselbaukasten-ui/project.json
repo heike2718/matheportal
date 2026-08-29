@@ -150,6 +150,12 @@
                 "command": "prettier --check \"{projectRoot}/src/**/*.{ts,html,scss}\" --ignore-path .prettierignore"
             }
         },
+        "tech-stylelint": {
+            "executor": "nx-stylelint:lint",
+            "options": {
+                "lintFilePatterns": ["apps/raetselbaukasten-ui/src/**/*.scss"]
+            }
+        },
         "tech-lint": {
             "executor": "@nx/eslint:lint"
         },
@@ -168,7 +174,7 @@
         },
         "analyze-quality": {
             "executor": "nx:run-commands",
-            "dependsOn": ["tech-lint", "tech-format-check"],
+            "dependsOn": ["tech-stylelint", "tech-lint", "tech-format-check"],
             "options": {
                 "command": "true"
             }

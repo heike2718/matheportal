@@ -13,7 +13,7 @@
 
     padding: mp-theme.$mp-space-6;
 
-    @media (max-width: 37.5rem) {
+    @media (width <= 37.5rem) {
         padding-inline: mp-theme.$mp-space-1;
         padding-block: mp-theme.$mp-space-4;
     }

@@ -50,7 +50,7 @@
 
         padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
         border-radius: mp-theme.$mp-radius-m;
-        background: rgba(0, 0, 0, 0.04);
+        background-color: mp-theme.$mp-color-surface-subtle;
 
         dt {
             min-width: 0;
@@ -77,9 +77,9 @@
         margin-block: mp-theme.$mp-space-6;
         padding: mp-theme.$mp-space-4 mp-theme.$mp-space-5;
 
-        border-left: 0.4rem solid mp-theme.mp-brand(minikaenguru);
+        border-left: $mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
         border-radius: mp-theme.$mp-radius-m;
-        background-color: mp-theme.mp-brand-hover(minikaenguru);
+        background-color: mp-theme.$mp-color-surface-subtle;
     }
 
     &__login-hint-icon {
@@ -92,7 +92,7 @@
 
         h2 {
             margin: 0 0 mp-theme.$mp-space-2 0;
-            font-size: 1.15rem;
+            font-size: $mp-font-size-l;
         }
 
         p {
@@ -108,11 +108,11 @@
         margin-top: mp-theme.$mp-space-6;
         padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
 
-        border-left: 0.25rem solid rgba(0, 0, 0, 0.25);
+        border-left: $mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
         border-radius: mp-theme.$mp-radius-m;
-        background: rgba(0, 0, 0, 0.04);
+        background-color: mp-theme.$mp-color-surface-subtle;
 
-        font-size: 0.875rem;
+        font-size: $mp-font-size-s;
         line-height: 1.4;
     }
 }
@@ -153,7 +153,7 @@
 
         &__login-hint-text {
             h2 {
-                font-size: 1.05rem;
+                font-size: $mp-font-size-xs;
             }
         }
 

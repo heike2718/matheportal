@@ -38,7 +38,7 @@
         flex-direction: column;
         gap: mp-theme.$mp-space-1;
 
-        color: rgb(0 0 0 / 62%);
+        color: mp-theme.$mp-color-text-muted;
 
         @include mp-theme.mp-body-small;
     }
@@ -52,7 +52,7 @@
     &__action {
         padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
 
-        color: white;
+        color: mp-theme.$mp-color-surface;
         font: inherit;
         font-weight: 600;
 

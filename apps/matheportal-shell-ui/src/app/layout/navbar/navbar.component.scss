@@ -11,12 +11,11 @@
     padding-inline: mp-theme.$mp-space-4;
     gap: mp-theme.$mp-space-3;
 
-    background-color: white;
-    border-bottom: 1px solid rgb(0 0 0 / 10%);
-    box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 8%);
+    background-color: mp-theme.$mp-color-on-brand;
+    border-bottom: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
+    box-shadow: 0 0.125rem 0.375rem mp-theme.$mp-border-color-subtle;
 
     // --- Layout Sections ---
-
     &__section {
         display: flex;
         align-items: center;
@@ -66,24 +65,24 @@
             box-shadow 150ms ease-in-out;
 
         &:focus-visible {
-            box-shadow: 0 0 0 2px rgb(0 0 0 / 18%);
+            box-shadow: 0 0 0 mp-theme.$mp-focus-ring-width mp-theme.$mp-border-color-interactive;
         }
 
         &--portal {
-            background-color: rgb(0 0 0 / 4%);
-            border-color: rgb(0 0 0 / 8%);
+            background-color: mp-theme.$mp-color-surface-subtle;
+            border-color: mp-theme.$mp-border-color-subtle;
 
             &:hover,
             &:focus-visible {
-                background-color: rgb(0 0 0 / 5%);
-                border-color: rgb(0 0 0 / 12%);
+                background-color: mp-theme.$mp-color-surface-subtle-hover;
+                border-color: mp-theme.$mp-border-color-interactive;
             }
 
             &.nav__link--active {
-                background-color: rgb(0 0 0 / 5%);
-                border-color: rgb(0 0 0 / 12%);
+                background-color: mp-theme.$mp-color-surface-subtle-hover;
+                border-color: mp-theme.$mp-border-color-interactive;
                 color: mp-theme.mp-primary(500);
-                box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%);
+                box-shadow: inset 0 0 0 mp-theme.$mp-border-width mp-theme.$mp-border-color-subtle;
             }
         }
 
@@ -166,7 +165,7 @@
 
     &__greeting {
         @include mp-theme.mp-body-default;
-        color: rgb(0 0 0 / 80%);
+        color: mp-theme.$mp-color-text-default;
         white-space: nowrap;
         font-weight: 500;
     }
@@ -182,18 +181,18 @@
         align-items: center;
         gap: mp-theme.$mp-space-3;
         padding-left: mp-theme.$mp-space-4;
-        border-left: 1px solid rgb(0 0 0 / 10%);
+        border-left: 1px solid mp-theme.$mp-border-color-subtle;
     }
 
     &__meta {
         @include mp-theme.mp-body-small;
-        color: rgb(0 0 0 / 65%);
+        color: mp-theme.$mp-color-text-muted;
         white-space: nowrap;
     }
 
     &__meta-link {
         @include mp-theme.mp-body-small;
-        color: rgb(0 0 0 / 75%);
+        color: mp-theme.$mp-color-text-default;
         text-decoration: none;
         white-space: nowrap;
         transition: color 150ms ease-in-out;
