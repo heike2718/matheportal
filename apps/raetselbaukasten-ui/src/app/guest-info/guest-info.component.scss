@@ -75,7 +75,7 @@
         margin-top: mp-theme.$mp-space-6;
         padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
 
-        border-left: $mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
+        border-left: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
         border-radius: mp-theme.$mp-radius-m;
         background-color: mp-theme.$mp-color-surface-subtle;
 
