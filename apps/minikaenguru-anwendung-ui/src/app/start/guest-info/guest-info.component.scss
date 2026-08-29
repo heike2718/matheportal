@@ -112,7 +112,7 @@
         border-radius: mp-theme.$mp-radius-m;
         background-color: mp-theme.$mp-color-surface-subtle;
 
-        font-size: $mp-font-size-s;
+        font-size: mp-theme.$mp-font-size-s;
         line-height: 1.4;
     }
 }
