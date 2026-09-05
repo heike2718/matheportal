@@ -332,6 +332,9 @@ components:
                         - AUTOR
         ConstraintViolationDetail:
             type: object
+            required:
+                - field
+                - message
             properties:
                 field:
                     type: string
@@ -355,6 +358,10 @@ components:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
         Land:
             type: object
+            required:
+                - kuerzel
+                - name
+                - anzahlOrte
             properties:
                 kuerzel:
                     type: string
@@ -368,6 +375,11 @@ components:
                     type: integer
         Ort:
             type: object
+            required:
+                - land
+                - kuerzel
+                - name
+                - anzahlSchulen
             properties:
                 land:
                     $ref: '#/components/schemas/Land'
@@ -383,6 +395,10 @@ components:
                     type: integer
         Schule:
             type: object
+            required:
+                - ort
+                - kuerzel
+                - name
             properties:
                 ort:
                     $ref: '#/components/schemas/Ort'

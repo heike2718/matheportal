@@ -31,4 +31,7 @@ export default [
         // Override or add rules here
         rules: {},
     },
+    {
+        ignores: ['apps/minikaenguru-anwendung-ui/src/app/generated/**/*'],
+    },
 ];
