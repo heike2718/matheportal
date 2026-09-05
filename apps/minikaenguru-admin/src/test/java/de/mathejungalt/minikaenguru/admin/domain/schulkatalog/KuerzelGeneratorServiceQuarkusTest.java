@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.domain.kuerzelgenerierung;
+package de.mathejungalt.minikaenguru.admin.domain.schulkatalog;
 
 import jakarta.inject.Inject;
 
@@ -12,15 +12,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class KuerzelGeneratorServiceQuarkusTest {
 
     @Inject
-    KuerzelGeneratorService service;
+    KuerzelService service;
 
     @Test
-    void test_length_for_Privatteilnahme() {
+    void test_length_for_Schulkatalog() {
 
         // act
-        final String kuerzel = service.generatePrivatteilnahmekuerzel();
+        final String kuerzel = service.generateSchulkatalogKuerzel();
 
         // assert
-        assertEquals(10, kuerzel.length());
+        assertEquals(8, kuerzel.length());
     }
+
 }

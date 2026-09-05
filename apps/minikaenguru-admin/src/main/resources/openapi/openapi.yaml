@@ -82,6 +82,15 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalog/orte/{kuerzelOrt}/schulen:
+        parameters:
+            - in: path
+              name: kuerzelOrt
+              schema:
+                  type: string
+                  pattern: '^[A-Z0-9]*$'
+                  maxLength: 8
+              required: true
+              description: kuerzel des Ortes
         get:
             tags:
                 - Schulkatalog
@@ -90,15 +99,6 @@ paths:
             operationId: loadSchulen
             security:
                 - mpSession: []
-            parameters:
-                - in: path
-                  name: kuerzelOrt
-                  schema:
-                      type: string
-                      pattern: '^[A-Z0-9]*$'
-                      maxLength: 8
-                  required: true
-                  description: kuerzel des Ortes
             responses:
                 '200':
                     description: OK
@@ -120,6 +120,223 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
                 '403':
                     description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags:
+                - Schulkatalog
+            summary: neue Schule in einem Land / Bundesland
+            description: Ort und Schule werden angelegt
+            operationId: schuleInOrtAnlegen
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SchuleRequest'
+            responses:
+                '201':
+                    description: Schule erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SchulkuerzelDto'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: land existiert nicht
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/schulen:
+        post:
+            tags:
+                - Schulkatalog
+            summary: neue Schule
+            description: Land, Ort und Schule werden angelegt
+            operationId: schuleAnlegen
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SchuleWithLandAndOrtRequest'
+            security:
+                - mpSession: []
+            responses:
+                '201':
+                    description: Schule erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SchulkuerzelDto'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/laender/{kuerzelLand}/schulen:
+        post:
+            tags:
+                - Schulkatalog
+            summary: neue Schule in einem Land / Bundesland
+            description: Ort und Schule werden angelegt
+            operationId: schuleInLandAnlegen
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SchuleWithOrtRequest'
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: kuerzelLand
+                  schema:
+                      type: string
+                      pattern: '^[A-Z-]*$'
+                      maxLength: 5
+                  required: true
+                  description: kuerzel des Landes
+            responses:
+                '201':
+                    description: Schule erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SchulkuerzelDto'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: land existiert nicht
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/schulen/{kuerzel}:
+        put:
+            tags:
+                - Schulkatalog
+            summary: Schule umbenennen
+            description: die gegebene Schule wird umbenannt
+            operationId: schuleUmbenennen
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SchuleRequest'
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: kuerzel
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: Schule erfolgreich umbenannt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SchulkuerzelDto'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: nicht autorisiert
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: land existiert nicht
                     content:
                         application/json:
                             schema:
@@ -214,3 +431,72 @@ components:
             type: array
             items:
                 $ref: '#/components/schemas/SchuleReadonly'
+        SchuleRequest:
+            type: object
+            required:
+                - name
+                - emailAuftraggeber
+            properties:
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                emailAuftraggeber:
+                    type: string
+                    pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+                    maxLength: 255
+        SchuleWithOrtRequest:
+            type: object
+            required:
+                - nameOrt
+                - nameSchule
+                - emailAuftraggeber
+            properties:
+                nameOrt:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                nameSchule:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                emailAuftraggeber:
+                    type: string
+                    pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+                    maxLength: 255
+        SchuleWithLandAndOrtRequest:
+            type: object
+            required:
+                - kuerzelLand
+                - nameLand
+                - nameOrt
+                - nameSchule
+                - emailAuftraggeber
+            properties:
+                kuerzelLand:
+                    type: string
+                    pattern: '^[A-Z\-]*$'
+                    maxLength: 5
+                nameLand:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                nameOrt:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                nameSchule:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                emailAuftraggeber:
+                    type: string
+                    pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+                    maxLength: 255
+        SchulkuerzelDto:
+            type: object
+            properties:
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8

@@ -96,7 +96,6 @@ public class PrivatpersonAnlegenDelegateTest {
         // assert
         assertAll(() -> assertNotNull(result),
                 () -> verify(kuerzelGeneratorService, times(1)).generatePrivatteilnahmekuerzel(),
-                () -> verify(kuerzelGeneratorService, never()).generateSchulkatalogKuerzel(),
                 () -> verify(securityIdentity, times(2)).getPrincipal());
     }
 
