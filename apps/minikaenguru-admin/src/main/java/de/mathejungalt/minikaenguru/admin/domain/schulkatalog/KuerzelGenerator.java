@@ -1,6 +1,6 @@
 package de.mathejungalt.minikaenguru.admin.domain.schulkatalog;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -15,11 +15,10 @@ public class KuerzelGenerator {
     String generateKuerzel(final int length) {
 
         final StringBuilder stringBuilder = new StringBuilder();
-        final Random random = new Random();
 
         for (int loop = 0; loop < length; loop++) {
 
-            final int index = random.nextInt(CHAR_POOL.length);
+            final int index = ThreadLocalRandom.current().nextInt(CHAR_POOL.length);
             stringBuilder.append(CHAR_POOL[index]);
         }
 
