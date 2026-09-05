@@ -48,7 +48,7 @@ public class SchulkatalogService {
     public List<LandReadonly> loadLaender() {
 
         final List<LandReadonlyEntity> trefferliste = schulkatalogDao.loadLaender();
-        return trefferliste.stream().map(land -> schulkatalogMapper.mapFromEntity(land)).toList();
+        return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
     }
 
     /**
@@ -59,7 +59,8 @@ public class SchulkatalogService {
     public List<OrtReadonly> loadOrteInLand(final String landId) {
 
         final List<OrtReadonlyEntity> trefferliste = schulkatalogDao.loadOrteWithLand(landId);
-        return trefferliste.stream().map(ort -> schulkatalogMapper.mapFromEntity(ort)).toList();
+
+        return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
 
     }
 
@@ -70,7 +71,7 @@ public class SchulkatalogService {
      */
     public List<SchuleReadonly> loadSchulenInOrt(final String ortId) {
         final List<SchuleReadonlyEntity> trefferliste = schulkatalogDao.loadSchulenWithOrt(ortId);
-        return trefferliste.stream().map(schule -> schulkatalogMapper.mapFromEntity(schule)).toList();
+        return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
     }
 
     /**

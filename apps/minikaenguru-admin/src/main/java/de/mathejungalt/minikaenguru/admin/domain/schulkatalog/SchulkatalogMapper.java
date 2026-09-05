@@ -1,7 +1,5 @@
 package de.mathejungalt.minikaenguru.admin.domain.schulkatalog;
 
-import java.util.List;
-
 import de.mathejungalt.minikaenguru.admin.domain.generated.LandReadonly;
 import de.mathejungalt.minikaenguru.admin.domain.generated.OrtReadonly;
 import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleReadonly;
