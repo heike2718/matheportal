@@ -1,18 +1,9 @@
-export interface Land {
-    readonly kuerzel: string;
-    readonly name: string;
-    readonly anzahlOrte: number;
-}
+import { components } from '../../generated/api-types';
 
-export interface Ort {
-    readonly kuerzel: string;
-    readonly name: string;
-    readonly land: Land;
-    readonly anzahlSchulen: number;
-}
-
-export interface Schule {
-    readonly kuerzel: string;
-    readonly name: string;
-    readonly ort: Ort;
-}
+export type Land = components['schemas']['LandReadonly'];
+export type Ort = components['schemas']['OrtReadonly'];
+export type Schule = components['schemas']['SchuleReadonly'];
+export type SchuleRequest = components['schemas']['SchuleRequest'];
+export type SchuleWithOrtRequest = components['schemas']['SchuleWithOrtRequest'];
+export type SchuleWithLandAndOrtRequest = components['schemas']['SchuleWithLandAndOrtRequest'];
+export type SchulkuerzelDto = components['schemas']['SchulkuerzelDto'];

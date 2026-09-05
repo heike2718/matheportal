@@ -357,6 +357,9 @@ components:
     schemas:
         ConstraintViolationDetail:
             type: object
+            required:
+                - field
+                - message
             properties:
                 field:
                     type: string
@@ -380,6 +383,10 @@ components:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
         LandReadonly:
             type: object
+            required:
+                - kuerzel
+                - name
+                - anzahlOrte
             properties:
                 kuerzel:
                     type: string
@@ -393,6 +400,11 @@ components:
                     type: integer
         OrtReadonly:
             type: object
+            required:
+                - land
+                - kuerzel
+                - name
+                - anzahlSchulen
             properties:
                 land:
                     $ref: '#/components/schemas/LandReadonly'
@@ -408,6 +420,10 @@ components:
                     type: integer
         SchuleReadonly:
             type: object
+            required:
+                - ort
+                - kuerzel
+                - name
             properties:
                 ort:
                     $ref: '#/components/schemas/OrtReadonly'
@@ -495,6 +511,8 @@ components:
                     maxLength: 255
         SchulkuerzelDto:
             type: object
+            required:
+                - kuerzel
             properties:
                 kuerzel:
                     type: string
