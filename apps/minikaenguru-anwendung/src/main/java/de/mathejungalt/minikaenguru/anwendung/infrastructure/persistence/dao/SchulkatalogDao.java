@@ -72,7 +72,7 @@ public class SchulkatalogDao {
             return Optional.empty();
         }
 
-        if (resultList.size() > 1) {
+        if (resultList.size() > 1) { // NOPMD - 1 is the natural threshold for multiple results
             log.error("mehr als eine Schule mit kuerzel {} im Schulkatalog - unmöglich wegen UK.", kuerzel);
         }
 

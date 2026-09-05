@@ -70,7 +70,7 @@ public class SchulkollegiumDao {
             return Optional.empty();
         }
 
-        if (resulList.size() > 1) {
+        if (resulList.size() > 1) { // NOPMD - 1 is the natural threshold for multiple results
             log
                     .error("mehr als ein Treffer in schulkollegien mit user_uuid = {} und kuerzel_schule {} - unmöglich wegen UK.",
                             userUuid, schulkuerzel);
