@@ -70,6 +70,7 @@ describe('SchulkatalogsucheEffects', () => {
                     land: {
                         kuerzel: 'DE-BY',
                         name: 'Bayern',
+                        anzahlOrte: 19,
                     },
                     anzahlSchulen: 10,
                 },
@@ -79,6 +80,7 @@ describe('SchulkatalogsucheEffects', () => {
                     land: {
                         kuerzel: 'DE-HE',
                         name: 'Hessen',
+                        anzahlOrte: 8,
                     },
                     anzahlSchulen: 5,
                 },
@@ -101,6 +103,7 @@ describe('SchulkatalogsucheEffects', () => {
                     land: {
                         kuerzel: 'DE-BY',
                         name: 'Bayern',
+                        anzahlOrte: 19,
                     },
                     anzahlSchulen: 10,
                 },
@@ -110,6 +113,7 @@ describe('SchulkatalogsucheEffects', () => {
                     land: {
                         kuerzel: 'DE-HE',
                         name: 'Hessen',
+                        anzahlOrte: 8,
                     },
                     anzahlSchulen: 5,
                 },
@@ -122,6 +126,7 @@ describe('SchulkatalogsucheEffects', () => {
                     land: {
                         kuerzel: 'DE-HH',
                         name: 'Hamburg',
+                        anzahlOrte: 1,
                     },
                     anzahlSchulen: 200,
                 },
@@ -210,6 +215,7 @@ describe('SchulkatalogsucheEffects', () => {
                 land: {
                     kuerzel: 'DE-HE',
                     name: 'Hessen',
+                    anzahlOrte: 8,
                 },
                 anzahlSchulen: 5,
             };
@@ -228,6 +234,7 @@ describe('SchulkatalogsucheEffects', () => {
             land: {
                 kuerzel: 'DE-BY',
                 name: 'Bayern',
+                anzahlOrte: 19,
             },
             anzahlSchulen: 2,
         };
@@ -238,6 +245,7 @@ describe('SchulkatalogsucheEffects', () => {
             land: {
                 kuerzel: 'DE-SH',
                 name: 'Schleswig-Holstein',
+                anzahlOrte: 15,
             },
             anzahlSchulen: 2,
         };

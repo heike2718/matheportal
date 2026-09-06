@@ -1,10 +1,10 @@
 import {
     DURCHFUEHRUNGSART,
-    WettbewerbsdurchfuehrenderDto,
+    WettbewerbsdurchfuehrenderDraft,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model/mka-authorization.model';
-import { mapToBerechtigungstyp, resolveBerechtigungstyp } from './mka-authorization.utils';
+import { mapDtoToBerechtigungstyp, resolveBerechtigungstyp } from './mka-authorization.utils';
 
 describe('mka-authorization utils tests', () => {
     describe('resolveVeranstaltertyp', () => {
@@ -36,40 +36,40 @@ describe('mka-authorization utils tests', () => {
     });
     describe('mapToBerechtigungstyp tests', () => {
         it('should return privat when privat', () => {
-            const dto: WettbewerbsdurchfuehrenderDto = {
+            const dto: WettbewerbsdurchfuehrenderDraft = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 newsletter: false,
                 teilnahmenummern: [],
                 zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.entzogen,
             };
 
-            const result = mapToBerechtigungstyp(dto);
+            const result = mapDtoToBerechtigungstyp(dto);
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
         });
 
         it('should return schule when schule', () => {
-            const dto: WettbewerbsdurchfuehrenderDto = {
+            const draft: WettbewerbsdurchfuehrenderDraft = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.schule,
                 newsletter: false,
                 teilnahmenummern: [],
                 zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.erteilt,
             };
 
-            const result = mapToBerechtigungstyp(dto);
+            const result = mapDtoToBerechtigungstyp(draft);
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
         });
 
         it('should return none when not privat and not schule', () => {
-            const dto: WettbewerbsdurchfuehrenderDto = {
-                durchfuehrungsart: 'HALLO',
+            const dto: WettbewerbsdurchfuehrenderDraft = {
+                durchfuehrungsart: undefined,
                 newsletter: false,
                 teilnahmenummern: [],
                 zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.entzogen,
             };
 
-            const result = mapToBerechtigungstyp(dto);
+            const result = mapDtoToBerechtigungstyp(dto);
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.none);
         });

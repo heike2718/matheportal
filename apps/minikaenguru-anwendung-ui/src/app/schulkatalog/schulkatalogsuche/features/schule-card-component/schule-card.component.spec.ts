@@ -10,6 +10,7 @@ describe('SchuleCardComponentComponent', () => {
         land: {
             kuerzel: 'DE-HE',
             name: 'Hessen',
+            anzahlOrte: 8,
         },
         anzahlSchulen: 2,
     };

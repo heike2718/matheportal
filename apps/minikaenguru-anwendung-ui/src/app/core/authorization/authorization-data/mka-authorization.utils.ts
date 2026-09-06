@@ -23,7 +23,7 @@ export function resolveBerechtigungstyp(user: UserWithBerechtigungen | null): Mi
     return MINIKAENGURU_BERECHTIGUNGSTYP.none;
 }
 
-export function mapToBerechtigungstyp(dto: WettbewerbsdurchfuehrenderDto): MinikaenguruBerechtigungstyp {
+export function mapDtoToBerechtigungstyp(dto: WettbewerbsdurchfuehrenderDto): MinikaenguruBerechtigungstyp {
     if (dto.durchfuehrungsart === DURCHFUEHRUNGSART.privat) {
         return MINIKAENGURU_BERECHTIGUNGSTYP.privat;
     }

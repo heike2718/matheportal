@@ -17,6 +17,7 @@ describe('schulkatalogsucheSelectors', () => {
             land: {
                 kuerzel: 'DE-BY',
                 name: 'Bayern',
+                anzahlOrte: 19,
             },
             anzahlSchulen: 10,
         },
@@ -26,6 +27,7 @@ describe('schulkatalogsucheSelectors', () => {
             land: {
                 kuerzel: 'DE-HE',
                 name: 'Hessen',
+                anzahlOrte: 8,
             },
             anzahlSchulen: 5,
         },

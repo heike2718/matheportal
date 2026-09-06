@@ -22,6 +22,7 @@ describe('schulkatalogsucheFeature tests', () => {
             land: {
                 kuerzel: 'DE-BY',
                 name: 'Bayern',
+                anzahlOrte: 19,
             },
             anzahlSchulen: 10,
         },
@@ -31,6 +32,7 @@ describe('schulkatalogsucheFeature tests', () => {
             land: {
                 kuerzel: 'DE-HE',
                 name: 'Hessen',
+                anzahlOrte: 8,
             },
             anzahlSchulen: 5,
         },
@@ -231,6 +233,7 @@ describe('schulkatalogsucheFeature tests', () => {
             const land: Land = {
                 kuerzel: 'CH',
                 name: 'Schweiz',
+                anzahlOrte: 15,
             };
             const ort: Ort = {
                 land,

@@ -117,7 +117,7 @@ export interface components {
         readonly ZugangsberechtigungUnterlagen: 'STANDARD' | 'ERTEILT' | 'ENTZOGEN';
         /** @description Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden. */
         readonly WettbewerbsdurchfuehrenderRequest: {
-            readonly durchfuehrungsart?: components['schemas']['Wettbewerbsdurchfuehrungsart'];
+            readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
             /** @description Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich. */
             readonly schulkuerzel?: string;
         };
@@ -133,8 +133,8 @@ export interface components {
              */
             readonly teilnahmenummern?: readonly string[];
             /** @description Flag, ob der Durchführende Newsletter erhalten möchte */
-            readonly newsletter?: boolean;
-            readonly zugangsberechtigungUnterlagen?: components['schemas']['ZugangsberechtigungUnterlagen'];
+            readonly newsletter: boolean;
+            readonly zugangsberechtigungUnterlagen: components['schemas']['ZugangsberechtigungUnterlagen'];
         };
         readonly User: {
             /**

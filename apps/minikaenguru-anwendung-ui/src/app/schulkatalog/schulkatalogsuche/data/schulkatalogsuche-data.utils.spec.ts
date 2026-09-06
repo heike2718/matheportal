@@ -6,6 +6,7 @@ describe('schulkatalogsuche-data.utils', () => {
         const land: Land = {
             kuerzel: 'DE-BY',
             name: 'Bayern',
+            anzahlOrte: 19,
         };
         const ort: Ort = {
             land,
@@ -22,6 +23,7 @@ describe('schulkatalogsuche-data.utils', () => {
         const land: Land = {
             kuerzel: 'DE-HH',
             name: 'Hamburg',
+            anzahlOrte: 1,
         };
         const ort: Ort = {
             land,

@@ -26,7 +26,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                 wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: {
                         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                        schulkuerzel: null,
+                        schulkuerzel: undefined,
                     },
                 })
             )

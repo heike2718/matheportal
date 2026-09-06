@@ -27,7 +27,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     const requestDtoPrivat: WettbewerbsdurchfuehrenderRequest = {
         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-        schulkuerzel: null,
+        schulkuerzel: undefined,
     };
 
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
@@ -132,7 +132,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         it('should finish the first action not start the second request (exhaustMap)', async () => {
             const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schulkuerzel: null,
+                schulkuerzel: undefined,
             };
 
             const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {
@@ -199,7 +199,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         it('should accept a new action after the pending request completed', async () => {
             const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schulkuerzel: null,
+                schulkuerzel: undefined,
             };
 
             const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {

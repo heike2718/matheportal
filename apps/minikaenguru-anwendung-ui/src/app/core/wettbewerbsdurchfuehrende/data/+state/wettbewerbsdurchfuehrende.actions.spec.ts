@@ -23,7 +23,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
     });
     it('should create the durchfuehrendenAnlegen action', () => {
         const requestDto: WettbewerbsdurchfuehrenderRequest = {
-            durchfuehrungsart: 'schule',
+            durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             schulkuerzel: 'A1234567',
         };
 

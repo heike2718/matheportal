@@ -3,7 +3,7 @@ import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.re
 import {
     DURCHFUEHRUNGSART,
     initialWettbewerbsdurchfuehrender,
-    Wettbewerbsdurchfuehrender,
+    WettbewerbsdurchfuehrenderDraft,
     WettbewerbsdurchfuehrenderDto,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
@@ -13,7 +13,14 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 describe('wettbewerbsdurchfuehrendeFeature tests', () => {
     const unknownAction = { type: 'unknownAction' } as Action;
 
-    const knownDurchfuehrender: Wettbewerbsdurchfuehrender = {
+    const draft: WettbewerbsdurchfuehrenderDraft = {
+        durchfuehrungsart: undefined,
+        newsletter: false,
+        zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
+        teilnahmenummern: [],
+    };
+
+    const knownDurchfuehrender: WettbewerbsdurchfuehrenderDto = {
         newsletter: true,
         teilnahmenummern: ['A1234567'],
         zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.erteilt,
@@ -27,7 +34,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
         });
         it('should return the previous state, when unknown action and defined state', () => {
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: knownDurchfuehrender },
+                { wettbewerbsdurchfuehrender: knownDurchfuehrender, draft: draft },
                 unknownAction
             );
             expect(state.wettbewerbsdurchfuehrender).toEqual(knownDurchfuehrender);
@@ -44,7 +51,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
             };
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: initialWettbewerbsdurchfuehrender },
+                { wettbewerbsdurchfuehrender: initialWettbewerbsdurchfuehrender, draft },
                 wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
             );
 
@@ -60,7 +67,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
     describe('userLoggedOut', () => {
         it('should return the initial state when user logged out', () => {
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: knownDurchfuehrender },
+                { wettbewerbsdurchfuehrender: knownDurchfuehrender, draft },
                 userLoggedOut
             );
 
