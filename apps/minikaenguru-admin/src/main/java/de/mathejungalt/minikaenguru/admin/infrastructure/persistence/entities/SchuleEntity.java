@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * SchuleEntity.
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "schulen", schema = "minikaenguru")
 public class SchuleEntity {
@@ -31,21 +33,26 @@ public class SchuleEntity {
     private String kuerzel;
 
     @Column(name = "kuerzel_ort", nullable = false, length = 10)
+    @EqualsAndHashCode.Exclude
     private String kuerzelOrt;
 
     @Column(name = "name", nullable = false, length = 100)
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private int version;
 
 }

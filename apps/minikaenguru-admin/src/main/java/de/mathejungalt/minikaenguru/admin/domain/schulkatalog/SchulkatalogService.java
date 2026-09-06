@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import de.mathejungalt.minikaenguru.admin.domain.exception.MinikaenguruAdminNotFoundException;
+import de.mathejungalt.minikaenguru.admin.domain.exception.AdminNotFoundException;
 import de.mathejungalt.minikaenguru.admin.domain.generated.Land;
 import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
 import de.mathejungalt.minikaenguru.admin.domain.generated.Ort;
@@ -36,6 +36,9 @@ public class SchulkatalogService {
 
     @Inject
     KuerzelService kuerzelService;
+
+    @Inject
+    SchulkatalogMailService schulkatalogMailService;
 
     @Inject
     SchulkatalogDao schulkatalogDao;
@@ -87,7 +90,7 @@ public class SchulkatalogService {
 
         final OrtEntity ort = this.schulkatalogDao.findOrtById(kuerzelOrt);
         if (ort == null) {
-            throw new MinikaenguruAdminNotFoundException("Ort mit kuerzel " + kuerzelOrt + " existiert nicht");
+            throw new AdminNotFoundException("Ort mit kuerzel " + kuerzelOrt + " existiert nicht");
         }
 
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
@@ -107,7 +110,7 @@ public class SchulkatalogService {
 
         schulkatalogDao.insertSchule(schule);
 
-        // TODO: Mail versenden
+        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
         return new Schulkuerzel().kuerzel(schule.getKuerzel());
     }
 
@@ -122,7 +125,7 @@ public class SchulkatalogService {
 
         final LandEntity land = this.schulkatalogDao.findLandById(kuerzelLand);
         if (land == null) {
-            throw new MinikaenguruAdminNotFoundException("Land mit kuerzel " + kuerzelLand + " existiert nicht");
+            throw new AdminNotFoundException("Land mit kuerzel " + kuerzelLand + " existiert nicht");
         }
 
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
@@ -153,7 +156,7 @@ public class SchulkatalogService {
         this.schulkatalogDao.insertOrt(ort);
         this.schulkatalogDao.insertSchule(schule);
 
-        // TODO: Mail versenden
+        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
         return new Schulkuerzel().kuerzel(schule.getKuerzel());
 
     }
@@ -204,8 +207,7 @@ public class SchulkatalogService {
         this.schulkatalogDao.insertOrt(ort);
         this.schulkatalogDao.insertSchule(schule);
 
-        // TODO: Mail versenden
-
+        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
         return new Schulkuerzel().kuerzel(schule.getKuerzel());
     }
 
@@ -222,7 +224,7 @@ public class SchulkatalogService {
         final SchuleEntity schuleEntity = schulkatalogDao.findSchuleById(kuerzel);
 
         if (schuleEntity == null) {
-            throw new MinikaenguruAdminNotFoundException("Schule mit kuerzel " + kuerzel + " existiert nicht");
+            throw new AdminNotFoundException("Schule mit kuerzel " + kuerzel + " existiert nicht");
         }
 
         schuleEntity.setName(requestPayload.getName());
@@ -230,8 +232,8 @@ public class SchulkatalogService {
 
         schulkatalogDao.updateSchule(schuleEntity);
 
-        // TODO: mail versenden
-
+        schulkatalogMailService.sendMailSchuleEingetragen(kuerzel, requestPayload.getEmailAuftraggeber());
         return new Schulkuerzel().kuerzel(kuerzel);
     }
+
 }

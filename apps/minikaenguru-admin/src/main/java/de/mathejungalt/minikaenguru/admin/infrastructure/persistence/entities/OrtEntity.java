@@ -13,12 +13,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "orte", schema = "minikaenguru")
 public class OrtEntity {
@@ -28,21 +30,26 @@ public class OrtEntity {
     private String kuerzel;
 
     @Column(name = "kuerzel_land", nullable = false, length = 10)
+    @EqualsAndHashCode.Exclude
     private String kuerzelLand;
 
     @Column(name = "name", nullable = false, length = 100)
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private int version;
 
 }

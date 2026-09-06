@@ -19,9 +19,9 @@ public class SchulkatalogMapper {
      */
     Schule mapFromEntity(final SchuleReadonlyEntity entity) {
 
-        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
+        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getKuerzelLand()).name(entity.getNameLand());
 
-        final Ort ort = new Ort().anzahlSchulen(0).kuerzel(entity.getOrtId()).land(land).name(entity.getOrt());
+        final Ort ort = new Ort().anzahlSchulen(0).kuerzel(entity.getKuerzelOrt()).land(land).name(entity.getNameOrt());
 
         return new Schule().kuerzel(entity.getKuerzel()).name(entity.getName()).ort(ort);
     }
@@ -35,7 +35,7 @@ public class SchulkatalogMapper {
      * @return List
      */
     Ort mapFromEntity(final OrtReadonlyEntity entity) {
-        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
+        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getKuerzelLand()).name(entity.getNameLand());
 
         return new Ort()
                 .anzahlSchulen(entity.getAnzahlSchulen())

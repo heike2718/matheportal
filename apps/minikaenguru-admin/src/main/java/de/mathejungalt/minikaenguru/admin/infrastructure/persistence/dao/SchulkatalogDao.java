@@ -127,4 +127,14 @@ public class SchulkatalogDao {
         return this.entityManager.find(SchuleEntity.class, kuerzel);
     }
 
+    /**
+     * Suchzt die SchuleReadonlyEntity anhand ihrer ID.
+     *
+     * @param kuerzel String
+     * @return SchuleReadonlyEntity oder null
+     */
+    public SchuleReadonlyEntity findDatenSchuleById(final String kuerzel) {
+        return this.entityManager.find(SchuleReadonlyEntity.class, kuerzel);
+    }
+
 }

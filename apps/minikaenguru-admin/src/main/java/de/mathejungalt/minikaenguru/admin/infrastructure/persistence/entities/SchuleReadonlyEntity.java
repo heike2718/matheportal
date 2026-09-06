@@ -8,8 +8,10 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * SchuleReadonlyEntity. Für das Laden von Schulen (Katalogsuche).
@@ -17,11 +19,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "vw_schulen", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
         name = SchuleReadonlyEntity.LOAD_BY_ORT,
-        query = "select s from SchuleReadonlyEntity s where s.ortId = :ortId order by s.name") })
+        query = "select s from SchuleReadonlyEntity s where s.kuerzelOrt = :ortId order by s.name") })
 public class SchuleReadonlyEntity {
 
     /** Name der named query. */
@@ -32,18 +36,24 @@ public class SchuleReadonlyEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "kuerzel_ort")
-    private String ortId;
+    @EqualsAndHashCode.Exclude
+    private String kuerzelOrt;
 
     @Column(name = "name_ort")
-    private String ort;
+    @EqualsAndHashCode.Exclude
+    private String nameOrt;
 
     @Column(name = "kuerzel_land")
-    private String landId;
+    @EqualsAndHashCode.Exclude
+    private String kuerzelLand;
 
     @Column(name = "name_land")
-    private String land;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private String nameLand;
 
 }

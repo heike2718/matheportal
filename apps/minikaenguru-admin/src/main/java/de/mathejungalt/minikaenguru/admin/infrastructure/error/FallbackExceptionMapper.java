@@ -1,6 +1,7 @@
 package de.mathejungalt.minikaenguru.admin.infrastructure.error;
 
 import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 import de.mathejungalt.minikaenguru.admin.domain.generated.ErrorResponse;
+import de.mathejungalt.minikaenguru.admin.domain.mail.MonitoringMailService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Provider
 @Priority(ExceptionMapperPriorities.FALLBACK)
 public final class FallbackExceptionMapper implements ExceptionMapper<RuntimeException> {
+
+    @Inject
+    MonitoringMailService monitoringMailService;
 
     @Context
     UriInfo uriInfo;
@@ -33,6 +38,7 @@ public final class FallbackExceptionMapper implements ExceptionMapper<RuntimeExc
         final String url = uriInfo.getPath();
 
         log.error("Unerwarteter Fehler bei {} {}: {}", method, url, exception.getMessage(), exception);
+        monitoringMailService.sendMonitoringMailQuietly(exception);
 
         final ErrorResponse errorResponseDto = new ErrorResponse().message("""
                 Es ist ein technischer Fehler aufgetreten.

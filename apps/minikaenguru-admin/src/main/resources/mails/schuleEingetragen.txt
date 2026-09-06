@@ -1,0 +1,9 @@
+Guten Tag,
+
+die unten genannte Schule wurde in den Minikänguru-Schulkatalog eingetragen.
+
+Schuldaten:
+---------------
+  Name der Schule: #0#
+              Ort: #1#
+  Land/Bundesland: #2#
