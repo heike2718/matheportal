@@ -15,10 +15,10 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithLandAndOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchulkuerzelDto;
+import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schulkuerzel;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.dao.SchulkatalogDao;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.SchuleEntity;
 import de.mathejungalt.minikaenguru.admin.test.CleanupTestDataDao;
@@ -56,14 +56,14 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_schuleAnlegen_work() {
 
-        final SchuleWithLandAndOrtRequest schuleRequest = new SchuleWithLandAndOrtRequest()
+        final LandMitOrtUndSchuleAnlegenRequest schuleRequest = new LandMitOrtUndSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .kuerzelLand(KUERZEL_LAND)
                 .nameLand("Land-Z")
                 .nameOrt("Testort")
                 .nameSchule("Pinoccioschule");
 
-        final SchulkuerzelDto result = given()
+        final Schulkuerzel result = given()
                 .body(schuleRequest)
                 .contentType(ContentType.JSON)
                 .when()
@@ -72,7 +72,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
                 .statusCode(201)
                 .and()
                 .extract()
-                .as(SchulkuerzelDto.class);
+                .as(Schulkuerzel.class);
 
         assertEquals(8, result.getKuerzel().length());
 
@@ -89,11 +89,11 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
 
         final String kuerzel = SCHULKUERZEL.get(0);
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Baumschule");
 
-        final SchulkuerzelDto result = given()
+        final Schulkuerzel result = given()
                 .body(schuleRequest)
                 .contentType(ContentType.JSON)
                 .when()
@@ -102,7 +102,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
                 .statusCode(200)
                 .and()
                 .extract()
-                .as(SchulkuerzelDto.class);
+                .as(Schulkuerzel.class);
 
         assertEquals(kuerzel, result.getKuerzel());
 
@@ -124,11 +124,11 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
 
         final String kuerzelOrt = schule.getKuerzelOrt();
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Kleinfeldchenschule");
 
-        final SchulkuerzelDto result = given()
+        final Schulkuerzel result = given()
                 .body(schuleRequest)
                 .contentType(ContentType.JSON)
                 .when()
@@ -137,7 +137,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
                 .statusCode(201)
                 .and()
                 .extract()
-                .as(SchulkuerzelDto.class);
+                .as(Schulkuerzel.class);
 
         assertEquals(8, result.getKuerzel().length());
 
@@ -152,12 +152,12 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_schuleInLandAnlegen_work() {
 
-        final SchuleWithOrtRequest schuleRequest = new SchuleWithOrtRequest()
+        final OrtMitSchuleAnlegenRequest schuleRequest = new OrtMitSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .nameSchule("Goetheschule")
                 .nameOrt("Bar");
 
-        final SchulkuerzelDto result = given()
+        final Schulkuerzel result = given()
                 .body(schuleRequest)
                 .contentType(ContentType.JSON)
                 .when()
@@ -166,7 +166,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
                 .statusCode(201)
                 .and()
                 .extract()
-                .as(SchulkuerzelDto.class);
+                .as(Schulkuerzel.class);
 
         assertEquals(8, result.getKuerzel().length());
 

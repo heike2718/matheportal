@@ -1,9 +1,9 @@
 import { components } from '../../generated/api-types';
 
-export type Land = components['schemas']['LandReadonly'];
-export type Ort = components['schemas']['OrtReadonly'];
-export type Schule = components['schemas']['SchuleReadonly'];
-export type SchuleRequest = components['schemas']['SchuleRequest'];
-export type SchuleWithOrtRequest = components['schemas']['SchuleWithOrtRequest'];
-export type SchuleWithLandAndOrtRequest = components['schemas']['SchuleWithLandAndOrtRequest'];
-export type SchulkuerzelDto = components['schemas']['SchulkuerzelDto'];
+export type Land = components['schemas']['Land'];
+export type Ort = components['schemas']['Land'];
+export type Schule = components['schemas']['Schule'];
+export type SchuleAnlegenOderAendernRequest = components['schemas']['SchuleAnlegenOderAendernRequest'];
+export type OrtMitSchuleAnlegenRequest = components['schemas']['OrtMitSchuleAnlegenRequest'];
+export type LandMitOrtUndSchuleAnlegenRequest = components['schemas']['LandMitOrtUndSchuleAnlegenRequest'];
+export type Schulkuerzel = components['schemas']['Schulkuerzel'];

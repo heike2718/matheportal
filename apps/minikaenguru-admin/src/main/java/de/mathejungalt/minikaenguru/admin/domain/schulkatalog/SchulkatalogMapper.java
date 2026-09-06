@@ -1,8 +1,8 @@
 package de.mathejungalt.minikaenguru.admin.domain.schulkatalog;
 
-import de.mathejungalt.minikaenguru.admin.domain.generated.LandReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.OrtReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleReadonly;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Land;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Ort;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.LandReadonlyEntity;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.OrtReadonlyEntity;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.SchuleReadonlyEntity;
@@ -17,17 +17,13 @@ public class SchulkatalogMapper {
      * @param entity SchuleReadonlyEntity
      * @return SchuleReadonly
      */
-    SchuleReadonly mapFromEntity(final SchuleReadonlyEntity entity) {
+    Schule mapFromEntity(final SchuleReadonlyEntity entity) {
 
-        final LandReadonly land = new LandReadonly().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
+        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
 
-        final OrtReadonly ort = new OrtReadonly()
-                .anzahlSchulen(0)
-                .kuerzel(entity.getOrtId())
-                .land(land)
-                .name(entity.getOrt());
+        final Ort ort = new Ort().anzahlSchulen(0).kuerzel(entity.getOrtId()).land(land).name(entity.getOrt());
 
-        return new SchuleReadonly().kuerzel(entity.getKuerzel()).name(entity.getName()).ort(ort);
+        return new Schule().kuerzel(entity.getKuerzel()).name(entity.getName()).ort(ort);
     }
 
     /**
@@ -38,10 +34,10 @@ public class SchulkatalogMapper {
      * @param entity OrtReadonlyEntity
      * @return List
      */
-    OrtReadonly mapFromEntity(final OrtReadonlyEntity entity) {
-        final LandReadonly land = new LandReadonly().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
+    Ort mapFromEntity(final OrtReadonlyEntity entity) {
+        final Land land = new Land().anzahlOrte(0).kuerzel(entity.getLandId()).name(entity.getLand());
 
-        return new OrtReadonly()
+        return new Ort()
                 .anzahlSchulen(entity.getAnzahlSchulen())
                 .kuerzel(entity.getKuerzel())
                 .land(land)
@@ -54,12 +50,9 @@ public class SchulkatalogMapper {
      * @param entity LandReadonlyEntity
      * @return LandReadonly
      */
-    LandReadonly mapFromEntity(final LandReadonlyEntity entity) {
+    Land mapFromEntity(final LandReadonlyEntity entity) {
 
-        return new LandReadonly()
-                .anzahlOrte(entity.getAnzahlOrte())
-                .kuerzel(entity.getKuerzel())
-                .name(entity.getName());
+        return new Land().anzahlOrte(entity.getAnzahlOrte()).kuerzel(entity.getKuerzel()).name(entity.getName());
 
     }
 

@@ -9,9 +9,9 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
-import de.mathejungalt.minikaenguru.admin.domain.generated.LandReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.OrtReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleReadonly;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Land;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Ort;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schule;
 
 import io.restassured.http.ContentType;
 
@@ -32,7 +32,7 @@ public class SchulkatalogResourceSucheTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_loadLaender_when_authorized() {
 
-        final LandReadonly[] result = given()
+        final Land[] result = given()
                 .accept(ContentType.JSON)
                 .get("laender")
                 .then()
@@ -42,12 +42,12 @@ public class SchulkatalogResourceSucheTest {
                 .contentType(ContentType.JSON)
                 .and()
                 .extract()
-                .as(LandReadonly[].class);
+                .as(Land[].class);
 
-        final List<LandReadonly> laender = Arrays.asList(result);
+        final List<Land> laender = Arrays.asList(result);
 
         assertEquals(29, laender.size());
-        final LandReadonly thueringen = laender.get(28);
+        final Land thueringen = laender.get(28);
 
         assertAll(() -> assertEquals(KUERZEL_LAND, thueringen.getKuerzel()),
                 () -> assertEquals("Thüringen", thueringen.getName()),
@@ -61,7 +61,7 @@ public class SchulkatalogResourceSucheTest {
 
         final String path = "laender/" + KUERZEL_LAND + "/orte";
 
-        final OrtReadonly[] result = given()
+        final Ort[] result = given()
                 .accept(ContentType.JSON)
                 .get(path)
                 .then()
@@ -71,14 +71,14 @@ public class SchulkatalogResourceSucheTest {
                 .contentType(ContentType.JSON)
                 .and()
                 .extract()
-                .as(OrtReadonly[].class);
+                .as(Ort[].class);
 
-        final List<OrtReadonly> orte = Arrays.asList(result);
+        final List<Ort> orte = Arrays.asList(result);
 
         assertEquals(288, orte.size());
-        final OrtReadonly apolda = orte.stream().filter(o -> KUERZEL_ORT.equals(o.getKuerzel())).findFirst().get();
+        final Ort apolda = orte.stream().filter(o -> KUERZEL_ORT.equals(o.getKuerzel())).findFirst().get();
 
-        final LandReadonly thueringen = apolda.getLand();
+        final Land thueringen = apolda.getLand();
 
         assertAll(() -> assertEquals(KUERZEL_ORT, apolda.getKuerzel()), () -> assertEquals("Apolda", apolda.getName()),
                 () -> assertEquals(4, apolda.getAnzahlSchulen()),
@@ -92,7 +92,7 @@ public class SchulkatalogResourceSucheTest {
 
         final String path = "orte/" + KUERZEL_ORT + "/schulen";
 
-        final SchuleReadonly[] result = given()
+        final Schule[] result = given()
                 .accept(ContentType.JSON)
                 .get(path)
                 .then()
@@ -102,20 +102,16 @@ public class SchulkatalogResourceSucheTest {
                 .contentType(ContentType.JSON)
                 .and()
                 .extract()
-                .as(SchuleReadonly[].class);
+                .as(Schule[].class);
 
-        final List<SchuleReadonly> schulen = Arrays.asList(result);
+        final List<Schule> schulen = Arrays.asList(result);
 
         assertEquals(4, schulen.size());
-        final SchuleReadonly schule = schulen
-                .stream()
-                .filter(o -> KUERZEL_SCHULE.equals(o.getKuerzel()))
-                .findFirst()
-                .get();
+        final Schule schule = schulen.stream().filter(o -> KUERZEL_SCHULE.equals(o.getKuerzel())).findFirst().get();
 
-        final OrtReadonly apolda = schule.getOrt();
+        final Ort apolda = schule.getOrt();
 
-        final LandReadonly thueringen = apolda.getLand();
+        final Land thueringen = apolda.getLand();
 
         assertAll(() -> assertEquals(KUERZEL_SCHULE, schule.getKuerzel()),
                 () -> assertEquals("Gotthold-Ephraim-Lessing-Schule", schule.getName()),

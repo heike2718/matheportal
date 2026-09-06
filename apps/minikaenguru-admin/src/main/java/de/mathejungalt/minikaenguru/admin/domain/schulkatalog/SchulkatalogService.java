@@ -9,13 +9,13 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import de.mathejungalt.minikaenguru.admin.domain.exception.MinikaenguruAdminNotFoundException;
-import de.mathejungalt.minikaenguru.admin.domain.generated.LandReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.OrtReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleReadonly;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithLandAndOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchulkuerzelDto;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Land;
+import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Ort;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schule;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schulkuerzel;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.dao.SchulkatalogDao;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.LandEntity;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.LandReadonlyEntity;
@@ -45,7 +45,7 @@ public class SchulkatalogService {
      *
      * @return List
      */
-    public List<LandReadonly> loadLaender() {
+    public List<Land> loadLaender() {
 
         final List<LandReadonlyEntity> trefferliste = schulkatalogDao.loadLaender();
         return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
@@ -56,7 +56,7 @@ public class SchulkatalogService {
      *
      * @return List
      */
-    public List<OrtReadonly> loadOrteInLand(final String landId) {
+    public List<Ort> loadOrteInLand(final String landId) {
 
         final List<OrtReadonlyEntity> trefferliste = schulkatalogDao.loadOrteWithLand(landId);
 
@@ -69,7 +69,7 @@ public class SchulkatalogService {
      *
      * @return List
      */
-    public List<SchuleReadonly> loadSchulenInOrt(final String ortId) {
+    public List<Schule> loadSchulenInOrt(final String ortId) {
         final List<SchuleReadonlyEntity> trefferliste = schulkatalogDao.loadSchulenWithOrt(ortId);
         return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
     }
@@ -78,11 +78,12 @@ public class SchulkatalogService {
      * Legt eine Schule im Ort mit dem gegebenen kuerzel an.
      *
      * @param kuerzelOrt     String
-     * @param requestPayload SchuleInOrtRequest
-     * @return SchulkuerzelDto
+     * @param requestPayload SchuleAnlegenOderAendernRequest
+     * @return Schulkuerzel
      */
     @Transactional
-    public SchulkuerzelDto schuleInOrtAnlegen(final String kuerzelOrt, final SchuleRequest requestPayload) {
+    public Schulkuerzel schuleInOrtAnlegen(final String kuerzelOrt,
+            final SchuleAnlegenOderAendernRequest requestPayload) {
 
         final OrtEntity ort = this.schulkatalogDao.findOrtById(kuerzelOrt);
         if (ort == null) {
@@ -107,17 +108,17 @@ public class SchulkatalogService {
         schulkatalogDao.insertSchule(schule);
 
         // TODO: Mail versenden
-        return new SchulkuerzelDto().kuerzel(schule.getKuerzel());
+        return new Schulkuerzel().kuerzel(schule.getKuerzel());
     }
 
     /**
      * Legt Ort und Schule im gegebenen Land an.
      *
-     * @param requestPayload SchuleInLandRequest
-     * @return SchulkuerzelDto
+     * @param requestPayload OrtMitSchuleAnlegenRequest
+     * @return Schulkuerzel
      */
     @Transactional
-    public SchulkuerzelDto schuleInLandAnlegen(final String kuerzelLand, final SchuleWithOrtRequest requestPayload) {
+    public Schulkuerzel schuleInLandAnlegen(final String kuerzelLand, final OrtMitSchuleAnlegenRequest requestPayload) {
 
         final LandEntity land = this.schulkatalogDao.findLandById(kuerzelLand);
         if (land == null) {
@@ -153,18 +154,18 @@ public class SchulkatalogService {
         this.schulkatalogDao.insertSchule(schule);
 
         // TODO: Mail versenden
-        return new SchulkuerzelDto().kuerzel(schule.getKuerzel());
+        return new Schulkuerzel().kuerzel(schule.getKuerzel());
 
     }
 
     /**
      * Legt Land, Ort und Schule an.
      *
-     * @param requestPayloyd
-     * @return SchulkuerzelDto
+     * @param requestPayloyd LandMitOrtUndSchuleAnlegenRequest
+     * @return Schulkuerzel
      */
     @Transactional
-    public SchulkuerzelDto schuleAnlegen(final SchuleWithLandAndOrtRequest requestPayload) {
+    public Schulkuerzel schuleAnlegen(final LandMitOrtUndSchuleAnlegenRequest requestPayload) {
 
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
         // Bearbeitung gibt im Moment.
@@ -205,18 +206,18 @@ public class SchulkatalogService {
 
         // TODO: Mail versenden
 
-        return new SchulkuerzelDto().kuerzel(schule.getKuerzel());
+        return new Schulkuerzel().kuerzel(schule.getKuerzel());
     }
 
     /**
      * Bennennt die Schule mit dem gegebenen kuerzel um und sendet eine Infomail an die mailadresse.
      *
-     * @param kuerzel:            String
-     * @param renameSchuleRequest RenameSchuleRequest
-     * @return SchulkuerzelDto
+     * @param kuerzel:       String
+     * @param requestPayload SchuleAnlegenOderAendernRequest
+     * @return Schulkuerzel
      */
     @Transactional
-    public SchulkuerzelDto schuleUmbenennen(final String kuerzel, final SchuleRequest renameSchuleRequest) {
+    public Schulkuerzel schuleUmbenennen(final String kuerzel, final SchuleAnlegenOderAendernRequest requestPayload) {
 
         final SchuleEntity schuleEntity = schulkatalogDao.findSchuleById(kuerzel);
 
@@ -224,13 +225,13 @@ public class SchulkatalogService {
             throw new MinikaenguruAdminNotFoundException("Schule mit kuerzel " + kuerzel + " existiert nicht");
         }
 
-        schuleEntity.setName(renameSchuleRequest.getName());
+        schuleEntity.setName(requestPayload.getName());
         schuleEntity.setUpdatedAt(LocalDateTime.now(ZONE));
 
         schulkatalogDao.updateSchule(schuleEntity);
 
         // TODO: mail versenden
 
-        return new SchulkuerzelDto().kuerzel(kuerzel);
+        return new Schulkuerzel().kuerzel(kuerzel);
     }
 }

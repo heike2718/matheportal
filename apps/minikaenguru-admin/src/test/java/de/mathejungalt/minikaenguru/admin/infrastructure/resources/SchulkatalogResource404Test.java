@@ -7,8 +7,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
 import de.mathejungalt.minikaenguru.admin.domain.generated.ErrorResponse;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
 
 import io.restassured.http.ContentType;
 
@@ -26,7 +26,7 @@ public class SchulkatalogResource404Test {
 
         final String kuerzelOrt = "ZZZZZZZZ";
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Kleinfeldchenschule");
 
@@ -51,7 +51,7 @@ public class SchulkatalogResource404Test {
 
         final String kuerzelLand = "ZZZZZ";
 
-        final SchuleWithOrtRequest schuleRequest = new SchuleWithOrtRequest()
+        final OrtMitSchuleAnlegenRequest schuleRequest = new OrtMitSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .nameSchule("Goetheschule")
                 .nameOrt("Bar");
@@ -76,7 +76,7 @@ public class SchulkatalogResource404Test {
     void should_schuleUmbenennen_return_404_when_not_found() {
         final String kuerzel = "ZZZZZZZZ";
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Heineschule");
 

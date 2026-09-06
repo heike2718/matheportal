@@ -12,9 +12,9 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
 import de.mathejungalt.minikaenguru.admin.domain.generated.ErrorResponse;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithLandAndOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
 
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
@@ -57,7 +57,7 @@ public class SchulkatalogResourceInputValidationTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_schuleAnlegen_return_400_when_payload_invalid() {
 
-        final SchuleWithLandAndOrtRequest schuleRequest = new SchuleWithLandAndOrtRequest()
+        final LandMitOrtUndSchuleAnlegenRequest schuleRequest = new LandMitOrtUndSchuleAnlegenRequest()
                 .emailAuftraggeber("mail-provider.de")
                 .kuerzelLand("hähähähähähä")
                 .nameLand("страна")
@@ -84,7 +84,7 @@ public class SchulkatalogResourceInputValidationTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_schuleInLandAnlegen_return_400_when_payload_invalid() {
 
-        final SchuleWithOrtRequest schuleRequest = new SchuleWithOrtRequest()
+        final OrtMitSchuleAnlegenRequest schuleRequest = new OrtMitSchuleAnlegenRequest()
                 .emailAuftraggeber("mail-provider.de")
                 .nameOrt("городок")
                 .nameSchule("школа");
@@ -109,13 +109,39 @@ public class SchulkatalogResourceInputValidationTest {
     @TestSecurity(user = "test-user", roles = { "ADMIN" })
     void should_schuleInOrtAnlegen_return_400_when_payload_invalid() {
 
-        final SchuleRequest schuleRequest = new SchuleRequest().emailAuftraggeber("mail-provider.de").name("школа");
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
+                .emailAuftraggeber("mail-provider.de")
+                .name("школа");
 
         final ErrorResponse result = given()
                 .body(schuleRequest)
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/orte/hähöhüho123/schulen")
+                .then()
+                .statusCode(400)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals("Die Anfrage ist nicht valide.", result.getMessage());
+        assertEquals(4, result.getConstraintViolations().size());
+
+    }
+
+    @Test
+    @TestSecurity(user = "test-user", roles = { "ADMIN" })
+    void should_schuleUmbenennen_return_400_when_payload_invalid() {
+
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
+                .emailAuftraggeber("mail-provider.de")
+                .name("школа");
+
+        final ErrorResponse result = given()
+                .body(schuleRequest)
+                .contentType(ContentType.JSON)
+                .when()
+                .put("/schulen/hähöhüho123")
                 .then()
                 .statusCode(400)
                 .and()

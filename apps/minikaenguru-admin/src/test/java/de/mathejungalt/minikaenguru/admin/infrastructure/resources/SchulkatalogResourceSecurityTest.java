@@ -11,9 +11,9 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithLandAndOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
 
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
@@ -48,7 +48,7 @@ public class SchulkatalogResourceSecurityTest {
     @Test
     void should_schuleAnlegen_return_401_when_not_authenticated() {
 
-        final SchuleWithLandAndOrtRequest schuleRequest = new SchuleWithLandAndOrtRequest()
+        final LandMitOrtUndSchuleAnlegenRequest schuleRequest = new LandMitOrtUndSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .kuerzelLand("DE-TH")
                 .nameLand("Thüringen")
@@ -62,7 +62,7 @@ public class SchulkatalogResourceSecurityTest {
     @TestSecurity(user = "test-user", roles = { "STANDARD" })
     void should_schuleAnlegen_return_403_when_not_admin() {
 
-        final SchuleWithLandAndOrtRequest schuleRequest = new SchuleWithLandAndOrtRequest()
+        final LandMitOrtUndSchuleAnlegenRequest schuleRequest = new LandMitOrtUndSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .kuerzelLand("DE-TH")
                 .nameLand("Thüringen")
@@ -75,7 +75,7 @@ public class SchulkatalogResourceSecurityTest {
     @Test
     void should_schuleInLandAnlegen_return_401_when_not_authenticated() {
 
-        final SchuleWithOrtRequest schuleRequest = new SchuleWithOrtRequest()
+        final OrtMitSchuleAnlegenRequest schuleRequest = new OrtMitSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .nameOrt("Spa")
                 .nameSchule("Pinocciogrundschule");
@@ -93,7 +93,7 @@ public class SchulkatalogResourceSecurityTest {
     @TestSecurity(user = "test-user", roles = { "STANDARD" })
     void should_schuleInLandAnlegen_return_403_when_not_admin() {
 
-        final SchuleWithOrtRequest schuleRequest = new SchuleWithOrtRequest()
+        final OrtMitSchuleAnlegenRequest schuleRequest = new OrtMitSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .nameOrt("Spa")
                 .nameSchule("Pinocciogrundschule");
@@ -110,7 +110,7 @@ public class SchulkatalogResourceSecurityTest {
     @Test
     void should_schuleInOrtAnlegen_return_401_when_not_authenticated() {
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Pinocciogrundschule");
 
@@ -127,7 +127,7 @@ public class SchulkatalogResourceSecurityTest {
     @TestSecurity(user = "test-user", roles = { "STANDARD" })
     void should_schuleInOrtAnlegen_return_403_when_not_admin() {
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Pinocciogrundschule");
 
@@ -143,7 +143,7 @@ public class SchulkatalogResourceSecurityTest {
     @Test
     void should_schuleUmbenennen_return_401_when_not_authenticated() {
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Pinocciogrundschule");
 
@@ -160,7 +160,7 @@ public class SchulkatalogResourceSecurityTest {
     @TestSecurity(user = "test-user", roles = { "STANDARD" })
     void should_schuleUmbenennen_return_403_when_not_admin() {
 
-        final SchuleRequest schuleRequest = new SchuleRequest()
+        final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .name("Pinocciogrundschule");
 

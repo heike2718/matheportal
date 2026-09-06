@@ -9,10 +9,10 @@ import jakarta.validation.constraints.Size;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithLandAndOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleWithOrtRequest;
-import de.mathejungalt.minikaenguru.admin.domain.generated.SchulkuerzelDto;
+import de.mathejungalt.minikaenguru.admin.domain.generated.LandMitOrtUndSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
+import de.mathejungalt.minikaenguru.admin.domain.generated.Schulkuerzel;
 import de.mathejungalt.minikaenguru.admin.domain.schulkatalog.SchulkatalogService;
 import de.mathejungalt.minikaenguru.admin.infrastructure.generated.SchulkatalogApi;
 
@@ -41,29 +41,29 @@ public class SchulkatalogResource implements SchulkatalogApi {
     }
 
     @Override
-    public Response schuleAnlegen(@Valid @NotNull final SchuleWithLandAndOrtRequest schuleRequest) {
-        final SchulkuerzelDto result = this.schulkatalogService.schuleAnlegen(schuleRequest);
+    public Response schuleAnlegen(@Valid @NotNull final LandMitOrtUndSchuleAnlegenRequest requestPayload) {
+        final Schulkuerzel result = this.schulkatalogService.schuleAnlegen(requestPayload);
         return Response.status(Status.CREATED).entity(result).build();
     }
 
     @Override
     public Response schuleInLandAnlegen(@Pattern(regexp = "^[A-Z-]*$") @Size(max = 5) final String kuerzelLand,
-            @Valid @NotNull final SchuleWithOrtRequest schuleInLandRequest) {
-        final SchulkuerzelDto result = this.schulkatalogService.schuleInLandAnlegen(kuerzelLand, schuleInLandRequest);
+            @Valid @NotNull final OrtMitSchuleAnlegenRequest requestPayload) {
+        final Schulkuerzel result = this.schulkatalogService.schuleInLandAnlegen(kuerzelLand, requestPayload);
         return Response.status(Status.CREATED).entity(result).build();
     }
 
     @Override
     public Response schuleInOrtAnlegen(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String kuerzelOrt,
-            @Valid @NotNull final SchuleRequest schuleInOrtRequest) {
-        final SchulkuerzelDto result = this.schulkatalogService.schuleInOrtAnlegen(kuerzelOrt, schuleInOrtRequest);
+            @Valid @NotNull final SchuleAnlegenOderAendernRequest requestPayload) {
+        final Schulkuerzel result = this.schulkatalogService.schuleInOrtAnlegen(kuerzelOrt, requestPayload);
         return Response.status(Status.CREATED).entity(result).build();
     }
 
     @Override
     public Response schuleUmbenennen(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String kuerzel,
-            @Valid @NotNull final SchuleRequest schuleRequest) {
-        final SchulkuerzelDto result = schulkatalogService.schuleUmbenennen(kuerzel, schuleRequest);
+            @Valid @NotNull final SchuleAnlegenOderAendernRequest requestPayload) {
+        final Schulkuerzel result = schulkatalogService.schuleUmbenennen(kuerzel, requestPayload);
         return Response.ok(result).build();
     }
 

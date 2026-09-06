@@ -19,7 +19,9 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfLaenderReadonly'
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Land'
                 '401':
                     description: keine Session oder Session abgelaufen
                     content:
@@ -62,7 +64,9 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfOrtReadonly'
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Ort'
                 '401':
                     description: keine Session oder Session abgelaufen
                     content:
@@ -105,7 +109,9 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfSchuleReadonly'
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Schule'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -141,14 +147,14 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/SchuleRequest'
+                            $ref: '#/components/schemas/SchuleAnlegenOderAendernRequest'
             responses:
                 '201':
                     description: Schule erfolgreich angelegt
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SchulkuerzelDto'
+                                $ref: '#/components/schemas/Schulkuerzel'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -191,7 +197,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/SchuleWithLandAndOrtRequest'
+                            $ref: '#/components/schemas/LandMitOrtUndSchuleAnlegenRequest'
             security:
                 - mpSession: []
             responses:
@@ -200,7 +206,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SchulkuerzelDto'
+                                $ref: '#/components/schemas/Schulkuerzel'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -237,7 +243,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/SchuleWithOrtRequest'
+                            $ref: '#/components/schemas/OrtMitSchuleAnlegenRequest'
             security:
                 - mpSession: []
             parameters:
@@ -255,7 +261,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SchulkuerzelDto'
+                                $ref: '#/components/schemas/Schulkuerzel'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -298,7 +304,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/SchuleRequest'
+                            $ref: '#/components/schemas/SchuleAnlegenOderAendernRequest'
             security:
                 - mpSession: []
             parameters:
@@ -316,7 +322,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SchulkuerzelDto'
+                                $ref: '#/components/schemas/Schulkuerzel'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -381,7 +387,7 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
-        LandReadonly:
+        Land:
             type: object
             required:
                 - kuerzel
@@ -398,7 +404,7 @@ components:
                     maxLength: 100
                 anzahlOrte:
                     type: integer
-        OrtReadonly:
+        Ort:
             type: object
             required:
                 - land
@@ -407,7 +413,7 @@ components:
                 - anzahlSchulen
             properties:
                 land:
-                    $ref: '#/components/schemas/LandReadonly'
+                    $ref: '#/components/schemas/Land'
                 kuerzel:
                     type: string
                     pattern: '^[A-Z0-9]*$'
@@ -418,7 +424,7 @@ components:
                     maxLength: 100
                 anzahlSchulen:
                     type: integer
-        SchuleReadonly:
+        Schule:
             type: object
             required:
                 - ort
@@ -426,7 +432,7 @@ components:
                 - name
             properties:
                 ort:
-                    $ref: '#/components/schemas/OrtReadonly'
+                    $ref: '#/components/schemas/Ort'
                 kuerzel:
                     type: string
                     pattern: '^[A-Z0-9]*$'
@@ -435,19 +441,7 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
-        ArrayOfLaenderReadonly:
-            type: array
-            items:
-                $ref: '#/components/schemas/LandReadonly'
-        ArrayOfOrtReadonly:
-            type: array
-            items:
-                $ref: '#/components/schemas/OrtReadonly'
-        ArrayOfSchuleReadonly:
-            type: array
-            items:
-                $ref: '#/components/schemas/SchuleReadonly'
-        SchuleRequest:
+        SchuleAnlegenOderAendernRequest:
             type: object
             required:
                 - name
@@ -461,7 +455,7 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
-        SchuleWithOrtRequest:
+        OrtMitSchuleAnlegenRequest:
             type: object
             required:
                 - nameOrt
@@ -480,7 +474,7 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
-        SchuleWithLandAndOrtRequest:
+        LandMitOrtUndSchuleAnlegenRequest:
             type: object
             required:
                 - kuerzelLand
@@ -509,7 +503,7 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
-        SchulkuerzelDto:
+        Schulkuerzel:
             type: object
             required:
                 - kuerzel

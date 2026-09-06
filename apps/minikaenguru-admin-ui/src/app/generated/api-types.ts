@@ -152,42 +152,39 @@ export interface components {
             readonly message: string;
             readonly constraintViolations?: readonly components['schemas']['ConstraintViolationDetail'][];
         };
-        readonly LandReadonly: {
+        readonly Land: {
             readonly kuerzel: string;
             readonly name: string;
             readonly anzahlOrte: number;
         };
-        readonly OrtReadonly: {
-            readonly land: components['schemas']['LandReadonly'];
+        readonly Ort: {
+            readonly land: components['schemas']['Land'];
             readonly kuerzel: string;
             readonly name: string;
             readonly anzahlSchulen: number;
         };
-        readonly SchuleReadonly: {
-            readonly ort: components['schemas']['OrtReadonly'];
+        readonly Schule: {
+            readonly ort: components['schemas']['Ort'];
             readonly kuerzel: string;
             readonly name: string;
         };
-        readonly ArrayOfLaenderReadonly: readonly components['schemas']['LandReadonly'][];
-        readonly ArrayOfOrtReadonly: readonly components['schemas']['OrtReadonly'][];
-        readonly ArrayOfSchuleReadonly: readonly components['schemas']['SchuleReadonly'][];
-        readonly SchuleRequest: {
+        readonly SchuleAnlegenOderAendernRequest: {
             readonly name: string;
             readonly emailAuftraggeber: string;
         };
-        readonly SchuleWithOrtRequest: {
+        readonly OrtMitSchuleAnlegenRequest: {
             readonly nameOrt: string;
             readonly nameSchule: string;
             readonly emailAuftraggeber: string;
         };
-        readonly SchuleWithLandAndOrtRequest: {
+        readonly LandMitOrtUndSchuleAnlegenRequest: {
             readonly kuerzelLand: string;
             readonly nameLand: string;
             readonly nameOrt: string;
             readonly nameSchule: string;
             readonly emailAuftraggeber: string;
         };
-        readonly SchulkuerzelDto: {
+        readonly Schulkuerzel: {
             readonly kuerzel: string;
         };
     };
@@ -214,7 +211,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['ArrayOfLaenderReadonly'];
+                    readonly 'application/json': readonly components['schemas']['Land'][];
                 };
             };
             /** @description keine Session oder Session abgelaufen */
@@ -264,7 +261,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['ArrayOfOrtReadonly'];
+                    readonly 'application/json': readonly components['schemas']['Ort'][];
                 };
             };
             /** @description keine Session oder Session abgelaufen */
@@ -314,7 +311,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['ArrayOfSchuleReadonly'];
+                    readonly 'application/json': readonly components['schemas']['Schule'][];
                 };
             };
             /** @description Request ist ungültig */
@@ -367,7 +364,7 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly 'application/json': components['schemas']['SchuleRequest'];
+                readonly 'application/json': components['schemas']['SchuleAnlegenOderAendernRequest'];
             };
         };
         readonly responses: {
@@ -377,7 +374,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['SchulkuerzelDto'];
+                    readonly 'application/json': components['schemas']['Schulkuerzel'];
                 };
             };
             /** @description Request ist ungültig */
@@ -436,7 +433,7 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly 'application/json': components['schemas']['SchuleWithLandAndOrtRequest'];
+                readonly 'application/json': components['schemas']['LandMitOrtUndSchuleAnlegenRequest'];
             };
         };
         readonly responses: {
@@ -446,7 +443,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['SchulkuerzelDto'];
+                    readonly 'application/json': components['schemas']['Schulkuerzel'];
                 };
             };
             /** @description Request ist ungültig */
@@ -499,7 +496,7 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly 'application/json': components['schemas']['SchuleWithOrtRequest'];
+                readonly 'application/json': components['schemas']['OrtMitSchuleAnlegenRequest'];
             };
         };
         readonly responses: {
@@ -509,7 +506,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['SchulkuerzelDto'];
+                    readonly 'application/json': components['schemas']['Schulkuerzel'];
                 };
             };
             /** @description Request ist ungültig */
@@ -571,7 +568,7 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly 'application/json': components['schemas']['SchuleRequest'];
+                readonly 'application/json': components['schemas']['SchuleAnlegenOderAendernRequest'];
             };
         };
         readonly responses: {
@@ -581,7 +578,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['SchulkuerzelDto'];
+                    readonly 'application/json': components['schemas']['Schulkuerzel'];
                 };
             };
             /** @description Request ist ungültig */
