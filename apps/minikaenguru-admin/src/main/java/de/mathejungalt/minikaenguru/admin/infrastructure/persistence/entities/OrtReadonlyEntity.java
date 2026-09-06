@@ -25,7 +25,7 @@ import lombok.ToString;
 @Table(name = "vw_orte", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
         name = OrtReadonlyEntity.LOAD_BY_LAND,
-        query = "select o from OrtReadonlyEntity o where o.kuerzelLand = :landId order by o.name") })
+        query = "select o from OrtReadonlyEntity o where o.kuerzelLand = :kuerzelLand order by o.name") })
 public class OrtReadonlyEntity {
 
     public static final String LOAD_BY_LAND = "OrtReadonlyEntity.LOAD_BY_LAND";

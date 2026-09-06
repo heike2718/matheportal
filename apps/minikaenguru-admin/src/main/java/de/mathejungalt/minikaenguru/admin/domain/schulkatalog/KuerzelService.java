@@ -12,15 +12,15 @@ import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.Ku
 @ApplicationScoped
 public class KuerzelService {
 
+    private static final int LENGTH_SCHULKATALOG = 8;
+
+    private static final int MAX_GENERATE_RETRIES = 5;
+
     @Inject
     KuerzelDao kuerzelDao;
 
     @Inject
     KuerzelGenerator kuerzelGenerator;
-
-    private static final int LENGTH_SCHULKATALOG = 8;
-
-    private static final int MAX_GENERATE_RETRIES = 5;
 
     /**
      * Generiert ein Kürzel für einen Ort oder eine Schule, den es noch nicht gibt. Diese sind immer 8stellig.
@@ -31,7 +31,7 @@ public class KuerzelService {
         return this.verifyUnique(LENGTH_SCHULKATALOG);
     }
 
-    String verifyUnique(final int length) {
+    private String verifyUnique(final int length) {
 
         String kuerzel = this.kuerzelGenerator.generateKuerzel(length);
         KuerzelEntity entity = kuerzelDao.findKuerzelById(kuerzel);

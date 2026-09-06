@@ -32,10 +32,10 @@ public class MailService {
 
         final String[] hiddenEmpfaenger = getAllHiddenEmpfaenger(mailDto);
         final Mail mail = Mail.withText(mailDto.getEmpfaenger(), betreff, body).addBcc(hiddenEmpfaenger);
-        mailer.send(new Mail[] { mail });
+        mailer.send(mail);
     }
 
-    String[] getAllHiddenEmpfaenger(final MailDto mailDto) {
+    private String[] getAllHiddenEmpfaenger(final MailDto mailDto) {
 
         final List<String> hiddenEmpfaenger = mailDto.getHiddenEmpfaenger();
         if (mailDto.getEmpfaengerQuittungsmail() != null) {

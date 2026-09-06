@@ -11,7 +11,7 @@ public final class ExceptionMapperPriorities {
     public static final int VALIDATION = 1;
 
     /**
-     * für fachliche Dinge wie conflict
+     * für fachliche Dinge wie conflict.
      */
     public static final int APPLICATION = 100;
 

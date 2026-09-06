@@ -12,6 +12,12 @@ public class KuerzelGenerator {
 
     private static final char[] CHAR_POOL = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
+    /**
+     * Generiert einen String der Länge length.
+     *
+     * @param length int
+     * @return String
+     */
     String generateKuerzel(final int length) {
 
         final StringBuilder stringBuilder = new StringBuilder();

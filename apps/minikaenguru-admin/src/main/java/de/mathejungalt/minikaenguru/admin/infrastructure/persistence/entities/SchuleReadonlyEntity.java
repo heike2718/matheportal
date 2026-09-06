@@ -25,7 +25,7 @@ import lombok.ToString;
 @Table(name = "vw_schulen", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
         name = SchuleReadonlyEntity.LOAD_BY_ORT,
-        query = "select s from SchuleReadonlyEntity s where s.kuerzelOrt = :ortId order by s.name") })
+        query = "select s from SchuleReadonlyEntity s where s.kuerzelOrt = :kuerzelOrt order by s.name") })
 public class SchuleReadonlyEntity {
 
     /** Name der named query. */

@@ -7,7 +7,7 @@ import de.mathejungalt.minikaenguru.admin.domain.mail.MailSuffixGenerator;
 import de.mathejungalt.minikaenguru.admin.domain.utils.ClasspathResourceUtils;
 
 /**
- * SchuleEingetragenMailtextGenerator
+ * SchuleEingetragenMailtextGenerator.
  */
 @ApplicationScoped
 public class SchuleEingetragenMailtextGenerator {
@@ -19,6 +19,14 @@ public class SchuleEingetragenMailtextGenerator {
 
     private String text;
 
+    /**
+     * Generiert den Text über die eingetragene Schule.
+     *
+     * @param nameSchule String
+     * @param nameOrt    String
+     * @param nameLand   String
+     * @return String
+     */
     String getMailBody(final String nameSchule, final String nameOrt, final String nameLand) {
         initializeIfNotInitialized();
 

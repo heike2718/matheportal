@@ -28,14 +28,14 @@ import lombok.ToString;
 @ToString
 public class MailDto {
 
-    /** to */
+    /** to. */
     @ToString.Exclude
     private String empfaenger;
 
-    /** subject */
+    /** subject. */
     private String betreff;
 
-    /** body */
+    /** body. */
     private String text;
 
     /**
@@ -45,7 +45,7 @@ public class MailDto {
     @ToString.Exclude
     private String empfaengerQuittungsmail;
 
-    /** bcc */
+    /** bcc. */
     @Builder.Default
     @ToString.Exclude
     private List<String> hiddenEmpfaenger = new ArrayList<>();

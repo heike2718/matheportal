@@ -37,27 +37,27 @@ public class SchulkatalogDao {
     /**
      * Läd alle Orte im gegebenen Land.
      *
-     * @param landId String - das kuerzel
+     * @param kuerzelLand String
      * @return List
      */
-    public List<OrtReadonlyEntity> loadOrteWithLand(final String landId) {
+    public List<OrtReadonlyEntity> loadOrteWithLand(final String kuerzelLand) {
         return entityManager
                 .createNamedQuery(OrtReadonlyEntity.LOAD_BY_LAND, OrtReadonlyEntity.class)
-                .setParameter("landId", landId)
+                .setParameter("kuerzelLand", kuerzelLand)
                 .getResultList();
     }
 
     /**
      * Läd alle Schulen im gegebenen Ort.
      *
-     * @param ortId String - das kuerzel
+     * @param kuerzelOrt String
      * @return List
      */
-    public List<SchuleReadonlyEntity> loadSchulenWithOrt(final String ortId) {
+    public List<SchuleReadonlyEntity> loadSchulenWithOrt(final String kuerzelOrt) {
 
         return entityManager
                 .createNamedQuery(SchuleReadonlyEntity.LOAD_BY_ORT, SchuleReadonlyEntity.class)
-                .setParameter("ortId", ortId)
+                .setParameter("kuerzelOrt", kuerzelOrt)
                 .getResultList();
     }
 
@@ -89,7 +89,7 @@ public class SchulkatalogDao {
     }
 
     /**
-     * Aktualisiert die gegebene Schule
+     * Aktualisiert die gegebene Schule.
      *
      * @param schule SchuleEntity
      */

@@ -37,6 +37,12 @@ public class SchulkatalogMailService {
     @Inject
     MailService mailService;
 
+    /**
+     * Sendet die Mail, dass die Schule eingetragen wurde, an den Auftraggeber.
+     *
+     * @param kuerzel           String
+     * @param emailAuftraggeber String
+     */
     void sendMailSchuleEingetragen(final String kuerzel, final String emailAuftraggeber) {
 
         final SchuleReadonlyEntity schuleReadonlyEntity = schulkatalogDao.findDatenSchuleById(kuerzel);

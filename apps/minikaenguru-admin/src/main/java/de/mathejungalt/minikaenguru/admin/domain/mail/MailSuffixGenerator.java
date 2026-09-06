@@ -7,7 +7,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import de.mathejungalt.minikaenguru.admin.domain.utils.ClasspathResourceUtils;
 
 /**
- * MailSuffixGenerator
+ * MailSuffixGenerator.
  */
 @ApplicationScoped
 public class MailSuffixGenerator {
@@ -22,6 +22,11 @@ public class MailSuffixGenerator {
 
     private String mailSuffix;
 
+    /**
+     * Gibt den Text zurück, der jeder Mail angehängt wird.
+     *
+     * @return String
+     */
     public String getMailSuffix() {
         initializeIfNotInitialized();
         return mailSuffix;

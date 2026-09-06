@@ -32,8 +32,6 @@ public class SchulkatalogService {
 
     private static final ZoneId ZONE = ZoneId.of("Europe/Berlin");
 
-    private final SchulkatalogMapper schulkatalogMapper = new SchulkatalogMapper();
-
     @Inject
     KuerzelService kuerzelService;
 
@@ -42,6 +40,8 @@ public class SchulkatalogService {
 
     @Inject
     SchulkatalogDao schulkatalogDao;
+
+    private final SchulkatalogMapper schulkatalogMapper = new SchulkatalogMapper();
 
     /**
      * Läd die Länder zur Suche im Schulkatalog.
@@ -57,11 +57,12 @@ public class SchulkatalogService {
     /**
      * Läd die Orte eines Landes zur Suche im Schulkatalog.
      *
+     * @param kuerzelLand String
      * @return List
      */
-    public List<Ort> loadOrteInLand(final String landId) {
+    public List<Ort> loadOrteInLand(final String kuerzelLand) {
 
-        final List<OrtReadonlyEntity> trefferliste = schulkatalogDao.loadOrteWithLand(landId);
+        final List<OrtReadonlyEntity> trefferliste = schulkatalogDao.loadOrteWithLand(kuerzelLand);
 
         return trefferliste.stream().map(schulkatalogMapper::mapFromEntity).toList();
 
@@ -70,6 +71,7 @@ public class SchulkatalogService {
     /**
      * Läd die Schulen eines Ortes zur Suche im Schulkatalog.
      *
+     * @param ortId String
      * @return List
      */
     public List<Schule> loadSchulenInOrt(final String ortId) {
@@ -117,6 +119,7 @@ public class SchulkatalogService {
     /**
      * Legt Ort und Schule im gegebenen Land an.
      *
+     * @param kuerzelLand    String
      * @param requestPayload OrtMitSchuleAnlegenRequest
      * @return Schulkuerzel
      */
@@ -164,7 +167,7 @@ public class SchulkatalogService {
     /**
      * Legt Land, Ort und Schule an.
      *
-     * @param requestPayloyd LandMitOrtUndSchuleAnlegenRequest
+     * @param requestPayload LandMitOrtUndSchuleAnlegenRequest
      * @return Schulkuerzel
      */
     @Transactional
@@ -214,7 +217,7 @@ public class SchulkatalogService {
     /**
      * Bennennt die Schule mit dem gegebenen kuerzel um und sendet eine Infomail an die mailadresse.
      *
-     * @param kuerzel:       String
+     * @param kuerzel        String
      * @param requestPayload SchuleAnlegenOderAendernRequest
      * @return Schulkuerzel
      */
