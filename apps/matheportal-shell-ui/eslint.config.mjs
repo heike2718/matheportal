@@ -31,4 +31,7 @@ export default [
         // Override or add rules here
         rules: {},
     },
+    {
+        ignores: ['apps/matheportal-shell-ui/src/app/generated/**/*'],
+    },
 ];

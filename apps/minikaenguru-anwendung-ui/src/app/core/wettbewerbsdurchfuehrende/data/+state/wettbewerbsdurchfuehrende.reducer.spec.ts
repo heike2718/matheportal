@@ -2,9 +2,7 @@ import { Action } from '@ngrx/store';
 import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.reducer';
 import {
     DURCHFUEHRUNGSART,
-    initialWettbewerbsdurchfuehrender,
     Wettbewerbsdurchfuehrender,
-    WettbewerbsdurchfuehrenderDto,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { userLoggedOut } from '@matheportal/auth-api';
@@ -36,7 +34,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
     describe('wettbewerbsdurchfuehrenderAngelegt', () => {
         it('should map the responseDto', () => {
-            const responseDto: WettbewerbsdurchfuehrenderDto = {
+            const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: true,
                 teilnahmenummern: ['Z98765432', 'A1234567'],
@@ -44,7 +42,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
             };
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: initialWettbewerbsdurchfuehrender },
+                { wettbewerbsdurchfuehrender: undefined },
                 wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
             );
 

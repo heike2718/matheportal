@@ -31,7 +31,7 @@
         <wiremock.version>3.13.2</wiremock.version>
 
         <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-        <egladil-maven-mixins.version>1.1.1</egladil-maven-mixins.version>
+        <egladil-maven-mixins.version>2.0.1</egladil-maven-mixins.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

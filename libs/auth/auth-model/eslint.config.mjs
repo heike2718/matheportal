@@ -31,4 +31,8 @@ export default [
         // Override or add rules here
         rules: {},
     },
+
+    {
+        ignores: ['libs/auth-model/src/lib/auth-model/generated/**/*'],
+    },
 ];

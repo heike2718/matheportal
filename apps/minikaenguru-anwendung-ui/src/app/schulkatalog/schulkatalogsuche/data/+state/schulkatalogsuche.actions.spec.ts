@@ -9,6 +9,7 @@ const orte: Ort[] = [
         land: {
             kuerzel: 'DE-BY',
             name: 'Bayern',
+            anzahlOrte: 17,
         },
         anzahlSchulen: 10,
     },
@@ -18,6 +19,7 @@ const orte: Ort[] = [
         land: {
             kuerzel: 'DE-HE',
             name: 'Hessen',
+            anzahlOrte: 7,
         },
         anzahlSchulen: 5,
     },

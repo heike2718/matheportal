@@ -268,7 +268,7 @@ components:
             type: object
             x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
             required:
-                - typ
+                - durchfuehrungsart
             description: Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden.
             properties:
                 durchfuehrungsart:
@@ -281,6 +281,10 @@ components:
                     description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
         Wettbewerbsdurchfuehrender:
             type: object
+            required:
+                - Teilnahmenummern
+                - newsletter
+                - zugangsberechtigungUnterlagen
             description: Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden.
             properties:
                 durchfuehrungsart:
@@ -332,6 +336,9 @@ components:
                         - AUTOR
         ConstraintViolationDetail:
             type: object
+            required:
+                - field
+                - message
             properties:
                 field:
                     type: string
@@ -355,6 +362,10 @@ components:
                         $ref: '#/components/schemas/ConstraintViolationDetail'
         Land:
             type: object
+            required:
+                - kuerzel
+                - name
+                - anzahlOrte
             properties:
                 kuerzel:
                     type: string
@@ -368,6 +379,11 @@ components:
                     type: integer
         Ort:
             type: object
+            required:
+                - land
+                - kuerzel
+                - name
+                - anzahlSchulen
             properties:
                 land:
                     $ref: '#/components/schemas/Land'
@@ -383,6 +399,10 @@ components:
                     type: integer
         Schule:
             type: object
+            required:
+                - ort
+                - kuerzel
+                - name
             properties:
                 ort:
                     $ref: '#/components/schemas/Ort'

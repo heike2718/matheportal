@@ -11,7 +11,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/minikaenguru-anwendung",
-                "command": "mvn clean generate-sources"
+                "command": "mvn clean generate-sources && npx openapi-typescript src/main/resources/openapi/openapi.yaml -o ../minikaenguru-anwendung-ui/src/app/generated/api-types.ts --immutable"
             }
         },
         "tech-dev": {

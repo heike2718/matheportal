@@ -10,6 +10,7 @@ describe('OrtCardComponentComponent', () => {
         land: {
             kuerzel: 'DE-BY',
             name: 'Bayern',
+            anzahlOrte: 19,
         },
         anzahlSchulen: 10,
     };

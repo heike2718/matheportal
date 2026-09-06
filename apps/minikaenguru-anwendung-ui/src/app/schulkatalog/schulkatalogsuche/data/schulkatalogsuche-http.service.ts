@@ -3,6 +3,7 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaengu
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ort, Schule } from '../model/schulkatalog.model';
+import { paths } from '../../../generated/api-types';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
 export class SchulkatalogsucheHttpService {
@@ -11,13 +12,13 @@ export class SchulkatalogsucheHttpService {
 
     public findOrte(term: string): Observable<Ort[]> {
         const options = { params: new HttpParams().set('name', term.trim()), withCredentials: true };
+        const path: keyof paths = '/api/schulkatalog/orte';
 
-        return this.#httpClient.get<Ort[]>(this.#config.apiUrl + '/api/schulkatalog/orte', options);
+        return this.#httpClient.get<Ort[]>(this.#config.apiUrl + path, options);
     }
 
     public loadSchulen(kuerzelOrt: string): Observable<Schule[]> {
-        const url = this.#config.apiUrl + '/api/schulkatalog/orte/' + kuerzelOrt + '/schulen';
-
-        return this.#httpClient.get<Schule[]>(url, { withCredentials: true });
+        const path = `/api/schulkatalog/orte/${kuerzelOrt}/schulen` as const;
+        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + path, { withCredentials: true });
     }
 }

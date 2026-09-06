@@ -12,6 +12,7 @@ describe('SchulkatalosucheFacade tests', () => {
         land: {
             kuerzel: 'DE-BY',
             name: 'Bayern',
+            anzahlOrte: 5,
         },
         anzahlSchulen: 10,
     };

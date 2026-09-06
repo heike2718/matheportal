@@ -79,6 +79,7 @@
         "ng-mocks": "^14.15.3",
         "nx": "22.6.3",
         "nx-stylelint": "^19.0.0",
+        "openapi-typescript": "^7.13.0",
         "prettier": "~3.6.2",
         "stylelint": "^17.14.1",
         "stylelint-config-standard-scss": "^17.0.0",

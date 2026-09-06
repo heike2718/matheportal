@@ -15,16 +15,6 @@ public class KuerzelGeneratorServiceQuarkusTest {
     KuerzelGeneratorService service;
 
     @Test
-    void test_length_for_Schulkatalog() {
-
-        // act
-        final String kuerzel = service.generateSchulkatalogKuerzel();
-
-        // assert
-        assertEquals(8, kuerzel.length());
-    }
-
-    @Test
     void test_length_for_Privatteilnahme() {
 
         // act

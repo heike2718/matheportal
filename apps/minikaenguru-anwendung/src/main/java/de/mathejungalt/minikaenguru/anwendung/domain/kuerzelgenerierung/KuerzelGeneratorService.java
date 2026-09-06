@@ -18,20 +18,9 @@ public class KuerzelGeneratorService {
     @Inject
     KuerzelGenerator kuerzelGenerator;
 
-    private static final int LENGTH_SCHULKATALOG = 8;
-
     private static final int LENGTH_PRIVATTEILNAHMEN = 10;
 
     private static final int MAX_GENERATE_RETRIES = 5;
-
-    /**
-     * Generiert ein Kürzel für einen Ort oder eine Schule, den es noch nicht gibt. Diese sind immer 8stellig.
-     *
-     * @return String
-     */
-    public String generateSchulkatalogKuerzel() {
-        return this.verifyUnique(LENGTH_SCHULKATALOG);
-    }
 
     /**
      * Generiert ein Kürzel für eine Privatteilnahme. Diese sind immer 10stellig

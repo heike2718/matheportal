@@ -6,7 +6,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
 import {
     DURCHFUEHRUNGSART,
-    WettbewerbsdurchfuehrenderDto,
+    Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
@@ -27,7 +27,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     const requestDtoPrivat: WettbewerbsdurchfuehrenderRequest = {
         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-        schulkuerzel: null,
+        schulkuerzel: undefined,
     };
 
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
@@ -114,7 +114,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     describe('durchfuehrendenAnlegen$', () => {
         it('should call the http service and map to durchfuehrendenAngelegt when ok', async () => {
-            const responseDto: WettbewerbsdurchfuehrenderDto = {
+            const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
                 teilnahmenummern: ['A123456789'],
@@ -132,7 +132,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         it('should finish the first action not start the second request (exhaustMap)', async () => {
             const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schulkuerzel: null,
+                schulkuerzel: undefined,
             };
 
             const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {
@@ -140,15 +140,15 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 schulkuerzel: 'ABCDEFGH',
             };
 
-            const responseDto1: WettbewerbsdurchfuehrenderDto = {
+            const responseDto1: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
                 teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
-            const httpFirst$ = new Subject<WettbewerbsdurchfuehrenderDto>();
-            const httpSecond$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+            const httpFirst$ = new Subject<Wettbewerbsdurchfuehrender>();
+            const httpSecond$ = new Subject<Wettbewerbsdurchfuehrender>();
 
             const firstRequestFinalized = vi.fn();
             const secondRequestFinalized = vi.fn();
@@ -199,7 +199,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         it('should accept a new action after the pending request completed', async () => {
             const firstRequestDto: WettbewerbsdurchfuehrenderRequest = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                schulkuerzel: null,
+                schulkuerzel: undefined,
             };
 
             const secondRequestDto: WettbewerbsdurchfuehrenderRequest = {
@@ -207,22 +207,22 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 schulkuerzel: 'ABCDEFGH',
             };
 
-            const responseDto1: WettbewerbsdurchfuehrenderDto = {
+            const responseDto1: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
                 teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
-            const responseDto2: WettbewerbsdurchfuehrenderDto = {
+            const responseDto2: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: false,
                 teilnahmenummern: ['ABCDEFGH'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
-            const httpFirst$ = new Subject<WettbewerbsdurchfuehrenderDto>();
-            const httpSecond$ = new Subject<WettbewerbsdurchfuehrenderDto>();
+            const httpFirst$ = new Subject<Wettbewerbsdurchfuehrender>();
+            const httpSecond$ = new Subject<Wettbewerbsdurchfuehrender>();
 
             httpServiceMock.createWettbewerbsdurchfuehrenden
                 .mockReturnValueOnce(httpFirst$)
@@ -311,7 +311,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     describe('durchfuehrendenAngelegt$ tests', () => {
         it('should route to dashboard-privatperson when durchfuerender mit Durchführungsart privat angelegt', async () => {
-            const responseDto: WettbewerbsdurchfuehrenderDto = {
+            const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
                 teilnahmenummern: ['A123456789'],
@@ -329,7 +329,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         });
 
         it('should route to dashboard-lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
-            const responseDto: WettbewerbsdurchfuehrenderDto = {
+            const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: false,
                 teilnahmenummern: ['A1234567'],

@@ -8,8 +8,10 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * LandReadonlyEntity. Für das Laden der Länder (Schulkatalogsuche).
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "vw_laender", schema = "minikaenguru")
 @NamedQueries({
@@ -30,8 +34,10 @@ public class LandReadonlyEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "anzahl_orte")
+    @EqualsAndHashCode.Exclude
     private int anzahlOrte;
 }

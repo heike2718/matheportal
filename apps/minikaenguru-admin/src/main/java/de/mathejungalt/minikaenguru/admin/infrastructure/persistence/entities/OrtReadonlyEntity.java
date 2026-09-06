@@ -8,8 +8,10 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * OrtReadonlyEntity. Für das Laden von Orten (Katalogsuche).
@@ -17,11 +19,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "vw_orte", schema = "minikaenguru")
 @NamedQueries({ @NamedQuery(
         name = OrtReadonlyEntity.LOAD_BY_LAND,
-        query = "select o from OrtReadonlyEntity o where o.landId = :landId order by o.name") })
+        query = "select o from OrtReadonlyEntity o where o.kuerzelLand = :kuerzelLand order by o.name") })
 public class OrtReadonlyEntity {
 
     public static final String LOAD_BY_LAND = "OrtReadonlyEntity.LOAD_BY_LAND";
@@ -31,15 +35,20 @@ public class OrtReadonlyEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "kuerzel_land")
-    private String landId;
+    @EqualsAndHashCode.Exclude
+    private String kuerzelLand;
 
     @Column(name = "name_land")
-    private String land;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private String nameLand;
 
     @Column(name = "anzahl_schulen")
+    @EqualsAndHashCode.Exclude
     private int anzahlSchulen;
 
 }

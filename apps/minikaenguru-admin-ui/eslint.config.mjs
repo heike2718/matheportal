@@ -1,5 +1,6 @@
 import nx from '@nx/eslint-plugin';
 import baseConfig from '../../eslint.config.mjs';
+import { ignoreElements } from 'rxjs';
 
 export default [
     ...nx.configs['flat/angular'],
@@ -30,5 +31,8 @@ export default [
         files: ['**/*.html'],
         // Override or add rules here
         rules: {},
+    },
+    {
+        ignores: ['apps/minikaenguru-admin-ui/src/app/generated/**/*'],
     },
 ];

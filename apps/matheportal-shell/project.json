@@ -11,7 +11,7 @@
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "apps/matheportal-shell",
-                "command": "mvn clean generate-sources"
+                "command": "mvn clean generate-sources && npx openapi-typescript src/main/resources/openapi/openapi.yaml -o ../../libs/auth/auth-model/src/lib/auth-model/generated/api-types.ts --immutable"
             }
         },
         "tech-dev": {

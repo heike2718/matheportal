@@ -1,41 +1,20 @@
-export enum DURCHFUEHRUNGSART {
-    schule = 'SCHULE',
-    privat = 'PRIVAT',
-}
+import { components } from '../../../generated/api-types';
 
-export type Durchfuehrungsart = (typeof DURCHFUEHRUNGSART)[keyof typeof DURCHFUEHRUNGSART];
+export type Durchfuehrungsart = components['schemas']['Wettbewerbsdurchfuehrungsart'];
 
-export enum ZUGANGSBERECHTIGUNG_UNTERLAGEN {
-    standard = 'STANDARD',
-    erteilt = 'ERTEILT',
-    entzogen = 'ENTZOGEN',
-}
+export const DURCHFUEHRUNGSART = {
+    schule: 'SCHULE',
+    privat: 'PRIVAT',
+} as const satisfies Record<string, Durchfuehrungsart>;
 
-export type ZugangsberechtigungUnterlagen =
-    (typeof ZUGANGSBERECHTIGUNG_UNTERLAGEN)[keyof typeof ZUGANGSBERECHTIGUNG_UNTERLAGEN];
+export type ZugangsberechtigungUnterlagen = components['schemas']['ZugangsberechtigungUnterlagen'];
 
-export interface WettbewerbsdurchfuehrenderDto {
-    readonly durchfuehrungsart: string;
-    readonly teilnahmenummern: string[];
-    readonly newsletter: boolean;
-    readonly zugangsberechtigungUnterlagen: string;
-}
+export const ZUGANGSBERECHTIGUNG_UNTERLAGEN = {
+    standard: 'STANDARD',
+    erteilt: 'ERTEILT',
+    entzogen: 'ENTZOGEN',
+} as const satisfies Record<string, ZugangsberechtigungUnterlagen>;
 
-export interface Wettbewerbsdurchfuehrender {
-    readonly durchfuehrungsart?: Durchfuehrungsart;
-    readonly teilnahmenummern: string[];
-    readonly newsletter: boolean;
-    readonly zugangsberechtigungUnterlagen: ZugangsberechtigungUnterlagen;
-}
+export type Wettbewerbsdurchfuehrender = components['schemas']['Wettbewerbsdurchfuehrender'];
 
-export const initialWettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
-    durchfuehrungsart: undefined,
-    teilnahmenummern: [],
-    newsletter: false,
-    zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
-};
-
-export interface WettbewerbsdurchfuehrenderRequest {
-    readonly durchfuehrungsart: string;
-    readonly schulkuerzel: string | null;
-}
+export type WettbewerbsdurchfuehrenderRequest = components['schemas']['WettbewerbsdurchfuehrenderRequest'];

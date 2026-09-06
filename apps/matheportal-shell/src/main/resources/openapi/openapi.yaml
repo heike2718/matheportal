@@ -187,6 +187,9 @@ components:
                         - AUTOR
         ConstraintViolationDetail:
             type: object
+            required:
+                - field
+                - message
             properties:
                 field:
                     type: string

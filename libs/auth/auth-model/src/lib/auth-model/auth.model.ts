@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { components } from './generated/api-types';
 
 export type AUTH_RESULT_STATE = 'login' | 'signup' | 'invalid';
 
@@ -35,6 +36,4 @@ export type UserWithBerechtigungen = {
     readonly berechtigungen: readonly string[];
 };
 
-export interface AuthUrlResponse {
-    readonly url: string;
-}
+export type AuthUrlResponse = components['schemas']['AuthUrlResponse'];

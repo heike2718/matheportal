@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
-import { DURCHFUEHRUNGSART, WettbewerbsdurchfuehrenderDto } from '../../model/wettbewerbsdurchfuehrende.model';
+import { DURCHFUEHRUNGSART, Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
@@ -26,7 +26,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                 wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: {
                         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-                        schulkuerzel: null,
+                        schulkuerzel: undefined,
                     },
                 })
             )
@@ -64,7 +64,7 @@ export class WettbewerbsdurchfuehrendeEffects {
             ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen),
             exhaustMap(({ requestDto }) =>
                 this.#httpService.createWettbewerbsdurchfuehrenden(requestDto).pipe(
-                    map((responseDto: WettbewerbsdurchfuehrenderDto) =>
+                    map((responseDto: Wettbewerbsdurchfuehrender) =>
                         wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
                     ),
                     catchError((error: Error) =>
