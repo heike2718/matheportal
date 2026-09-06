@@ -1,20 +1,15 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import {
-    WettbewerbsdurchfuehrenderDraft,
-    WettbewerbsdurchfuehrenderDto,
-} from '../../model/wettbewerbsdurchfuehrende.model';
+import { Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 
 const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'MKAWettbewerbsdurchfuehrende';
 
 export interface WettbewerbsdurchfuehrendeState {
-    readonly draft: WettbewerbsdurchfuehrenderDraft | undefined;
-    readonly wettbewerbsdurchfuehrender: WettbewerbsdurchfuehrenderDto | undefined;
+    readonly wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender | undefined;
 }
 
 const initialWettbewerbsdurchfuehrendeState: WettbewerbsdurchfuehrendeState = {
-    draft: undefined,
     wettbewerbsdurchfuehrender: undefined,
 };
 
@@ -23,7 +18,7 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
     reducer: createReducer<WettbewerbsdurchfuehrendeState>(
         initialWettbewerbsdurchfuehrendeState,
         on(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt, (state, { responseDto }) => {
-            return { ...state, wettbewerbsdurchfuehrender: responseDto, draft: undefined };
+            return { ...state, wettbewerbsdurchfuehrender: responseDto };
         }),
         on(userLoggedOut, () => initialWettbewerbsdurchfuehrendeState)
     ),

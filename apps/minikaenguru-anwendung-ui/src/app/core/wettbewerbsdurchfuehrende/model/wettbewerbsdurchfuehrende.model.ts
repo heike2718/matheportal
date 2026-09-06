@@ -15,17 +15,6 @@ export const ZUGANGSBERECHTIGUNG_UNTERLAGEN = {
     entzogen: 'ENTZOGEN',
 } as const satisfies Record<string, ZugangsberechtigungUnterlagen>;
 
-export type WettbewerbsdurchfuehrenderDto = components['schemas']['Wettbewerbsdurchfuehrender'];
-
-export type WettbewerbsdurchfuehrenderDraft = Omit<WettbewerbsdurchfuehrenderDto, 'durchfuehrungsart'> & {
-    readonly durchfuehrungsart: Durchfuehrungsart | undefined;
-};
-
-export const initialWettbewerbsdurchfuehrender: WettbewerbsdurchfuehrenderDraft = {
-    durchfuehrungsart: undefined,
-    teilnahmenummern: [],
-    newsletter: false,
-    zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
-};
+export type Wettbewerbsdurchfuehrender = components['schemas']['Wettbewerbsdurchfuehrender'];
 
 export type WettbewerbsdurchfuehrenderRequest = components['schemas']['WettbewerbsdurchfuehrenderRequest'];

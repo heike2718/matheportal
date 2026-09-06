@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
-    WettbewerbsdurchfuehrenderDto,
+    Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderRequest,
 } from '../model/wettbewerbsdurchfuehrende.model';
 import { Observable } from 'rxjs';
@@ -18,8 +18,8 @@ export class WettbewerbsdurchfuehrendeHttpService {
      */
     public createWettbewerbsdurchfuehrenden(
         requestDto: WettbewerbsdurchfuehrenderRequest
-    ): Observable<WettbewerbsdurchfuehrenderDto> {
-        return this.#httpClient.post<WettbewerbsdurchfuehrenderDto>(
+    ): Observable<Wettbewerbsdurchfuehrender> {
+        return this.#httpClient.post<Wettbewerbsdurchfuehrender>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
             requestDto,
             { withCredentials: true }

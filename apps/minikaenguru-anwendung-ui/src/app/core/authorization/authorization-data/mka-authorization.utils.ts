@@ -2,7 +2,7 @@ import { UserWithBerechtigungen } from '@matheportal/auth-model';
 import { MinikaenguruBerechtigungstyp, MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model';
 import {
     DURCHFUEHRUNGSART,
-    WettbewerbsdurchfuehrenderDto,
+    Wettbewerbsdurchfuehrender,
 } from '../../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 export function resolveBerechtigungstyp(user: UserWithBerechtigungen | null): MinikaenguruBerechtigungstyp {
@@ -23,7 +23,7 @@ export function resolveBerechtigungstyp(user: UserWithBerechtigungen | null): Mi
     return MINIKAENGURU_BERECHTIGUNGSTYP.none;
 }
 
-export function mapDtoToBerechtigungstyp(dto: WettbewerbsdurchfuehrenderDto): MinikaenguruBerechtigungstyp {
+export function mapDtoToBerechtigungstyp(dto: Wettbewerbsdurchfuehrender): MinikaenguruBerechtigungstyp {
     if (dto.durchfuehrungsart === DURCHFUEHRUNGSART.privat) {
         return MINIKAENGURU_BERECHTIGUNGSTYP.privat;
     }

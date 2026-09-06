@@ -2,9 +2,7 @@ import { Action } from '@ngrx/store';
 import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.reducer';
 import {
     DURCHFUEHRUNGSART,
-    initialWettbewerbsdurchfuehrender,
-    WettbewerbsdurchfuehrenderDraft,
-    WettbewerbsdurchfuehrenderDto,
+    Wettbewerbsdurchfuehrender,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { userLoggedOut } from '@matheportal/auth-api';
@@ -13,14 +11,7 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 describe('wettbewerbsdurchfuehrendeFeature tests', () => {
     const unknownAction = { type: 'unknownAction' } as Action;
 
-    const draft: WettbewerbsdurchfuehrenderDraft = {
-        durchfuehrungsart: undefined,
-        newsletter: false,
-        zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
-        teilnahmenummern: [],
-    };
-
-    const knownDurchfuehrender: WettbewerbsdurchfuehrenderDto = {
+    const knownDurchfuehrender: Wettbewerbsdurchfuehrender = {
         newsletter: true,
         teilnahmenummern: ['A1234567'],
         zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.erteilt,
@@ -34,7 +25,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
         });
         it('should return the previous state, when unknown action and defined state', () => {
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: knownDurchfuehrender, draft: draft },
+                { wettbewerbsdurchfuehrender: knownDurchfuehrender },
                 unknownAction
             );
             expect(state.wettbewerbsdurchfuehrender).toEqual(knownDurchfuehrender);
@@ -43,7 +34,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
     describe('wettbewerbsdurchfuehrenderAngelegt', () => {
         it('should map the responseDto', () => {
-            const responseDto: WettbewerbsdurchfuehrenderDto = {
+            const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: true,
                 teilnahmenummern: ['Z98765432', 'A1234567'],
@@ -51,7 +42,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
             };
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: initialWettbewerbsdurchfuehrender, draft },
+                { wettbewerbsdurchfuehrender: undefined },
                 wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
             );
 
@@ -67,7 +58,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
     describe('userLoggedOut', () => {
         it('should return the initial state when user logged out', () => {
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
-                { wettbewerbsdurchfuehrender: knownDurchfuehrender, draft },
+                { wettbewerbsdurchfuehrender: knownDurchfuehrender },
                 userLoggedOut
             );
 

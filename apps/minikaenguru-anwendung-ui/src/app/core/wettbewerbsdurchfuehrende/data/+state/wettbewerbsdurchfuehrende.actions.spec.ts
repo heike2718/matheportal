@@ -1,6 +1,6 @@
 import {
     DURCHFUEHRUNGSART,
-    WettbewerbsdurchfuehrenderDto,
+    Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderRequest,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
@@ -35,7 +35,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         });
     });
     it('should create durchfuehrenderAngelegt action', () => {
-        const responseDto: WettbewerbsdurchfuehrenderDto = {
+        const responseDto: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             newsletter: false,
             teilnahmenummern: ['A1234567'],

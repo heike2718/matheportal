@@ -3,11 +3,11 @@ import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.re
 
 const { selectMKAWettbewerbsdurchfuehrendeState } = wettbewerbsdurchfuehrendeFeature;
 
-const definedWettbewerbsdurchfuehrender = createSelector(
+const wettbewerbsdurchfuehrender = createSelector(
     selectMKAWettbewerbsdurchfuehrendeState,
     state => state.wettbewerbsdurchfuehrender
 );
 
 export const fromWettbewerbsdurchfuehrender = {
-    definedWettbewerbsdurchfuehrender,
+    wettbewerbsdurchfuehrender,
 };

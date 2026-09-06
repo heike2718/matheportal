@@ -1,6 +1,6 @@
 import {
     DURCHFUEHRUNGSART,
-    WettbewerbsdurchfuehrenderDraft,
+    Wettbewerbsdurchfuehrender,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model/mka-authorization.model';
@@ -36,7 +36,7 @@ describe('mka-authorization utils tests', () => {
     });
     describe('mapToBerechtigungstyp tests', () => {
         it('should return privat when privat', () => {
-            const dto: WettbewerbsdurchfuehrenderDraft = {
+            const dto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 newsletter: false,
                 teilnahmenummern: [],
@@ -49,7 +49,7 @@ describe('mka-authorization utils tests', () => {
         });
 
         it('should return schule when schule', () => {
-            const draft: WettbewerbsdurchfuehrenderDraft = {
+            const draft: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.schule,
                 newsletter: false,
                 teilnahmenummern: [],
@@ -59,19 +59,6 @@ describe('mka-authorization utils tests', () => {
             const result = mapDtoToBerechtigungstyp(draft);
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
-        });
-
-        it('should return none when not privat and not schule', () => {
-            const dto: WettbewerbsdurchfuehrenderDraft = {
-                durchfuehrungsart: undefined,
-                newsletter: false,
-                teilnahmenummern: [],
-                zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.entzogen,
-            };
-
-            const result = mapDtoToBerechtigungstyp(dto);
-
-            expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.none);
         });
     });
 });

@@ -9,7 +9,7 @@ export class WettbewerbsdurchfuehrendeFacade {
     #store = inject(Store);
 
     readonly wettbewerbsdurchfuehrender = toSignal(
-        this.#store.select(fromWettbewerbsdurchfuehrender.definedWettbewerbsdurchfuehrender)
+        this.#store.select(fromWettbewerbsdurchfuehrender.wettbewerbsdurchfuehrender)
     );
 
     public durchfuehrungsartPrivatGewaehlt(): void {
