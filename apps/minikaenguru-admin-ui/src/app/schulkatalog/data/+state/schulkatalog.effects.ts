@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchulkatalogHttpService } from '../schulkatalog-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { schulkatalogActions } from './schulkatalog.actions';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, exhaustMap, map, of, switchMap, tap } from 'rxjs';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden.
@@ -12,7 +12,7 @@ export class SchulkatalogEffects {
     #httpService = inject(SchulkatalogHttpService);
     #messagePublisherService = inject(MESSAGE_PUBLISHER);
 
-    loadLaender$ = createEffect(() =>
+    readonly loadLaender$ = createEffect(() =>
         this.#actions.pipe(
             ofType(schulkatalogActions.loadLaender),
             switchMap(() => {
@@ -24,7 +24,7 @@ export class SchulkatalogEffects {
         )
     );
 
-    loadLaenderFailed$ = createEffect(
+    readonly loadLaenderFailed$ = createEffect(
         () => {
             return this.#actions.pipe(
                 ofType(schulkatalogActions.loadLaenderFailed),
@@ -37,14 +37,14 @@ export class SchulkatalogEffects {
         { dispatch: false }
     );
 
-    landSelected$ = createEffect(() => {
+    readonly landSelected$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schulkatalogActions.landSelected),
             map(({ land }) => schulkatalogActions.loadOrte({ land }))
         );
     });
 
-    loadOrte$ = createEffect(() =>
+    readonly loadOrte$ = createEffect(() =>
         this.#actions.pipe(
             ofType(schulkatalogActions.loadOrte),
             switchMap(({ land }) => {
@@ -56,20 +56,68 @@ export class SchulkatalogEffects {
         )
     );
 
-    ortSelected$ = createEffect(() => {
+    readonly ortSelected$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schulkatalogActions.ortSelected),
             map(({ ort }) => schulkatalogActions.loadSchulen({ ort }))
         );
     });
 
-    loadSchulen$ = createEffect(() =>
+    readonly loadSchulen$ = createEffect(() =>
         this.#actions.pipe(
             ofType(schulkatalogActions.loadSchulen),
             switchMap(({ ort }) => {
                 return this.#httpService.loadSchulen(ort.kuerzel).pipe(
                     map(schulen => schulkatalogActions.loadSchulenSucceeded({ schulen })),
                     catchError((error: Error) => of(schulkatalogActions.loadSchulenFailed({ error })))
+                );
+            })
+        )
+    );
+
+    readonly landMitOrtUndSchuleAnlegen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulkatalogActions.landMitOrtUndSchuleAnlegen),
+            exhaustMap(({ payload }) => {
+                return this.#httpService.landMitOrtUndSchuleAnlegen(payload).pipe(
+                    map(schulkuerzel => schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel })),
+                    catchError((error: Error) => of(schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error })))
+                );
+            })
+        )
+    );
+
+    readonly ortMitSchuleAnlegen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulkatalogActions.ortMitSchuleAnlegen),
+            exhaustMap(({ kuerzelLand, payload }) => {
+                return this.#httpService.ortMitSchuleInLandAnlegen(kuerzelLand, payload).pipe(
+                    map(schulkuerzel => schulkatalogActions.ortMitSchuleAnlegenSucceeded({ schulkuerzel })),
+                    catchError((error: Error) => of(schulkatalogActions.ortMitSchuleAnlegenFailed({ error })))
+                );
+            })
+        )
+    );
+
+    readonly schuleAnlegen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulkatalogActions.schuleAnlegen),
+            exhaustMap(({ kuerzelOrt, payload }) => {
+                return this.#httpService.schuleInOrtAnlegen(kuerzelOrt, payload).pipe(
+                    map(schulkuerzel => schulkatalogActions.schuleAnlegenSucceeded({ schulkuerzel })),
+                    catchError((error: Error) => of(schulkatalogActions.schuleAnlegenFailed({ error })))
+                );
+            })
+        )
+    );
+
+    readonly schuleUmbenennen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulkatalogActions.schuleUmbenennen),
+            exhaustMap(({ kuerzelSchule, payload }) => {
+                return this.#httpService.schuleUmbenennen(kuerzelSchule, payload).pipe(
+                    map(schulkuerzel => schulkatalogActions.schuleUmbenennenSucceeded({ schulkuerzel })),
+                    catchError((error: Error) => of(schulkatalogActions.schuleUmbenennenFailed({ error })))
                 );
             })
         )

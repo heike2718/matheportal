@@ -2,7 +2,15 @@ import { inject, Injectable } from '@angular/core';
 import { MINIKAENGURU_ADMIN_CONFIGURATION } from '../../config/minikaenguru-admin.configuration';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Land, Ort, Schule } from '../model/schulkatalog.model';
+import {
+    Land,
+    LandMitOrtUndSchuleAnlegenRequest,
+    Ort,
+    OrtMitSchuleAnlegenRequest,
+    Schule,
+    SchuleAnlegenOderAendernRequest,
+    Schulkuerzel,
+} from '../model/schulkatalog.model';
 import { paths } from '../../generated/api-types';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
@@ -17,17 +25,48 @@ export class SchulkatalogHttpService {
         return this.#httpClient.get<Land[]>(this.#config.apiUrl + path, options);
     }
 
-    public loadOrte(landId: string): Observable<Ort[]> {
+    public loadOrte(kuerzelLand: string): Observable<Ort[]> {
         const options = { withCredentials: true };
-        const path = `/api/schulkatalog/laender/${landId}/orte` as const;
+        const path = `/api/schulkatalog/laender/${kuerzelLand}/orte` as const;
 
         return this.#httpClient.get<Ort[]>(this.#config.apiUrl + path, options);
     }
 
-    public loadSchulen(ortId: string): Observable<Schule[]> {
+    public loadSchulen(kuerzelOrt: string): Observable<Schule[]> {
         const options = { withCredentials: true };
-        const path = `/api/schulkatalog/orte/${ortId}/schulen` as const;
+        const path = `/api/schulkatalog/orte/${kuerzelOrt}/schulen` as const;
 
         return this.#httpClient.get<Schule[]>(this.#config.apiUrl + path, options);
+    }
+
+    public landMitOrtUndSchuleAnlegen(payload: LandMitOrtUndSchuleAnlegenRequest): Observable<Schulkuerzel> {
+        const options = { withCredentials: true };
+        const path = '/api/schulkatalog/schulen';
+
+        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+    }
+
+    public ortMitSchuleInLandAnlegen(
+        kuerzelLand: string,
+        payload: OrtMitSchuleAnlegenRequest
+    ): Observable<Schulkuerzel> {
+        const options = { withCredentials: true };
+        const path = `/api/schulkatalog/laender/${kuerzelLand}/schulen` as const;
+
+        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+    }
+
+    public schuleInOrtAnlegen(kuerzelOrt: string, payload: SchuleAnlegenOderAendernRequest): Observable<Schulkuerzel> {
+        const options = { withCredentials: true };
+        const path = `/api/schulkatalog/orte/${kuerzelOrt}/schulen` as const;
+
+        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+    }
+
+    public schuleUmbenennen(kuerzel: string, payload: SchuleAnlegenOderAendernRequest): Observable<Schulkuerzel> {
+        const options = { withCredentials: true };
+        const path = `/api/schulkatalog/schulen/${kuerzel}` as const;
+
+        return this.#httpClient.put<Schulkuerzel>(path, payload, options);
     }
 }
