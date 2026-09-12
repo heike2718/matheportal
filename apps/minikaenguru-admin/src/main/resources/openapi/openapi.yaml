@@ -139,8 +139,8 @@ paths:
         post:
             tags:
                 - Schulkatalog
-            summary: neue Schule in einem Land / Bundesland
-            description: Ort und Schule werden angelegt
+            summary: neue Schule in einem Ort
+            description: neue Schule wird angelegt
             operationId: schuleInOrtAnlegen
             requestBody:
                 required: true

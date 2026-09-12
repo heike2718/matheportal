@@ -1,5 +1,13 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Land, Ort, Schule } from '../../model/schulkatalog.model';
+import {
+    Land,
+    LandMitOrtUndSchuleAnlegenRequest,
+    Ort,
+    OrtMitSchuleAnlegenRequest,
+    Schule,
+    SchuleAnlegenOderAendernRequest,
+    Schulkuerzel,
+} from '../../model/schulkatalog.model';
 
 export const schulkatalogActions = createActionGroup({
     source: 'MKAdmin Schulkatalog',
@@ -17,7 +25,22 @@ export const schulkatalogActions = createActionGroup({
         loadSchulenSucceeded: props<{ schulen: Schule[] }>(),
         loadSchulenFailed: props<{ error: Error }>(),
         backToOrteRequested: emptyProps(),
+        landMitOrtUndSchuleAnlegenSelected: emptyProps(),
+        landMitOrtUndSchuleAnlegen: props<{ payload: LandMitOrtUndSchuleAnlegenRequest }>(),
+        landMitOrtUndSchuleAnlegenSucceeded: props<{ schulkuerzel: Schulkuerzel }>(),
+        landMitOrtUndSchuleAnlegenFailed: props<{ error: Error }>(),
+        ortMitSchuleAnlegenSelected: props<{ land: Land }>(),
+        ortMitSchuleAnlegen: props<{ kuerzelLand: string; payload: OrtMitSchuleAnlegenRequest }>(),
+        ortMitSchuleAnlegenSucceeded: props<{ schulkuerzel: Schulkuerzel }>(),
+        ortMitSchuleAnlegenFailed: props<{ error: Error }>(),
+        schuleAnlegenSelected: props<{ ort: Ort }>(),
+        schuleAnlegen: props<{ kuerzelOrt: string; payload: SchuleAnlegenOderAendernRequest }>(),
+        schuleAnlegenSucceeded: props<{ schulkuerzel: Schulkuerzel }>(),
+        schuleAnlegenFailed: props<{ error: Error }>(),
         schuleUmbenennenSelected: props<{ schule: Schule }>(),
+        schuleUmbenennen: props<{ kuerzelSchule: string; payload: SchuleAnlegenOderAendernRequest }>(),
+        schuleUmbenennenSucceeded: props<{ schulkuerzel: Schulkuerzel }>(),
+        schuleUmbenennenFailed: props<{ error: Error }>(),
         resetSchulkatalog: emptyProps(),
     },
 });
