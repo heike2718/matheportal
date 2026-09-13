@@ -86,7 +86,6 @@ public class SchulkatalogService {
      * @param requestPayload SchuleAnlegenOderAendernRequest
      * @return Schulkuerzel
      */
-    @Transactional
     public Schulkuerzel schuleInOrtAnlegen(final String kuerzelOrt,
             final SchuleAnlegenOderAendernRequest requestPayload) {
 
@@ -94,6 +93,17 @@ public class SchulkatalogService {
         if (ort == null) {
             throw new AdminNotFoundException("Ort mit kuerzel " + kuerzelOrt + " existiert nicht");
         }
+
+        final Schulkuerzel schulkuerzel = internalSchuleInOrtAnlegen(kuerzelOrt, requestPayload);
+
+        schulkatalogMailService
+                .sendMailSchuleEingetragen(schulkuerzel.getKuerzel(), requestPayload.getEmailAuftraggeber());
+        return schulkuerzel;
+    }
+
+    @Transactional
+    Schulkuerzel internalSchuleInOrtAnlegen(final String kuerzelOrt,
+            final SchuleAnlegenOderAendernRequest requestPayload) {
 
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
         // Bearbeitung gibt im Moment.
@@ -112,8 +122,7 @@ public class SchulkatalogService {
 
         schulkatalogDao.insertSchule(schule);
 
-        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
-        return new Schulkuerzel().kuerzel(schule.getKuerzel());
+        return new Schulkuerzel().kuerzel(kuerzelSchule);
     }
 
     /**
@@ -123,7 +132,6 @@ public class SchulkatalogService {
      * @param requestPayload OrtMitSchuleAnlegenRequest
      * @return Schulkuerzel
      */
-    @Transactional
     public Schulkuerzel schuleInLandAnlegen(final String kuerzelLand, final OrtMitSchuleAnlegenRequest requestPayload) {
 
         final LandEntity land = this.schulkatalogDao.findLandById(kuerzelLand);
@@ -131,6 +139,17 @@ public class SchulkatalogService {
             throw new AdminNotFoundException("Land mit kuerzel " + kuerzelLand + " existiert nicht");
         }
 
+        final Schulkuerzel schulkuerzel = this.internalSchuleInLandAnlegen(kuerzelLand, requestPayload);
+
+        schulkatalogMailService
+                .sendMailSchuleEingetragen(schulkuerzel.getKuerzel(), requestPayload.getEmailAuftraggeber());
+        return schulkuerzel;
+
+    }
+
+    @Transactional
+    Schulkuerzel internalSchuleInLandAnlegen(final String kuerzelLand,
+            final OrtMitSchuleAnlegenRequest requestPayload) {
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
         // Bearbeitung gibt im Moment.
         final String kuerzelOrt = this.kuerzelService.generateSchulkatalogKuerzel();
@@ -159,9 +178,7 @@ public class SchulkatalogService {
         this.schulkatalogDao.insertOrt(ort);
         this.schulkatalogDao.insertSchule(schule);
 
-        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
-        return new Schulkuerzel().kuerzel(schule.getKuerzel());
-
+        return new Schulkuerzel().kuerzel(kuerzelSchule);
     }
 
     /**
@@ -170,9 +187,17 @@ public class SchulkatalogService {
      * @param requestPayload LandMitOrtUndSchuleAnlegenRequest
      * @return Schulkuerzel
      */
-    @Transactional
     public Schulkuerzel schuleAnlegen(final LandMitOrtUndSchuleAnlegenRequest requestPayload) {
 
+        final Schulkuerzel schulkuerzel = this.internalSchuleAnlegen(requestPayload);
+
+        schulkatalogMailService
+                .sendMailSchuleEingetragen(schulkuerzel.getKuerzel(), requestPayload.getEmailAuftraggeber());
+        return schulkuerzel;
+    }
+
+    @Transactional
+    Schulkuerzel internalSchuleAnlegen(final LandMitOrtUndSchuleAnlegenRequest requestPayload) {
         // brauchen hier keine Vorkehrungen wegen UK-Violation, da es keine parallele
         // Bearbeitung gibt im Moment.
         final String kuerzelOrt = this.kuerzelService.generateSchulkatalogKuerzel();
@@ -210,8 +235,7 @@ public class SchulkatalogService {
         this.schulkatalogDao.insertOrt(ort);
         this.schulkatalogDao.insertSchule(schule);
 
-        schulkatalogMailService.sendMailSchuleEingetragen(schule.getKuerzel(), requestPayload.getEmailAuftraggeber());
-        return new Schulkuerzel().kuerzel(schule.getKuerzel());
+        return new Schulkuerzel().kuerzel(kuerzelSchule);
     }
 
     /**

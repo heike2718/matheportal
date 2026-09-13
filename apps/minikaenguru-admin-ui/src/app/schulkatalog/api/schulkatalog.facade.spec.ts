@@ -214,6 +214,12 @@ describe('SchulkatalogFacade', () => {
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToOrteRequested());
         });
 
+        it('should dispatch landMitOrtUndSchuleAnlegenSelected', () => {
+            facade.landMitOrtUndSchuleAnlegenRequested();
+
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landMitOrtUndSchuleAnlegenSelected());
+        });
+
         it('should dispatch schuleUmbenennenSelected', () => {
             const schule = schulen[2];
 

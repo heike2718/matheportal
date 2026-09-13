@@ -4,10 +4,12 @@ import { SchulkatalogFacade } from './schulkatalog.facade';
 import { schulkatalogFeature } from '../data/+state/schulkatalog.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { SchulkatalogEffects } from '../data/+state/schulkatalog.effects';
+import { SchulkatalogDialogEffects } from '../features/schulkatalog-dialog.effects';
 
 export const schulkatalogDataProvider = [
     SchulkatalogFacade,
     SchulkatalogHttpService,
     provideState(schulkatalogFeature),
     provideEffects(SchulkatalogEffects),
+    provideEffects(SchulkatalogDialogEffects),
 ];

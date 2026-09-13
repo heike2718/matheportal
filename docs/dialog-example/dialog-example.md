@@ -200,6 +200,7 @@ import { GewaehlteDurchfuehrungsart } from '../durchfuehrungsart-waehlen/durchfu
 })
 export class DurchfuehrungsartWaehlenDialogComponent {
     readonly #dialogRef = inject(DialogRef) as DialogRef<GewaehlteDurchfuehrungsart>;
+    private readonly payload = inject<LandMitOrtUndSchuleAnlegenRequest>(DIALOG_DATA);
 
     selectSchule(): void {
         this.#close('schule');

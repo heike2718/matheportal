@@ -43,7 +43,7 @@ export class SchulkatalogHttpService {
         const options = { withCredentials: true };
         const path = '/api/schulkatalog/schulen';
 
-        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+        return this.#httpClient.post<Schulkuerzel>(this.#config.apiUrl + path, payload, options);
     }
 
     public ortMitSchuleInLandAnlegen(
@@ -53,20 +53,20 @@ export class SchulkatalogHttpService {
         const options = { withCredentials: true };
         const path = `/api/schulkatalog/laender/${kuerzelLand}/schulen` as const;
 
-        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+        return this.#httpClient.post<Schulkuerzel>(this.#config.apiUrl + path, payload, options);
     }
 
     public schuleInOrtAnlegen(kuerzelOrt: string, payload: SchuleAnlegenOderAendernRequest): Observable<Schulkuerzel> {
         const options = { withCredentials: true };
         const path = `/api/schulkatalog/orte/${kuerzelOrt}/schulen` as const;
 
-        return this.#httpClient.post<Schulkuerzel>(path, payload, options);
+        return this.#httpClient.post<Schulkuerzel>(this.#config.apiUrl + path, payload, options);
     }
 
     public schuleUmbenennen(kuerzel: string, payload: SchuleAnlegenOderAendernRequest): Observable<Schulkuerzel> {
         const options = { withCredentials: true };
         const path = `/api/schulkatalog/schulen/${kuerzel}` as const;
 
-        return this.#httpClient.put<Schulkuerzel>(path, payload, options);
+        return this.#httpClient.put<Schulkuerzel>(this.#config.apiUrl + path, payload, options);
     }
 }

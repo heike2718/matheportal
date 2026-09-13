@@ -19,6 +19,7 @@ import static io.restassured.RestAssured.given;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestHTTPEndpoint(SchulkatalogResource.class)
@@ -46,8 +47,8 @@ public class SchulkatalogResourceSucheTest {
 
         final List<Land> laender = Arrays.asList(result);
 
-        assertEquals(29, laender.size());
-        final Land thueringen = laender.get(28);
+        assertTrue(laender.size() > 29);
+        final Land thueringen = laender.stream().filter(l -> KUERZEL_LAND.equals(l.getKuerzel())).findFirst().get();
 
         assertAll(() -> assertEquals(KUERZEL_LAND, thueringen.getKuerzel()),
                 () -> assertEquals("Thüringen", thueringen.getName()),

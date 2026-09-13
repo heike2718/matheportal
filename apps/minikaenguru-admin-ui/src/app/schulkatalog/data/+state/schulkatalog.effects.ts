@@ -122,4 +122,14 @@ export class SchulkatalogEffects {
             })
         )
     );
+
+    readonly landMitOrtUndSchuleAnlegenSucceeded$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded),
+            tap(({ schulkuerzel }) => {
+                this.#messagePublisherService.publishInfo(`Neue Schule angelegt. Kürzel: ${schulkuerzel.kuerzel}`);
+            }),
+            map(() => schulkatalogActions.loadLaender())
+        )
+    );
 }

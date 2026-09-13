@@ -71,6 +71,7 @@ describe('SchulkatalogComponent', () => {
         backToLaenderRequested: ReturnType<typeof vi.fn>;
         ortSelected: ReturnType<typeof vi.fn>;
         backToOrteRequested: ReturnType<typeof vi.fn>;
+        landMitOrtUndSchuleAnlegenRequested: ReturnType<typeof vi.fn>;
         schuleUmbenennenSelected: ReturnType<typeof vi.fn>;
     };
 
@@ -120,6 +121,7 @@ describe('SchulkatalogComponent', () => {
             backToLaenderRequested: vi.fn(),
             ortSelected: vi.fn(),
             backToOrteRequested: vi.fn(),
+            landMitOrtUndSchuleAnlegenRequested: vi.fn(),
             schuleUmbenennenSelected: vi.fn(),
         };
 
@@ -202,6 +204,13 @@ describe('SchulkatalogComponent', () => {
 
             expect(schulkatalogFacadeMock.landSelected).toHaveBeenCalledOnce();
             expect(schulkatalogFacadeMock.landSelected).toHaveBeenCalledWith(laender[0]);
+        });
+        it('should trigger facade.schuleUmbenennenSelected when mock emmits schuleUmbenennenSelected', () => {
+            const laenderListDe = fixture.debugElement.query(By.directive(LaenderListComponent));
+
+            ngMocks.output(laenderListDe, 'landMitOrtUndSchuleAnlegenRequested').emit();
+
+            expect(schulkatalogFacadeMock.landMitOrtUndSchuleAnlegenRequested).toHaveBeenCalledOnce();
         });
     });
 

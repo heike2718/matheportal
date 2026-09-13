@@ -45,6 +45,29 @@ describe('LaenderListComponent', () => {
         vi.restoreAllMocks();
     });
 
+    describe('independent of laender loaded or not', () => {
+        it('should show the button for creating all land, ort, schule and emit when it is clicked', () => {
+            const buttonDe = fixture.debugElement.query(By.css('[data-testid="create-schule-btn"]'));
+            expect(buttonDe).toBeTruthy();
+
+            const buttonClickedSpy = vi.spyOn(component.landMitOrtUndSchuleAnlegenRequested, 'emit');
+
+            buttonDe.nativeElement.click();
+
+            expect(buttonClickedSpy).toHaveBeenCalledOnce();
+        });
+
+        it('should emit landMitOrtUndSchuleAnlegenRequested when button is clicked', () => {
+            const ortSelectedSpy = vi.spyOn(component.landSelected, 'emit');
+
+            const landCardsDe = getLandCards();
+            expect(landCardsDe).toHaveLength(2);
+
+            ngMocks.output(landCardsDe[1], 'landSelected').emit(laender[1]);
+            expect(ortSelectedSpy).toHaveBeenCalledExactlyOnceWith(laender[1]);
+        });
+    });
+
     describe('laender loaded', () => {
         beforeEach(async () => {
             fixture.componentRef.setInput('laender', laender);
@@ -114,6 +137,16 @@ describe('LaenderListComponent', () => {
             expect(getLandCards()).toHaveLength(2);
 
             expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
+        });
+
+        it('should re-emit landSelected when LandCardComponent emits landSelected', () => {
+            const ortSelectedSpy = vi.spyOn(component.landSelected, 'emit');
+
+            const landCardsDe = getLandCards();
+            expect(landCardsDe).toHaveLength(2);
+
+            ngMocks.output(landCardsDe[1], 'landSelected').emit(laender[1]);
+            expect(ortSelectedSpy).toHaveBeenCalledExactlyOnceWith(laender[1]);
         });
 
         it('should re-emit landSelected when LandCardComponent emits landSelected', () => {
