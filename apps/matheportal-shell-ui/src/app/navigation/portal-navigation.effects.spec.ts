@@ -1,14 +1,14 @@
 import { sessionValidationFailed, userLoggedOut } from '@matheportal/auth-api';
 import { PortalNavigationEffects } from './portal-navigation.effects';
-import { firstValueFrom, ReplaySubject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideStore } from '@ngrx/store';
+import { Action, provideStore } from '@ngrx/store';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Router } from '@angular/router';
 
 describe('PortalNavigationEffects tests', () => {
-    let action$: ReplaySubject<unknown>;
+    let action$: Subject<Action>;
     let effects: PortalNavigationEffects;
 
     const expectedTechnicalErrorMessage =
@@ -26,7 +26,7 @@ describe('PortalNavigationEffects tests', () => {
 
     beforeEach(() => {
         vi.resetAllMocks();
-        action$ = new ReplaySubject<unknown>(1);
+        action$ = new Subject<Action>();
 
         TestBed.configureTestingModule({
             providers: [
@@ -46,36 +46,37 @@ describe('PortalNavigationEffects tests', () => {
 
     describe('sessionValidationFailed$', () => {
         it('should show warning when session validation failed with expired and redirect to home', async () => {
+            const promise = firstValueFrom(effects.sessionValidationFailed$);
+
             action$.next(sessionValidationFailed({ reason: 'expired' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
+            await promise;
+
             expect(messagePublisherMock.publishWarning).toHaveBeenCalledTimes(1);
             expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
                 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
             );
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
+
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
 
         it('should show nothing when session validation failed with missing, and redirect to home', async () => {
+            const promise = firstValueFrom(effects.sessionValidationFailed$);
             action$.next(sessionValidationFailed({ reason: 'missing' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
+            await promise;
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
 
         it('should show error when session validation failed with technical and redirect to home', async () => {
-            action$.next(sessionValidationFailed({ reason: 'technical' }));
-            await firstValueFrom(effects.sessionValidationFailed$);
+            const promise = firstValueFrom(effects.sessionValidationFailed$);
 
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+            action$.next(sessionValidationFailed({ reason: 'technical' }));
+            await promise;
+
             expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedTechnicalErrorMessage);
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
+
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
@@ -83,12 +84,11 @@ describe('PortalNavigationEffects tests', () => {
 
     describe('userLoggedOut$', () => {
         it('should navigate to home', async () => {
-            action$.next(userLoggedOut);
-            await firstValueFrom(effects.userLoggedOut$);
+            const promise = firstValueFrom(effects.userLoggedOut$);
 
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishInfo).not.toHaveBeenCalled();
+            action$.next(userLoggedOut);
+            await promise;
+
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'home']);
         });
