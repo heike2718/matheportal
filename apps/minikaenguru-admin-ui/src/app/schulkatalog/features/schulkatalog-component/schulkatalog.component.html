@@ -18,7 +18,8 @@
             <mk-admin-laender-list
                 [laender]="laender()"
                 [laenderLoaded]="isLaenderLoaded()"
-                (landSelected)="onLandSelected($event)" />
+                (landSelected)="onLandSelected($event)"
+                (landMitOrtUndSchuleAnlegenRequested)="onLandMitOrtUndSchuleAnlegenRequested()" />
         }
     }
 </div>

@@ -15,6 +15,7 @@ export class LaenderListComponent implements AfterViewInit {
     readonly laenderLoaded = input.required<boolean>();
 
     readonly landSelected = output<Land>();
+    readonly landMitOrtUndSchuleAnlegenRequested = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
         term: '',

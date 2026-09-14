@@ -1,5 +1,15 @@
 <div class="mk-admin-laender-list">
-    <h2 class="mk-admin-laender-list__title">Länder</h2>
+    <div class="mk-admin-laender-list__header">
+        <h2 class="mk-admin-laender-list__title">Länder</h2>
+
+        <button
+            type="button"
+            class="mk-admin-laender-list__action"
+            data-testid="create-schule-btn"
+            (click)="landMitOrtUndSchuleAnlegenRequested.emit()">
+            Land mit Ort und Schule anlegen
+        </button>
+    </div>
     <label class="mk-admin-laender-list__label" for="term">Name</label>
     <input id="term" class="mk-admin-laender-list__input" type="text" [formField]="searchForm.term" />
 
