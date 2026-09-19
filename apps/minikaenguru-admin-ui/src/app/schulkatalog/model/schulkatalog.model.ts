@@ -19,3 +19,24 @@ export const initialLandMitOrtUndSchuleAnlegenRequest: LandMitOrtUndSchuleAnlege
     nameOrt: '',
     nameSchule: '',
 };
+
+export const initialOrtMitSchuleAnlegenRequest: OrtMitSchuleAnlegenRequest = {
+    emailAuftraggeber: '',
+    nameOrt: '',
+    nameSchule: '',
+};
+
+export interface OrtMitSchuleAnlegenDialogData {
+    readonly land: Land;
+    readonly payload: OrtMitSchuleAnlegenRequest;
+}
+
+export const initialSchuleAnlegenOderAendernRequest: SchuleAnlegenOderAendernRequest = {
+    emailAuftraggeber: '',
+    name: '',
+};
+
+export interface SchuleDialogData {
+    readonly ort: Ort;
+    readonly payload: SchuleAnlegenOderAendernRequest;
+}

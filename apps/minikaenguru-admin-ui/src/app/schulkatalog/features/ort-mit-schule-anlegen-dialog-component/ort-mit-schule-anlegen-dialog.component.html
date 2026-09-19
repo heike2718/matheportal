@@ -1,0 +1,62 @@
+<div class="ort-mit-schule-dialog">
+    <h2 class="ort-mit-schule-dialog__title">Ort mit Schule in {{ data.land.name }} anlegen</h2>
+
+    <form class="ort-mit-schule-dialog__form" [formGroup]="form" (ngSubmit)="anlegen()">
+        <div class="ort-mit-schule-dialog__content">
+            <mat-form-field class="ort-mit-schule-dialog__field">
+                <mat-label>E-Mail Auftraggeber</mat-label>
+                <input matInput formControlName="emailAuftraggeber" />
+
+                @if (form.controls.emailAuftraggeber.hasError('required')) {
+                    <mat-error>E-Mail ist erforderlich.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('pattern')) {
+                    <mat-error>Bitte eine gültige E-Mail-Adresse eingeben.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('maxlength')) {
+                    <mat-error>Die E-Mail darf maximal 255 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="ort-mit-schule-dialog__field">
+                <mat-label>Ort</mat-label>
+                <input matInput formControlName="nameOrt" />
+
+                @if (form.controls.nameOrt.hasError('required')) {
+                    <mat-error>Ort ist erforderlich.</mat-error>
+                } @else if (form.controls.nameOrt.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.nameOrt.hasError('maxlength')) {
+                    <mat-error>Der Name darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="ort-mit-schule-dialog__field">
+                <mat-label>Schule</mat-label>
+                <input matInput formControlName="nameSchule" />
+
+                @if (form.controls.nameSchule.hasError('required')) {
+                    <mat-error>Schule ist erforderlich.</mat-error>
+                } @else if (form.controls.nameSchule.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.nameSchule.hasError('maxlength')) {
+                    <mat-error>Der Name darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+        </div>
+
+        <div class="ort-mit-schule-dialog__actions">
+            <button
+                type="button"
+                class="ort-mit-schule-dialog__action ort-mit-schule-dialog__action--secondary"
+                (click)="abbrechen()">
+                Abbrechen
+            </button>
+
+            <button
+                type="submit"
+                class="ort-mit-schule-dialog__action ort-mit-schule-dialog__action--primary"
+                [disabled]="form.invalid || form.pending">
+                Anlegen
+            </button>
+        </div>
+    </form>
+</div>

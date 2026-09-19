@@ -101,10 +101,9 @@ describe('schulkatalogActions', () => {
             });
         });
         it('should create the ortMitSchuleAnlegenSelected action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenSelected({ land: laender[1] });
+            const action = schulkatalogActions.ortMitSchuleAnlegenSelected();
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSelected',
-                land: laender[1],
             });
         });
     });
@@ -154,11 +153,10 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleAnlegenSelected action', () => {
-            const action = schulkatalogActions.schuleAnlegenSelected({ ort: orte[0] });
+            const action = schulkatalogActions.schuleAnlegenSelected();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
-                ort: orte[0],
             });
         });
     });

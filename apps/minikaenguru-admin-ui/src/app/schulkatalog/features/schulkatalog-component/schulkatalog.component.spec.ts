@@ -51,7 +51,6 @@ describe('SchulkatalogComponent', () => {
         },
     ];
 
-    let component: SchulkatalogComponent;
     let fixture: ComponentFixture<SchulkatalogComponent>;
 
     let schulkatalogFacadeMock: {
@@ -143,7 +142,6 @@ describe('SchulkatalogComponent', () => {
 
         vi.resetAllMocks();
         fixture = TestBed.createComponent(SchulkatalogComponent);
-        component = fixture.componentInstance;
         await fixture.whenStable();
     });
 
