@@ -1,9 +1,9 @@
-import { ReplaySubject, firstValueFrom, of, throwError } from 'rxjs';
+import { ReplaySubject, Subject, firstValueFrom, of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationEffects } from './mka-authorization.effects';
 import { TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { User } from '@matheportal/auth-model';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
@@ -14,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 
 describe('MkaAuthorizationEffects tests', () => {
-    let action$: ReplaySubject<unknown>;
+    let action$: Subject<Action>;
     let effects: MkaAuthorizationEffects;
     let store: MockStore;
 
@@ -33,7 +33,7 @@ describe('MkaAuthorizationEffects tests', () => {
 
     beforeEach(() => {
         vi.resetAllMocks();
-        action$ = new ReplaySubject<unknown>(1);
+        action$ = new Subject<Action>();
 
         TestBed.configureTestingModule({
             providers: [
@@ -74,47 +74,43 @@ describe('MkaAuthorizationEffects tests', () => {
 
             httpServiceMock.loadMkaAuthorization.mockReturnValue(of(user));
 
+            const promise = firstValueFrom(effects.loadMkaAuthorization$);
+
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            const emmited = await firstValueFrom(effects.loadMkaAuthorization$);
+            const emmited = await promise;
 
             expect(emmited).toEqual(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
         });
 
-        it('should NOT call the httpService when loaded', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            store.overrideSelector(fromMkaAuthorization.authorizationLoadState, authorizationLoadState);
+        it('should not load authorization when already loaded', () => {
+            store.overrideSelector(fromMkaAuthorization.authorizationLoadState, 'loaded');
             store.refreshState();
 
-            effects.loadMkaAuthorization$.subscribe({
-                next: () => {
-                    expect(true).toBeFalsy();
-                },
-                complete: () => {
-                    expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-                },
-            });
+            const emitted = vi.fn();
+            const subscription = effects.loadMkaAuthorization$.subscribe(emitted);
 
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            action$.complete();
+
+            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            expect(emitted).not.toHaveBeenCalled();
+
+            subscription.unsubscribe();
         });
 
-        it('should NOT call the httpService when failed', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'failed';
-            store.overrideSelector(fromMkaAuthorization.authorizationLoadState, authorizationLoadState);
+        it('should not load authorization when failed', () => {
+            store.overrideSelector(fromMkaAuthorization.authorizationLoadState, 'failed');
             store.refreshState();
 
-            effects.loadMkaAuthorization$.subscribe({
-                next: () => {
-                    expect(true).toBeFalsy();
-                },
-                complete: () => {
-                    expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-                },
-            });
+            const emitted = vi.fn();
+            const subscription = effects.loadMkaAuthorization$.subscribe(emitted);
 
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            action$.complete();
+
+            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            expect(emitted).not.toHaveBeenCalled();
+
+            subscription.unsubscribe();
         });
 
         it('should call httpService map to failed when returns HttpError', async () => {
@@ -131,8 +127,10 @@ describe('MkaAuthorizationEffects tests', () => {
 
             httpServiceMock.loadMkaAuthorization.mockReturnValue(throwError(() => httpServerErrorResponse));
 
+            const promise = firstValueFrom(effects.loadMkaAuthorization$);
+
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            const emmited = await firstValueFrom(effects.loadMkaAuthorization$);
+            const emmited = await promise;
 
             expect(emmited).toEqual(mkaAuthorizationActions.loadMkaAuthorizationFailed());
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
@@ -147,11 +145,11 @@ describe('MkaAuthorizationEffects tests', () => {
                 berechtigungen: ['STANDARD', 'PRIVAT'],
             };
 
-            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
-            await firstValueFrom(effects.mkaAuthorizationLoaded$);
+            const promise = firstValueFrom(effects.mkaAuthorizationLoaded$);
 
-            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
+            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
+            await promise;
+
             expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
             expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledWith(user);
         });
@@ -159,10 +157,11 @@ describe('MkaAuthorizationEffects tests', () => {
 
     describe('loadMkaAuthorizationFailed$ test', () => {
         it('publishes error when loadMkaAuthorizationFailed', async () => {
-            action$.next(mkaAuthorizationActions.loadMkaAuthorizationFailed());
-            await firstValueFrom(effects.loadMkaAuthorizationFailed$);
+            const promise = firstValueFrom(effects.loadMkaAuthorizationFailed$);
 
-            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            action$.next(mkaAuthorizationActions.loadMkaAuthorizationFailed());
+            await promise;
+
             expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);
             expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
                 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'

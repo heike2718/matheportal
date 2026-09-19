@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize, firstValueFrom, ReplaySubject, Subject, throwError } from 'rxjs';
+import { finalize, firstValueFrom, Subject, throwError } from 'rxjs';
 import { SchulkatalogEffects } from './schulkatalog.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -25,7 +25,7 @@ describe('SchulkatalogEffects', () => {
         url: '/authurls/login',
     });
 
-    let action$: ReplaySubject<unknown>;
+    let action$: Subject<Action>;
     let effects: SchulkatalogEffects;
 
     let httpServiceMock: {
@@ -42,7 +42,7 @@ describe('SchulkatalogEffects', () => {
 
     beforeEach(() => {
         vi.resetAllMocks();
-        action$ = new ReplaySubject<unknown>(1);
+        action$ = new Subject<Action>();
 
         httpServiceMock = {
             loadLaender: vi.fn(),
@@ -128,10 +128,11 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to loadLaenderFailed when httpErrorResponse', async () => {
             httpServiceMock.loadLaender.mockReturnValue(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.loadLaender$);
-            action$.next(schulkatalogActions.loadLaender());
+            const promise = firstValueFrom(effects.loadLaender$);
 
-            const emmited = await emittedPromise;
+            action$.next(schulkatalogActions.loadLaender());
+            const emmited = await promise;
+
             expect(emmited).toEqual(schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.loadLaender).toHaveBeenCalledOnce();
         });
@@ -203,13 +204,11 @@ describe('SchulkatalogEffects', () => {
             };
 
             // arrange
-            const emmitedPromise = firstValueFrom(effects.landSelected$);
+            const promise = firstValueFrom(effects.landSelected$);
 
             // act
             action$.next(schulkatalogActions.landSelected({ land }));
-
-            // wait
-            const emmited = await emmitedPromise;
+            const emmited = await promise;
 
             // assert
             expect(emmited).toEqual(schulkatalogActions.loadOrte({ land }));
@@ -302,11 +301,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to loadOrteFailed when httpErrorResponse', async () => {
             httpServiceMock.loadOrte.mockReturnValue(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.loadOrte$);
+            const promise = firstValueFrom(effects.loadOrte$);
 
             action$.next(schulkatalogActions.loadOrte({ land: land1 }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.loadOrte).toHaveBeenCalledOnce();
@@ -317,11 +315,10 @@ describe('SchulkatalogEffects', () => {
 
             httpServiceMock.loadOrte.mockReturnValue(throwError(() => error));
 
-            const emittedPromise = firstValueFrom(effects.loadOrte$);
+            const promise = firstValueFrom(effects.loadOrte$);
 
             action$.next(schulkatalogActions.loadOrte({ land: land1 }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.loadOrteFailed({ error }));
             expect(httpServiceMock.loadOrte).toHaveBeenCalledOnce();
@@ -493,11 +490,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to loadSchulenFailed when httpErrorResponse', async () => {
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.loadSchulen$);
+            const promise = firstValueFrom(effects.loadSchulen$);
 
             action$.next(schulkatalogActions.loadSchulen({ ort: ort1 }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
@@ -508,11 +504,10 @@ describe('SchulkatalogEffects', () => {
 
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => error));
 
-            const emittedPromise = firstValueFrom(effects.loadSchulen$);
+            const promise = firstValueFrom(effects.loadSchulen$);
 
             action$.next(schulkatalogActions.loadSchulen({ ort: ort1 }));
-
-            const emitted = await emittedPromise;
+            const emitted = await promise;
 
             expect(emitted).toEqual(schulkatalogActions.loadSchulenFailed({ error }));
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
@@ -621,11 +616,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to landMitOrtUndSchuleAnlegenFailed when httpErrorResponse', async () => {
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.landMitOrtUndSchuleAnlegen$);
+            const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegen$);
 
             action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(
                 schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error: httpServerErrorResponse })
@@ -639,11 +633,10 @@ describe('SchulkatalogEffects', () => {
 
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(throwError(() => error));
 
-            const emittedPromise = firstValueFrom(effects.landMitOrtUndSchuleAnlegen$);
+            const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegen$);
 
             action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error }));
 
@@ -754,11 +747,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to ortMitSchuleAnlegenFailed when httpErrorResponse', async () => {
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.ortMitSchuleAnlegen$);
+            const promise = firstValueFrom(effects.ortMitSchuleAnlegen$);
 
             action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.ortMitSchuleAnlegenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledOnce();
@@ -769,11 +761,10 @@ describe('SchulkatalogEffects', () => {
 
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(throwError(() => error));
 
-            const emittedPromise = firstValueFrom(effects.ortMitSchuleAnlegen$);
+            const promise = firstValueFrom(effects.ortMitSchuleAnlegen$);
 
             action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.ortMitSchuleAnlegenFailed({ error }));
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledOnce();
@@ -881,11 +872,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to schuleAnlegenFailed when httpErrorResponse', async () => {
             httpServiceMock.schuleInOrtAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.schuleAnlegen$);
+            const promise = firstValueFrom(effects.schuleAnlegen$);
 
             action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.schuleAnlegenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledOnce();
@@ -1008,11 +998,10 @@ describe('SchulkatalogEffects', () => {
         it('should call the httpService and map to schuleUmbenennenFailed when httpErrorResponse', async () => {
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
-            const emittedPromise = firstValueFrom(effects.schuleUmbenennen$);
+            const promise = firstValueFrom(effects.schuleUmbenennen$);
 
             action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.schuleUmbenennenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledOnce();
@@ -1023,11 +1012,10 @@ describe('SchulkatalogEffects', () => {
 
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(throwError(() => error));
 
-            const emittedPromise = firstValueFrom(effects.schuleUmbenennen$);
+            const promise = firstValueFrom(effects.schuleUmbenennen$);
 
             action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
-
-            const emmited = await emittedPromise;
+            const emmited = await promise;
 
             expect(emmited).toEqual(schulkatalogActions.schuleUmbenennenFailed({ error }));
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledOnce();
