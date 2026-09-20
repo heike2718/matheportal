@@ -64,7 +64,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
                 .kuerzelLand(KUERZEL_LAND)
                 .nameLand("Land   Z ")
                 .nameOrt(" Testort am   Rhein")
-                .nameSchule(" Grunschule   Pinoccio");
+                .nameSchule(" Grundschule   Pinoccio");
 
         final Schulkuerzel result = given()
                 .body(schuleRequest)
