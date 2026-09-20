@@ -60,9 +60,9 @@ describe('SchuleCardComponent', () => {
         expect(spans[2].nativeElement.textContent.trim()).toBe('DE-SA');
     });
 
-    it('should emit schuleUmbenennenSelected when clicked', () => {
+    it('should emit schuleUmbenennen when clicked', () => {
         fixture.detectChanges();
-        const emitSpy = vi.spyOn(component.schuleUmbenennenSelected, 'emit');
+        const emitSpy = vi.spyOn(component.schuleUmbenennen, 'emit');
         const buttonUmbenennenDe = fixture.debugElement.query(By.css('.mk-admin-schule-card__action'));
         expect(buttonUmbenennenDe).toBeTruthy();
         expect(buttonUmbenennenDe.nativeElement.textContent.trim()).toBe('umbenennen');

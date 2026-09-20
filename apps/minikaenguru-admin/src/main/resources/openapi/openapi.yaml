@@ -451,6 +451,7 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 emailAuftraggeber:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
@@ -466,10 +467,12 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 nameSchule:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 emailAuftraggeber:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
@@ -491,14 +494,17 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 nameOrt:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 nameSchule:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 emailAuftraggeber:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'

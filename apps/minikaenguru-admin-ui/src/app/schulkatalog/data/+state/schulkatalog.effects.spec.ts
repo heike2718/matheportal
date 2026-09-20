@@ -13,11 +13,18 @@ import {
     Schule,
     SchuleAnlegenOderAendernRequest,
     Schulkuerzel,
+    SCHULKATALOG_ADMIN_KONTEXT,
 } from '../../model/schulkatalog.model';
 import { schulkatalogActions } from './schulkatalog.actions';
 import { Action } from '@ngrx/store';
 
 describe('SchulkatalogEffects', () => {
+    const schulkuerzel: Schulkuerzel = { kuerzel: 'KUERZEL-1' };
+
+    const expectedErrorMessage =
+        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. ' +
+        'Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
+
     const httpServerErrorResponse = new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
@@ -38,7 +45,7 @@ describe('SchulkatalogEffects', () => {
         schuleUmbenennen: ReturnType<typeof vi.fn>;
     };
 
-    let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
+    let messagePublisherMock: { publishInfo: ReturnType<typeof vi.fn>; publishError: ReturnType<typeof vi.fn> };
 
     beforeEach(() => {
         vi.resetAllMocks();
@@ -55,6 +62,7 @@ describe('SchulkatalogEffects', () => {
         };
 
         messagePublisherMock = {
+            publishInfo: vi.fn(),
             publishError: vi.fn(),
         };
 
@@ -125,7 +133,7 @@ describe('SchulkatalogEffects', () => {
             // Aufräumen
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to loadLaenderFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to loadActionFailed when httpErrorResponse', async () => {
             httpServiceMock.loadLaender.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.loadLaender$);
@@ -133,10 +141,15 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadLaender());
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
+                    error: httpServerErrorResponse,
+                })
+            );
             expect(httpServiceMock.loadLaender).toHaveBeenCalledOnce();
         });
-        it('should call the httpService and map to loadLaenderFailed when other Error', async () => {
+        it('should call the httpService and map to loadActionFailed when other Error', async () => {
             const error = new Error('uiuiui!');
 
             httpServiceMock.loadLaender.mockReturnValue(throwError(() => error));
@@ -145,7 +158,9 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadLaender());
 
             const emmited = await emittedPromise;
-            expect(emmited).toEqual(schulkatalogActions.loadLaenderFailed({ error }));
+            expect(emmited).toEqual(
+                schulkatalogActions.loadActionFailed({ kontext: SCHULKATALOG_ADMIN_KONTEXT.laender, error })
+            );
             expect(httpServiceMock.loadLaender).toHaveBeenCalledOnce();
         });
         it('should keep the effect stream alive after an error occurred', () => {
@@ -170,7 +185,12 @@ describe('SchulkatalogEffects', () => {
             httpFirst$.error(httpServerErrorResponse);
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
-            expect(emittedActions).toEqual([schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse })]);
+            expect(emittedActions).toEqual([
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
+                    error: httpServerErrorResponse,
+                }),
+            ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
@@ -186,7 +206,10 @@ describe('SchulkatalogEffects', () => {
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
+                    error: httpServerErrorResponse,
+                }),
                 schulkatalogActions.loadLaenderSucceeded({ laender: erfolgreicheLaender }),
             ]);
 
@@ -298,7 +321,7 @@ describe('SchulkatalogEffects', () => {
             // Aufräumen
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to loadOrteFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to loadActionFailed when httpErrorResponse', async () => {
             httpServiceMock.loadOrte.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.loadOrte$);
@@ -306,11 +329,16 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadOrte({ land: land1 }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
+                    error: httpServerErrorResponse,
+                })
+            );
             expect(httpServiceMock.loadOrte).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadOrte).toHaveBeenCalledWith('LAND-1');
         });
-        it('should call the httpService and map to loadOrteFailed when other Error', async () => {
+        it('should call the httpService and map to loadActionFailed when other Error', async () => {
             const error = new Error('uiuiui!');
 
             httpServiceMock.loadOrte.mockReturnValue(throwError(() => error));
@@ -320,7 +348,9 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadOrte({ land: land1 }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.loadOrteFailed({ error }));
+            expect(emmited).toEqual(
+                schulkatalogActions.loadActionFailed({ kontext: SCHULKATALOG_ADMIN_KONTEXT.orte, error })
+            );
             expect(httpServiceMock.loadOrte).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadOrte).toHaveBeenCalledWith('LAND-1');
         });
@@ -346,7 +376,12 @@ describe('SchulkatalogEffects', () => {
             httpFirst$.error(httpServerErrorResponse);
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
-            expect(emittedActions).toEqual([schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse })]);
+            expect(emittedActions).toEqual([
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
+                    error: httpServerErrorResponse,
+                }),
+            ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
@@ -362,7 +397,10 @@ describe('SchulkatalogEffects', () => {
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
+                    error: httpServerErrorResponse,
+                }),
                 schulkatalogActions.loadOrteSucceeded({ orte: erfolgreicheOrte }),
             ]);
 
@@ -487,7 +525,7 @@ describe('SchulkatalogEffects', () => {
             // Aufräumen
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to loadSchulenFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to loadActionFailed when httpErrorResponse', async () => {
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.loadSchulen$);
@@ -495,11 +533,16 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadSchulen({ ort: ort1 }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
+                    error: httpServerErrorResponse,
+                })
+            );
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledWith('ORT-1');
         });
-        it('should call the httpService and map to loadSchulenFailed when other Error', async () => {
+        it('should call the httpService and map to loadActionFailed when other Error', async () => {
             const error = new Error('uiuiui!');
 
             httpServiceMock.loadSchulen.mockReturnValue(throwError(() => error));
@@ -509,7 +552,9 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.loadSchulen({ ort: ort1 }));
             const emitted = await promise;
 
-            expect(emitted).toEqual(schulkatalogActions.loadSchulenFailed({ error }));
+            expect(emitted).toEqual(
+                schulkatalogActions.loadActionFailed({ kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen, error })
+            );
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadSchulen).toHaveBeenCalledWith('ORT-1');
         });
@@ -542,7 +587,12 @@ describe('SchulkatalogEffects', () => {
             httpFirst$.error(httpServerErrorResponse);
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
-            expect(emittedActions).toEqual([schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse })]);
+            expect(emittedActions).toEqual([
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
+                    error: httpServerErrorResponse,
+                }),
+            ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
@@ -559,7 +609,10 @@ describe('SchulkatalogEffects', () => {
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.loadActionFailed({
+                    kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
+                    error: httpServerErrorResponse,
+                }),
                 schulkatalogActions.loadSchulenSucceeded({ schulen: erfolgreicheSchulen }),
             ]);
 
@@ -576,8 +629,6 @@ describe('SchulkatalogEffects', () => {
             nameOrt: 'Trallala',
             nameSchule: 'Trullerschule',
         };
-
-        const kuerzel: Schulkuerzel = { kuerzel: 'KUERZEL-1' };
 
         it('should ignore the second action while the first request is active (exhaustMap)', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
@@ -603,17 +654,15 @@ describe('SchulkatalogEffects', () => {
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledTimes(1);
 
             // --- Ersten Request erfolgreich beenden ---
-            httpFirst$.next(kuerzel);
+            httpFirst$.next(schulkuerzel);
             httpFirst$.complete();
 
             // Es darf am Ende NUR die eine Erfolgs-Action der ERSTEN Operation existieren
-            expect(emittedActions).toEqual([
-                schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel: kuerzel }),
-            ]);
+            expect(emittedActions).toEqual([schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel })]);
 
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to landMitOrtUndSchuleAnlegenFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to actionFailed when httpErrorResponse', async () => {
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegen$);
@@ -621,14 +670,12 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(
-                schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error: httpServerErrorResponse })
-            );
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }));
 
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledOnce();
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledWith(payload);
         });
-        it('should call the httpService and map to landMitOrtUndSchuleAnlegenFailed when an other error is thrown', async () => {
+        it('should call the httpService and map to actionFailed when an other error is thrown', async () => {
             const error = new Error('uiuiui');
 
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(throwError(() => error));
@@ -638,7 +685,7 @@ describe('SchulkatalogEffects', () => {
             action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error }));
 
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledOnce();
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledWith(payload);
@@ -672,7 +719,7 @@ describe('SchulkatalogEffects', () => {
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
             expect(emittedActions).toEqual([
-                schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
@@ -685,13 +732,13 @@ describe('SchulkatalogEffects', () => {
             expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
-            httpSecond$.next(kuerzel);
+            httpSecond$.next(schulkuerzel);
             httpSecond$.complete();
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error: httpServerErrorResponse }),
-                schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel: kuerzel }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel }),
             ]);
 
             // Aufräumen
@@ -699,16 +746,31 @@ describe('SchulkatalogEffects', () => {
         });
     });
 
+    describe('landMitOrtUndSchuleAnlegenSucceeded$', () => {
+        it('should show a message and dispatch loadLaender', async () => {
+            const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegenSucceeded$);
+
+            action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledTimes(1);
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledWith('Neue Schule angelegt. Kürzel: KUERZEL-1');
+            expect(emitted).toEqual(schulkatalogActions.loadLaender());
+        });
+    });
+
     describe('ortMitSchuleAnlegen$', () => {
-        const kuerzelLand = 'TT';
+        const land: Land = {
+            kuerzel: 'TT',
+            name: 'Tickitacki-Land',
+            anzahlOrte: 17,
+        };
 
         const payload: OrtMitSchuleAnlegenRequest = {
             emailAuftraggeber: 'test@provider.de',
             nameOrt: 'Trallala',
             nameSchule: 'Trullerschule',
         };
-
-        const kuerzel: Schulkuerzel = { kuerzel: 'KUERZEL-1' };
 
         it('should ignore the second action while the first request is active (exhaustMap)', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
@@ -722,53 +784,51 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- ACTION 1: Erste Action triggern ---
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
 
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith(kuerzelLand, payload);
+            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith('TT', payload);
 
             // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
 
             // Der Service darf trotz der zweiten Action NICHT noch einmal aufgerufen worden sein!
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(1);
 
             // --- Ersten Request erfolgreich beenden ---
-            httpFirst$.next(kuerzel);
+            httpFirst$.next(schulkuerzel);
             httpFirst$.complete();
 
             // Es darf am Ende NUR die eine Erfolgs-Action der ERSTEN Operation existieren
-            expect(emittedActions).toEqual([
-                schulkatalogActions.ortMitSchuleAnlegenSucceeded({ schulkuerzel: kuerzel }),
-            ]);
+            expect(emittedActions).toEqual([schulkatalogActions.ortMitSchuleAnlegenSucceeded({ land, schulkuerzel })]);
 
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to ortMitSchuleAnlegenFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to actionFailed when httpErrorResponse', async () => {
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.ortMitSchuleAnlegen$);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.ortMitSchuleAnlegenFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledWith(kuerzelLand, payload);
+            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledWith('TT', payload);
         });
-        it('should call the httpService and map to ortMitSchuleAnlegenFailed when an other error is thrown', async () => {
+        it('should call the httpService and map to actionFailed when an other error is thrown', async () => {
             const error = new Error('uiuiui');
 
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(throwError(() => error));
 
             const promise = firstValueFrom(effects.ortMitSchuleAnlegen$);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.ortMitSchuleAnlegenFailed({ error }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error }));
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledWith(kuerzelLand, payload);
+            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledWith('TT', payload);
         });
 
         it('should keep the effect stream alive after an error occurred', () => {
@@ -788,10 +848,10 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- SCHRITT 1: Ersten Request triggern und Fehler simulieren ---
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
 
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith(kuerzelLand, payload);
+            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith('TT', payload);
             expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
@@ -799,27 +859,27 @@ describe('SchulkatalogEffects', () => {
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
             expect(emittedActions).toEqual([
-                schulkatalogActions.ortMitSchuleAnlegenFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
             // Die Action wird dann komplett ignoriert und der HTTP-Service wird NICHT aufgerufen.
-            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand, payload }));
+            action$.next(schulkatalogActions.ortMitSchuleAnlegen({ land, payload }));
 
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(2);
-            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith(kuerzelLand, payload);
+            expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith('TT', payload);
             expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
-            httpSecond$.next(kuerzel);
+            httpSecond$.next(schulkuerzel);
             httpSecond$.complete();
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.ortMitSchuleAnlegenFailed({ error: httpServerErrorResponse }),
-                schulkatalogActions.ortMitSchuleAnlegenSucceeded({ schulkuerzel: kuerzel }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.ortMitSchuleAnlegenSucceeded({ land, schulkuerzel: schulkuerzel }),
             ]);
 
             // Aufräumen
@@ -827,15 +887,41 @@ describe('SchulkatalogEffects', () => {
         });
     });
 
+    describe('ortMitSchuleAnlegenSucceeded$', () => {
+        it('should show a message and dispatch loadOrte', async () => {
+            const land: Land = {
+                kuerzel: 'TT',
+                name: 'Takatukaland',
+                anzahlOrte: 8,
+            };
+
+            const promise = firstValueFrom(effects.ortMitSchuleAnlegenSucceeded$);
+
+            action$.next(schulkatalogActions.ortMitSchuleAnlegenSucceeded({ land, schulkuerzel }));
+            const emitted = await promise;
+
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledTimes(1);
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledWith('Neue Schule angelegt. Kürzel: KUERZEL-1');
+            expect(emitted).toEqual(schulkatalogActions.loadOrte({ land }));
+        });
+    });
+
     describe('schuleAnlegen$', () => {
-        const kuerzelOrt = 'A1234567';
+        const ort: Ort = {
+            land: {
+                kuerzel: 'TT',
+                name: 'Takatukaland',
+                anzahlOrte: 6,
+            },
+            kuerzel: 'A1234567',
+            name: 'Testort',
+            anzahlSchulen: 52,
+        };
 
         const payload: SchuleAnlegenOderAendernRequest = {
             emailAuftraggeber: 'test@provider.de',
             name: 'Trillerschule',
         };
-
-        const kuerzel: Schulkuerzel = { kuerzel: 'KUERZEL-1' };
 
         it('should ignore the second action while the first request is active (exhaustMap)', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
@@ -849,52 +935,52 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- ACTION 1: Erste Action triggern ---
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
 
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith(kuerzelOrt, payload);
+            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith('A1234567', payload);
 
             // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
 
             // Der Service darf trotz der zweiten Action NICHT noch einmal aufgerufen worden sein!
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(1);
 
             // --- Ersten Request erfolgreich beenden ---
-            httpFirst$.next(kuerzel);
+            httpFirst$.next(schulkuerzel);
             httpFirst$.complete();
 
             // Es darf am Ende NUR die eine Erfolgs-Action der ERSTEN Operation existieren
-            expect(emittedActions).toEqual([schulkatalogActions.schuleAnlegenSucceeded({ schulkuerzel: kuerzel })]);
+            expect(emittedActions).toEqual([schulkatalogActions.schuleAnlegenSucceeded({ ort, schulkuerzel })]);
 
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to schuleAnlegenFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to actionFailed when httpErrorResponse', async () => {
             httpServiceMock.schuleInOrtAnlegen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.schuleAnlegen$);
 
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.schuleAnlegenFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledWith(kuerzelOrt, payload);
+            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledWith('A1234567', payload);
         });
-        it('should call the httpService and map to schuleAnlegenFailed when an other error is thrown', async () => {
+        it('should call the httpService and map to actionFailed when an other error is thrown', async () => {
             const error = new Error('uiuiui');
 
             httpServiceMock.schuleInOrtAnlegen.mockReturnValueOnce(throwError(() => error));
 
             const emittedPromise = firstValueFrom(effects.schuleAnlegen$);
 
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
 
             const emmited = await emittedPromise;
 
-            expect(emmited).toEqual(schulkatalogActions.schuleAnlegenFailed({ error }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error }));
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledWith(kuerzelOrt, payload);
+            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledWith('A1234567', payload);
         });
 
         it('should keep the effect stream alive after an error occurred', () => {
@@ -914,10 +1000,10 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- SCHRITT 1: Ersten Request triggern und Fehler simulieren ---
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
 
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith(kuerzelOrt, payload);
+            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith('A1234567', payload);
             expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
@@ -925,27 +1011,27 @@ describe('SchulkatalogEffects', () => {
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
             expect(emittedActions).toEqual([
-                schulkatalogActions.schuleAnlegenFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
             // Die Action wird dann komplett ignoriert und der HTTP-Service wird NICHT aufgerufen.
-            action$.next(schulkatalogActions.schuleAnlegen({ kuerzelOrt, payload }));
+            action$.next(schulkatalogActions.schuleAnlegen({ ort, payload }));
 
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(2);
-            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith(kuerzelOrt, payload);
+            expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith('A1234567', payload);
             expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
-            httpSecond$.next(kuerzel);
+            httpSecond$.next(schulkuerzel);
             httpSecond$.complete();
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.schuleAnlegenFailed({ error: httpServerErrorResponse }),
-                schulkatalogActions.schuleAnlegenSucceeded({ schulkuerzel: kuerzel }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.schuleAnlegenSucceeded({ ort, schulkuerzel }),
             ]);
 
             // Aufräumen
@@ -953,15 +1039,54 @@ describe('SchulkatalogEffects', () => {
         });
     });
 
+    describe('schuleAnlegenSucceeded$', () => {
+        it('should show a message and dispatch loadOrte', async () => {
+            const land: Land = {
+                kuerzel: 'TT',
+                name: 'Takatukaland',
+                anzahlOrte: 8,
+            };
+
+            const ort: Ort = {
+                land,
+                kuerzel: 'A1234567',
+                name: 'Testort',
+                anzahlSchulen: 34,
+            };
+
+            const promise = firstValueFrom(effects.schuleAnlegenSucceeded$);
+
+            action$.next(schulkatalogActions.schuleAnlegenSucceeded({ ort, schulkuerzel }));
+            const emitted = await promise;
+
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledTimes(1);
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledWith('Neue Schule angelegt. Kürzel: KUERZEL-1');
+            expect(emitted).toEqual(schulkatalogActions.loadSchulen({ ort }));
+        });
+    });
+
     describe('schuleUmbenennen$', () => {
-        const kuerzelSchule = 'A1234567';
+        const ort: Ort = {
+            land: {
+                kuerzel: 'TT',
+                name: 'Takatukaland',
+                anzahlOrte: 6,
+            },
+            kuerzel: 'A1234567',
+            name: 'Testort',
+            anzahlSchulen: 52,
+        };
+
+        const schule: Schule = {
+            ort,
+            kuerzel: 'Z7654321',
+            name: 'Alter Name',
+        };
 
         const payload: SchuleAnlegenOderAendernRequest = {
             emailAuftraggeber: 'test@provider.de',
             name: 'Trillerschule',
         };
-
-        const kuerzel: Schulkuerzel = { kuerzel: 'KUERZEL-1' };
 
         it('should ignore the second action while the first request is active (exhaustMap)', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
@@ -975,51 +1100,51 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- ACTION 1: Erste Action triggern ---
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
 
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(kuerzelSchule, payload);
+            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(schule.kuerzel, payload);
 
             // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
 
             // Der Service darf trotz der zweiten Action NICHT noch einmal aufgerufen worden sein!
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(1);
 
             // --- Ersten Request erfolgreich beenden ---
-            httpFirst$.next(kuerzel);
+            httpFirst$.next(schulkuerzel);
             httpFirst$.complete();
 
             // Es darf am Ende NUR die eine Erfolgs-Action der ERSTEN Operation existieren
-            expect(emittedActions).toEqual([schulkatalogActions.schuleUmbenennenSucceeded({ schulkuerzel: kuerzel })]);
+            expect(emittedActions).toEqual([schulkatalogActions.schuleUmbenennenSucceeded({ schule, schulkuerzel })]);
 
             subscription.unsubscribe();
         });
-        it('should call the httpService and map to schuleUmbenennenFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to actionFailed when httpErrorResponse', async () => {
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
 
             const promise = firstValueFrom(effects.schuleUmbenennen$);
 
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.schuleUmbenennenFailed({ error: httpServerErrorResponse }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledWith(kuerzelSchule, payload);
+            expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledWith(schule.kuerzel, payload);
         });
-        it('should call the httpService and map to schuleUmbenennenFailed when an other error is thrown', async () => {
+        it('should call the httpService and map to actionFailed when an other error is thrown', async () => {
             const error = new Error('uiuiui');
 
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(throwError(() => error));
 
             const promise = firstValueFrom(effects.schuleUmbenennen$);
 
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(schulkatalogActions.schuleUmbenennenFailed({ error }));
+            expect(emmited).toEqual(schulkatalogActions.changeActionFailed({ error }));
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledOnce();
-            expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledWith(kuerzelSchule, payload);
+            expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledWith(schule.kuerzel, payload);
         });
 
         it('should keep the effect stream alive after an error occurred', () => {
@@ -1039,10 +1164,10 @@ describe('SchulkatalogEffects', () => {
             });
 
             // --- SCHRITT 1: Ersten Request triggern und Fehler simulieren ---
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
 
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(kuerzelSchule, payload);
+            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(schule.kuerzel, payload);
             expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
@@ -1050,31 +1175,93 @@ describe('SchulkatalogEffects', () => {
 
             // Überprüfen, ob die Failed-Action im Array gelandet ist
             expect(emittedActions).toEqual([
-                schulkatalogActions.schuleUmbenennenFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
             // Die Action wird dann komplett ignoriert und der HTTP-Service wird NICHT aufgerufen.
-            action$.next(schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload }));
+            action$.next(schulkatalogActions.schuleUmbenennen({ schule, payload }));
 
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(2);
-            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(kuerzelSchule, payload);
+            expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(schule.kuerzel, payload);
             expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
-            httpSecond$.next(kuerzel);
+            httpSecond$.next(schulkuerzel);
             httpSecond$.complete();
 
             // BEWEIS 2: Die Success-Action muss ebenfalls im Array landen!
             expect(emittedActions).toEqual([
-                schulkatalogActions.schuleUmbenennenFailed({ error: httpServerErrorResponse }),
-                schulkatalogActions.schuleUmbenennenSucceeded({ schulkuerzel: kuerzel }),
+                schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }),
+                schulkatalogActions.schuleUmbenennenSucceeded({ schule, schulkuerzel }),
             ]);
 
             // Aufräumen
             subscription.unsubscribe();
+        });
+    });
+
+    describe('schuleUmbenennenSucceeded$', () => {
+        it('should show a message and dispatch loadOrte', async () => {
+            const land: Land = {
+                kuerzel: 'TT',
+                name: 'Takatukaland',
+                anzahlOrte: 8,
+            };
+
+            const ort: Ort = {
+                land,
+                kuerzel: 'A1234567',
+                name: 'Testort',
+                anzahlSchulen: 34,
+            };
+
+            const schule: Schule = {
+                ort,
+                kuerzel: 'KUERZEL_1',
+                name: 'Neue Baumschule',
+            };
+
+            const promise = firstValueFrom(effects.schuleUmbenennenSucceeded$);
+
+            action$.next(schulkatalogActions.schuleUmbenennenSucceeded({ schule, schulkuerzel }));
+            const emitted = await promise;
+
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledTimes(1);
+            expect(messagePublisherMock.publishInfo).toHaveBeenCalledWith(
+                'Schule erfolgreich umbenannt. Kürzel: KUERZEL-1'
+            );
+            expect(emitted).toEqual(schulkatalogActions.loadSchulen({ ort }));
+        });
+    });
+
+    describe('changeActionFailed$', () => {
+        it('should trigger an error message and not dispatch any action', async () => {
+            const promise = firstValueFrom(effects.actionFailed$);
+
+            action$.next(schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse }));
+            await promise;
+
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedErrorMessage);
+        });
+    });
+
+    describe('loadActionFailed$', () => {
+        it.each([
+            SCHULKATALOG_ADMIN_KONTEXT.laender,
+            SCHULKATALOG_ADMIN_KONTEXT.orte,
+            SCHULKATALOG_ADMIN_KONTEXT.schulen,
+        ])('should trigger an error message and not dispatch any action on load with Kontext %s', async kontext => {
+            const promise = firstValueFrom(effects.actionFailed$);
+
+            action$.next(schulkatalogActions.loadActionFailed({ kontext, error: httpServerErrorResponse }));
+            await promise;
+
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedErrorMessage);
         });
     });
 });

@@ -195,7 +195,7 @@ describe('SchulkatalogFacade', () => {
         });
 
         it('should dispatch backToLaenderRequested', () => {
-            facade.backToLaenderRequested();
+            facade.backToLaender();
 
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToLaenderRequested());
         });
@@ -209,23 +209,23 @@ describe('SchulkatalogFacade', () => {
         });
 
         it('should dispatch backToOrteRequested', () => {
-            facade.backToOrteRequested();
+            facade.backToOrte();
 
             expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToOrteRequested());
         });
 
         it('should dispatch landMitOrtUndSchuleAnlegenSelected', () => {
-            facade.landMitOrtUndSchuleAnlegenRequested();
+            facade.landMitOrtUndSchuleAnlegen();
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landMitOrtUndSchuleAnlegenSelected());
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
         });
 
         it('should dispatch schuleUmbenennenSelected', () => {
             const schule = schulen[2];
 
-            facade.schuleUmbenennenSelected(schule);
+            facade.schuleUmbenennen(schule);
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.schuleUmbenennenSelected({ schule }));
+            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.schuleUmbenennenRequested({ schule }));
         });
     });
 });

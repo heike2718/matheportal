@@ -1,5 +1,5 @@
 import { Action, State } from '@ngrx/store';
-import { Land, Ort, Schule } from '../../model/schulkatalog.model';
+import { Land, Ort, Schule, SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 import { initialSchulkatalogState, schulkatalogFeature, SchulkatalogState } from './schulkatalog.reducer';
 import { schulkatalogActions } from './schulkatalog.actions';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -165,7 +165,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set laenderLoadingState correctly when loadLaenderFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadLaenderFailed({ error: httpServerAuthErroResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
+                        error: httpServerAuthErroResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -184,7 +187,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set laenderLoadingState correctly when loadLaenderFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
+                        error: httpServerErrorResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -331,7 +337,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadingState correctly when loadOrteFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadOrteFailed({ error: httpServerAuthErroResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
+                        error: httpServerAuthErroResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -350,7 +359,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadingState correctly when loadOrteFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
+                        error: httpServerErrorResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -385,7 +397,7 @@ describe('schulkatalogReducer tests', () => {
             expect(state).toEqual({
                 laender,
                 laenderLoadingState: 'loaded',
-                selectedLand: laender[1],
+                selectedLand: undefined,
                 orte: [],
                 orteLoadingState: 'not-loaded',
                 selectedOrt: undefined,
@@ -521,7 +533,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set schulenLoadingState correctly when loadSchulenFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadSchulenFailed({ error: httpServerAuthErroResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
+                        error: httpServerAuthErroResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -540,7 +555,10 @@ describe('schulkatalogReducer tests', () => {
             it('should set schulenLoadingState correctly when loadSchulenFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse })
+                    schulkatalogActions.loadActionFailed({
+                        kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
+                        error: httpServerErrorResponse,
+                    })
                 );
 
                 expect(state).toEqual({
@@ -577,7 +595,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedLand: laender[1],
                 orte,
                 orteLoadingState: 'loaded',
-                selectedOrt: orte[0],
+                selectedOrt: undefined,
                 schulen: [],
                 schulenLoadingState: 'not-loaded',
                 selectedSchule: undefined,
@@ -598,7 +616,7 @@ describe('schulkatalogReducer tests', () => {
 
             const state = schulkatalogFeature.reducer(
                 previousState,
-                schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[1] })
+                schulkatalogActions.schuleUmbenennenRequested({ schule: schulen[1] })
             );
 
             expect(state).toEqual({

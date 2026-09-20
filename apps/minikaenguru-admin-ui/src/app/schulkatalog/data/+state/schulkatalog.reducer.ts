@@ -1,5 +1,5 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { Land, Ort, Schule } from '../../model/schulkatalog.model';
+import { Land, Ort, Schule, SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 import { schulkatalogActions } from './schulkatalog.actions';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
@@ -48,17 +48,6 @@ export const schulkatalogFeature = createFeature({
             schulenLoadingState: 'not-loaded',
             selectedSchule: undefined,
         })),
-        on(schulkatalogActions.loadLaenderFailed, (state, { error }) => ({
-            ...state,
-            laenderLoadingState: mapErrorResourceLoadingState(error),
-            selectedLand: undefined,
-            orte: [],
-            orteLoadingState: 'not-loaded',
-            selectedOrt: undefined,
-            schulen: [],
-            schulenLoadingState: 'not-loaded',
-            selectedSchule: undefined,
-        })),
         on(schulkatalogActions.landSelected, (state, { land }) => ({
             ...state,
             selectedLand: land,
@@ -83,18 +72,13 @@ export const schulkatalogFeature = createFeature({
             orte: orte,
             orteLoadingState: 'loaded',
         })),
-        on(schulkatalogActions.loadOrteFailed, (state, { error }) => ({
-            ...state,
-            orteLoadingState: mapErrorResourceLoadingState(error),
-            selectedOrt: undefined,
-            schulen: [],
-            schulenLoadingState: 'not-loaded',
-            selectedSchule: undefined,
-        })),
         on(schulkatalogActions.backToLaenderRequested, state => ({
             ...state,
             orteLoadingState: 'not-loaded',
             orte: [],
+            schulenLoadingState: 'not-loaded',
+            schulen: [],
+            selectedLand: undefined,
             selectedOrt: undefined,
         })),
         on(schulkatalogActions.ortSelected, (state, { ort }) => ({
@@ -115,18 +99,49 @@ export const schulkatalogFeature = createFeature({
             schulen: schulen,
             schulenLoadingState: 'loaded',
         })),
-        on(schulkatalogActions.loadSchulenFailed, (state, { error }) => ({
-            ...state,
-            schulenLoadingState: mapErrorResourceLoadingState(error),
-            selectedSchule: undefined,
-        })),
+        on(schulkatalogActions.loadActionFailed, (state, action) => {
+            const loadingState = mapErrorResourceLoadingState(action.error);
+            switch (action.kontext) {
+                case SCHULKATALOG_ADMIN_KONTEXT.laender:
+                    return {
+                        ...state,
+                        laenderLoadingState: loadingState,
+                        selectedLand: undefined,
+                        orte: [],
+                        orteLoadingState: 'not-loaded',
+                        selectedOrt: undefined,
+                        schulen: [],
+                        schulenLoadingState: 'not-loaded',
+                        selectedSchule: undefined,
+                    };
+                case SCHULKATALOG_ADMIN_KONTEXT.orte:
+                    return {
+                        ...state,
+                        orteLoadingState: loadingState,
+                        selectedOrt: undefined,
+                        schulen: [],
+                        schulenLoadingState: 'not-loaded',
+                        selectedSchule: undefined,
+                    };
+                case SCHULKATALOG_ADMIN_KONTEXT.schulen:
+                    return {
+                        ...state,
+                        schulenLoadingState: loadingState,
+                        selectedSchule: undefined,
+                    };
+            }
+        }),
         on(schulkatalogActions.backToOrteRequested, state => ({
             ...state,
             schulenLoadingState: 'not-loaded',
             schulen: [],
+            selectedOrt: undefined,
             selectedSchule: undefined,
         })),
-        on(schulkatalogActions.schuleUmbenennenSelected, (state, { schule }) => ({ ...state, selectedSchule: schule })),
+        on(schulkatalogActions.schuleUmbenennenRequested, (state, { schule }) => ({
+            ...state,
+            selectedSchule: schule,
+        })),
         on(schulkatalogActions.resetSchulkatalog, userLoggedOut, () => initialSchulkatalogState)
     ),
 });

@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
 import { provideRouter, Router, RouterLink } from '@angular/router';
-import { RouterTestingHarness } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { firstValueFrom } from 'rxjs';
 
 describe('DashboardComponent', () => {
     let component: DashboardComponent;
     let fixture: ComponentFixture<DashboardComponent>;
-    let router: Router;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -17,7 +14,6 @@ describe('DashboardComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(DashboardComponent);
-        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         await fixture.whenStable();
     });

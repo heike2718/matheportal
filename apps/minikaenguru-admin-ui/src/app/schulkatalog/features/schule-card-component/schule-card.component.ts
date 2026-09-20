@@ -10,5 +10,5 @@ import { Schule } from '../../model/schulkatalog.model';
 })
 export class SchuleCardComponent {
     readonly schule = input.required<Schule>();
-    readonly schuleUmbenennenSelected = output<Schule>();
+    readonly schuleUmbenennen = output<Schule>();
 }

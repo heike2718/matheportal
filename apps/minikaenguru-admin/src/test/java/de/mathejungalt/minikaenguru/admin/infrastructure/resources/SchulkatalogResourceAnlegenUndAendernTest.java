@@ -20,6 +20,8 @@ import de.mathejungalt.minikaenguru.admin.domain.generated.OrtMitSchuleAnlegenRe
 import de.mathejungalt.minikaenguru.admin.domain.generated.SchuleAnlegenOderAendernRequest;
 import de.mathejungalt.minikaenguru.admin.domain.generated.Schulkuerzel;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.dao.SchulkatalogDao;
+import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.LandEntity;
+import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.OrtEntity;
 import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.entities.SchuleEntity;
 import de.mathejungalt.minikaenguru.admin.test.CleanupTestDataDao;
 
@@ -27,6 +29,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -59,9 +62,9 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
         final LandMitOrtUndSchuleAnlegenRequest schuleRequest = new LandMitOrtUndSchuleAnlegenRequest()
                 .emailAuftraggeber("mail@provider.de")
                 .kuerzelLand(KUERZEL_LAND)
-                .nameLand("Land-Z")
-                .nameOrt("Testort")
-                .nameSchule("Pinoccioschule");
+                .nameLand("Land   Z ")
+                .nameOrt(" Testort am   Rhein")
+                .nameSchule(" Grundschule   Pinoccio");
 
         final Schulkuerzel result = given()
                 .body(schuleRequest)
@@ -76,8 +79,12 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
 
         assertEquals(8, result.getKuerzel().length());
 
+        final LandEntity land = schulkatalogDao.findLandById(KUERZEL_LAND);
         final SchuleEntity schule = schulkatalogDao.findSchuleById(result.getKuerzel());
-        assertEquals("Pinoccioschule", schule.getName());
+        final OrtEntity ort = schulkatalogDao.findOrtById(schule.getKuerzelOrt());
+
+        assertAll(() -> assertEquals("Land Z", land.getName()), () -> assertEquals("Testort am Rhein", ort.getName()),
+                () -> assertEquals("Grundschule Pinoccio", schule.getName()));
 
         SCHULKUERZEL.add(result.getKuerzel());
     }
@@ -91,7 +98,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
 
         final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
-                .name("Baumschule");
+                .name(" Kleine   Baumschule ");
 
         final Schulkuerzel result = given()
                 .body(schuleRequest)
@@ -107,7 +114,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
         assertEquals(kuerzel, result.getKuerzel());
 
         final SchuleEntity schule = schulkatalogDao.findSchuleById(result.getKuerzel());
-        assertEquals("Baumschule", schule.getName());
+        assertEquals("Kleine Baumschule", schule.getName());
     }
 
     @Test

@@ -1,20 +1,26 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LandMitOrtUndSchuleAnlegenRequest } from '../../model/schulkatalog.model';
-import { LandMitOrtUndSchuleAnlegenDialogComponent } from './land-mit-ort-und-schule-anlegen-dialog.component';
+import { OrtMitSchuleAnlegenDialogComponent } from './ort-mit-schule-anlegen-dialog.component';
+import { OrtMitSchuleAnlegenDialogData, OrtMitSchuleAnlegenRequest } from '../../model/schulkatalog.model';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { By } from '@angular/platform-browser';
 
-describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
-    let component: LandMitOrtUndSchuleAnlegenDialogComponent;
-    let fixture: ComponentFixture<LandMitOrtUndSchuleAnlegenDialogComponent>;
+describe('OrtMitSchuleAnlegenDialogComponent', () => {
+    let component: OrtMitSchuleAnlegenDialogComponent;
+    let fixture: ComponentFixture<OrtMitSchuleAnlegenDialogComponent>;
 
-    const payload: LandMitOrtUndSchuleAnlegenRequest = {
+    const payload: OrtMitSchuleAnlegenRequest = {
         emailAuftraggeber: 'heike@example.org',
-        kuerzelLand: 'DE-RP',
-        nameLand: 'Rheinland-Pfalz',
         nameOrt: 'Mainz',
         nameSchule: 'Testschule',
+    };
+
+    const data: OrtMitSchuleAnlegenDialogData = {
+        land: {
+            kuerzel: 'AU',
+            name: 'Österreich',
+            anzahlOrte: 24,
+        },
+        payload,
     };
 
     const dialogRefMock = {
@@ -23,11 +29,11 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [LandMitOrtUndSchuleAnlegenDialogComponent],
+            imports: [OrtMitSchuleAnlegenDialogComponent],
             providers: [
                 {
                     provide: DIALOG_DATA,
-                    useValue: payload,
+                    useValue: data,
                 },
                 {
                     provide: DialogRef,
@@ -36,13 +42,11 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
             ],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(LandMitOrtUndSchuleAnlegenDialogComponent);
+        fixture = TestBed.createComponent(OrtMitSchuleAnlegenDialogComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+        await fixture.whenStable();
 
-    beforeEach(() => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
     });
 
     it('should create', () => {
@@ -50,10 +54,10 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
     });
 
     it('should show the correct title', () => {
-        const titleDe = fixture.debugElement.query(By.css('.land-mit-ort-und-schule-dialog__title'));
+        const titleDe = fixture.debugElement.query(By.css('.ort-mit-schule-dialog__title'));
 
         expect(titleDe).toBeTruthy();
-        expect(titleDe.nativeElement.textContent.trim()).toBe('Land mit Ort und Schule anlegen');
+        expect(titleDe.nativeElement.textContent.trim()).toBe('Ort mit Schule in Österreich anlegen');
     });
 
     it('should close the dialog without result when abbrechen is called', () => {
@@ -66,8 +70,6 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
     it('should close the dialog with the form values when anlegen is called with valid form', () => {
         component.form.patchValue({
             emailAuftraggeber: 'neu@example.org',
-            kuerzelLand: 'AT',
-            nameLand: 'Österreich',
             nameOrt: 'Wien',
             nameSchule: 'Testschule Wien',
         });
@@ -77,15 +79,13 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
         expect(dialogRefMock.close).toHaveBeenCalledOnce();
         expect(dialogRefMock.close).toHaveBeenCalledWith({
             emailAuftraggeber: 'neu@example.org',
-            kuerzelLand: 'AT',
-            nameLand: 'Österreich',
             nameOrt: 'Wien',
             nameSchule: 'Testschule Wien',
         });
     });
 
     it('should not close the dialog when the form is invalid', () => {
-        component.form.controls.nameLand.setValue('');
+        component.form.controls.nameOrt.setValue('');
 
         component.anlegen();
 
@@ -93,19 +93,17 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
     });
 
     it('should mark all controls as touched when anlegen is called with invalid form', () => {
-        component.form.controls.nameLand.setValue('');
+        component.form.controls.nameOrt.setValue('');
 
         component.anlegen();
 
         expect(component.form.controls.emailAuftraggeber.touched).toBe(true);
-        expect(component.form.controls.kuerzelLand.touched).toBe(true);
-        expect(component.form.controls.nameLand.touched).toBe(true);
         expect(component.form.controls.nameOrt.touched).toBe(true);
         expect(component.form.controls.nameSchule.touched).toBe(true);
     });
 
     describe('validation', () => {
-        it.each(['nameLand', 'nameOrt', 'nameSchule'] as const)('should require %s', controlName => {
+        it.each(['nameOrt', 'nameSchule'] as const)('should require %s', controlName => {
             const control = component.form.controls[controlName];
 
             control.setValue('');
@@ -113,48 +111,18 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
             expect(control.hasError('required')).toBe(true);
         });
 
-        it.each(['nameLand', 'nameOrt', 'nameSchule'] as const)(
-            'should reject unsupported characters in %s',
-            controlName => {
-                const control = component.form.controls[controlName];
+        it.each(['nameOrt', 'nameSchule'] as const)('should reject unsupported characters in %s', controlName => {
+            const control = component.form.controls[controlName];
 
-                control.setValue('Москва');
-
-                expect(control.hasError('pattern')).toBe(true);
-            }
-        );
-
-        it.each(['nameLand', 'nameOrt', 'nameSchule'] as const)(
-            'should reject %s longer than 100 characters',
-            controlName => {
-                const control = component.form.controls[controlName];
-
-                control.setValue('A'.repeat(101));
-
-                expect(control.hasError('maxlength')).toBe(true);
-            }
-        );
-
-        it('should require kuerzelLand', () => {
-            const control = component.form.controls.kuerzelLand;
-
-            control.setValue('');
-
-            expect(control.hasError('required')).toBe(true);
-        });
-
-        it('should reject invalid kuerzelLand', () => {
-            const control = component.form.controls.kuerzelLand;
-
-            control.setValue('DE1');
+            control.setValue('Москва');
 
             expect(control.hasError('pattern')).toBe(true);
         });
 
-        it('should reject kuerzelLand longer than 5 characters', () => {
-            const control = component.form.controls.kuerzelLand;
+        it.each(['nameOrt', 'nameSchule'] as const)('should reject %s longer than 100 characters', controlName => {
+            const control = component.form.controls[controlName];
 
-            control.setValue('ABCDEF');
+            control.setValue('A'.repeat(101));
 
             expect(control.hasError('maxlength')).toBe(true);
         });
@@ -191,10 +159,11 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
             const button: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
 
             expect(button.disabled).toBe(false);
+            expect(button.textContent.trim()).toBe('anlegen');
         });
 
         it('should not be disabled when the form is invalid', () => {
-            component.form.controls.nameLand.setValue('');
+            component.form.controls.nameOrt.setValue('');
             fixture.detectChanges();
 
             const button: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');

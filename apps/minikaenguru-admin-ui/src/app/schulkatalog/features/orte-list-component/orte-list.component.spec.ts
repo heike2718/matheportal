@@ -54,6 +54,25 @@ describe('OrteListComponent', () => {
         vi.restoreAllMocks();
     });
 
+    describe('page navigation', () => {
+        it('should show the back to laender link', () => {
+            const backLinkDe = fixture.debugElement.query(By.css('.mk-admin-orte-list__back'));
+
+            expect(backLinkDe).toBeTruthy();
+            expect(backLinkDe.nativeElement.textContent.trim()).toBe('zurück zu den Ländern');
+        });
+
+        it('should emit backToLaender when button is clicked', () => {
+            const emitSpy = vi.spyOn(component.backToLaender, 'emit');
+
+            const backLinkDe = fixture.debugElement.query(By.css('.mk-admin-orte-list__back'));
+
+            backLinkDe.triggerEventHandler('click');
+
+            expect(emitSpy).toHaveBeenCalledOnce();
+        });
+    });
+
     describe('orte loaded', () => {
         beforeEach(async () => {
             fixture.componentRef.setInput('selectedLand', land.name);

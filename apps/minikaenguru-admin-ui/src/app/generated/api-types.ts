@@ -61,8 +61,8 @@ export interface paths {
         readonly get: operations['loadSchulen'];
         readonly put?: never;
         /**
-         * neue Schule in einem Land / Bundesland
-         * @description Ort und Schule werden angelegt
+         * neue Schule in einem Ort
+         * @description neue Schule wird angelegt
          */
         readonly post: operations['schuleInOrtAnlegen'];
         readonly delete?: never;

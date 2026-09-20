@@ -12,6 +12,14 @@ export type OrtMitSchuleAnlegenRequest = components['schemas']['OrtMitSchuleAnle
 export type LandMitOrtUndSchuleAnlegenRequest = components['schemas']['LandMitOrtUndSchuleAnlegenRequest'];
 export type Schulkuerzel = components['schemas']['Schulkuerzel'];
 
+export enum SCHULKATALOG_ADMIN_KONTEXT {
+    laender = 'laender',
+    orte = 'orte',
+    schulen = 'schulen',
+}
+
+export type SchulkatalogAdminKontext = (typeof SCHULKATALOG_ADMIN_KONTEXT)[keyof typeof SCHULKATALOG_ADMIN_KONTEXT];
+
 export const initialLandMitOrtUndSchuleAnlegenRequest: LandMitOrtUndSchuleAnlegenRequest = {
     emailAuftraggeber: '',
     kuerzelLand: '',
@@ -19,3 +27,25 @@ export const initialLandMitOrtUndSchuleAnlegenRequest: LandMitOrtUndSchuleAnlege
     nameOrt: '',
     nameSchule: '',
 };
+
+export const initialOrtMitSchuleAnlegenRequest: OrtMitSchuleAnlegenRequest = {
+    emailAuftraggeber: '',
+    nameOrt: '',
+    nameSchule: '',
+};
+
+export interface OrtMitSchuleAnlegenDialogData {
+    readonly land: Land;
+    readonly payload: OrtMitSchuleAnlegenRequest;
+}
+
+export const initialSchuleAnlegenOderAendernRequest: SchuleAnlegenOderAendernRequest = {
+    emailAuftraggeber: '',
+    name: '',
+};
+
+export interface SchuleDialogData {
+    readonly ort: Ort;
+    readonly payload: SchuleAnlegenOderAendernRequest;
+    readonly submitButtonLabel: string;
+}

@@ -1,17 +1,49 @@
 <div class="mk-admin-schulen-list">
-    <button class="mk-admin-schulen-list__back" type="button" (click)="backToOrteRequested.emit()">
-        <svg class="mk-admin-schulen-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-                d="M15 18l-6-6 6-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2" />
-        </svg>
+    <div class="mk-admin-schulen-list__header">
+        <button
+            class="mk-admin-schulen-list__back"
+            data-testid="back-to-orte-link"
+            type="button"
+            (click)="backToOrte.emit()">
+            <svg class="mk-admin-schulen-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                    d="M15 18l-6-6 6-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2" />
+            </svg>
 
-        <span>zurück zu den Orten</span>
-    </button>
+            <span>zurück zu den Orten</span>
+        </button>
+
+        <button
+            class="mk-admin-schulen-list__back"
+            type="button"
+            data-testid="back-to-laender-link"
+            (click)="backToLaender.emit()">
+            <svg class="mk-admin-schulen-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                    d="M15 18l-6-6 6-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2" />
+            </svg>
+
+            <span>zurück zu den Ländern</span>
+        </button>
+
+        <button
+            type="button"
+            class="mk-admin-schulen-list__action"
+            data-testid="create-schule-btn"
+            (click)="schuleAnlegen.emit()">
+            Schule anlegen
+        </button>
+    </div>
 
     <h2 class="mk-admin-schulen-list__title">Schulen in {{ selectedOrt() }} suchen</h2>
     @if (schulenLoaded()) {
@@ -23,9 +55,7 @@
         <ul class="mk-admin-schulen-list__results">
             @for (schule of filteredSchulen(); track schule.kuerzel) {
                 <li class="mk-admin-schulen-list__result">
-                    <mk-admin-schule-card
-                        [schule]="schule"
-                        (schuleUmbenennenSelected)="schuleUmbenennenSelected.emit($event)" />
+                    <mk-admin-schule-card [schule]="schule" (schuleUmbenennen)="schuleUmbenennen.emit($event)" />
                 </li>
             }
         </ul>

@@ -49,15 +49,16 @@ describe('LaenderListComponent', () => {
         it('should show the button for creating all land, ort, schule and emit when it is clicked', () => {
             const buttonDe = fixture.debugElement.query(By.css('[data-testid="create-schule-btn"]'));
             expect(buttonDe).toBeTruthy();
+            expect(buttonDe.nativeElement.textContent.trim()).toBe('Land mit Ort und Schule anlegen');
 
-            const buttonClickedSpy = vi.spyOn(component.landMitOrtUndSchuleAnlegenRequested, 'emit');
+            const buttonClickedSpy = vi.spyOn(component.landMitOrtUndSchuleAnlegen, 'emit');
 
             buttonDe.nativeElement.click();
 
             expect(buttonClickedSpy).toHaveBeenCalledOnce();
         });
 
-        it('should emit landMitOrtUndSchuleAnlegenRequested when button is clicked', () => {
+        it('should emit landSelected when button is clicked', () => {
             const ortSelectedSpy = vi.spyOn(component.landSelected, 'emit');
 
             const landCardsDe = getLandCards();

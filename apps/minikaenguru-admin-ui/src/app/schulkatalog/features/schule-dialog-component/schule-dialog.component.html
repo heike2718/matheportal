@@ -1,0 +1,52 @@
+<div class="schule-dialog">
+    <h2 class="schule-dialog__title">
+        Schule in {{ data.ort.name }} ({{ data.ort.land.name }}) {{ data.submitButtonLabel }}
+    </h2>
+
+    <form class="schule-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="schule-dialog__content">
+            <mat-form-field class="schule-dialog__field">
+                <mat-label>E-Mail Auftraggeber</mat-label>
+                <input matInput formControlName="emailAuftraggeber" />
+
+                @if (form.controls.emailAuftraggeber.hasError('required')) {
+                    <mat-error>E-Mail ist erforderlich.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('pattern')) {
+                    <mat-error>Bitte eine gültige E-Mail-Adresse eingeben.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('maxlength')) {
+                    <mat-error>Die E-Mail darf maximal 255 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="schule-dialog__field">
+                <mat-label>Schule</mat-label>
+                <input matInput formControlName="name" />
+
+                @if (form.controls.name.hasError('required') || form.controls.name.hasError('notBlank')) {
+                    <mat-error>Schule ist erforderlich.</mat-error>
+                } @else if (form.controls.name.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.name.hasError('maxlength')) {
+                    <mat-error>Der Name darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+        </div>
+
+        <div class="schule-dialog__actions">
+            <button
+                type="button"
+                class="schule-dialog__action schule-dialog__action--secondary"
+                data-testid="cancel-btn"
+                (click)="abbrechen()">
+                abbrechen
+            </button>
+
+            <button
+                type="submit"
+                class="schule-dialog__action schule-dialog__action--primary"
+                [disabled]="form.pending">
+                {{ data.submitButtonLabel }}
+            </button>
+        </div>
+    </form>
+</div>
