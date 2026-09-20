@@ -57,7 +57,7 @@ describe('SchulkatalogDialogEffects', () => {
         vi.clearAllMocks();
     });
 
-    describe('landMitOrtUndSchuleAnlegenSelected$', () => {
+    describe('landMitOrtUndSchuleAnlegenRequested$', () => {
         const result: LandMitOrtUndSchuleAnlegenRequest = {
             emailAuftraggeber,
             kuerzelLand,
@@ -78,10 +78,10 @@ describe('SchulkatalogDialogEffects', () => {
 
         it('should open a dialog and dispatch landMitOrtUndSchuleAnlegen when closed', async () => {
             // arrange
-            const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegenSelected$);
+            const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegenRequested$);
 
             // act
-            action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegenSelected());
+            action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
             closed$.next(result);
 
             const emitted = await promise;
@@ -91,7 +91,7 @@ describe('SchulkatalogDialogEffects', () => {
         });
     });
 
-    describe('ortMitSchuleAnlegenSelected$', () => {
+    describe('ortMitSchuleAnlegenRequested$', () => {
         const selectedLand: Land = {
             kuerzel: kuerzelLand,
             name: nameLand,
@@ -124,9 +124,9 @@ describe('SchulkatalogDialogEffects', () => {
                 closed: closed$,
             });
 
-            const promise = firstValueFrom(effects.ortMitSchuleAnlegenSelected$);
+            const promise = firstValueFrom(effects.ortMitSchuleAnlegenRequested$);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegenSelected());
+            action$.next(schulkatalogActions.ortMitSchuleAnlegenRequested());
 
             closed$.next(result);
 
@@ -154,9 +154,9 @@ describe('SchulkatalogDialogEffects', () => {
 
             const next = vi.fn();
 
-            const subscription = effects.ortMitSchuleAnlegenSelected$.subscribe(next);
+            const subscription = effects.ortMitSchuleAnlegenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegenSelected());
+            action$.next(schulkatalogActions.ortMitSchuleAnlegenRequested());
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();
@@ -165,7 +165,7 @@ describe('SchulkatalogDialogEffects', () => {
         });
     });
 
-    describe('schuleAnlegenSelected$', () => {
+    describe('schuleAnlegenRequested$', () => {
         const land: Land = {
             kuerzel: kuerzelLand,
             name: nameLand,
@@ -204,9 +204,9 @@ describe('SchulkatalogDialogEffects', () => {
                 closed: closed$,
             });
 
-            const promise = firstValueFrom(effects.schuleAnlegenSelected$);
+            const promise = firstValueFrom(effects.schuleAnlegenRequested$);
 
-            action$.next(schulkatalogActions.schuleAnlegenSelected());
+            action$.next(schulkatalogActions.schuleAnlegenRequested());
 
             closed$.next(result);
 
@@ -235,9 +235,9 @@ describe('SchulkatalogDialogEffects', () => {
 
             const next = vi.fn();
 
-            const subscription = effects.schuleAnlegenSelected$.subscribe(next);
+            const subscription = effects.schuleAnlegenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.schuleAnlegenSelected());
+            action$.next(schulkatalogActions.schuleAnlegenRequested());
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();
@@ -246,7 +246,7 @@ describe('SchulkatalogDialogEffects', () => {
         });
     });
 
-    describe('schuleUmbenennenSelected$', () => {
+    describe('schuleUmbenennenRequested$', () => {
         const land: Land = {
             kuerzel: kuerzelLand,
             name: nameLand,
@@ -291,9 +291,9 @@ describe('SchulkatalogDialogEffects', () => {
                 closed: closed$,
             });
 
-            const promise = firstValueFrom(effects.schuleUmbenennenSelected$);
+            const promise = firstValueFrom(effects.schuleUmbenennenRequested$);
 
-            action$.next(schulkatalogActions.schuleUmbenennenSelected({ schule: selectedSchule }));
+            action$.next(schulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
 
             closed$.next(result);
 
@@ -322,9 +322,9 @@ describe('SchulkatalogDialogEffects', () => {
 
             const next = vi.fn();
 
-            const subscription = effects.schuleUmbenennenSelected$.subscribe(next);
+            const subscription = effects.schuleUmbenennenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.schuleUmbenennenSelected({ schule: selectedSchule }));
+            action$.next(schulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();

@@ -10,7 +10,6 @@ import {
     Schulkuerzel,
 } from '../../model/schulkatalog.model';
 import { schulkatalogActions } from './schulkatalog.actions';
-import { errorResponseToString } from '@matheportal/shared-utils';
 
 describe('schulkatalogActions', () => {
     const emailAuftraggeber = 'test@provider.de';
@@ -102,10 +101,10 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the ortMitSchuleAnlegenSelected action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenSelected();
+        it('should create the ortMitSchuleAnlegenRequested action', () => {
+            const action = schulkatalogActions.ortMitSchuleAnlegenRequested();
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSelected',
+                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenRequested',
             });
         });
 
@@ -169,11 +168,11 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the schuleAnlegenSelected action', () => {
-            const action = schulkatalogActions.schuleAnlegenSelected();
+        it('should create the schuleAnlegenRequested action', () => {
+            const action = schulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
+                type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
             });
         });
 
@@ -229,11 +228,11 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the schuleAnlegenSelected action', () => {
-            const action = schulkatalogActions.schuleAnlegenSelected();
+        it('should create the schuleAnlegenRequested action', () => {
+            const action = schulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
+                type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
             });
         });
 
@@ -257,11 +256,11 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the schuleUmbenennenSelected action', () => {
-            const action = schulkatalogActions.schuleAnlegenSelected();
+        it('should create the schuleUmbenennenRequested action', () => {
+            const action = schulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
+                type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
             });
         });
 

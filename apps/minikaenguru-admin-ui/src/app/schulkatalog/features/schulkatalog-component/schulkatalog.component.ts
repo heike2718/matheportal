@@ -36,31 +36,31 @@ export class SchulkatalogComponent implements OnInit {
         this.facade.landSelected(land);
     }
 
-    onBackToLaenderRequested(): void {
-        this.facade.backToLaenderRequested();
+    onBackToLaender(): void {
+        this.facade.backToLaender();
     }
 
     onOrtSelected(ort: Ort): void {
         this.facade.ortSelected(ort);
     }
 
-    onBackToOrteRequested(): void {
-        this.facade.backToOrteRequested();
+    onBackToOrte(): void {
+        this.facade.backToOrte();
     }
 
-    onLandMitOrtUndSchuleAnlegenRequested(): void {
-        this.facade.landMitOrtUndSchuleAnlegenRequested();
+    onLandMitOrtUndSchuleAnlegen(): void {
+        this.facade.landMitOrtUndSchuleAnlegen();
     }
 
-    onOrtMitSchuleAnlegenRequested(): void {
-        this.facade.ortMitSchuleAnlegenRequested();
+    onOrtMitSchuleAnlegen(): void {
+        this.facade.ortMitSchuleAnlegen();
     }
 
-    onSchuleAnlegenRequested(): void {
-        this.facade.schuleAnlegenRequested();
+    onSchuleAnlegen(): void {
+        this.facade.schuleAnlegen();
     }
 
-    onSchuleUmbenennenSelected(schule: Schule): void {
-        this.facade.schuleUmbenennenSelected(schule);
+    onSchuleUmbenennen(schule: Schule): void {
+        this.facade.schuleUmbenennen(schule);
     }
 }

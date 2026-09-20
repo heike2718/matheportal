@@ -16,8 +16,8 @@ export class OrteListComponent {
     readonly orteLoaded = input.required<boolean>();
 
     readonly ortSelected = output<Ort>();
-    readonly backToLaenderRequested = output<void>();
-    readonly ortMitSchuleAnlegenRequested = output<void>();
+    readonly backToLaender = output<void>();
+    readonly ortMitSchuleAnlegen = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
         term: '',

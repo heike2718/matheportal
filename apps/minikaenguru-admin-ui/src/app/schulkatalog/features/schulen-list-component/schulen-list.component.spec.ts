@@ -66,8 +66,37 @@ describe('SchulenListComponent', () => {
 
     describe('page navigation', () => {
         it('should show the back to orte link', () => {
-            const backLinkDe = fixture.debugElement.query(By.css('.mk-admin-schulen-list__back'));
+            const backLinkDe = fixture.debugElement.query(By.css('[data-testid="back-to-orte-link"]'));
+
             expect(backLinkDe).toBeTruthy();
+            expect(backLinkDe.nativeElement.textContent.trim()).toBe('zurück zu den Orten');
+        });
+
+        it('should emit backToOrte when button is clicked', () => {
+            const emitSpy = vi.spyOn(component.backToOrte, 'emit');
+
+            const backLinkDe = fixture.debugElement.query(By.css('[data-testid="back-to-orte-link"]'));
+
+            backLinkDe.triggerEventHandler('click');
+
+            expect(emitSpy).toHaveBeenCalledOnce();
+        });
+
+        it('should show the back to laender link', () => {
+            const backLinkDe = fixture.debugElement.query(By.css('[data-testid="back-to-laender-link"]'));
+
+            expect(backLinkDe).toBeTruthy();
+            expect(backLinkDe.nativeElement.textContent.trim()).toBe('zurück zu den Ländern');
+        });
+
+        it('should emit backToLaender when button is clicked', () => {
+            const emitSpy = vi.spyOn(component.backToLaender, 'emit');
+
+            const backLinkDe = fixture.debugElement.query(By.css('[data-testid="back-to-laender-link"]'));
+
+            backLinkDe.triggerEventHandler('click');
+
+            expect(emitSpy).toHaveBeenCalledOnce();
         });
     });
 
@@ -134,13 +163,13 @@ describe('SchulenListComponent', () => {
             expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
         });
 
-        it('should re-emit schuleUmbenennenSelected when SchuleCardComponent emits schuleUmbenennenSelected', () => {
-            const schuleUmbenennenSelectedSpy = vi.spyOn(component.schuleUmbenennenSelected, 'emit');
+        it('should re-emit schuleUmbenennen when SchuleCardComponent emits schuleUmbenennen', () => {
+            const schuleUmbenennenSelectedSpy = vi.spyOn(component.schuleUmbenennen, 'emit');
 
             const schuleCardsDe = getSchuleCards();
             expect(schuleCardsDe).toHaveLength(2);
 
-            ngMocks.output(schuleCardsDe[1], 'schuleUmbenennenSelected').emit(schulen[1]);
+            ngMocks.output(schuleCardsDe[1], 'schuleUmbenennen').emit(schulen[1]);
             expect(schuleUmbenennenSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[1]);
         });
     });

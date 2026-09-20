@@ -26,9 +26,9 @@ export class SchulkatalogDialogEffects {
     #dialog = inject(Dialog);
     #store = inject(Store);
 
-    readonly landMitOrtUndSchuleAnlegenSelected$ = createEffect(() =>
+    readonly landMitOrtUndSchuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.landMitOrtUndSchuleAnlegenSelected),
+            ofType(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested),
             exhaustMap(() => {
                 const dialogRef = this.#dialog.open<LandMitOrtUndSchuleAnlegenRequest>(
                     LandMitOrtUndSchuleAnlegenDialogComponent,
@@ -50,9 +50,9 @@ export class SchulkatalogDialogEffects {
         )
     );
 
-    readonly ortMitSchuleAnlegenSelected$ = createEffect(() =>
+    readonly ortMitSchuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.ortMitSchuleAnlegenSelected),
+            ofType(schulkatalogActions.ortMitSchuleAnlegenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedLand)),
             exhaustMap(([, selectedLand]) => {
                 if (!selectedLand) {
@@ -80,9 +80,9 @@ export class SchulkatalogDialogEffects {
         )
     );
 
-    readonly schuleAnlegenSelected$ = createEffect(() =>
+    readonly schuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.schuleAnlegenSelected),
+            ofType(schulkatalogActions.schuleAnlegenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedOrt)),
             exhaustMap(([, selectedOrt]) => {
                 if (!selectedOrt) {
@@ -111,9 +111,9 @@ export class SchulkatalogDialogEffects {
         )
     );
 
-    readonly schuleUmbenennenSelected$ = createEffect(() =>
+    readonly schuleUmbenennenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.schuleUmbenennenSelected),
+            ofType(schulkatalogActions.schuleUmbenennenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedSchule)),
             exhaustMap(([, selectedSchule]) => {
                 if (!selectedSchule) {

@@ -1,6 +1,6 @@
 <div class="schule-dialog">
     <h2 class="schule-dialog__title">
-        Schule in {{ data.ort.name }} ({{ data.ort.land.name }}) anlegen oder umbenennen
+        Schule in {{ data.ort.name }} ({{ data.ort.land.name }}) {{ data.submitButtonLabel }}
     </h2>
 
     <form class="schule-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
@@ -33,7 +33,11 @@
         </div>
 
         <div class="schule-dialog__actions">
-            <button type="button" class="schule-dialog__action schule-dialog__action--secondary" (click)="abbrechen()">
+            <button
+                type="button"
+                class="schule-dialog__action schule-dialog__action--secondary"
+                data-testid="cancel-btn"
+                (click)="abbrechen()">
                 abbrechen
             </button>
 

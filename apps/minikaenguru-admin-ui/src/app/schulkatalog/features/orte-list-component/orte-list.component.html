@@ -1,6 +1,6 @@
 <div class="mk-admin-orte-list">
     <div class="mk-admin-orte-list__header">
-        <button class="mk-admin-orte-list__back" type="button" (click)="backToLaenderRequested.emit()">
+        <button class="mk-admin-orte-list__back" type="button" (click)="backToLaender.emit()">
             <svg class="mk-admin-orte-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                     d="M15 18l-6-6 6-6"
@@ -18,7 +18,7 @@
             type="button"
             class="mk-admin-orte-list__action"
             data-testid="create-schule-btn"
-            (click)="ortMitSchuleAnlegenRequested.emit()">
+            (click)="ortMitSchuleAnlegen.emit()">
             Ort und Schule anlegen
         </button>
     </div>

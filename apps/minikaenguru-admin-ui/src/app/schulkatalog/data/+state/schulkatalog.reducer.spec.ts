@@ -397,7 +397,7 @@ describe('schulkatalogReducer tests', () => {
             expect(state).toEqual({
                 laender,
                 laenderLoadingState: 'loaded',
-                selectedLand: laender[1],
+                selectedLand: undefined,
                 orte: [],
                 orteLoadingState: 'not-loaded',
                 selectedOrt: undefined,
@@ -595,7 +595,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedLand: laender[1],
                 orte,
                 orteLoadingState: 'loaded',
-                selectedOrt: orte[0],
+                selectedOrt: undefined,
                 schulen: [],
                 schulenLoadingState: 'not-loaded',
                 selectedSchule: undefined,
@@ -616,7 +616,7 @@ describe('schulkatalogReducer tests', () => {
 
             const state = schulkatalogFeature.reducer(
                 previousState,
-                schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[1] })
+                schulkatalogActions.schuleUmbenennenRequested({ schule: schulen[1] })
             );
 
             expect(state).toEqual({

@@ -15,9 +15,10 @@ export class SchulenListComponent {
     readonly schulen = input.required<Schule[]>();
     readonly schulenLoaded = input.required<boolean>();
 
-    readonly schuleUmbenennenSelected = output<Schule>();
-    readonly backToOrteRequested = output<void>();
-    readonly schuleAnlegenRequested = output<void>();
+    readonly schuleUmbenennen = output<Schule>();
+    readonly backToLaender = output<void>();
+    readonly backToOrte = output<void>();
+    readonly schuleAnlegen = output<void>();
 
     protected readonly componentModel = signal<{ term: string }>({
         term: '',

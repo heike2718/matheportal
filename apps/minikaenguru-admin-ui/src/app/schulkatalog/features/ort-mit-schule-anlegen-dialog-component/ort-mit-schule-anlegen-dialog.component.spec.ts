@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OrtMitSchuleAnlegenDialogComponent } from './ort-mit-schule-anlegen-dialog.component';
 import { OrtMitSchuleAnlegenDialogData, OrtMitSchuleAnlegenRequest } from '../../model/schulkatalog.model';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { By } from '@angular/platform-browser';
 
 describe('OrtMitSchuleAnlegenDialogComponent', () => {
     let component: OrtMitSchuleAnlegenDialogComponent;
@@ -50,6 +51,13 @@ describe('OrtMitSchuleAnlegenDialogComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should show the correct title', () => {
+        const titleDe = fixture.debugElement.query(By.css('.ort-mit-schule-dialog__title'));
+
+        expect(titleDe).toBeTruthy();
+        expect(titleDe.nativeElement.textContent.trim()).toBe('Ort mit Schule in Österreich anlegen');
     });
 
     it('should close the dialog without result when abbrechen is called', () => {
@@ -151,6 +159,7 @@ describe('OrtMitSchuleAnlegenDialogComponent', () => {
             const button: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
 
             expect(button.disabled).toBe(false);
+            expect(button.textContent.trim()).toBe('anlegen');
         });
 
         it('should not be disabled when the form is invalid', () => {

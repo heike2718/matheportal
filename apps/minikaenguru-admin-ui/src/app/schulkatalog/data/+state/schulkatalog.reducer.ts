@@ -76,6 +76,9 @@ export const schulkatalogFeature = createFeature({
             ...state,
             orteLoadingState: 'not-loaded',
             orte: [],
+            schulenLoadingState: 'not-loaded',
+            schulen: [],
+            selectedLand: undefined,
             selectedOrt: undefined,
         })),
         on(schulkatalogActions.ortSelected, (state, { ort }) => ({
@@ -132,9 +135,13 @@ export const schulkatalogFeature = createFeature({
             ...state,
             schulenLoadingState: 'not-loaded',
             schulen: [],
+            selectedOrt: undefined,
             selectedSchule: undefined,
         })),
-        on(schulkatalogActions.schuleUmbenennenSelected, (state, { schule }) => ({ ...state, selectedSchule: schule })),
+        on(schulkatalogActions.schuleUmbenennenRequested, (state, { schule }) => ({
+            ...state,
+            selectedSchule: schule,
+        })),
         on(schulkatalogActions.resetSchulkatalog, userLoggedOut, () => initialSchulkatalogState)
     ),
 });

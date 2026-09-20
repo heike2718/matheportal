@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LandMitOrtUndSchuleAnlegenRequest } from '../../model/schulkatalog.model';
 import { LandMitOrtUndSchuleAnlegenDialogComponent } from './land-mit-ort-und-schule-anlegen-dialog.component';
+import { By } from '@angular/platform-browser';
 
 describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
     let component: LandMitOrtUndSchuleAnlegenDialogComponent;
@@ -46,6 +47,13 @@ describe('LandMitOrtUndSchuleAnlegenDialogComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should show the correct title', () => {
+        const titleDe = fixture.debugElement.query(By.css('.land-mit-ort-und-schule-dialog__title'));
+
+        expect(titleDe).toBeTruthy();
+        expect(titleDe.nativeElement.textContent.trim()).toBe('Land mit Ort und Schule anlegen');
     });
 
     it('should close the dialog without result when abbrechen is called', () => {

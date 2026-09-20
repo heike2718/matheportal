@@ -67,11 +67,13 @@ describe('SchulkatalogComponent', () => {
         selectedSchule: Signal<Schule | undefined>;
         loadLaender: ReturnType<typeof vi.fn>;
         landSelected: ReturnType<typeof vi.fn>;
-        backToLaenderRequested: ReturnType<typeof vi.fn>;
+        backToLaender: ReturnType<typeof vi.fn>;
         ortSelected: ReturnType<typeof vi.fn>;
-        backToOrteRequested: ReturnType<typeof vi.fn>;
-        landMitOrtUndSchuleAnlegenRequested: ReturnType<typeof vi.fn>;
-        schuleUmbenennenSelected: ReturnType<typeof vi.fn>;
+        backToOrte: ReturnType<typeof vi.fn>;
+        landMitOrtUndSchuleAnlegen: ReturnType<typeof vi.fn>;
+        ortMitSchuleAnlegen: ReturnType<typeof vi.fn>;
+        schuleAnlegen: ReturnType<typeof vi.fn>;
+        schuleUmbenennen: ReturnType<typeof vi.fn>;
     };
 
     let laenderSignal: WritableSignal<Land[]>;
@@ -117,11 +119,13 @@ describe('SchulkatalogComponent', () => {
             selectedSchule: selectedSchuleSignal,
             loadLaender: vi.fn(),
             landSelected: vi.fn(),
-            backToLaenderRequested: vi.fn(),
+            backToLaender: vi.fn(),
             ortSelected: vi.fn(),
-            backToOrteRequested: vi.fn(),
-            landMitOrtUndSchuleAnlegenRequested: vi.fn(),
-            schuleUmbenennenSelected: vi.fn(),
+            backToOrte: vi.fn(),
+            landMitOrtUndSchuleAnlegen: vi.fn(),
+            ortMitSchuleAnlegen: vi.fn(),
+            schuleAnlegen: vi.fn(),
+            schuleUmbenennen: vi.fn(),
         };
 
         await TestBed.configureTestingModule({
@@ -203,12 +207,12 @@ describe('SchulkatalogComponent', () => {
             expect(schulkatalogFacadeMock.landSelected).toHaveBeenCalledOnce();
             expect(schulkatalogFacadeMock.landSelected).toHaveBeenCalledWith(laender[0]);
         });
-        it('should trigger facade.schuleUmbenennenSelected when mock emmits schuleUmbenennenSelected', () => {
+        it('should trigger facade.landMitOrtUndSchuleAnlegen when mock emmits landMitOrtUndSchuleAnlegen', () => {
             const laenderListDe = fixture.debugElement.query(By.directive(LaenderListComponent));
 
-            ngMocks.output(laenderListDe, 'landMitOrtUndSchuleAnlegenRequested').emit();
+            ngMocks.output(laenderListDe, 'landMitOrtUndSchuleAnlegen').emit();
 
-            expect(schulkatalogFacadeMock.landMitOrtUndSchuleAnlegenRequested).toHaveBeenCalledOnce();
+            expect(schulkatalogFacadeMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledOnce();
         });
     });
 
@@ -246,12 +250,12 @@ describe('SchulkatalogComponent', () => {
             expect(ngMocks.input(orteListDe, 'orteLoaded')).toBe(true);
         });
 
-        it('should trigger facade.backToLaenderRequested when mock emmits backToLaenderRequested', () => {
+        it('should trigger facade.backToLaender when mock emmits backToLaender', () => {
             const schulenListDe = fixture.debugElement.query(By.directive(OrteListComponent));
 
-            ngMocks.output(schulenListDe, 'backToLaenderRequested').emit();
+            ngMocks.output(schulenListDe, 'backToLaender').emit();
 
-            expect(schulkatalogFacadeMock.backToLaenderRequested).toHaveBeenCalledOnce();
+            expect(schulkatalogFacadeMock.backToLaender).toHaveBeenCalledOnce();
         });
 
         it('should trigger facade.ortSelected when mock emmits ortSelected', () => {
@@ -298,21 +302,21 @@ describe('SchulkatalogComponent', () => {
             expect(ngMocks.input(schulenListDe, 'schulenLoaded')).toBe(true);
         });
 
-        it('should trigger facade.backToOrteRequested when mock emmits backToOrteRequested', () => {
+        it('should trigger facade.backToOrte when mock emmits backToOrte', () => {
             const schulenListDe = fixture.debugElement.query(By.directive(SchulenListComponent));
 
-            ngMocks.output(schulenListDe, 'backToOrteRequested').emit();
+            ngMocks.output(schulenListDe, 'backToOrte').emit();
 
-            expect(schulkatalogFacadeMock.backToOrteRequested).toHaveBeenCalledOnce();
+            expect(schulkatalogFacadeMock.backToOrte).toHaveBeenCalledOnce();
         });
 
-        it('should trigger facade.schuleUmbenennenSelected when mock emmits schuleUmbenennenSelected', () => {
+        it('should trigger facade.schuleUmbenennen when mock emmits schuleUmbenennen', () => {
             const schulenListDe = fixture.debugElement.query(By.directive(SchulenListComponent));
 
-            ngMocks.output(schulenListDe, 'schuleUmbenennenSelected').emit(schulen[0]);
+            ngMocks.output(schulenListDe, 'schuleUmbenennen').emit(schulen[0]);
 
-            expect(schulkatalogFacadeMock.schuleUmbenennenSelected).toHaveBeenCalledOnce();
-            expect(schulkatalogFacadeMock.schuleUmbenennenSelected).toHaveBeenCalledWith(schulen[0]);
+            expect(schulkatalogFacadeMock.schuleUmbenennen).toHaveBeenCalledOnce();
+            expect(schulkatalogFacadeMock.schuleUmbenennen).toHaveBeenCalledWith(schulen[0]);
         });
     });
 });

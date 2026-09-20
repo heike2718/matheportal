@@ -4,24 +4,25 @@
             [selectedOrt]="beschreibungSelectedOrt()"
             [schulen]="schulen()"
             [schulenLoaded]="isSchulenLoaded()"
-            (backToOrteRequested)="onBackToOrteRequested()"
-            (schuleAnlegenRequested)="onSchuleAnlegenRequested()"
-            (schuleUmbenennenSelected)="onSchuleUmbenennenSelected($event)" />
+            (backToOrte)="onBackToOrte()"
+            (backToLaender)="onBackToLaender()"
+            (schuleAnlegen)="onSchuleAnlegen()"
+            (schuleUmbenennen)="onSchuleUmbenennen($event)" />
     } @else {
         @if (isOrteLoaded()) {
             <mk-admin-orte-list
                 [selectedLand]="nameSelectedLand()"
                 [orte]="orte()"
                 [orteLoaded]="isOrteLoaded()"
-                (backToLaenderRequested)="onBackToLaenderRequested()"
-                (ortMitSchuleAnlegenRequested)="onOrtMitSchuleAnlegenRequested()"
+                (backToLaender)="onBackToLaender()"
+                (ortMitSchuleAnlegen)="onOrtMitSchuleAnlegen()"
                 (ortSelected)="onOrtSelected($event)" />
         } @else {
             <mk-admin-laender-list
                 [laender]="laender()"
                 [laenderLoaded]="isLaenderLoaded()"
                 (landSelected)="onLandSelected($event)"
-                (landMitOrtUndSchuleAnlegenRequested)="onLandMitOrtUndSchuleAnlegenRequested()" />
+                (landMitOrtUndSchuleAnlegen)="onLandMitOrtUndSchuleAnlegen()" />
         }
     }
 </div>

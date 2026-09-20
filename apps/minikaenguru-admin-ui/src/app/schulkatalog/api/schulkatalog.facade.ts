@@ -35,7 +35,7 @@ export class SchulkatalogFacade {
         this.#store.dispatch(schulkatalogActions.landSelected({ land }));
     }
 
-    public backToLaenderRequested(): void {
+    public backToLaender(): void {
         this.#store.dispatch(schulkatalogActions.backToLaenderRequested());
     }
 
@@ -43,23 +43,23 @@ export class SchulkatalogFacade {
         this.#store.dispatch(schulkatalogActions.ortSelected({ ort }));
     }
 
-    public backToOrteRequested(): void {
+    public backToOrte(): void {
         this.#store.dispatch(schulkatalogActions.backToOrteRequested());
     }
 
-    public landMitOrtUndSchuleAnlegenRequested(): void {
-        this.#store.dispatch(schulkatalogActions.landMitOrtUndSchuleAnlegenSelected());
+    public landMitOrtUndSchuleAnlegen(): void {
+        this.#store.dispatch(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
     }
 
-    public ortMitSchuleAnlegenRequested(): void {
-        this.#store.dispatch(schulkatalogActions.ortMitSchuleAnlegenSelected());
+    public ortMitSchuleAnlegen(): void {
+        this.#store.dispatch(schulkatalogActions.ortMitSchuleAnlegenRequested());
     }
 
-    public schuleAnlegenRequested(): void {
-        this.#store.dispatch(schulkatalogActions.schuleAnlegenSelected());
+    public schuleAnlegen(): void {
+        this.#store.dispatch(schulkatalogActions.schuleAnlegenRequested());
     }
 
-    public schuleUmbenennenSelected(schule: Schule): void {
-        this.#store.dispatch(schulkatalogActions.schuleUmbenennenSelected({ schule }));
+    public schuleUmbenennen(schule: Schule): void {
+        this.#store.dispatch(schulkatalogActions.schuleUmbenennenRequested({ schule }));
     }
 }
