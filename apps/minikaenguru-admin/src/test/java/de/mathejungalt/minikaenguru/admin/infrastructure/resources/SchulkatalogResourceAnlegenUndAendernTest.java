@@ -98,7 +98,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
 
         final SchuleAnlegenOderAendernRequest schuleRequest = new SchuleAnlegenOderAendernRequest()
                 .emailAuftraggeber("mail@provider.de")
-                .name("Baumschule");
+                .name(" Kleine   Baumschule ");
 
         final Schulkuerzel result = given()
                 .body(schuleRequest)
@@ -114,7 +114,7 @@ public class SchulkatalogResourceAnlegenUndAendernTest {
         assertEquals(kuerzel, result.getKuerzel());
 
         final SchuleEntity schule = schulkatalogDao.findSchuleById(result.getKuerzel());
-        assertEquals("Baumschule", schule.getName());
+        assertEquals("Kleine Baumschule", schule.getName());
     }
 
     @Test
