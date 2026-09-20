@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+
+import de.mathejungalt.matheportal.validation.NormalizeSpace;
+import de.mathejungalt.minikaenguru.admin.infrastructure.persistence.TextNormalizationListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Entity
+@EntityListeners(TextNormalizationListener.class)
 @Table(name = "orte", schema = "minikaenguru")
 public class OrtEntity {
 
@@ -35,6 +40,7 @@ public class OrtEntity {
 
     @Column(name = "name", nullable = false, length = 100)
     @EqualsAndHashCode.Exclude
+    @NormalizeSpace
     private String name;
 
     @Column(name = "created_at", nullable = false, updatable = false)

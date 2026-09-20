@@ -17,6 +17,7 @@
         <matheportal-bom.version>0.0.2-SNAPSHOT</matheportal-bom.version>
         <egladil-secure-tokens.version>1.0.0</egladil-secure-tokens.version>
         <auth-session.version>0.0.1-SNAPSHOT</auth-session.version>
+        <matheportal-validation.version>0.0.1-SNAPSHOT</matheportal-validation.version>
 
         <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
         <egladil-maven-mixins.version>2.0.1</egladil-maven-mixins.version>
@@ -66,6 +67,12 @@
             <groupId>de.mathe-jung-alt</groupId>
             <artifactId>auth-session</artifactId>
             <version>${auth-session.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.mathe-jung-alt</groupId>
+            <artifactId>matheportal-validation</artifactId>
+            <version>${matheportal-validation.version}</version>
         </dependency>
 
         <dependency>

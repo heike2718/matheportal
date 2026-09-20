@@ -140,7 +140,7 @@ describe('SchulkatalogDialogEffects', () => {
             );
 
             expect(dialogMock.open).toHaveBeenCalledWith(OrtMitSchuleAnlegenDialogComponent, {
-                width: '400px',
+                width: '500px',
                 data: {
                     land: selectedLand,
                     payload: initialOrtMitSchuleAnlegenRequest,
@@ -220,7 +220,7 @@ describe('SchulkatalogDialogEffects', () => {
             );
 
             expect(dialogMock.open).toHaveBeenCalledWith(SchuleDialogComponent, {
-                width: '400px',
+                width: '500px',
                 data: {
                     ort: selectedOrt,
                     payload: initialSchuleAnlegenOderAendernRequest,
@@ -306,7 +306,7 @@ describe('SchulkatalogDialogEffects', () => {
             );
 
             expect(dialogMock.open).toHaveBeenCalledWith(SchuleDialogComponent, {
-                width: '400px',
+                width: '500px',
                 data: {
                     ort: ort,
                     payload: { emailAuftraggeber: '', name: 'Testschule' },

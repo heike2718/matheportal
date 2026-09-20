@@ -20,13 +20,13 @@
 
             <mat-form-field class="schule-dialog__field">
                 <mat-label>Schule</mat-label>
-                <input matInput formControlName="nameSchule" />
+                <input matInput formControlName="name" />
 
-                @if (form.controls.nameSchule.hasError('required') || form.controls.nameSchule.hasError('notBlank')) {
+                @if (form.controls.name.hasError('required') || form.controls.name.hasError('notBlank')) {
                     <mat-error>Schule ist erforderlich.</mat-error>
-                } @else if (form.controls.nameSchule.hasError('pattern')) {
+                } @else if (form.controls.name.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
-                } @else if (form.controls.nameSchule.hasError('maxlength')) {
+                } @else if (form.controls.name.hasError('maxlength')) {
                     <mat-error>Der Name darf maximal 100 Zeichen lang sein.</mat-error>
                 }
             </mat-form-field>

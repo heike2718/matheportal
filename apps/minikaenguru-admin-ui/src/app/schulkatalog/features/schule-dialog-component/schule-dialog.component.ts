@@ -32,7 +32,7 @@ export class SchuleDialogComponent {
             this.data.payload.emailAuftraggeber,
             [Validators.required, Validators.maxLength(255), Validators.pattern(MINIKAENGURU_EMAIL_PATTERN)],
         ],
-        nameSchule: [
+        name: [
             this.data.payload.name,
             [
                 Validators.required,

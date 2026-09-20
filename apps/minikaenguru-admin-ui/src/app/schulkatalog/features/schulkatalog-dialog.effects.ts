@@ -33,7 +33,7 @@ export class SchulkatalogDialogEffects {
                 const dialogRef = this.#dialog.open<LandMitOrtUndSchuleAnlegenRequest>(
                     LandMitOrtUndSchuleAnlegenDialogComponent,
                     {
-                        width: '400px',
+                        width: '500px',
                         data: initialLandMitOrtUndSchuleAnlegenRequest,
                     }
                 );
@@ -60,7 +60,7 @@ export class SchulkatalogDialogEffects {
                 }
 
                 const dialogRef = this.#dialog.open<OrtMitSchuleAnlegenRequest>(OrtMitSchuleAnlegenDialogComponent, {
-                    width: '400px',
+                    width: '500px',
                     data: {
                         land: selectedLand,
                         payload: initialOrtMitSchuleAnlegenRequest,
@@ -90,7 +90,7 @@ export class SchulkatalogDialogEffects {
                 }
 
                 const dialogRef = this.#dialog.open<SchuleAnlegenOderAendernRequest>(SchuleDialogComponent, {
-                    width: '400px',
+                    width: '500px',
                     data: {
                         ort: selectedOrt,
                         payload: initialSchuleAnlegenOderAendernRequest,
@@ -121,7 +121,7 @@ export class SchulkatalogDialogEffects {
                 }
 
                 const dialogRef = this.#dialog.open<SchuleAnlegenOderAendernRequest>(SchuleDialogComponent, {
-                    width: '400px',
+                    width: '500px',
                     data: {
                         ort: selectedSchule.ort,
                         payload: { emailAuftraggeber: '', name: selectedSchule.name },
