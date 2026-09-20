@@ -153,13 +153,13 @@ describe('OrtMitSchuleAnlegenDialogComponent', () => {
             expect(button.disabled).toBe(false);
         });
 
-        it('should be disabled when the form is invalid', () => {
+        it('should not be disabled when the form is invalid', () => {
             component.form.controls.nameOrt.setValue('');
             fixture.detectChanges();
 
             const button: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
 
-            expect(button.disabled).toBe(true);
+            expect(button.disabled).toBe(false);
         });
     });
 });

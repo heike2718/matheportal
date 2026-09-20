@@ -134,7 +134,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             expect(emitted).toEqual(
                 schulkatalogActions.ortMitSchuleAnlegen({
-                    kuerzelLand: selectedLand.kuerzel,
+                    land: selectedLand,
                     payload: result,
                 })
             );
@@ -214,7 +214,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             expect(emitted).toEqual(
                 schulkatalogActions.schuleAnlegen({
-                    kuerzelOrt: selectedOrt.kuerzel,
+                    ort: selectedOrt,
                     payload: result,
                 })
             );
@@ -224,6 +224,7 @@ describe('SchulkatalogDialogEffects', () => {
                 data: {
                     ort: selectedOrt,
                     payload: initialSchuleAnlegenOderAendernRequest,
+                    submitButtonLabel: 'anlegen',
                 },
             });
         });
@@ -300,7 +301,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             expect(emitted).toEqual(
                 schulkatalogActions.schuleUmbenennen({
-                    kuerzelSchule: selectedSchule.kuerzel,
+                    schule: selectedSchule,
                     payload: result,
                 })
             );
@@ -310,6 +311,7 @@ describe('SchulkatalogDialogEffects', () => {
                 data: {
                     ort: ort,
                     payload: { emailAuftraggeber: '', name: 'Testschule' },
+                    submitButtonLabel: 'umbenennen',
                 },
             });
         });

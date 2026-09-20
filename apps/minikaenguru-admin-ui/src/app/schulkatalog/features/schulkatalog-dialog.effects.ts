@@ -71,7 +71,7 @@ export class SchulkatalogDialogEffects {
                     filter((result): result is OrtMitSchuleAnlegenRequest => result !== undefined),
                     map(payload =>
                         schulkatalogActions.ortMitSchuleAnlegen({
-                            kuerzelLand: selectedLand.kuerzel,
+                            land: selectedLand,
                             payload,
                         })
                     )
@@ -102,7 +102,7 @@ export class SchulkatalogDialogEffects {
                     filter((result): result is SchuleAnlegenOderAendernRequest => result !== undefined),
                     map(payload =>
                         schulkatalogActions.schuleAnlegen({
-                            kuerzelOrt: selectedOrt.kuerzel,
+                            ort: selectedOrt,
                             payload,
                         })
                     )
@@ -133,7 +133,7 @@ export class SchulkatalogDialogEffects {
                     filter((result): result is SchuleAnlegenOderAendernRequest => result !== undefined),
                     map(payload =>
                         schulkatalogActions.schuleUmbenennen({
-                            kuerzelSchule: selectedSchule.kuerzel,
+                            schule: selectedSchule,
                             payload,
                         })
                     )

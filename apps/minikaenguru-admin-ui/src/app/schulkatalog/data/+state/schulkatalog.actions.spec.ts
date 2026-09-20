@@ -6,9 +6,11 @@ import {
     OrtMitSchuleAnlegenRequest,
     Schule,
     SchuleAnlegenOderAendernRequest,
+    SCHULKATALOG_ADMIN_KONTEXT,
     Schulkuerzel,
 } from '../../model/schulkatalog.model';
 import { schulkatalogActions } from './schulkatalog.actions';
+import { errorResponseToString } from '@matheportal/shared-utils';
 
 describe('schulkatalogActions', () => {
     const emailAuftraggeber = 'test@provider.de';
@@ -66,6 +68,14 @@ describe('schulkatalogActions', () => {
     });
 
     describe('schulkatalog: laender actions', () => {
+        const payload: LandMitOrtUndSchuleAnlegenRequest = {
+            emailAuftraggeber: 'test@provider.de',
+            kuerzelLand: 'TT',
+            nameLand: 'Tatütata',
+            nameOrt: 'Trallala',
+            nameSchule: 'Trullerschule',
+        };
+
         it('should create the loadLaender action', () => {
             const action = schulkatalogActions.loadLaender();
 
@@ -83,15 +93,6 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the loadLaenderFailed action', () => {
-            const action = schulkatalogActions.loadLaenderFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] loadLaenderFailed',
-                error: httpServerErrorResponse,
-            });
-        });
-
         it('should create the landSelected action', () => {
             const action = schulkatalogActions.landSelected({ land: laender[1] });
 
@@ -100,14 +101,39 @@ describe('schulkatalogActions', () => {
                 land: laender[1],
             });
         });
+
         it('should create the ortMitSchuleAnlegenSelected action', () => {
             const action = schulkatalogActions.ortMitSchuleAnlegenSelected();
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSelected',
             });
         });
+
+        it('should create the landMitOrtUndSchuleAnlegen action', () => {
+            const action = schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegen',
+                payload,
+            });
+        });
+
+        it('should create the landMitOrtUndSchuleAnlegenSucceeded action', () => {
+            const action = schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegenSucceeded',
+                schulkuerzel,
+            });
+        });
     });
     describe('schulkatalog: orte actions', () => {
+        const payload: OrtMitSchuleAnlegenRequest = {
+            emailAuftraggeber: 'test@provider.de',
+            nameOrt: 'Trallala',
+            nameSchule: 'Trullerschule',
+        };
+
         it('should create the loadOrte action', () => {
             const action = schulkatalogActions.loadOrte({ land: laender[1] });
 
@@ -123,15 +149,6 @@ describe('schulkatalogActions', () => {
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadOrteSucceeded',
                 orte,
-            });
-        });
-
-        it('should create the loadOrteFailed action', () => {
-            const action = schulkatalogActions.loadOrteFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] loadOrteFailed',
-                error: httpServerErrorResponse,
             });
         });
 
@@ -159,8 +176,33 @@ describe('schulkatalogActions', () => {
                 type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
             });
         });
+
+        it('should create the ortMitSchuleAnlegen action', () => {
+            const action = schulkatalogActions.ortMitSchuleAnlegen({ land: laender[0], payload });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegen',
+                land: laender[0],
+                payload,
+            });
+        });
+
+        it('should create the ortMitSchuleAnlegenSucceeded action', () => {
+            const action = schulkatalogActions.ortMitSchuleAnlegenSucceeded({ land: laender[0], schulkuerzel });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSucceeded',
+                land: laender[0],
+                schulkuerzel,
+            });
+        });
     });
     describe('schulkatalog: schulen actions', () => {
+        const payload: SchuleAnlegenOderAendernRequest = {
+            emailAuftraggeber,
+            name: 'Heinrich-Heine-Schule',
+        };
+
         it('should create the loadSchulen action', () => {
             const action = schulkatalogActions.loadSchulen({ ort: orte[0] });
 
@@ -179,15 +221,6 @@ describe('schulkatalogActions', () => {
             });
         });
 
-        it('should create the loadSchulenFailed action', () => {
-            const action = schulkatalogActions.loadSchulenFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] loadSchulenFailed',
-                error: httpServerErrorResponse,
-            });
-        });
-
         it('should create the backToOrteRequested action', () => {
             const action = schulkatalogActions.backToOrteRequested();
 
@@ -195,118 +228,82 @@ describe('schulkatalogActions', () => {
                 type: '[MKAdmin Schulkatalog] backToOrteRequested',
             });
         });
-        it('should create the schuleUmbenennenSelected action', () => {
-            const action = schulkatalogActions.schuleUmbenennenSelected({ schule: schulen[0] });
+
+        it('should create the schuleAnlegenSelected action', () => {
+            const action = schulkatalogActions.schuleAnlegenSelected();
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleUmbenennenSelected',
-                schule: schulen[0],
+                type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
             });
         });
-    });
-    describe('schule umbenennen actions', () => {
+
+        it('should create the schuleAnlegen action', () => {
+            const action = schulkatalogActions.schuleAnlegen({ ort: orte[0], payload });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] schuleAnlegen',
+                ort: orte[0],
+                payload,
+            });
+        });
+
+        it('should create the schuleAnlegenSucceeded action', () => {
+            const action = schulkatalogActions.schuleAnlegenSucceeded({ ort: orte[0], schulkuerzel });
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] schuleAnlegenSucceeded',
+                ort: orte[0],
+                schulkuerzel,
+            });
+        });
+
+        it('should create the schuleUmbenennenSelected action', () => {
+            const action = schulkatalogActions.schuleAnlegenSelected();
+
+            expect(action).toEqual({
+                type: '[MKAdmin Schulkatalog] schuleAnlegenSelected',
+            });
+        });
+
         it('should create the schuleUmbenennen action', () => {
-            const payload: SchuleAnlegenOderAendernRequest = {
-                emailAuftraggeber,
-                name: 'Heinrich-Heine-Schule',
-            };
-
-            const kuerzelSchule = schulen[0].kuerzel;
-
-            const action = schulkatalogActions.schuleUmbenennen({ kuerzelSchule, payload });
+            const action = schulkatalogActions.schuleUmbenennen({ schule: schulen[0], payload });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleUmbenennen',
-                kuerzelSchule,
+                schule: schulen[0],
                 payload,
             });
         });
         it('should create the schuleUmbenennenSucceeded action', () => {
-            const action = schulkatalogActions.schuleUmbenennenSucceeded({ schulkuerzel });
+            const action = schulkatalogActions.schuleUmbenennenSucceeded({ schule: schulen[0], schulkuerzel });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleUmbenennenSucceeded',
+                schule: schulen[0],
                 schulkuerzel,
-            });
-        });
-
-        it('should create the schuleUmbenennenFailed action', () => {
-            const action = schulkatalogActions.schuleUmbenennenFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] schuleUmbenennenFailed',
-                error: httpServerErrorResponse,
             });
         });
     });
-    describe('schule anlegen actions', () => {
-        it('should create the ortMitSchuleAnlegen action', () => {
-            const payload: OrtMitSchuleAnlegenRequest = {
-                emailAuftraggeber,
-                nameOrt: 'Hinterwäldchen',
-                nameSchule: 'Grundschule Hinterwäldchen',
-            };
 
-            const action = schulkatalogActions.ortMitSchuleAnlegen({ kuerzelLand: laender[1].kuerzel, payload });
+    it.each([SCHULKATALOG_ADMIN_KONTEXT.laender, SCHULKATALOG_ADMIN_KONTEXT.orte, SCHULKATALOG_ADMIN_KONTEXT.schulen])(
+        'should create the loadActionFailed action with kontext %s',
+        kontext => {
+            const action = schulkatalogActions.loadActionFailed({ kontext, error: httpServerErrorResponse });
 
             expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegen',
-                kuerzelLand: laender[1].kuerzel,
-                payload,
-            });
-        });
-
-        it('should create the ortMitSchuleAnlegenSucceeded action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenSucceeded({ schulkuerzel });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSucceeded',
-                schulkuerzel,
-            });
-        });
-
-        it('should create the ortMitSchuleAnlegenFailed action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenFailed',
+                type: '[MKAdmin Schulkatalog] loadActionFailed',
+                kontext,
                 error: httpServerErrorResponse,
             });
-        });
+        }
+    );
 
-        it('should create the landMitOrtUndSchuleAnlegen action', () => {
-            const payload: LandMitOrtUndSchuleAnlegenRequest = {
-                emailAuftraggeber,
-                kuerzelLand: 'ZY',
-                nameLand: 'Zypern',
-                nameOrt: 'Nissi Beach',
-                nameSchule: 'Deutsche Schule Nissi Beach',
-            };
+    it('should create the changeActionFailed action', () => {
+        const action = schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse });
 
-            const action = schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegen',
-                payload,
-            });
-        });
-
-        it('should create the landMitOrtUndSchuleAnlegenSucceeded action', () => {
-            const action = schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegenSucceeded',
-                schulkuerzel,
-            });
-        });
-
-        it('should create the landMitOrtUndSchuleAnlegenFailed action', () => {
-            const action = schulkatalogActions.landMitOrtUndSchuleAnlegenFailed({ error: httpServerErrorResponse });
-
-            expect(action).toEqual({
-                type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegenFailed',
-                error: httpServerErrorResponse,
-            });
+        expect(action).toEqual({
+            type: '[MKAdmin Schulkatalog] changeActionFailed',
+            error: httpServerErrorResponse,
         });
     });
 });

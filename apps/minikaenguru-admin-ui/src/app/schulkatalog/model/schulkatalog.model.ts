@@ -12,6 +12,14 @@ export type OrtMitSchuleAnlegenRequest = components['schemas']['OrtMitSchuleAnle
 export type LandMitOrtUndSchuleAnlegenRequest = components['schemas']['LandMitOrtUndSchuleAnlegenRequest'];
 export type Schulkuerzel = components['schemas']['Schulkuerzel'];
 
+export enum SCHULKATALOG_ADMIN_KONTEXT {
+    laender = 'laender',
+    orte = 'orte',
+    schulen = 'schulen',
+}
+
+export type SchulkatalogAdminKontext = (typeof SCHULKATALOG_ADMIN_KONTEXT)[keyof typeof SCHULKATALOG_ADMIN_KONTEXT];
+
 export const initialLandMitOrtUndSchuleAnlegenRequest: LandMitOrtUndSchuleAnlegenRequest = {
     emailAuftraggeber: '',
     kuerzelLand: '',
