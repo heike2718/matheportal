@@ -8,6 +8,7 @@ import {
     MINIKAENGURU_EMAIL_PATTERN,
     MINIKAENGURU_TEXT_PATTERN,
     MINIKAENGURU_TEXT_VALIDATION_HINT,
+    notBlankValidator,
 } from '@matheportal/shared-utils';
 import { SchuleDialogData, SchuleAnlegenOderAendernRequest } from '../../model/schulkatalog.model';
 
@@ -33,7 +34,12 @@ export class SchuleDialogComponent {
         ],
         nameSchule: [
             this.data.payload.name,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
     });
 
@@ -41,8 +47,8 @@ export class SchuleDialogComponent {
         this.dialogRef.close();
     }
 
-    anlegen(): void {
-        if (this.form.invalid || this.form.pending) {
+    submit(): void {
+        if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }

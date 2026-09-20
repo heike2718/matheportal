@@ -94,6 +94,7 @@ export class SchulkatalogDialogEffects {
                     data: {
                         ort: selectedOrt,
                         payload: initialSchuleAnlegenOderAendernRequest,
+                        submitButtonLabel: 'anlegen',
                     } satisfies SchuleDialogData,
                 });
 
@@ -124,6 +125,7 @@ export class SchulkatalogDialogEffects {
                     data: {
                         ort: selectedSchule.ort,
                         payload: { emailAuftraggeber: '', name: selectedSchule.name },
+                        submitButtonLabel: 'umbenennen',
                     } satisfies SchuleDialogData,
                 });
 

@@ -39,4 +39,5 @@ export const initialSchuleAnlegenOderAendernRequest: SchuleAnlegenOderAendernReq
 export interface SchuleDialogData {
     readonly ort: Ort;
     readonly payload: SchuleAnlegenOderAendernRequest;
+    readonly submitButtonLabel: string;
 }

@@ -1,17 +1,27 @@
 <div class="mk-admin-orte-list">
-    <button class="mk-admin-orte-list__back" type="button" (click)="backToLaenderRequested.emit()">
-        <svg class="mk-admin-orte-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-                d="M15 18l-6-6 6-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2" />
-        </svg>
+    <div class="mk-admin-orte-list__header">
+        <button class="mk-admin-orte-list__back" type="button" (click)="backToLaenderRequested.emit()">
+            <svg class="mk-admin-orte-list__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                    d="M15 18l-6-6 6-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2" />
+            </svg>
 
-        <span>zurück zu den Ländern</span>
-    </button>
+            <span>zurück zu den Ländern</span>
+        </button>
+
+        <button
+            type="button"
+            class="mk-admin-orte-list__action"
+            data-testid="create-schule-btn"
+            (click)="ortMitSchuleAnlegenRequested.emit()">
+            Ort und Schule anlegen
+        </button>
+    </div>
 
     <h2 class="mk-admin-orte-list__title">Orte in {{ selectedLand() }} suchen</h2>
     @if (orteLoaded()) {

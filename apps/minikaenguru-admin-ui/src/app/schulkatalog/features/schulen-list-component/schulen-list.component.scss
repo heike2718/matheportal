@@ -19,10 +19,16 @@
 
     font-family: mp-theme.$mp-font-family;
 
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: mp-theme.$mp-space-4;
+    }
+
     &__back {
         display: inline-flex;
         align-items: center;
-        align-self: flex-start;
         gap: mp-theme.$mp-space-1;
 
         padding: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
@@ -55,6 +61,37 @@
     &__back-icon {
         width: 1.5rem;
         height: 1.5rem;
+    }
+
+    &__action {
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
+
+        color: mp-theme.$mp-color-surface;
+        font: inherit;
+        font-weight: 600;
+
+        background-color: mp-theme.mp-brand(minikaenguru-admin);
+        border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru-admin);
+        border-radius: mp-theme.$mp-radius-m;
+
+        cursor: pointer;
+
+        transition:
+            filter 140ms ease,
+            box-shadow 140ms ease;
+
+        &:hover {
+            filter: brightness(0.92);
+        }
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
+            outline-offset: mp-theme.$mp-space-1;
+        }
+
+        &:active {
+            filter: brightness(0.84);
+        }
     }
 
     &__title {

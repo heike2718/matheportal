@@ -10,6 +10,7 @@ import {
     MINIKAENGURU_EMAIL_PATTERN,
     MINIKAENGURU_TEXT_PATTERN,
     MINIKAENGURU_TEXT_VALIDATION_HINT,
+    notBlankValidator,
 } from '@matheportal/shared-utils';
 
 @Component({
@@ -34,19 +35,34 @@ export class LandMitOrtUndSchuleAnlegenDialogComponent {
         ],
         kuerzelLand: [
             this.payload.kuerzelLand,
-            [Validators.required, Validators.maxLength(5), Validators.pattern(LAND_KUERZEL_PATTERN)],
+            [Validators.required, notBlankValidator, Validators.maxLength(5), Validators.pattern(LAND_KUERZEL_PATTERN)],
         ],
         nameLand: [
             this.payload.nameLand,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
         nameOrt: [
             this.payload.nameOrt,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
         nameSchule: [
             this.payload.nameSchule,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
     });
 
@@ -55,7 +71,7 @@ export class LandMitOrtUndSchuleAnlegenDialogComponent {
     }
 
     anlegen(): void {
-        if (this.form.invalid || this.form.pending) {
+        if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }

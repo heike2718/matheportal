@@ -20,7 +20,7 @@
                 <mat-label>Ort</mat-label>
                 <input matInput formControlName="nameOrt" />
 
-                @if (form.controls.nameOrt.hasError('required')) {
+                @if (form.controls.nameOrt.hasError('required') || form.controls.nameOrt.hasError('notBlank')) {
                     <mat-error>Ort ist erforderlich.</mat-error>
                 } @else if (form.controls.nameOrt.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
@@ -33,7 +33,7 @@
                 <mat-label>Schule</mat-label>
                 <input matInput formControlName="nameSchule" />
 
-                @if (form.controls.nameSchule.hasError('required')) {
+                @if (form.controls.nameSchule.hasError('required') || form.controls.nameSchule.hasError('notBlank')) {
                     <mat-error>Schule ist erforderlich.</mat-error>
                 } @else if (form.controls.nameSchule.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
@@ -48,14 +48,14 @@
                 type="button"
                 class="ort-mit-schule-dialog__action ort-mit-schule-dialog__action--secondary"
                 (click)="abbrechen()">
-                Abbrechen
+                abbrechen
             </button>
 
             <button
                 type="submit"
                 class="ort-mit-schule-dialog__action ort-mit-schule-dialog__action--primary"
-                [disabled]="form.invalid || form.pending">
-                Anlegen
+                [disabled]="form.pending">
+                anlegen
             </button>
         </div>
     </form>

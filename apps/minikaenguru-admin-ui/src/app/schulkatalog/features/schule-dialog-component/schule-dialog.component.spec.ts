@@ -19,6 +19,7 @@ describe('SchuleDialogComponent', () => {
             anzahlSchulen: 12,
         },
         payload: initialSchuleAnlegenOderAendernRequest,
+        submitButtonLabel: 'anlegen',
     };
 
     const dialogRefMock = {

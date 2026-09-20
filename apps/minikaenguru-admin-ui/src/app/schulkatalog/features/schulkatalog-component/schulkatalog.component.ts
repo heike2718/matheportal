@@ -52,6 +52,14 @@ export class SchulkatalogComponent implements OnInit {
         this.facade.landMitOrtUndSchuleAnlegenRequested();
     }
 
+    onOrtMitSchuleAnlegenRequested(): void {
+        this.facade.ortMitSchuleAnlegenRequested();
+    }
+
+    onSchuleAnlegenRequested(): void {
+        this.facade.schuleAnlegenRequested();
+    }
+
     onSchuleUmbenennenSelected(schule: Schule): void {
         this.facade.schuleUmbenennenSelected(schule);
     }

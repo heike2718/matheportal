@@ -8,6 +8,7 @@ import {
     MINIKAENGURU_EMAIL_PATTERN,
     MINIKAENGURU_TEXT_PATTERN,
     MINIKAENGURU_TEXT_VALIDATION_HINT,
+    notBlankValidator,
 } from '@matheportal/shared-utils';
 import { OrtMitSchuleAnlegenDialogData, OrtMitSchuleAnlegenRequest } from '../../model/schulkatalog.model';
 
@@ -33,11 +34,21 @@ export class OrtMitSchuleAnlegenDialogComponent {
         ],
         nameOrt: [
             this.data.payload.nameOrt,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
         nameSchule: [
             this.data.payload.nameSchule,
-            [Validators.required, Validators.maxLength(100), Validators.pattern(MINIKAENGURU_TEXT_PATTERN)],
+            [
+                Validators.required,
+                notBlankValidator,
+                Validators.maxLength(100),
+                Validators.pattern(MINIKAENGURU_TEXT_PATTERN),
+            ],
         ],
     });
 
@@ -46,7 +57,7 @@ export class OrtMitSchuleAnlegenDialogComponent {
     }
 
     anlegen(): void {
-        if (this.form.invalid || this.form.pending) {
+        if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }

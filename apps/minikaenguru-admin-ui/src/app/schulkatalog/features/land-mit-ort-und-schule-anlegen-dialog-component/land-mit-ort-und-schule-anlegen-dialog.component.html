@@ -20,7 +20,7 @@
                 <mat-label>Länderkürzel</mat-label>
                 <input matInput formControlName="kuerzelLand" />
 
-                @if (form.controls.kuerzelLand.hasError('required')) {
+                @if (form.controls.kuerzelLand.hasError('required') || form.controls.kuerzelLand.hasError('notBlank')) {
                     <mat-error>Länderkürzel ist erforderlich.</mat-error>
                 } @else if (form.controls.kuerzelLand.hasError('pattern')) {
                     <mat-error>Erlaubt sind Großbuchstaben und Bindestriche.</mat-error>
@@ -33,7 +33,7 @@
                 <mat-label>Land</mat-label>
                 <input matInput formControlName="nameLand" />
 
-                @if (form.controls.nameLand.hasError('required')) {
+                @if (form.controls.nameLand.hasError('required') || form.controls.nameLand.hasError('notBlank')) {
                     <mat-error>Land ist erforderlich.</mat-error>
                 } @else if (form.controls.nameLand.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
@@ -46,7 +46,7 @@
                 <mat-label>Ort</mat-label>
                 <input matInput formControlName="nameOrt" />
 
-                @if (form.controls.nameOrt.hasError('required')) {
+                @if (form.controls.nameOrt.hasError('required') || form.controls.nameOrt.hasError('notBlank')) {
                     <mat-error>Ort ist erforderlich.</mat-error>
                 } @else if (form.controls.nameOrt.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
@@ -59,7 +59,7 @@
                 <mat-label>Schule</mat-label>
                 <input matInput formControlName="nameSchule" />
 
-                @if (form.controls.nameSchule.hasError('required')) {
+                @if (form.controls.nameSchule.hasError('required') || form.controls.nameSchule.hasError('notBlank')) {
                     <mat-error>Schule ist erforderlich.</mat-error>
                 } @else if (form.controls.nameSchule.hasError('pattern')) {
                     <mat-error>{{ validationHint }}</mat-error>
@@ -74,14 +74,14 @@
                 type="button"
                 class="land-mit-ort-und-schule-dialog__action land-mit-ort-und-schule-dialog__action--secondary"
                 (click)="abbrechen()">
-                Abbrechen
+                abbrechen
             </button>
 
             <button
                 type="submit"
                 class="land-mit-ort-und-schule-dialog__action land-mit-ort-und-schule-dialog__action--primary"
-                [disabled]="form.invalid || form.pending">
-                Anlegen
+                [disabled]="form.pending">
+                anlegen
             </button>
         </div>
     </form>
