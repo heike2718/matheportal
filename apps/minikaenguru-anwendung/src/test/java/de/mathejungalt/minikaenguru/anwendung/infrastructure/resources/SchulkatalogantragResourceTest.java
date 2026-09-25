@@ -52,7 +52,7 @@ public class SchulkatalogantragResourceTest {
                 .nameLand("")
                 .nameOrt("Москва")
                 .nameSchule("Немецкая школа в Москве им. Ф.Й. Гааза")
-                .plz("119526")
+                .plz("119526119526119526119")
                 .strasseUndHausnummer("проспект Вернадского, д. 103, корп. 5");
 
         // act

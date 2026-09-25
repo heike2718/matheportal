@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { SchulkatalogsucheFacade } from '../../api/schulkatalogsuche.facade';
 import { Ort, Schule } from '../../model/schulkatalog.model';
 import { OrteSuchenComponent } from '../orte-suchen-component/orte-suchen.component';
@@ -21,6 +21,7 @@ export class SchulkatalogsucheComponent {
 
     readonly schulen = this.facade.schulen;
     readonly isSchulenLoaded = this.facade.isSchulenLoaded;
+    readonly schuleEintragenMoeglich = this.facade.schuleEintragenMoeglich;
 
     onSearchTermOrtChanged(term: string): void {
         this.facade.findOrte(term);
@@ -36,5 +37,9 @@ export class SchulkatalogsucheComponent {
 
     onOrtssucheRequested(): void {
         this.facade.ortssucheRequested();
+    }
+
+    onSchuleNichtGefunden(): void {
+        this.facade.schuleNichtGefunden();
     }
 }

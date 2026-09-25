@@ -26,7 +26,19 @@
         }
     </div>
 
-    @if (orteLoaded()) {
+    @if (schuleEintragenMoeglich()) {
+        <p class="mka-orte-suchen__result-count">Kein Ort gefunden.</p>
+
+        <div class="mka-orte-suchen__empty-actions">
+            <button
+                type="button"
+                class="mka-orte-suchen__action"
+                data-testid="create-schule-btn"
+                (click)="schuleNichtGefunden.emit()">
+                Schule eintragen lassen
+            </button>
+        </div>
+    } @else if (orteLoaded()) {
         <p class="mka-orte-suchen__result-count">Anzahl Orte: {{ orte().length }}</p>
 
         <div class="mka-orte-suchen__results">

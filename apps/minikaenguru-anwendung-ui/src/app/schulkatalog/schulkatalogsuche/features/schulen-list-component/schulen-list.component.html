@@ -29,6 +29,16 @@
                 <mka-schule-card [schule]="schule" (schuleSelected)="schuleSelected.emit($event)" />
             }
         </div>
+
+        <div class="mka-schulen-list__actions">
+            <button
+                type="button"
+                class="mka-schulen-list__action"
+                data-testid="create-schule-btn"
+                (click)="schuleNichtGefunden.emit()">
+                Schule eintragen lassen
+            </button>
+        </div>
     } @else {
         <p class="mka-schulen-list__result-count">Lade Schulen ...</p>
     }

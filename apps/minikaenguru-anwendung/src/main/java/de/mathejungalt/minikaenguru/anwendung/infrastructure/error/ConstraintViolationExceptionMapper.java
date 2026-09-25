@@ -26,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 public final class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
 
     private static final String MESSAGE = """
-            Ihre Angaben konnten nicht verarbeitet werden. Bitte überprüfen Sie Ihre Eingaben. \
-            Wenn Sie keinen Fehler finden, senden Sie bitte eine Mail und fügen Sie nach Möglichkeit\
+            Das hat leider nicht funktioniert. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. \
+            Wenn Sie keinen Fehler finden, senden Sie bitte eine Mail und fügen Sie nach Möglichkeit \
             einen Screenshot hinzu.
-                   """;
+                   """;;
 
     @Override
     public Response toResponse(final ConstraintViolationException exception) {

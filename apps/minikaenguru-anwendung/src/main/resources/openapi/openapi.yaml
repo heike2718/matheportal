@@ -469,12 +469,12 @@ components:
                 plz:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
-                    maxLength: 100
+                    maxLength: 20
                     x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 strasseUndHausnummer:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
-                    maxLength: 100
+                    maxLength: 200
                     x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
                 emailAuftraggeber:
                     type: string
