@@ -112,6 +112,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/wettbewerb': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * aktueller Wettbewerb
+         * @description läd den aktuellen Wettbewerb
+         */
+        readonly get: operations['loadAktuellenWettbewerb'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -135,6 +155,8 @@ export interface components {
          * @enum {string}
          */
         readonly ZugangsberechtigungUnterlagen: 'STANDARD' | 'ERTEILT' | 'ENTZOGEN';
+        /** @enum {string} */
+        readonly Wettbewerbsstatus: 'ERFASST' | 'ANMELDUNG' | 'DOWNLOAD_LEHRER' | 'DOWNLOAD_PRIVAT' | 'BEENDET';
         /** @description Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden. */
         readonly WettbewerbsdurchfuehrenderRequest: {
             readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
@@ -201,6 +223,18 @@ export interface components {
             readonly plz: string;
             readonly strasseUndHausnummer: string;
             readonly emailAuftraggeber: string;
+        };
+        readonly Wettbewerb: {
+            readonly jahr?: number;
+            readonly status?: components['schemas']['Wettbewerbsstatus'];
+            /** @example 01.01.2029 */
+            readonly beginn?: string;
+            /** @example 14.03.2029 */
+            readonly freischaltungSchulen?: string;
+            /** @example 15.06.2029 */
+            readonly freischaltungPrivat?: string;
+            /** @example 31.07.2029 */
+            readonly ende?: string;
         };
     };
     responses: never;
@@ -539,6 +573,44 @@ export interface operations {
                 };
                 content: {
                     readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly loadAktuellenWettbewerb: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['Wettbewerb'];
                 };
             };
             /** @description keine Session oder Session abgelaufen */
