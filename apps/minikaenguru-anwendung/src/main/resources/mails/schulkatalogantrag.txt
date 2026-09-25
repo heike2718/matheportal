@@ -1,0 +1,11 @@
+Vielen Dank!
+
+Ihre Anfrage ist bei uns eingegangen und wird zeitnah bearbeitet. Sobald die Schule eingetragen ist, erhalten Sie eine E-Mail.
+
+Schuldaten:
+---------------
+  Name der Schule: #0#
+     Postleitzahl: #1#
+              Ort: #2#
+Straße Hausnummer: #3#
+  Land/Bundesland: #4#

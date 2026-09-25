@@ -11,40 +11,47 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.ConstraintViolationDetail;
+import org.apache.commons.lang3.StringUtils;
+
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ConstraintViolationExceptionMapper.
  */
 @Provider
 @Priority(ExceptionMapperPriorities.VALIDATION)
+@Slf4j
 public final class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
+
+    private static final String MESSAGE = """
+            Das hat leider nicht funktioniert. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. \
+            Wenn Sie keinen Fehler finden, senden Sie bitte eine Mail und fügen Sie nach Möglichkeit \
+            einen Screenshot hinzu.
+                   """;
 
     @Override
     public Response toResponse(final ConstraintViolationException exception) {
 
-        final List<ConstraintViolationDetail> details = exception
+        final List<String> details = exception
                 .getConstraintViolations()
                 .stream()
                 .map(this::map)
                 .collect(Collectors.toList());
 
-        final ErrorResponse errorResponse = new ErrorResponse("Die Anfrage ist nicht valide.");
-        errorResponse.constraintViolations(details);
+        log.warn("Bad request: {}", StringUtils.join(details));
+
+        final ErrorResponse errorResponse = new ErrorResponse(MESSAGE);
 
         return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
     }
 
-    private ConstraintViolationDetail map(final ConstraintViolation constraintViolation) {
+    private String map(@SuppressWarnings("rawtypes") final ConstraintViolation constraintViolation) {
         final String path = this.simplifyPath(constraintViolation.getPropertyPath().toString());
         final String message = constraintViolation.getMessage();
 
-        final ConstraintViolationDetail result = new ConstraintViolationDetail();
-        result.setField(path);
-        result.setMessage(message);
-
-        return result;
+        return path + ": " + message;
     }
 
     private String simplifyPath(final String path) {

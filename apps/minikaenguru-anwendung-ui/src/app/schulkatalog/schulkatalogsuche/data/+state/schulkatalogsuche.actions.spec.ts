@@ -138,6 +138,12 @@ describe('schulkatalogsucheActions', () => {
         });
     });
 
+    it('should create the submitSchulkatalogantragRequested action', () => {
+        expect(schulkatalogsucheActions.submitSchulkatalogantragRequested()).toEqual({
+            type: '[MKA Schulkatalogsuche] submitSchulkatalogantragRequested',
+        });
+    });
+
     it('should create resetSuche action', () => {
         const action = schulkatalogsucheActions.resetSuche();
 

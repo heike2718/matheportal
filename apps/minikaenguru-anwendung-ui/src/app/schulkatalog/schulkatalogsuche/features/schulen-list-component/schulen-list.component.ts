@@ -19,6 +19,8 @@ export class SchulenListComponent {
     readonly schuleSelected = output<Schule>();
     readonly ortssucheRequested = output<void>();
 
+    readonly schuleNichtGefunden = output<void>();
+
     protected readonly componentModel = signal<{ term: string }>({
         term: '',
     });

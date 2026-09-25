@@ -14,6 +14,7 @@ export const schulkatalogsucheActions = createActionGroup({
         loadSchulenFailed: props<{ error: Error }>(),
         schuleSelected: props<{ schule: Schule }>(),
         schulenCleared: emptyProps(),
+        submitSchulkatalogantragRequested: emptyProps(),
         resetSuche: emptyProps(),
     },
 });

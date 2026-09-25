@@ -1,6 +1,5 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
-import java.util.List;
 import java.util.Optional;
 
 import jakarta.inject.Inject;
@@ -12,7 +11,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.generated.ConstraintViolationDetail;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
@@ -22,6 +20,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.Sch
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.CleanupTestDataDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.MockAugmentSessionTestProfile;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.TestConstants;
 
 import io.restassured.http.ContentType;
 
@@ -191,6 +190,7 @@ public class WettbewerbsdurchfuehrenderResourceTest {
     @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
     void should_return_400_when_schulkuerzel_invaid() {
 
+        // arrange
         final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
                 .durchfuehrungsart(Wettbewerbsdurchfuehrungsart.SCHULE)
                 .schulkuerzel("äöü456789");
@@ -210,28 +210,7 @@ public class WettbewerbsdurchfuehrenderResourceTest {
                 .as(ErrorResponse.class);
 
         // assert
-        final List<ConstraintViolationDetail> details = result.getConstraintViolations();
+        assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, result.getMessage());
 
-        final Optional<ConstraintViolationDetail> optSize = details
-                .stream()
-                .filter(cv -> "Größe muss zwischen 0 und 8 sein".equals(cv.getMessage()))
-                .findFirst();
-
-        final Optional<ConstraintViolationDetail> optPattern = details
-                .stream()
-                .filter(cv -> "muss mit \"^[A-Z0-9]*$\" übereinstimmen".equals(cv.getMessage()))
-                .findFirst();
-
-        final Optional<ConstraintViolationDetail> optCross = details
-                .stream()
-                .filter(cv -> "wettbewerbsdurchfuehrenderRequest".equals(cv.getField()))
-                .findFirst();
-
-        assertAll(() -> assertEquals("Die Anfrage ist nicht valide.", result.getMessage()),
-                () -> assertEquals(3, details.size()), () -> assertTrue(optSize.isPresent()),
-                () -> assertTrue(optPattern.isPresent()), () -> assertTrue(optCross.isPresent()),
-                () -> assertEquals("schulkuerzel", optSize.get().getField()),
-                () -> assertEquals("schulkuerzel", optPattern.get().getField()),
-                () -> assertEquals("schulkuerzel äöü456789 existiert nicht", optCross.get().getMessage()));
     }
 }

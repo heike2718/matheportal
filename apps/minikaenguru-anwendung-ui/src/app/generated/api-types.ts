@@ -92,6 +92,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/schulkatalogantrag': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        readonly put?: never;
+        /**
+         * Antrag, eine fehlende Schule in den Schulkatalog aufzunehmen
+         * @description Sendet eine Mail mit den Daten für eine neue Schule.
+         */
+        readonly post: operations['submitSchulkatalogantrag'];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -154,22 +174,9 @@ export interface components {
              */
             readonly berechtigungen: readonly string[];
         };
-        readonly ConstraintViolationDetail: {
-            /**
-             * @description Feldname der verletzten Constraint.
-             * @example clientId
-             */
-            readonly field: string;
-            /**
-             * @description Fehlermeldung zur verletzten Constraint.
-             * @example clientId ist ungueltig.
-             */
-            readonly message: string;
-        };
         readonly ErrorResponse: {
             /** @example Irgendein Fehler ist aufgetreten */
             readonly message: string;
-            readonly constraintViolations?: readonly components['schemas']['ConstraintViolationDetail'][];
         };
         readonly Land: {
             readonly kuerzel: string;
@@ -187,8 +194,14 @@ export interface components {
             readonly kuerzel: string;
             readonly name: string;
         };
-        readonly ArrayOfOrte: readonly components['schemas']['Ort'][];
-        readonly ArrayOfSchulen: readonly components['schemas']['Schule'][];
+        readonly Schulkatalogantrag: {
+            readonly nameLand: string;
+            readonly nameOrt: string;
+            readonly nameSchule: string;
+            readonly plz: string;
+            readonly strasseUndHausnummer: string;
+            readonly emailAuftraggeber: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -415,7 +428,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['ArrayOfOrte'];
+                    readonly 'application/json': readonly components['schemas']['Ort'][];
                 };
             };
             /** @description Request ist ungültig */
@@ -465,7 +478,58 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': components['schemas']['ArrayOfSchulen'];
+                    readonly 'application/json': readonly components['schemas']['Schule'][];
+                };
+            };
+            /** @description Request ist ungültig */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly submitSchulkatalogantrag: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly 'application/json': components['schemas']['Schulkatalogantrag'];
+            };
+        };
+        readonly responses: {
+            /** @description Schulkatalogantrag erfolgreich versendet */
+            readonly 204: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['Wettbewerbsdurchfuehrender'];
                 };
             };
             /** @description Request ist ungültig */

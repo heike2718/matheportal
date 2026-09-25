@@ -122,6 +122,37 @@
     &__results {
         width: min(100%, 44rem);
     }
+
+    &__action {
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
+
+        color: mp-theme.$mp-color-surface;
+        font: inherit;
+        font-weight: 600;
+
+        background-color: mp-theme.mp-brand(minikaenguru);
+        border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru);
+        border-radius: mp-theme.$mp-radius-m;
+
+        cursor: pointer;
+
+        transition:
+            filter 140ms ease,
+            box-shadow 140ms ease;
+
+        &:hover {
+            filter: brightness(0.92);
+        }
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru);
+            outline-offset: mp-theme.$mp-space-1;
+        }
+
+        &:active {
+            filter: brightness(0.84);
+        }
+    }
 }
 
 @media (width <= 480px) and (hover: none) {

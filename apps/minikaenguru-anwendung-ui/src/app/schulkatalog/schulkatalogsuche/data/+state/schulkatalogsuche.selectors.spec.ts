@@ -4,6 +4,7 @@ import {
     orteLoaded,
     schulenLoaded,
     selectOrte,
+    selectSchuleEintragenMoeglich,
     selectSchulen,
     selectSelectedOrt,
     selectSelectedSchule,
@@ -85,5 +86,36 @@ describe('schulkatalogsucheSelectors', () => {
     it('should select schulenLoaded', () => {
         const result = schulenLoaded.projector({ ...state, schulenLoadingState: 'not-loaded' });
         expect(result).toBe(false);
+    });
+
+    describe('selectSchuleEintragenMoeglich', () => {
+        it('selectSchuleEintragenMoeglich should return false with orteLoaded === not-loaded', () => {
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'not-loaded' });
+            expect(result).toBe(false);
+        });
+        it('selectSchuleEintragenMoeglich should return false with orteLoaded === unauthorized', () => {
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'unauthorized' });
+            expect(result).toBe(false);
+        });
+        it('selectSchuleEintragenMoeglich should return false with orteLoaded === technical-error', () => {
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'technical-error' });
+            expect(result).toBe(false);
+        });
+        it('selectSchuleEintragenMoeglich should return false with orteLoaded === loaded und mindestens 1 Treffer', () => {
+            const result = selectSchuleEintragenMoeglich.projector({
+                ...state,
+                orteLoadingState: 'loaded',
+                orte: [orte[0]],
+            });
+            expect(result).toBe(false);
+        });
+        it('selectSchuleEintragenMoeglich should return true with orteLoaded === loaded und 0 treffer', () => {
+            const result = selectSchuleEintragenMoeglich.projector({
+                ...state,
+                orteLoadingState: 'loaded',
+                orte: [],
+            });
+            expect(result).toBe(true);
+        });
     });
 });

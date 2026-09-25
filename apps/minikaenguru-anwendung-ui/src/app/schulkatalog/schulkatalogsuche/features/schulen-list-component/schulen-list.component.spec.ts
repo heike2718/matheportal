@@ -134,6 +134,18 @@ describe('SchulenListComponentComponent', () => {
 
             expect(resultCountDe.nativeElement.textContent.trim()).toBe('Anzahl: 2');
         });
+        it('should emit schuleNichtGefunden when button is cliced', () => {
+            const buttonClickedSpy = vi.spyOn(component.schuleNichtGefunden, 'emit');
+
+            const buttonDe = fixture.debugElement.query(By.css('[data-testId="submit-schule-btn"]'));
+
+            expect(buttonDe).toBeTruthy();
+            expect(buttonDe.nativeElement.textContent.trim()).toBe('Schule eintragen lassen');
+
+            buttonDe.nativeElement.click();
+
+            expect(buttonClickedSpy).toHaveBeenCalledTimes(1);
+        });
 
         it('should re-emit schuleSelected when SchuleCardComponent emits schuleSelected', () => {
             const ortSelectedSpy = vi.spyOn(component.schuleSelected, 'emit');

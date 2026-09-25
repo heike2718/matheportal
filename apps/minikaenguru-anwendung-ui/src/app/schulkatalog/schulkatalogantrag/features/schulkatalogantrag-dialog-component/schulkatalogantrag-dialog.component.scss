@@ -1,0 +1,135 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    color: mp-theme.$mp-color-text-default;
+    font-family: mp-theme.$mp-font-family;
+}
+
+.schulkatalogantrag-dialog {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: mp-theme.$mp-space-5;
+    padding: mp-theme.$mp-space-6;
+
+    background-color: mp-theme.$mp-color-surface;
+    border: mp-theme.$mp-border-width solid mp-theme.mp-brand-border(minikaenguru);
+    border-radius: mp-theme.$mp-radius-l;
+    box-shadow: mp-theme.$mp-shadow-2;
+
+    &__title {
+        margin: 0;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-l;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-5;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-3;
+    }
+
+    &__field {
+        width: 100%;
+
+        mat-error {
+            font-size: mp-theme.$mp-font-size-xs;
+            line-height: mp-theme.$mp-line-height-tight;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: mp-theme.$mp-space-3;
+        width: 100%;
+        padding-top: mp-theme.$mp-space-4;
+        border-top: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
+    }
+
+    &__action {
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
+
+        font: inherit;
+        font-weight: 600;
+
+        border-radius: mp-theme.$mp-radius-m;
+        cursor: pointer;
+
+        transition:
+            filter 140ms ease,
+            box-shadow 140ms ease;
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru);
+            outline-offset: mp-theme.$mp-space-1;
+        }
+
+        &--primary {
+            color: mp-theme.$mp-color-surface;
+            background-color: mp-theme.mp-brand(minikaenguru);
+            border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru);
+
+            &:hover:not(:disabled) {
+                filter: brightness(0.92);
+            }
+
+            &:active:not(:disabled) {
+                filter: brightness(0.84);
+            }
+
+            &:disabled {
+                color: mp-theme.$mp-color-text-muted;
+                background-color: mp-theme.$mp-color-surface-subtle;
+                border-color: mp-theme.$mp-border-color-subtle;
+                cursor: not-allowed;
+            }
+        }
+
+        &--secondary {
+            color: mp-theme.mp-brand(minikaenguru);
+            background-color: mp-theme.$mp-color-surface;
+            border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru);
+
+            &:hover {
+                background-color: mp-theme.mp-brand-soft(minikaenguru);
+            }
+        }
+    }
+}
+
+@media (width <= 600px), (height <= 700px) {
+    .schulkatalogantrag-dialog {
+        max-height: calc(100dvh - 24px);
+        overflow: hidden;
+
+        &__title {
+            flex-shrink: 0;
+        }
+
+        &__form {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        &__content {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        &__actions {
+            flex-shrink: 0;
+        }
+    }
+}

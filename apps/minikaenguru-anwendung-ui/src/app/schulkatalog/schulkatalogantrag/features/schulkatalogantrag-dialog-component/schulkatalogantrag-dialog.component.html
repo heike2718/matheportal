@@ -1,0 +1,106 @@
+<div class="schulkatalogantrag-dialog">
+    <h2 class="schulkatalogantrag-dialog__title">Schule eintragen lassen</h2>
+
+    <form class="schulkatalogantrag-dialog__form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="schulkatalogantrag-dialog__content">
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>E-Mail Auftraggeber</mat-label>
+                <input matInput formControlName="emailAuftraggeber" />
+
+                @if (form.controls.emailAuftraggeber.hasError('required')) {
+                    <mat-error>E-Mail ist erforderlich.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('pattern')) {
+                    <mat-error>Bitte eine gültige E-Mail-Adresse eingeben.</mat-error>
+                } @else if (form.controls.emailAuftraggeber.hasError('maxlength')) {
+                    <mat-error>Die E-Mail darf maximal 255 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>Schule</mat-label>
+                <input matInput formControlName="nameSchule" />
+
+                @if (form.controls.nameSchule.hasError('required') || form.controls.nameSchule.hasError('notBlank')) {
+                    <mat-error>Schule ist erforderlich.</mat-error>
+                } @else if (form.controls.nameSchule.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.nameSchule.hasError('maxlength')) {
+                    <mat-error>Schule darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>Postleitzahl</mat-label>
+                <input matInput formControlName="plz" />
+
+                @if (form.controls.plz.hasError('required') || form.controls.plz.hasError('notBlank')) {
+                    <mat-error>Postleitzahl ist erforderlich.</mat-error>
+                } @else if (form.controls.plz.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.plz.hasError('maxlength')) {
+                    <mat-error>Die Postleitzahl darf maximal 10 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>Ort</mat-label>
+                <input matInput formControlName="nameOrt" />
+
+                @if (form.controls.nameOrt.hasError('required') || form.controls.nameOrt.hasError('notBlank')) {
+                    <mat-error>Ort ist erforderlich.</mat-error>
+                } @else if (form.controls.nameOrt.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.nameOrt.hasError('maxlength')) {
+                    <mat-error>Ort darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>Straße und Hausnummer</mat-label>
+                <input matInput formControlName="strasseUndHausnummer" />
+
+                @if (
+                    form.controls.strasseUndHausnummer.hasError('required') ||
+                    form.controls.strasseUndHausnummer.hasError('notBlank')
+                ) {
+                    <mat-error>Straße und Hausnummer ist erforderlich.</mat-error>
+                } @else if (form.controls.strasseUndHausnummer.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.strasseUndHausnummer.hasError('maxlength')) {
+                    <mat-error>Straße und Hausnummer darf maximal 200 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field class="schulkatalogantrag-dialog__field">
+                <mat-label>Land / Bundesland</mat-label>
+                <input matInput formControlName="nameLand" />
+
+                <mat-hint class="schulkatalogantrag-dialog__hint">
+                    Für Schulen in Deutschland geben Sie bitte das Bundesland an, für Schulen im Ausland das jeweilige
+                    Land.
+                </mat-hint>
+
+                @if (form.controls.nameLand.hasError('required') || form.controls.nameLand.hasError('notBlank')) {
+                    <mat-error>Land ist erforderlich.</mat-error>
+                } @else if (form.controls.nameLand.hasError('pattern')) {
+                    <mat-error>{{ validationHint }}</mat-error>
+                } @else if (form.controls.nameLand.hasError('maxlength')) {
+                    <mat-error>Land darf maximal 100 Zeichen lang sein.</mat-error>
+                }
+            </mat-form-field>
+        </div>
+
+        <div class="schulkatalogantrag-dialog__actions">
+            <button
+                type="button"
+                class="schulkatalogantrag-dialog__action schulkatalogantrag-dialog__action--secondary"
+                (click)="abbrechen()">
+                abbrechen
+            </button>
+
+            <button
+                type="submit"
+                class="schulkatalogantrag-dialog__action schulkatalogantrag-dialog__action--primary"
+                data-testid="submit-btn"
+                [disabled]="form.pending">
+                Eintrag beantragen
+            </button>
+        </div>
+    </form>
+</div>

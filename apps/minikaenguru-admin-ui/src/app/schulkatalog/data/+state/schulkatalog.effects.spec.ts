@@ -636,7 +636,7 @@ describe('SchulkatalogEffects', () => {
             // nur der erste request muss gemocked werden (exhaustMap)
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(httpFirst$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.landMitOrtUndSchuleAnlegen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -695,9 +695,6 @@ describe('SchulkatalogEffects', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
             const httpSecond$ = new Subject<Schulkuerzel>();
 
-            const firstRequestFinalized = vi.fn();
-            const secondRequestFinalized = vi.fn();
-
             // 1. Request wirft einen Fehler, 2. Request ist erfolgreich
             httpServiceMock.landMitOrtUndSchuleAnlegen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
 
@@ -712,7 +709,6 @@ describe('SchulkatalogEffects', () => {
 
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenLastCalledWith(payload);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
             httpFirst$.error(httpServerErrorResponse);
@@ -729,7 +725,6 @@ describe('SchulkatalogEffects', () => {
 
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.landMitOrtUndSchuleAnlegen).toHaveBeenCalledTimes(2);
-            expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
             httpSecond$.next(schulkuerzel);
@@ -778,7 +773,7 @@ describe('SchulkatalogEffects', () => {
             // nur der erste request muss gemocked werden (exhaustMap)
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(httpFirst$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.ortMitSchuleAnlegen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -835,9 +830,6 @@ describe('SchulkatalogEffects', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
             const httpSecond$ = new Subject<Schulkuerzel>();
 
-            const firstRequestFinalized = vi.fn();
-            const secondRequestFinalized = vi.fn();
-
             // 1. Request wirft einen Fehler, 2. Request ist erfolgreich
             httpServiceMock.ortMitSchuleInLandAnlegen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
 
@@ -852,7 +844,6 @@ describe('SchulkatalogEffects', () => {
 
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith('TT', payload);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
             httpFirst$.error(httpServerErrorResponse);
@@ -870,7 +861,6 @@ describe('SchulkatalogEffects', () => {
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenCalledTimes(2);
             expect(httpServiceMock.ortMitSchuleInLandAnlegen).toHaveBeenLastCalledWith('TT', payload);
-            expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
             httpSecond$.next(schulkuerzel);
@@ -929,7 +919,7 @@ describe('SchulkatalogEffects', () => {
             // nur der erste request muss gemocked werden (exhaustMap)
             httpServiceMock.schuleInOrtAnlegen.mockReturnValueOnce(httpFirst$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.schuleAnlegen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -987,9 +977,6 @@ describe('SchulkatalogEffects', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
             const httpSecond$ = new Subject<Schulkuerzel>();
 
-            const firstRequestFinalized = vi.fn();
-            const secondRequestFinalized = vi.fn();
-
             // 1. Request wirft einen Fehler, 2. Request ist erfolgreich
             httpServiceMock.schuleInOrtAnlegen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
 
@@ -1004,7 +991,6 @@ describe('SchulkatalogEffects', () => {
 
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith('A1234567', payload);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
             httpFirst$.error(httpServerErrorResponse);
@@ -1022,7 +1008,6 @@ describe('SchulkatalogEffects', () => {
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenCalledTimes(2);
             expect(httpServiceMock.schuleInOrtAnlegen).toHaveBeenLastCalledWith('A1234567', payload);
-            expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
             httpSecond$.next(schulkuerzel);
@@ -1094,7 +1079,7 @@ describe('SchulkatalogEffects', () => {
             // nur der erste request muss gemocked werden (exhaustMap)
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(httpFirst$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.schuleUmbenennen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -1151,9 +1136,6 @@ describe('SchulkatalogEffects', () => {
             const httpFirst$ = new Subject<Schulkuerzel>();
             const httpSecond$ = new Subject<Schulkuerzel>();
 
-            const firstRequestFinalized = vi.fn();
-            const secondRequestFinalized = vi.fn();
-
             // 1. Request wirft einen Fehler, 2. Request ist erfolgreich
             httpServiceMock.schuleUmbenennen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
 
@@ -1168,7 +1150,6 @@ describe('SchulkatalogEffects', () => {
 
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(schule.kuerzel, payload);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
 
             // Fehler werfen (simuliert ein fehlerhaftes Backend)
             httpFirst$.error(httpServerErrorResponse);
@@ -1186,7 +1167,6 @@ describe('SchulkatalogEffects', () => {
             // BEWEIS 1: Der HTTP-Service muss trotz des vorherigen Fehlers ein zweites Mal gerufen werden!
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenCalledTimes(2);
             expect(httpServiceMock.schuleUmbenennen).toHaveBeenLastCalledWith(schule.kuerzel, payload);
-            expect(secondRequestFinalized).not.toHaveBeenCalled();
 
             // Zweiten Request erfolgreich beenden
             httpSecond$.next(schulkuerzel);

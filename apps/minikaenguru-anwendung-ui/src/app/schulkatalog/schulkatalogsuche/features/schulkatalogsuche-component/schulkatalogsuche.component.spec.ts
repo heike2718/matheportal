@@ -55,11 +55,13 @@ describe('SchulkatalogsucheComponentComponent', () => {
         selectedSchule: Signal<Schule | undefined>;
         isOrteLoaded: Signal<boolean>;
         isSchulenLoaded: Signal<boolean>;
+        schuleEintragenMoeglich: Signal<boolean>;
         findOrte: ReturnType<typeof vi.fn>;
         ortSelected: ReturnType<typeof vi.fn>;
         loadSchulen: ReturnType<typeof vi.fn>;
         schuleSelected: ReturnType<typeof vi.fn>;
         ortssucheRequested: ReturnType<typeof vi.fn>;
+        schuleNichtGefunden: ReturnType<typeof vi.fn>;
     };
 
     let orteSignal: WritableSignal<Ort[]>;
@@ -69,6 +71,7 @@ describe('SchulkatalogsucheComponentComponent', () => {
     let schulenSignal: WritableSignal<Schule[]>;
     let isSchulenLoadedSignal: WritableSignal<boolean>;
     let selectedSchuleSignal: WritableSignal<Schule | undefined>;
+    let schuleEintragenMoeglichSignal: WritableSignal<boolean>;
 
     beforeEach(async () => {
         orteSignal = signal([]);
@@ -79,6 +82,7 @@ describe('SchulkatalogsucheComponentComponent', () => {
         schulenSignal = signal([]);
         isSchulenLoadedSignal = signal(false);
         selectedSchuleSignal = signal(undefined);
+        schuleEintragenMoeglichSignal = signal(true);
 
         schulkatalogFacadeMock = {
             orte: orteSignal,
@@ -88,11 +92,13 @@ describe('SchulkatalogsucheComponentComponent', () => {
             schulen: schulenSignal,
             isSchulenLoaded: isSchulenLoadedSignal,
             selectedSchule: selectedSchuleSignal,
+            schuleEintragenMoeglich: schuleEintragenMoeglichSignal,
             findOrte: vi.fn(),
             ortSelected: vi.fn(),
             loadSchulen: vi.fn(),
             schuleSelected: vi.fn(),
             ortssucheRequested: vi.fn(),
+            schuleNichtGefunden: vi.fn(),
         };
 
         await TestBed.configureTestingModule({
@@ -166,6 +172,15 @@ describe('SchulkatalogsucheComponentComponent', () => {
             expect(schulkatalogFacadeMock.ortSelected).toHaveBeenCalledOnce();
             expect(schulkatalogFacadeMock.ortSelected).toHaveBeenCalledWith(orte[0]);
         });
+        it('should trigger facade.schuleNichtGefunden when mock emits schuleNichtGefunden', () => {
+            fixture.detectChanges();
+            const orteSuchenDe = fixture.debugElement.query(By.directive(OrteSuchenComponent));
+
+            // Analog für das zweite Output-Event
+            ngMocks.output(orteSuchenDe, 'schuleNichtGefunden').emit();
+
+            expect(schulkatalogFacadeMock.schuleNichtGefunden).toHaveBeenCalledOnce();
+        });
     });
     describe('test schulen loaded', () => {
         beforeEach(() => {
@@ -208,6 +223,15 @@ describe('SchulkatalogsucheComponentComponent', () => {
 
             expect(schulkatalogFacadeMock.schuleSelected).toHaveBeenCalledOnce();
             expect(schulkatalogFacadeMock.schuleSelected).toHaveBeenCalledWith(schulen[0]);
+        });
+        it('should trigger facade.schuleSelected when mock emits schuleSelected', () => {
+            fixture.detectChanges();
+            const schulenListDe = fixture.debugElement.query(By.directive(SchulenListComponent));
+
+            // Analog für das zweite Output-Event
+            ngMocks.output(schulenListDe, 'schuleNichtGefunden').emit();
+
+            expect(schulkatalogFacadeMock.schuleNichtGefunden).toHaveBeenCalledOnce();
         });
         it('should trigger facade.ortssucheRequested when mock emits ortssucheRequested', () => {
             schulenSignal.set(schulen);

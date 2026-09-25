@@ -26,6 +26,8 @@ export class SchulkatalogsucheFacade {
 
     readonly isSchuleSelected = this.#store.selectSignal(fromSchulkatalogsuche.schuleSelected);
 
+    readonly schuleEintragenMoeglich = this.#store.selectSignal(fromSchulkatalogsuche.selectSchuleEintragenMoeglich);
+
     public findOrte(name: string): void {
         this.#store.dispatch(schulkatalogsucheActions.findOrte({ name }));
     }
@@ -40,5 +42,9 @@ export class SchulkatalogsucheFacade {
 
     public ortssucheRequested(): void {
         this.#store.dispatch(schulkatalogsucheActions.resetSuche());
+    }
+
+    public schuleNichtGefunden(): void {
+        this.#store.dispatch(schulkatalogsucheActions.submitSchulkatalogantragRequested());
     }
 }

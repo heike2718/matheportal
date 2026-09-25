@@ -173,7 +173,9 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfOrte'
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Ort'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -216,7 +218,50 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfSchulen'
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Schule'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalogantrag:
+        post:
+            tags:
+                - Schulkatalogantrag
+            summary: 'Antrag, eine fehlende Schule in den Schulkatalog aufzunehmen'
+            description: 'Sendet eine Mail mit den Daten für eine neue Schule.'
+            operationId: submitSchulkatalogantrag
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Schulkatalogantrag'
+            security:
+                - mpSession: []
+            responses:
+                '204':
+                    description: Schulkatalogantrag erfolgreich versendet
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -334,20 +379,6 @@ components:
                         - SCHULE
                         - PRIVAT
                         - AUTOR
-        ConstraintViolationDetail:
-            type: object
-            required:
-                - field
-                - message
-            properties:
-                field:
-                    type: string
-                    description: Feldname der verletzten Constraint.
-                    example: clientId
-                message:
-                    type: string
-                    description: Fehlermeldung zur verletzten Constraint.
-                    example: clientId ist ungueltig.
         ErrorResponse:
             type: object
             required:
@@ -356,10 +387,6 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
-                constraintViolations:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ConstraintViolationDetail'
         Land:
             type: object
             required:
@@ -414,11 +441,42 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
-        ArrayOfOrte:
-            type: array
-            items:
-                $ref: '#/components/schemas/Ort'
-        ArrayOfSchulen:
-            type: array
-            items:
-                $ref: '#/components/schemas/Schule'
+        Schulkatalogantrag:
+            type: object
+            required:
+                - nameLand
+                - nameOrt
+                - nameSchule
+                - plz
+                - strasseUndHausnummer
+                - emailAuftraggeber
+            properties:
+                nameLand:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+                nameOrt:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+                nameSchule:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 100
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+                plz:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 20
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+                strasseUndHausnummer:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 200
+                    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+                emailAuftraggeber:
+                    type: string
+                    pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+                    maxLength: 255

@@ -5,12 +5,16 @@
             [schulen]="schulen()"
             [schulenLoaded]="isSchulenLoaded()"
             (schuleSelected)="onSchuleSelected($event)"
-            (ortssucheRequested)="onOrtssucheRequested()"></mka-schulen-list>
+            (ortssucheRequested)="onOrtssucheRequested()"
+            (schuleNichtGefunden)="onSchuleNichtGefunden()"></mka-schulen-list>
     } @else {
         <mka-orte-suchen
             [orte]="orte()"
             [orteLoaded]="isOrteLoaded()"
+            [schuleEintragenMoeglich]="schuleEintragenMoeglich()"
             (searchTermOrtChanged)="onSearchTermOrtChanged($event)"
-            (ortSelected)="onOrtSelected($event)"></mka-orte-suchen>
+            (ortSelected)="onOrtSelected($event)"
+            (schuleNichtGefunden)="onSchuleNichtGefunden()">
+        </mka-orte-suchen>
     }
 </div>

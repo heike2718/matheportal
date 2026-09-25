@@ -30,6 +30,11 @@ export const schuleSelected = createSelector(
     state => state.selectedSchule !== undefined
 );
 
+export const selectSchuleEintragenMoeglich = createSelector(
+    selectMKASchulkatalogsucheState,
+    state => state.orteLoadingState === 'loaded' && state.orte.length === 0
+);
+
 export const fromSchulkatalogsuche = {
     selectOrte,
     selectSchulen,
@@ -40,4 +45,5 @@ export const fromSchulkatalogsuche = {
     schulenLoaded,
     ortSelected,
     schuleSelected,
+    selectSchuleEintragenMoeglich,
 };

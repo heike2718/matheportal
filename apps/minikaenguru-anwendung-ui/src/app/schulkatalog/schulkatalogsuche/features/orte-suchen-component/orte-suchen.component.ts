@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Ort } from '../../model/schulkatalog.model';
 import { debounce, form, FormField, pattern } from '@angular/forms/signals';
+import { MatButtonModule } from '@angular/material/button';
 import { OrtCardComponent } from '../ort-card-component/ort-card.component';
 import {
     MINIKAENGURU_TEXT_PATTERN,
@@ -19,12 +20,14 @@ import {
 
 @Component({
     selector: 'mka-orte-suchen',
-    imports: [FormField, OrtCardComponent],
+    imports: [FormField, OrtCardComponent, MatButtonModule],
     templateUrl: './orte-suchen.component.html',
     styleUrl: './orte-suchen.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrteSuchenComponent {
+    readonly schuleNichtGefunden = output<void>();
+
     private previousTerm = '';
 
     protected readonly componentModel = signal<{ term: string }>({
@@ -53,6 +56,8 @@ export class OrteSuchenComponent {
     readonly orte = input.required<Ort[]>();
 
     readonly orteLoaded = input.required<boolean>();
+
+    readonly schuleEintragenMoeglich = input.required<boolean>();
 
     readonly ortSelected = output<Ort>();
 
