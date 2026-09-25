@@ -49,6 +49,7 @@ describe('OrteSuchenComponentComponent', () => {
 
         fixture.componentRef.setInput('orte', []);
         fixture.componentRef.setInput('orteLoaded', false);
+        fixture.componentRef.setInput('schuleEintragenMoeglich', false);
 
         await fixture.whenStable();
 
@@ -93,6 +94,35 @@ describe('OrteSuchenComponentComponent', () => {
 
             // fokus prüfen
             expect(document.activeElement).toBe(inputDe.nativeElement);
+        });
+
+        it('should show the button when selectSchuleEintragenMoeglich', () => {
+            fixture.componentRef.setInput('schuleEintragenMoeglich', true);
+            fixture.detectChanges();
+
+            const buttonDe = fixture.debugElement.query(By.css('[data-testid="submit-schule-btn"]'));
+            expect(buttonDe).toBeTruthy();
+        });
+
+        it('should not show the button when selectSchuleEintragenMoeglich', () => {
+            fixture.componentRef.setInput('schuleEintragenMoeglich', false);
+            fixture.detectChanges();
+
+            const buttonDe = fixture.debugElement.query(By.css('[data-testid="submit-schule-btn"]'));
+            expect(buttonDe).toBeFalsy();
+        });
+
+        it('should emit schuleNichtGefunden when button is clicked', () => {
+            fixture.componentRef.setInput('schuleEintragenMoeglich', true);
+            fixture.detectChanges();
+
+            const buttonClickedSpy = vi.spyOn(component.schuleNichtGefunden, 'emit');
+
+            const buttonDe = fixture.debugElement.query(By.css('[data-testid="submit-schule-btn"]'));
+
+            buttonDe.nativeElement.click();
+
+            expect(buttonClickedSpy).toHaveBeenCalledTimes(1);
         });
     });
 

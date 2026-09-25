@@ -56,4 +56,11 @@ describe('SchulkatalosucheFacade tests', () => {
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.schuleSelected({ schule }));
     });
+
+    it('schuleNichtGefunden should dispatch the selected action', () => {
+        facade.schuleNichtGefunden();
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.submitSchulkatalogantragRequested());
+    });
 });
