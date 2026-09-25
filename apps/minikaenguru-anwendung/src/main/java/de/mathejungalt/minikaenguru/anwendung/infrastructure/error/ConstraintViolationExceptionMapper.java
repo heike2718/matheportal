@@ -29,7 +29,7 @@ public final class ConstraintViolationExceptionMapper implements ExceptionMapper
             Das hat leider nicht funktioniert. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. \
             Wenn Sie keinen Fehler finden, senden Sie bitte eine Mail und fügen Sie nach Möglichkeit \
             einen Screenshot hinzu.
-                   """;;
+                   """;
 
     @Override
     public Response toResponse(final ConstraintViolationException exception) {
