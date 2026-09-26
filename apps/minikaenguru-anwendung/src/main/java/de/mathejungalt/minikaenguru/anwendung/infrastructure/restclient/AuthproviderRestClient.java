@@ -2,7 +2,6 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient;
 
 import java.time.temporal.ChronoUnit;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -17,11 +16,10 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLoggingFilter;
 
-@RegisterRestClient(configKey = "mkgateway")
+@RegisterRestClient(configKey = "authprovider")
 @RegisterProvider(RestClientLoggingFilter.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
-@ApplicationScoped
 public interface AuthproviderRestClient {
 
     /**
