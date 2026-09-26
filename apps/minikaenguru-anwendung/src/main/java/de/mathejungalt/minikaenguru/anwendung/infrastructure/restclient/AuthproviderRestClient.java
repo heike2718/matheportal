@@ -2,6 +2,7 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient;
 
 import java.time.temporal.ChronoUnit;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -20,6 +21,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLo
 @RegisterProvider(RestClientLoggingFilter.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 public interface AuthproviderRestClient {
 
     /**
