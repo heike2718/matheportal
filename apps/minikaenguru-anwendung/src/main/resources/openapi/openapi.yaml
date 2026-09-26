@@ -281,6 +281,35 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerb:
+        get:
+            tags:
+                - Wettbewerb
+            summary: 'aktueller Wettbewerb'
+            description: 'läd den aktuellen Wettbewerb'
+            operationId: 'loadAktuellenWettbewerb'
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerb'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:
@@ -309,6 +338,14 @@ components:
                 - STANDARD
                 - ERTEILT
                 - ENTZOGEN
+        Wettbewerbsstatus:
+            type: string
+            enum:
+                - ERFASST
+                - ANMELDUNG
+                - DOWNLOAD_LEHRER
+                - DOWNLOAD_PRIVAT
+                - BEENDET
         WettbewerbsdurchfuehrenderRequest:
             type: object
             x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
@@ -480,3 +517,30 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
+        Wettbewerb:
+            type: object
+            required:
+                - jahr
+                - status
+                - beginn
+                - freischaltungSchulen
+                - freischaltungPrivat
+                - ende
+            properties:
+                jahr:
+                    type: integer
+                status:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsstatus'
+                beginn:
+                    type: string
+                    example: 01.01.2029
+                freischaltungSchulen:
+                    type: string
+                    example: 14.03.2029
+                freischaltungPrivat:
+                    type: string
+                    example: 15.06.2029
+                ende:
+                    type: string
+                    example: 31.07.2029

@@ -9,6 +9,7 @@ import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { wettbewerbActions } from '../../../wettbewerb/data/+state/wettbewerb.actions';
 
 @Injectable()
 export class MkaAuthorizationEffects {
@@ -42,6 +43,13 @@ export class MkaAuthorizationEffects {
             ),
         { dispatch: false }
     );
+
+    loadWettbewerbOnAuthorizationLoaded$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(mkaAuthorizationActions.mkaAuthorizationLoaded),
+            map(() => wettbewerbActions.loadWettbewerb())
+        );
+    });
 
     loadMkaAuthorizationFailed$ = createEffect(
         () =>
