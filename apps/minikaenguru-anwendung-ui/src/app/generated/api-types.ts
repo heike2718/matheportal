@@ -225,16 +225,16 @@ export interface components {
             readonly emailAuftraggeber: string;
         };
         readonly Wettbewerb: {
-            readonly jahr?: number;
-            readonly status?: components['schemas']['Wettbewerbsstatus'];
+            readonly jahr: number;
+            readonly status: components['schemas']['Wettbewerbsstatus'];
             /** @example 01.01.2029 */
-            readonly beginn?: string;
+            readonly beginn: string;
             /** @example 14.03.2029 */
-            readonly freischaltungSchulen?: string;
+            readonly freischaltungSchulen: string;
             /** @example 15.06.2029 */
-            readonly freischaltungPrivat?: string;
+            readonly freischaltungPrivat: string;
             /** @example 31.07.2029 */
-            readonly ende?: string;
+            readonly ende: string;
         };
     };
     responses: never;

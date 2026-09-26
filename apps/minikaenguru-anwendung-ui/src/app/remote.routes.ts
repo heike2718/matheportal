@@ -14,6 +14,7 @@ import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
+import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
 
 export const remoteRoutes: Routes = [
     {
@@ -57,6 +58,7 @@ export const remoteRoutes: Routes = [
                 useValue: minikaenguruAnwendungConfiguration,
             },
             ...mkaAuthorizationDataProvider,
+            ...wettbewerbDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,
             ...mkaSchulkatalogantragDataProvider,

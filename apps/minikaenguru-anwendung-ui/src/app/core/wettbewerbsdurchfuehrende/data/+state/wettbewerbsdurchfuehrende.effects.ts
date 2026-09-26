@@ -19,7 +19,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     #router = inject(Router);
     #authSessionFacade = inject(AuthSessionFacade);
 
-    durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
+    readonly durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
         this.#actions.pipe(
             ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt),
             map(() =>
@@ -33,7 +33,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         )
     );
 
-    durchfuehrungsartSchuleGewaelt$ = createEffect(
+    readonly durchfuehrungsartSchuleGewaelt$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt),
@@ -48,7 +48,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         { dispatch: false }
     );
 
-    schuleSelected$ = createEffect(() => {
+    readonly schuleSelected$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schuleSelected),
             map(({ schule }) =>
@@ -59,7 +59,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         );
     });
 
-    durchfuehrendenAnlegen$ = createEffect(() => {
+    readonly durchfuehrendenAnlegen$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen),
             exhaustMap(({ requestDto }) =>
@@ -75,7 +75,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         );
     });
 
-    durchfuehrendenAnlegenFailed$ = createEffect(
+    readonly durchfuehrendenAnlegenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
@@ -87,7 +87,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         { dispatch: false }
     );
 
-    durchfuehrenderAngelegt$ = createEffect(
+    readonly durchfuehrenderAngelegt$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt),

@@ -519,6 +519,13 @@ components:
                     maxLength: 255
         Wettbewerb:
             type: object
+            required:
+                - jahr
+                - status
+                - beginn
+                - freischaltungSchulen
+                - freischaltungPrivat
+                - ende
             properties:
                 jahr:
                     type: integer

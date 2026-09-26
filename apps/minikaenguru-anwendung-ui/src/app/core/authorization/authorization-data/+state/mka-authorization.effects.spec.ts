@@ -1,4 +1,4 @@
-import { ReplaySubject, Subject, firstValueFrom, of, throwError } from 'rxjs';
+import { Subject, firstValueFrom, of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationEffects } from './mka-authorization.effects';
@@ -12,6 +12,7 @@ import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { wettbewerbActions } from '../../../wettbewerb/data/+state/wettbewerb.actions';
 
 describe('MkaAuthorizationEffects tests', () => {
     let action$: Subject<Action>;
@@ -77,9 +78,9 @@ describe('MkaAuthorizationEffects tests', () => {
             const promise = firstValueFrom(effects.loadMkaAuthorization$);
 
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            const emmited = await promise;
+            const emitted = await promise;
 
-            expect(emmited).toEqual(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
+            expect(emitted).toEqual(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
         });
 
@@ -130,14 +131,32 @@ describe('MkaAuthorizationEffects tests', () => {
             const promise = firstValueFrom(effects.loadMkaAuthorization$);
 
             action$.next(mkaAuthorizationActions.loadMkaAuthorization());
-            const emmited = await promise;
+            const emitted = await promise;
 
-            expect(emmited).toEqual(mkaAuthorizationActions.loadMkaAuthorizationFailed());
+            expect(emitted).toEqual(mkaAuthorizationActions.loadMkaAuthorizationFailed());
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
         });
     });
 
-    describe('loadMkaAuthorizationFailed$ test', () => {
+    describe('loadWettbewerbOnAuthorizationLoaded$', () => {
+        it('should dispatch loadWettbewerb', async () => {
+            const user: User = {
+                anonym: false,
+                berechtigungen: ['SCHULE', 'STANDARD'],
+                fullName: 'Amy',
+            };
+
+            const promise = firstValueFrom(effects.loadWettbewerbOnAuthorizationLoaded$);
+
+            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user }));
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(wettbewerbActions.loadWettbewerb());
+        });
+    });
+
+    describe('loadMkaAuthorizationFailed$', () => {
         it('publishes error when loadMkaAuthorizationFailed', async () => {
             const user: User = {
                 anonym: false,
@@ -155,7 +174,7 @@ describe('MkaAuthorizationEffects tests', () => {
         });
     });
 
-    describe('loadMkaAuthorizationFailed$ test', () => {
+    describe('loadMkaAuthorizationFailed$', () => {
         it('publishes error when loadMkaAuthorizationFailed', async () => {
             const promise = firstValueFrom(effects.loadMkaAuthorizationFailed$);
 

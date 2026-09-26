@@ -11,6 +11,7 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaengu
 export class WettbewerbsdurchfuehrendeHttpService {
     #config = inject(MINIKAENGURU_ANWENDUNG_CONFIGURATION);
     #httpClient = inject(HttpClient);
+
     /**
      * Legt einen neuen Wettbewerbsdurchführenden an.
      * @param requestDto WettbewerbsdurchfuehrenderRequest
