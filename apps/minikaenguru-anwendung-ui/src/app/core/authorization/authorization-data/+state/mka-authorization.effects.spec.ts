@@ -138,24 +138,6 @@ describe('MkaAuthorizationEffects tests', () => {
         });
     });
 
-    describe('loadWettbewerbOnAuthorizationLoaded$', () => {
-        it('should dispatch loadWettbewerb', async () => {
-            const user: User = {
-                anonym: false,
-                berechtigungen: ['SCHULE', 'STANDARD'],
-                fullName: 'Amy',
-            };
-
-            const promise = firstValueFrom(effects.loadWettbewerbOnAuthorizationLoaded$);
-
-            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user }));
-
-            const emitted = await promise;
-
-            expect(emitted).toEqual(wettbewerbActions.loadWettbewerb());
-        });
-    });
-
     describe('loadMkaAuthorizationFailed$', () => {
         it('publishes error when loadMkaAuthorizationFailed', async () => {
             const user: User = {

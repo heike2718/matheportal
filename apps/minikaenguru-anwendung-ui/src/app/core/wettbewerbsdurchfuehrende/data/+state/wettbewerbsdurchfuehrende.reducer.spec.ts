@@ -43,7 +43,30 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
                 { wettbewerbsdurchfuehrender: undefined },
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
+
+            expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);
+            expect(state.wettbewerbsdurchfuehrender?.newsletter).toBeTruthy();
+            expect(state.wettbewerbsdurchfuehrender?.teilnahmenummern).toEqual(['Z98765432', 'A1234567']);
+            expect(state.wettbewerbsdurchfuehrender?.zugangsberechtigungUnterlagen).toBe(
+                ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard
+            );
+        });
+    });
+
+    describe('durchfuehrendenGeladen', () => {
+        it('should map the responseDto', () => {
+            const responseDto: Wettbewerbsdurchfuehrender = {
+                durchfuehrungsart: 'SCHULE',
+                newsletter: true,
+                teilnahmenummern: ['Z98765432', 'A1234567'],
+                zugangsberechtigungUnterlagen: 'STANDARD',
+            };
+
+            const state = wettbewerbsdurchfuehrendeFeature.reducer(
+                { wettbewerbsdurchfuehrender: undefined },
+                wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);

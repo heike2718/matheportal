@@ -11,13 +11,13 @@ import io.quarkus.security.Authenticated;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.WettbewerbsdurchfuehrendeService;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.WettbewerbsdurchfuehrenderApi;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.WettbewerbsdurchfuehrendeApi;
 
 /**
- * WettbewerbsdurchfuehrenderResource.
+ * WettbewerbsdurchfuehrendeResource.
  */
 @Authenticated
-public class WettbewerbsdurchfuehrenderResource implements WettbewerbsdurchfuehrenderApi {
+public class WettbewerbsdurchfuehrendeResource implements WettbewerbsdurchfuehrendeApi {
 
     @Inject
     WettbewerbsdurchfuehrendeService wettbewerbsdurchfuehrendeService;

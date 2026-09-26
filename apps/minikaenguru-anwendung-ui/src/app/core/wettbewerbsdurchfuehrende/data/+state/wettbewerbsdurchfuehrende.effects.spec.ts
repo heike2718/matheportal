@@ -16,6 +16,8 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 import { Schule } from '../../../../schulkatalog/schulkatalogsuche/model/schulkatalog.model';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { Action } from '@ngrx/store';
+import { User } from '@matheportal/auth-model';
+import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let action$: Subject<Action>;
@@ -171,7 +173,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            expect(emmited).toEqual(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
         });
@@ -236,7 +240,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             expect(emittedActions).toEqual([
                 wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
-                    responseDto: responseDto1,
+                    wettbewerbsdurchfuehrender: responseDto1,
                 }),
             ]);
 
@@ -303,7 +307,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 .mockReturnValueOnce(httpFirst$)
                 .mockReturnValueOnce(httpSecond$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.durchfuehrendenAnlegen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -340,7 +344,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             // die success action ist ebenfalls im array
             expect(emittedActions).toEqual([
                 wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto: responseDto2 }),
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
             ]);
 
             // Aufräumen
@@ -389,7 +393,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
 
             await promise;
 
@@ -410,7 +416,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
 
             await promise;
 
@@ -419,6 +427,42 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-lehrperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$', () => {
+        it.each(['SCHULE', 'PRIVAT'])('should dispatch durchfuehrendenLaden when rolle %s', async rolle => {
+            const user: User = {
+                anonym: false,
+                berechtigungen: [rolle, 'STANDARD'],
+                fullName: 'Amy',
+            };
+
+            const promise = firstValueFrom(effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$);
+
+            action$.next(mkaAuthorizationLoaded({ user }));
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+        });
+
+        it('should not dispatch durchfuehrendenLaden when keine Minikänguru-Rolle', async () => {
+            const user: User = {
+                anonym: false,
+                berechtigungen: ['STANDARD'],
+                fullName: 'Amy',
+            };
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            action$.next(mkaAuthorizationLoaded({ user }));
+
+            expect(emittedActions).toEqual([]);
+            subscription.unsubscribe();
         });
     });
 });

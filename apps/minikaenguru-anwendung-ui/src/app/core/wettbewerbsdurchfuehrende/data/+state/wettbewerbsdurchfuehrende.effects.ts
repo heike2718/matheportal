@@ -4,12 +4,14 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
 import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
-import { catchError, exhaustMap, map, of, tap } from 'rxjs';
+import { catchError, exhaustMap, filter, map, of, tap } from 'rxjs';
 import { DURCHFUEHRUNGSART, Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
+import { hasBerechtigungFuerMinikaenguru } from '../wettbewerbsdurchfuehrende-data.utils';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -65,7 +67,9 @@ export class WettbewerbsdurchfuehrendeEffects {
             exhaustMap(({ requestDto }) =>
                 this.#httpService.createWettbewerbsdurchfuehrenden(requestDto).pipe(
                     map((responseDto: Wettbewerbsdurchfuehrender) =>
-                        wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto })
+                        wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                            wettbewerbsdurchfuehrender: responseDto,
+                        })
                     ),
                     catchError((error: Error) =>
                         of(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }))
@@ -91,7 +95,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         () =>
             this.#actions.pipe(
                 ofType(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt),
-                tap(({ responseDto }) => {
+                tap(({ wettbewerbsdurchfuehrender: responseDto }) => {
                     switch (responseDto.durchfuehrungsart) {
                         case 'PRIVAT':
                             void this.#router.navigate([
@@ -119,4 +123,30 @@ export class WettbewerbsdurchfuehrendeEffects {
             ),
         { dispatch: false }
     );
+
+    readonly loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(mkaAuthorizationLoaded),
+            filter(({ user }) => hasBerechtigungFuerMinikaenguru(user)),
+            map(() => wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden())
+        );
+    });
+
+    readonly durchfuehrendenLaden$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden),
+            exhaustMap(() =>
+                this.#httpService.loadWettbewerbsdurchfuehrenden().pipe(
+                    map((responseDto: Wettbewerbsdurchfuehrender) =>
+                        wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({
+                            wettbewerbsdurchfuehrender: responseDto,
+                        })
+                    ),
+                    catchError((error: Error) =>
+                        of(wettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error }))
+                    )
+                )
+            )
+        );
+    });
 }

@@ -2,15 +2,15 @@ import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
 import { wettbewerbActions } from './wettbewerb.actions';
 
 describe('wettbewerbActions', () => {
-    it('should create the loadWettbewerb action', () => {
-        const action = wettbewerbActions.loadWettbewerb();
+    it('should create the wettbewerbLaden action', () => {
+        const action = wettbewerbActions.wettbewerbLaden();
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerb] loadWettbewerb',
+            type: '[MKA Wettbewerb] wettbewerbLaden',
         });
     });
 
-    it('should create the wettbewerbLoaded action', () => {
+    it('should create the wettbewerbGeladen action', () => {
         const wettbewerb: Wettbewerb = {
             beginn: '01.01.2029',
             ende: '31.07.2029',
@@ -20,21 +20,21 @@ describe('wettbewerbActions', () => {
             status: WETTBEWERBSSTATUS.anmeldung,
         };
 
-        const action = wettbewerbActions.wettbewerbLoaded({ wettbewerb });
+        const action = wettbewerbActions.wettbewerbGeladen({ wettbewerb });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerb] wettbewerbLoaded',
+            type: '[MKA Wettbewerb] wettbewerbGeladen',
             wettbewerb,
         });
     });
 
-    it('should create the loadWettbewerbFailed action', () => {
+    it('should create the wettbewerbLadenFailed action', () => {
         const error = new Error('schlimm');
 
-        const action = wettbewerbActions.loadWettbewerbFailed({ error });
+        const action = wettbewerbActions.wettbewerbLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerb] loadWettbewerbFailed',
+            type: '[MKA Wettbewerb] wettbewerbLadenFailed',
             error,
         });
     });

@@ -17,7 +17,7 @@ export const wettbewerbFeature = createFeature({
     name: WETTBEWERB_FEATURE_KEY,
     reducer: createReducer<WettbewerbState>(
         initialWettbewerbState,
-        on(wettbewerbActions.wettbewerbLoaded, (state, { wettbewerb }) => {
+        on(wettbewerbActions.wettbewerbGeladen, (state, { wettbewerb }) => {
             return { ...state, wettbewerb };
         }),
         on(userLoggedOut, () => initialWettbewerbState)

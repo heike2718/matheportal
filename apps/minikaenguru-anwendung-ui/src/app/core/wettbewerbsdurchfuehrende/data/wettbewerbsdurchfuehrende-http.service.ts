@@ -15,7 +15,7 @@ export class WettbewerbsdurchfuehrendeHttpService {
     /**
      * Legt einen neuen Wettbewerbsdurchführenden an.
      * @param requestDto WettbewerbsdurchfuehrenderRequest
-     * @returns WettbewerbsdurchfuehrenderDto
+     * @returns Observable eines Wettbewerbsdurchfuehrender
      */
     public createWettbewerbsdurchfuehrenden(
         requestDto: WettbewerbsdurchfuehrenderRequest
@@ -23,6 +23,17 @@ export class WettbewerbsdurchfuehrendeHttpService {
         return this.#httpClient.post<Wettbewerbsdurchfuehrender>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
             requestDto,
+            { withCredentials: true }
+        );
+    }
+
+    /**
+     * Läd die Daten des Wettbewerbsdurchfuehrender.
+     * @returns Observable eines Wettbewerbsdurchfuehrender
+     */
+    public loadWettbewerbsdurchfuehrenden(): Observable<Wettbewerbsdurchfuehrender> {
+        return this.#httpClient.get<Wettbewerbsdurchfuehrender>(
+            this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
             { withCredentials: true }
         );
     }

@@ -165,7 +165,7 @@ export interface components {
         };
         /** @description Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden. */
         readonly Wettbewerbsdurchfuehrender: {
-            readonly durchfuehrungsart?: components['schemas']['Wettbewerbsdurchfuehrungsart'];
+            readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
             /**
              * @description Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
              * @example [
@@ -173,7 +173,7 @@ export interface components {
              *       "SSBXQUBN"
              *     ]
              */
-            readonly teilnahmenummern?: readonly string[];
+            readonly teilnahmenummern: readonly string[];
             /** @description Flag, ob der Durchführende Newsletter erhalten möchte */
             readonly newsletter: boolean;
             readonly zugangsberechtigungUnterlagen: components['schemas']['ZugangsberechtigungUnterlagen'];

@@ -10,7 +10,10 @@ export const wettbewerbsdurchfuehrendeActions = createActionGroup({
         durchfuehrungsartSchuleGewaehlt: emptyProps(),
         durchfuehrungsartPrivatGewaehlt: emptyProps(),
         durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuehrenderRequest }>(),
-        durchfuehrenderAngelegt: props<{ responseDto: Wettbewerbsdurchfuehrender }>(),
+        durchfuehrenderAngelegt: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
         durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
+        durchfuehrendenLaden: emptyProps(),
+        durchfuehrendenGeladen: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
+        durchfuehrendenLadenFailed: props<{ error: Error }>(),
     },
 });
