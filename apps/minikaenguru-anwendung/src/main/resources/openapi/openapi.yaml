@@ -310,6 +310,20 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen:
+        get:
+            description: ''
+            parameters: []
+            responses:
+                '200':
+                    description: OK
+    /api/teilnahmen:
+        get:
+            description: ''
+            parameters: []
+            responses:
+                '200':
+                    description: OK
 components:
     securitySchemes:
         mpSession:
@@ -346,6 +360,12 @@ components:
                 - DOWNLOAD_LEHRER
                 - DOWNLOAD_PRIVAT
                 - BEENDET
+        Auswertungsart:
+            type: string
+            enum:
+                - ONLINE
+                - OFFLINE
+            description: Die Art, wie der Wettbewerb ausgewertet wird.
         WettbewerbsdurchfuehrenderRequest:
             type: object
             x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
@@ -545,3 +565,22 @@ components:
                 ende:
                     type: string
                     example: 31.07.2029
+        Teilnahme:
+            type: object
+            properties:
+                jahr:
+                    type: integer
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
+                    description: 'das Kürzel einer Schule oder eines privat Durchführenden'
+                teilnahmeart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
+                auswertungsart:
+                    type: object
+                    $ref: '#/components/schemas/Auswertungsart'
+                angemeldetDurch:
+                    type: string
+                    description: 'uuid des Benutzers, der die Teilnahme eingetragen hat'
