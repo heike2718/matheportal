@@ -21,6 +21,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLo
 @RegisterProvider(RestClientLoggingFilter.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
+@FunctionalInterface
 public interface AuthproviderRestClient {
 
     /**
@@ -51,8 +52,7 @@ public interface AuthproviderRestClient {
     @Path("/users/{uuid}/name")
     @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
-    UserDetails getUserDetails(@PathParam(value = "uuid") String uuid,
-            @HeaderParam(value = "X-CLIENT-ID") String clientId,
-            @HeaderParam(value = "X-CLIENT-SECRET") String clientSecret, @HeaderParam(value = "X-NONCE") String nonce);
+    UserDetails getUserDetails(@PathParam("uuid") String uuid, @HeaderParam("X-CLIENT-ID") String clientId,
+            @HeaderParam("X-CLIENT-SECRET") String clientSecret, @HeaderParam("X-NONCE") String nonce);
 
 }
