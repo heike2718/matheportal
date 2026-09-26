@@ -17,9 +17,13 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
     name: WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY,
     reducer: createReducer<WettbewerbsdurchfuehrendeState>(
         initialWettbewerbsdurchfuehrendeState,
-        on(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt, (state, { responseDto }) => {
-            return { ...state, wettbewerbsdurchfuehrender: responseDto };
-        }),
+        on(
+            wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt,
+            wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen,
+            (state, { wettbewerbsdurchfuehrender: responseDto }) => {
+                return { ...state, wettbewerbsdurchfuehrender: responseDto };
+            }
+        ),
         on(userLoggedOut, () => initialWettbewerbsdurchfuehrendeState)
     ),
 });

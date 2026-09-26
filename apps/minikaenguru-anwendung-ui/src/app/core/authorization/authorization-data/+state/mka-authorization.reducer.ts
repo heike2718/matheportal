@@ -32,7 +32,7 @@ export const mkaAuthorizationFeature = createFeature({
         on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };
         }),
-        on(durchfuehrenderAngelegt, (state, { responseDto }) => {
+        on(durchfuehrenderAngelegt, (state, { wettbewerbsdurchfuehrender: responseDto }) => {
             const berechtigungstyp = mapDtoToBerechtigungstyp(responseDto);
             return { ...state, berechtigungstyp: berechtigungstyp, authorizationLoadState: 'loaded' };
         }),

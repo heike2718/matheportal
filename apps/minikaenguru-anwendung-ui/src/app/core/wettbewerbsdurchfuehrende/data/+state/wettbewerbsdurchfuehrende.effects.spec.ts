@@ -173,7 +173,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await promise;
 
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            expect(emmited).toEqual(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
         });
@@ -238,7 +240,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             expect(emittedActions).toEqual([
                 wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
-                    responseDto: responseDto1,
+                    wettbewerbsdurchfuehrender: responseDto1,
                 }),
             ]);
 
@@ -305,7 +307,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 .mockReturnValueOnce(httpFirst$)
                 .mockReturnValueOnce(httpSecond$);
 
-            const emittedActions: unknown[] = [];
+            const emittedActions: Action[] = [];
             const subscription = effects.durchfuehrendenAnlegen$.subscribe(action => {
                 emittedActions.push(action);
             });
@@ -342,7 +344,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             // die success action ist ebenfalls im array
             expect(emittedActions).toEqual([
                 wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto: responseDto2 }),
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
             ]);
 
             // Aufräumen
@@ -391,7 +393,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
 
             await promise;
 
@@ -412,7 +416,9 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ responseDto }));
+            action$.next(
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+            );
 
             await promise;
 
@@ -425,10 +431,10 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     });
 
     describe('loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$', () => {
-        it('should dispatch durchfuehrendenLaden', async () => {
+        it.each(['SCHULE', 'PRIVAT'])('should dispatch durchfuehrendenLaden when rolle %s', async rolle => {
             const user: User = {
                 anonym: false,
-                berechtigungen: ['SCHULE', 'STANDARD'],
+                berechtigungen: [rolle, 'STANDARD'],
                 fullName: 'Amy',
             };
 
@@ -439,6 +445,24 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const emitted = await promise;
 
             expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+        });
+
+        it('should not dispatch durchfuehrendenLaden when keine Minikänguru-Rolle', async () => {
+            const user: User = {
+                anonym: false,
+                berechtigungen: ['STANDARD'],
+                fullName: 'Amy',
+            };
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            action$.next(mkaAuthorizationLoaded({ user }));
+
+            expect(emittedActions).toEqual([]);
+            subscription.unsubscribe();
         });
     });
 });
