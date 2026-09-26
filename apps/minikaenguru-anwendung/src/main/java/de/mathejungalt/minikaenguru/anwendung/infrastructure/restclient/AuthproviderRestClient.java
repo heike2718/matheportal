@@ -2,6 +2,7 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient;
 
 import java.time.temporal.ChronoUnit;
 
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -46,6 +47,8 @@ public interface AuthproviderRestClient {
      * @param nonce        String
      * @return UserDetails
      */
+    @GET
+    @Path("/users/{uuid}/name")
     @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     UserDetails getUserDetails(@PathParam(value = "uuid") String uuid,
