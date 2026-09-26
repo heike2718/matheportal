@@ -36,7 +36,7 @@ paths:
     /api/wettbewerbsdurchfuehrende/konto:
         get:
             tags:
-                - Wettbewerbsdurchfuehrender
+                - Wettbewerbsdurchfuehrende
             summary: 'Lesen eines Wettbewerbsdurchführenden'
             description: 'Ein Wettbewerbsdurchführender mit der uuid aus der session wird gelesen'
             operationId: loadWettbewerbsdurchfuehrenden
@@ -66,7 +66,7 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
         post:
             tags:
-                - Wettbewerbsdurchfuehrender
+                - Wettbewerbsdurchfuehrende
             summary: 'Anlegen eines Wettbewerbsdurchführenden'
             description: 'Ein neuer Wettbewerbsdurchführender mit der uuid aus der session wird angelegt'
             operationId: createWettbewerbsdurchfuehrenden
@@ -112,7 +112,7 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
         put:
             tags:
-                - Wettbewerbsdurchfuehrender
+                - Wettbewerbsdurchfuehrende
             summary: 'Ändern eines Wettbewerbsdurchführenden'
             description: 'Der Wettbewerbsdurchführende mit der uuid aus der session wird geändert'
             operationId: updateWettbewerbsdurchfuehrenden
@@ -364,7 +364,8 @@ components:
         Wettbewerbsdurchfuehrender:
             type: object
             required:
-                - Teilnahmenummern
+                - durchfuehrungsart
+                - teilnahmenummern
                 - newsletter
                 - zugangsberechtigungUnterlagen
             description: Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden.

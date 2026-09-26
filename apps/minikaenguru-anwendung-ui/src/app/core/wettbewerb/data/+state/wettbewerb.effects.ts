@@ -5,6 +5,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { wettbewerbActions } from './wettbewerb.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 
 @Injectable()
 export class WettbewerbEffects {
@@ -12,22 +13,29 @@ export class WettbewerbEffects {
     #httpService = inject(WettbewerbHttpService);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
 
-    readonly loadWettbewerb$ = createEffect(() => {
+    wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(wettbewerbActions.loadWettbewerb),
+            ofType(mkaAuthorizationLoaded),
+            map(() => wettbewerbActions.wettbewerbLaden())
+        );
+    });
+
+    readonly wettbewerbLaden$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(wettbewerbActions.wettbewerbLaden),
             switchMap(() =>
                 this.#httpService.loadWettbewerb().pipe(
-                    map(wettbewerb => wettbewerbActions.wettbewerbLoaded({ wettbewerb })),
-                    catchError((error: Error) => of(wettbewerbActions.loadWettbewerbFailed({ error })))
+                    map(wettbewerb => wettbewerbActions.wettbewerbGeladen({ wettbewerb })),
+                    catchError((error: Error) => of(wettbewerbActions.wettbewerbLadenFailed({ error })))
                 )
             )
         );
     });
 
-    readonly loadWettbewerbFailed$ = createEffect(
+    readonly wettbewerbLadenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbActions.loadWettbewerbFailed),
+                ofType(wettbewerbActions.wettbewerbLadenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);

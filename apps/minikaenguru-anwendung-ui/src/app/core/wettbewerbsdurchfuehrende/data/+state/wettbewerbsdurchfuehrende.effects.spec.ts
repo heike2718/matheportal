@@ -16,6 +16,8 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 import { Schule } from '../../../../schulkatalog/schulkatalogsuche/model/schulkatalog.model';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { Action } from '@ngrx/store';
+import { User } from '@matheportal/auth-model';
+import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let action$: Subject<Action>;
@@ -419,6 +421,24 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-lehrperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$', () => {
+        it('should dispatch durchfuehrendenLaden', async () => {
+            const user: User = {
+                anonym: false,
+                berechtigungen: ['SCHULE', 'STANDARD'],
+                fullName: 'Amy',
+            };
+
+            const promise = firstValueFrom(effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$);
+
+            action$.next(mkaAuthorizationLoaded({ user }));
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
         });
     });
 });

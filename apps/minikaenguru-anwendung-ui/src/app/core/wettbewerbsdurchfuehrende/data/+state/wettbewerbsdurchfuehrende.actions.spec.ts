@@ -60,4 +60,38 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
             error,
         });
     });
+
+    it('should create the durchfuehrendenLaden action', () => {
+        const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden();
+
+        expect(action).toEqual({
+            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenLaden',
+        });
+    });
+    it('should create durchfuehrendenGeladen action', () => {
+        const responseDto: Wettbewerbsdurchfuehrender = {
+            durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+            newsletter: false,
+            teilnahmenummern: ['A1234567'],
+            zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
+        };
+
+        const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({ responseDto });
+
+        expect(action).toEqual({
+            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenGeladen',
+            responseDto,
+        });
+    });
+
+    it('should create the durchfuehrendenLadenFailed action', () => {
+        const error = new Error('schlimm');
+
+        const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error });
+
+        expect(action).toEqual({
+            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenLadenFailed',
+            error,
+        });
+    });
 });

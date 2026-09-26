@@ -32,9 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@TestHTTPEndpoint(WettbewerbsdurchfuehrenderResource.class)
+@TestHTTPEndpoint(WettbewerbsdurchfuehrendeResource.class)
 @TestProfile(MockAugmentSessionTestProfile.class)
-public class WettbewerbsdurchfuehrenderResourceTest {
+public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Inject
     CleanupTestDataDao cleanupDao;

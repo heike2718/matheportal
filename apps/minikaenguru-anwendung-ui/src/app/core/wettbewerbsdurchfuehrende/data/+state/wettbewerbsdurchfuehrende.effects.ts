@@ -10,6 +10,7 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 
 @Injectable()
 export class WettbewerbsdurchfuehrendeEffects {
@@ -119,4 +120,11 @@ export class WettbewerbsdurchfuehrendeEffects {
             ),
         { dispatch: false }
     );
+
+    readonly loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(mkaAuthorizationLoaded),
+            map(() => wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden())
+        );
+    });
 }

@@ -7,7 +7,7 @@ import {
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapDtoToBerechtigungstyp, resolveBerechtigungstyp } from '../mka-authorization.utils';
-import { durchfuehrenderAngelegt } from '../../../wettbewerbsdurchfuehrende/data/wettbewerbsdurchfuehrende-store.events';
+import { durchfuehrenderAngelegt } from '../../../wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
 
 const MKA_AUTHORIZATION_FEATURE_KEY = 'MKAAuthorization';
 

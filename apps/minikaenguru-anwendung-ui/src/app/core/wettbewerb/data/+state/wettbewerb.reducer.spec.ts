@@ -27,13 +27,13 @@ describe('wettebwerbFeature', () => {
         });
     });
 
-    describe('wettbewerbLoaded', () => {
-        it('should set wettbewerb on wettbewerbLoaded', () => {
+    describe('wettbewerbGeladen', () => {
+        it('should set wettbewerb', () => {
             const previousState = {
                 wettbewerb: undefined,
             };
 
-            const state = wettbewerbFeature.reducer(previousState, wettbewerbActions.wettbewerbLoaded({ wettbewerb }));
+            const state = wettbewerbFeature.reducer(previousState, wettbewerbActions.wettbewerbGeladen({ wettbewerb }));
 
             expect(state).toEqual({ wettbewerb });
         });
