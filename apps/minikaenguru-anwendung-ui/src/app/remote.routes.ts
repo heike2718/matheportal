@@ -14,8 +14,8 @@ import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
-import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
+import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 
 export const remoteRoutes: Routes = [
     {

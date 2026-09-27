@@ -5,7 +5,7 @@ import { DashboardPrivatpersonComponent } from '../../privatperson/dashboard-pri
 import { GewaehlteDurchfuehrungsart } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.model';
 import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
-import { DashboardLehrpersonComponent } from '../../lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
+import { DashboardLehrpersonComponent } from '../../lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 
 @Component({
     selector: 'mka-start',
