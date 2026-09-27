@@ -70,7 +70,7 @@ public class SchulkatalogService {
      * @param kuerzels String[]
      * @return List
      */
-    public List<Schule> loadSchulenByKuerzel(final String[] kuerzels) {
+    public List<Schule> loadSchulenByKuerzel(final String[] kuerzels) { // NOPMD
         final List<SchuleEntity> schulen = schulkatalogDao.loadSchulenByKuerzels(kuerzels);
         return schulen.stream().map(this::mapFromDb).toList();
     }

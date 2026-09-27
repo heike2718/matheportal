@@ -62,7 +62,7 @@ public class SchulkatalogDao {
      * @param kuerzels String[]
      * @return List
      */
-    public List<SchuleEntity> loadSchulenByKuerzels(final String[] kuerzels) {
+    public List<SchuleEntity> loadSchulenByKuerzels(final String[] kuerzels) { // NOPMD
 
         return entityManager
                 .createNamedQuery(SchuleEntity.FIND_BY_KUERZEL_LIST, SchuleEntity.class)

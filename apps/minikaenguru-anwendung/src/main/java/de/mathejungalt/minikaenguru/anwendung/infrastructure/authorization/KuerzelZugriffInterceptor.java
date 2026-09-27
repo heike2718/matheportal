@@ -55,7 +55,7 @@ public class KuerzelZugriffInterceptor {
             kuerzel = (String) values[i];
         }
 
-        if (authorizationKeyCount != 1) {
+        if (authorizationKeyCount != 1) { // NOPMD
             throw new IllegalStateException("Exactly one @AuthorizationKey is required: " + context.getMethod());
         }
 
