@@ -15,6 +15,7 @@ import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/
 import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
 import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
+import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -37,8 +38,8 @@ export const remoteRoutes: Routes = [
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
-                // canActivate: fehlt noch
-                // canActivateChild: fehlt noch
+                canActivate: [mkaLehrpersonGuard()],
+                canActivateChild: [mkaLehrpersonGuard()],
                 component: DashboardLehrpersonComponent,
             },
             {
