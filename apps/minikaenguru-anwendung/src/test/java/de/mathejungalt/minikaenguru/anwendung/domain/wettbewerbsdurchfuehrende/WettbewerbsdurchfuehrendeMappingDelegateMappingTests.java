@@ -95,8 +95,6 @@ public class WettbewerbsdurchfuehrendeMappingDelegateMappingTests {
 
         assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
                 () -> assertEquals(ZugangsberechtigungUnterlagen.ERTEILT, result.getZugangsberechtigungUnterlagen()),
-                () -> assertEquals(1, result.getTeilnahmenummern().size()),
-                () -> assertEquals("A123456789", result.getTeilnahmenummern().iterator().next()),
                 () -> assertTrue(result.getNewsletter()));
     }
 
@@ -119,9 +117,6 @@ public class WettbewerbsdurchfuehrendeMappingDelegateMappingTests {
 
         assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.SCHULE, result.getDurchfuehrungsart()),
                 () -> assertEquals(ZugangsberechtigungUnterlagen.ENTZOGEN, result.getZugangsberechtigungUnterlagen()),
-                () -> assertEquals(2, result.getTeilnahmenummern().size()),
-                () -> assertTrue(result.getTeilnahmenummern().contains("A1234567")),
-                () -> assertTrue(result.getTeilnahmenummern().contains("Z7654321")),
                 () -> assertFalse(result.getNewsletter()));
     }
 }

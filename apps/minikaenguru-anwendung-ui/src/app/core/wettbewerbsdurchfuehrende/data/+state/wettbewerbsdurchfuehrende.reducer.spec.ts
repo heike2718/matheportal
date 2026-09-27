@@ -13,7 +13,6 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
     const knownDurchfuehrender: Wettbewerbsdurchfuehrender = {
         newsletter: true,
-        teilnahmenummern: ['A1234567'],
         zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.erteilt,
         durchfuehrungsart: DURCHFUEHRUNGSART.schule,
     };
@@ -37,7 +36,6 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: true,
-                teilnahmenummern: ['Z98765432', 'A1234567'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -48,7 +46,6 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);
             expect(state.wettbewerbsdurchfuehrender?.newsletter).toBeTruthy();
-            expect(state.wettbewerbsdurchfuehrender?.teilnahmenummern).toEqual(['Z98765432', 'A1234567']);
             expect(state.wettbewerbsdurchfuehrender?.zugangsberechtigungUnterlagen).toBe(
                 ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard
             );
@@ -60,7 +57,6 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: true,
-                teilnahmenummern: ['Z98765432', 'A1234567'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -71,7 +67,6 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);
             expect(state.wettbewerbsdurchfuehrender?.newsletter).toBeTruthy();
-            expect(state.wettbewerbsdurchfuehrender?.teilnahmenummern).toEqual(['Z98765432', 'A1234567']);
             expect(state.wettbewerbsdurchfuehrender?.zugangsberechtigungUnterlagen).toBe(
                 ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard
             );

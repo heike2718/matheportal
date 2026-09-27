@@ -5,13 +5,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.authorization.AuthorizationService;
-import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Ort;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 
@@ -23,16 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-
 @QuarkusTest
 @TestHTTPEndpoint(SchulkatalogResource.class)
 public class SchulkatalogResourceTest {
-
-    @InjectMock
-    AuthorizationService authorizationService;
 
     @Test
     @TestSecurity(user = "test-user", roles = { "STANDARD" })
@@ -167,92 +157,6 @@ public class SchulkatalogResourceTest {
 
         final String ortId = "RV0JFG9U";
         given().accept(ContentType.JSON).pathParam("ortId", ortId).get("orte/{ortId}/schulen").then().statusCode(401);
-    }
-
-    @Test
-    @TestSecurity(user = "test-user", roles = { "STANDARD" })
-    void should_findSchule_work() {
-
-        // arrange
-        final String schuleId = "ZZDTP5U0";
-        final String expectedOrtId = "6LEXVWJF";
-        final String expectedLandId = "DE-HE";
-        final String context = "Schule laden";
-
-        doNothing().when(authorizationService).checkAuthorization(schuleId, context);
-
-        // act
-        final Schule schule = given()
-                .accept(ContentType.JSON)
-                .pathParam("schuleId", schuleId)
-                .get("schulen/{schuleId}")
-                .then()
-                .statusCode(200)
-                .and()
-                .extract()
-                .as(Schule.class);
-
-        // assert
-        assertAll(() -> assertEquals(schuleId, schule.getKuerzel()),
-                () -> assertEquals(expectedOrtId, schule.getOrt().getKuerzel()),
-                () -> assertEquals(expectedLandId, schule.getOrt().getLand().getKuerzel()),
-                () -> verify(authorizationService).checkAuthorization(schuleId, context));
-
-    }
-
-    @Test
-    void should_findSchule_unauthorized() {
-
-        final String schuleId = "ZZDTP5U0";
-        given()
-                .accept(ContentType.JSON)
-                .pathParam("schuleId", schuleId)
-                .get("schulen/{schuleId}")
-                .then()
-                .statusCode(401);
-
-    }
-
-    @Test
-    @TestSecurity(user = "test-user", roles = { "STANDARD" })
-    void should_findSchule_access_denied() {
-
-        // arrange
-        final String schuleId = "RV0JFG9U";
-        final String context = "Schule laden";
-
-        doThrow(MinikaenguruAuthorizationException.class)
-                .when(authorizationService)
-                .checkAuthorization(schuleId, context);
-
-        given()
-                .accept(ContentType.JSON)
-                .pathParam("schuleId", schuleId)
-                .get("schulen/{schuleId}")
-                .then()
-                .statusCode(403);
-
-        verify(authorizationService).checkAuthorization(schuleId, context);
-    }
-
-    @Test
-    @TestSecurity(user = "test-user", roles = { "STANDARD" })
-    void should_findSchule_return_404() {
-
-        final String schuleId = "ZZZZZZZZZ";
-        final String context = "Schule laden";
-
-        doNothing().when(authorizationService).checkAuthorization(schuleId, context);
-
-        given()
-                .accept(ContentType.JSON)
-                .pathParam("schuleId", schuleId)
-                .get("schulen/{schuleId}")
-                .then()
-                .statusCode(404);
-
-        verify(authorizationService).checkAuthorization(schuleId, context);
-
     }
 
 }

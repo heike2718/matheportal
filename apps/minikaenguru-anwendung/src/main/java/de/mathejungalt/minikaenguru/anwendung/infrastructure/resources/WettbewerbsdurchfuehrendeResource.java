@@ -43,7 +43,12 @@ public class WettbewerbsdurchfuehrendeResource implements Wettbewerbsdurchfuehre
     public Response updateWettbewerbsdurchfuehrenden(
             @Valid @NotNull final WettbewerbsdurchfuehrenderRequest wettbewerbsdurchfuehrenderRequest) {
         // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'updateWettbewerbsdurchfuehrenden'");
+    }
+
+    @Override
+    public Response loadMySchools() {
+        return Response.ok(wettbewerbsdurchfuehrendeService.loadMySchools()).build();
     }
 
 }

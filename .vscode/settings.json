@@ -29,21 +29,6 @@
     "files.associations": {
         ".nxignore": "ignore"
     },
-    /* --- Terminal Profile für dein Monorepo --- */
-    "terminal.integrated.profiles.linux": {
-        "Kaeuzchenlager-Backend": {
-            "path": "/bin/bash",
-            "cwd": "${workspaceFolder}/backend/kaeuzchenlager",
-            "icon": "server",
-            "color": "terminal.ansiBlue"
-        },
-        "Kaeuzchenlager-Frontend": {
-            "path": "/bin/bash",
-            "cwd": "${workspaceFolder}/frontend/kaeuzchen-workspace",
-            "icon": "globe",
-            "color": "terminal.ansiMagenta"
-        }
-    },
     "terminal.integrated.defaultProfile.linux": "bash",
 
     "java.jdt.ls.vmargs": "-javaagent:${userHome}/.m2/repository/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar -Xms2g -Xmx12g -XX:+UseG1GC -XX:+UseStringDeduplication",
@@ -53,8 +38,13 @@
     "java.import.maven.enabled": true,
     "java.import.maven.offline.enabled": true,
     "java.import.maven.disableTestClasspathFlag": true,
-    "java.format.settings.url": "${workspaceFolder}/.vscode/eclipse-java-formatter.xml",
+    "java.format.settings.url": "./.vscode/eclipse-java-formatter.xml",
     "java.format.settings.profile": "egladil",
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true,
+        "editor.detectIndentation": false // Zwingt VS Code, nicht selbst zu "raten"
+    },
     "xml.validation.enabled": false,
     "xml.format.enabled": true,
     "java.saveActions.cleanup": true,

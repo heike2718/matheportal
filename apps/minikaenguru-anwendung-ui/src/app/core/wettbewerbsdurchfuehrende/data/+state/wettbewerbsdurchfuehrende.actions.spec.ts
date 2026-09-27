@@ -38,7 +38,6 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             newsletter: false,
-            teilnahmenummern: ['A1234567'],
             zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
         };
 
@@ -74,7 +73,6 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             newsletter: false,
-            teilnahmenummern: ['A1234567'],
             zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
         };
 

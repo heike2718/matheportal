@@ -162,7 +162,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -194,7 +193,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto1: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -292,7 +290,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto2: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -387,7 +384,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -410,7 +406,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: false,
-                teilnahmenummern: ['A1234567'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 

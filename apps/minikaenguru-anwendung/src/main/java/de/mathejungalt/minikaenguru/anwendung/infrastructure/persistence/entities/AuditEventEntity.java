@@ -33,10 +33,10 @@ public class AuditEventEntity {
     @Enumerated(EnumType.STRING)
     private final AuditEventType eventType;
 
-    @Column(name = "", nullable = false, updatable = false, length = 36)
+    @Column(name = "user_uuid", nullable = false, updatable = false, length = 36)
     private final String userUuid;
 
-    @Column(name = "", nullable = false, updatable = false, length = 1000)
+    @Column(name = "context", nullable = false, updatable = false, length = 1000)
     private final String context;
 
     @Column(name = "created_at", nullable = false, updatable = false)

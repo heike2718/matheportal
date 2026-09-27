@@ -52,6 +52,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/wettbewerbsdurchfuehrende/me/schulen': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * Schulen laden
+         * @description läd die Schulen eines Wettbewerbsdurchfuehrenden
+         */
+        readonly get: operations['loadMySchools'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/api/schulkatalog/orte': {
         readonly parameters: {
             readonly query?: never;
@@ -84,26 +104,6 @@ export interface paths {
          * @description alle Schulen eines Ortes im Schulkatalog werden geladen
          */
         readonly get: operations['loadSchulen'];
-        readonly put?: never;
-        readonly post?: never;
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly '/api/schulkatalog/schulen/{schuleId}': {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path?: never;
-            readonly cookie?: never;
-        };
-        /**
-         * eine bestimmte Schule
-         * @description läd die Daten einer bestimmten schule anhand ihrer ID
-         */
-        readonly get: operations['getSchule'];
         readonly put?: never;
         readonly post?: never;
         readonly delete?: never;
@@ -211,14 +211,6 @@ export interface components {
         /** @description Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden. */
         readonly Wettbewerbsdurchfuehrender: {
             readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
-            /**
-             * @description Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
-             * @example [
-             *       "V8DDP4X9ZY",
-             *       "SSBXQUBN"
-             *     ]
-             */
-            readonly teilnahmenummern: readonly string[];
             /** @description Flag, ob der Durchführende Newsletter erhalten möchte */
             readonly newsletter: boolean;
             readonly zugangsberechtigungUnterlagen: components['schemas']['ZugangsberechtigungUnterlagen'];
@@ -498,6 +490,51 @@ export interface operations {
             };
         };
     };
+    readonly loadMySchools: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': readonly components['schemas']['Schule'][];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User ist keine Lehrperson. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
     readonly findOrte: {
         readonly parameters: {
             readonly query: {
@@ -586,72 +623,6 @@ export interface operations {
                 content: {
                     readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
-            };
-            /** @description Serverfehler */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
-        };
-    };
-    readonly getSchule: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                /** @description kuerzel der Schule */
-                readonly schuleId: string;
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description OK */
-            readonly 200: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': Record<string, never>;
-                };
-            };
-            /** @description Request ist ungültig */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
-            /** @description keine Session oder Session abgelaufen */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
-            /** @description angemeldeter User darf diese Schule nicht sehen. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
-            /** @description existiert nicht */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content?: never;
             };
             /** @description Serverfehler */
             readonly 500: {

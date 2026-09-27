@@ -150,6 +150,38 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerbsdurchfuehrende/me/schulen:
+        get:
+            tags:
+                - Wettbewerbsdurchfuehrende
+            summary: Schulen laden
+            description: läd die Schulen eines Wettbewerbsdurchfuehrenden
+            operationId: loadMySchools
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Schule'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User ist keine Lehrperson.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalog/orte:
         get:
             tags:
@@ -234,54 +266,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
 
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-    /api/schulkatalog/schulen/{schuleId}:
-        get:
-            tags:
-                - Schulkatalog
-            summary: eine bestimmte Schule
-            description: läd die Daten einer bestimmten schule anhand ihrer ID
-            operationId: getSchule
-            security:
-                - mpSession: []
-            parameters:
-                - in: path
-                  name: schuleId
-                  schema:
-                      type: string
-                      pattern: '^[A-Z0-9]*$'
-                  required: true
-                  description: kuerzel der Schule
-            responses:
-                '200':
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                items:
-                                    $ref: '#/components/schemas/Schule'
-                '400':
-                    description: Request ist ungültig
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '403':
-                    description: angemeldeter User darf diese Schule nicht sehen.
-                '404':
-                    description: existiert nicht
                 '500':
                     description: Serverfehler
                     content:
@@ -477,17 +461,6 @@ components:
                 durchfuehrungsart:
                     type: object
                     $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                teilnahmenummern:
-                    type: array
-                    uniqueItems: true
-                    description: Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
-                    items:
-                        type: string
-                        pattern: '^[A-Z0-9]*$'
-                        maxLength: 10
-                    example:
-                        - V8DDP4X9ZY
-                        - SSBXQUBN
                 newsletter:
                     type: boolean
                     description: Flag, ob der Durchführende Newsletter erhalten möchte

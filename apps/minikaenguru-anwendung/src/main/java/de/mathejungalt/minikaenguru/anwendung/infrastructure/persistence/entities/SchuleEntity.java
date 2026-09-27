@@ -25,7 +25,10 @@ import lombok.NoArgsConstructor;
                 query = "select s from SchuleEntity s where s.ortId = :ortId order by s.name"),
         @NamedQuery(
                 name = SchuleEntity.FIND_BY_KUERZEL,
-                query = "select s from SchuleEntity s where s.kuerzel = :kuerzel") })
+                query = "select s from SchuleEntity s where s.kuerzel = :kuerzel"),
+        @NamedQuery(
+                name = SchuleEntity.FIND_BY_KUERZEL_LIST,
+                query = "select s from SchuleEntity s where s.kuerzel in :kuerzels") })
 public class SchuleEntity {
 
     /** Name der named query. */
@@ -33,6 +36,9 @@ public class SchuleEntity {
 
     /** Name der named query. */
     public static final String FIND_BY_KUERZEL = "SchuleEntity.FIND_BY_KUERZEL";
+
+    /** Name der named query. */
+    public static final String FIND_BY_KUERZEL_LIST = "SchuleEntity.FIND_BY_KUERZEL_LIST";
 
     @Id
     @Column(name = "kuerzel")

@@ -1,5 +1,6 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,21 @@ public class SchulkatalogDao {
                 .createNamedQuery(SchuleEntity.FIND_BY_ORT_ID, SchuleEntity.class)
                 .setParameter("ortId", ortId)
                 .getResultList();
+    }
+
+    /**
+     * Läd die Schulen mit den gegebenen kuerzeln.
+     *
+     * @param kuerzels String[]
+     * @return List
+     */
+    public List<SchuleEntity> loadSchulenByKuerzels(final String[] kuerzels) {
+
+        return entityManager
+                .createNamedQuery(SchuleEntity.FIND_BY_KUERZEL_LIST, SchuleEntity.class)
+                .setParameter("kuerzels", Arrays.asList(kuerzels))
+                .getResultList();
+
     }
 
     /**
