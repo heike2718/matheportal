@@ -280,10 +280,6 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
                 '403':
                     description: angemeldeter User darf diese Schule nicht sehen.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
                 '404':
                     description: existiert nicht
                 '500':
