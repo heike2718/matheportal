@@ -10,11 +10,11 @@ import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatp
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
+import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 
 export const remoteRoutes: Routes = [
     {
