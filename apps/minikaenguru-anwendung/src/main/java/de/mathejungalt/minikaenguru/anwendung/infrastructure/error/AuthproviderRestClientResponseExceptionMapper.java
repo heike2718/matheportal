@@ -7,8 +7,8 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 
-import de.mathejungalt.minikaenguru.anwendung.domain.exception.AuthproviderHttpException;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient.MessagePayload;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderHttpException;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.MessagePayload;
 
 /**
  * AuthproviderResponseExceptionMapper.

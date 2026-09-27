@@ -240,6 +240,58 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/schulkatalog/schulen/{schuleId}:
+        get:
+            tags:
+                - Schulkatalog
+            summary: eine bestimmte Schule
+            description: läd die Daten einer bestimmten schule anhand ihrer ID
+            operationId: getSchule
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                items:
+                                    $ref: '#/components/schemas/Schule'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Schule nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: existiert nicht
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalogantrag:
         post:
             tags:
@@ -310,20 +362,56 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
-    /api/schulen:
+    /api/teilnahmen/schule/{schuleId}:
         get:
-            description: ''
-            parameters: []
+            tags:
+                - Teilnahmen
+            summary: alle Teilnahmen einer Schule
+            description: läd alle Teilnahmen der Schule mit der gegebenen ID
+            operationId: getSchulteilnahmen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                  required: true
+                  description: kuerzel der Schule
             responses:
                 '200':
                     description: OK
-    /api/teilnahmen:
-        get:
-            description: ''
-            parameters: []
-            responses:
-                '200':
-                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Teilnahme'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Teilnahme nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:

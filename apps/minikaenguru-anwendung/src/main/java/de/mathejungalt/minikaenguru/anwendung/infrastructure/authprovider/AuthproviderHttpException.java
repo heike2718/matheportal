@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.domain.exception;
+package de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider;
 
 /**
  * AuthproviderHttpException.

@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient.AuthproviderRestClient;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
 
 /**
  * TeilnahmenService.

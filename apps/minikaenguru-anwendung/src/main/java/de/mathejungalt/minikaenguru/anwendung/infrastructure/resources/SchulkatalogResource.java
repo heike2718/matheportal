@@ -3,6 +3,7 @@ package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 import java.util.List;
 
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.core.Response;
 
 import io.quarkus.security.Authenticated;
@@ -31,5 +32,11 @@ public class SchulkatalogResource implements SchulkatalogApi {
     public Response loadSchulen(final String ortId) {
         final List<Schule> schulen = schulkatalogService.loadSchulen(ortId);
         return Response.ok(schulen).build();
+    }
+
+    @Override
+    public Response getSchule(@Pattern(regexp = "^[A-Z0-9]*$") final String schuleId) {
+        final Schule schule = schulkatalogService.getSchule(schuleId);
+        return Response.ok(schule).build();
     }
 }

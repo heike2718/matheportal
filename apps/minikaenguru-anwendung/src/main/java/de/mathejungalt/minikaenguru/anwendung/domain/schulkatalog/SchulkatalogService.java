@@ -1,13 +1,17 @@
 package de.mathejungalt.minikaenguru.anwendung.domain.schulkatalog;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Land;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Ort;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationKey;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.KuerzelZugriff;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkatalogDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.OrtEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchuleEntity;
@@ -62,5 +66,25 @@ public class SchulkatalogService {
         final Ort ort = new Ort().kuerzel(entity.getOrtId()).name(entity.getOrt().trim()).land(land);
 
         return new Schule().kuerzel(entity.getKuerzel()).name(entity.getName().trim()).ort(ort);
+    }
+
+    /**
+     * Holt die Schule mit dem gegebenen kuerzel.
+     *
+     * @param kuerzel
+     * @return Schule oder null
+     */
+    @KuerzelZugriff("Schule laden")
+    public Schule getSchule(@AuthorizationKey final String kuerzel) {
+
+        final Optional<SchuleEntity> optional = schulkatalogDao.findSchuleByKuerzel(kuerzel);
+
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("Schule mit kuerzel=" + kuerzel);
+        }
+
+        final SchuleEntity entity = optional.get();
+
+        return mapFromDb(entity);
     }
 }

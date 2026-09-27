@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.infrastructure.restclient;
+package de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
