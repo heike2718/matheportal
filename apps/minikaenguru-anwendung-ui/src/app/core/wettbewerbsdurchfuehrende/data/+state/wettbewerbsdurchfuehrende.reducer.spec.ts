@@ -62,7 +62,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
                 { wettbewerbsdurchfuehrender: undefined },
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({ wettbewerbsdurchfuehrender: responseDto })
+                wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);

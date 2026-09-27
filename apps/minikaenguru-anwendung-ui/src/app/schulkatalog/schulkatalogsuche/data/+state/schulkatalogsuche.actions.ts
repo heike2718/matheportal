@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 
 export const schulkatalogsucheActions = createActionGroup({
     source: 'MKA Schulkatalogsuche',

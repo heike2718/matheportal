@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchuleCardComponent } from './schule-card.component';
-import { Ort, Schule } from '../../model/schulkatalog.model';
 import { By } from '@angular/platform-browser';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 
 describe('SchuleCardComponentComponent', () => {
     const ort: Ort = {

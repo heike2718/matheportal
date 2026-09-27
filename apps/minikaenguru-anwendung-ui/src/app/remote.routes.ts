@@ -12,10 +12,12 @@ import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/fea
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
-import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
+import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
 import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
-import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
+import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
+import { schulenDataProvider } from './schulen/api/schulen-data.provider';
+import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
 
 export const remoteRoutes: Routes = [
     {
@@ -62,7 +64,9 @@ export const remoteRoutes: Routes = [
             ...wettbewerbDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,
-            ...mkaSchulkatalogantragDataProvider,
+            ...schulkatalogantragDataProvider,
+            ...schulenDataProvider,
+            ArbeitskontextHttpService,
         ],
     },
 ];

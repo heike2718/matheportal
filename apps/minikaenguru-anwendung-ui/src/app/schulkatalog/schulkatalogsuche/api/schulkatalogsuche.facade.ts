@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { fromSchulkatalogsuche } from '../data/+state/schulkatalogsuche.selectors';
 import { schulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
-import { Ort, Schule } from '../model/schulkatalog.model';
+import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 
 @Injectable()
 export class SchulkatalogsucheFacade {

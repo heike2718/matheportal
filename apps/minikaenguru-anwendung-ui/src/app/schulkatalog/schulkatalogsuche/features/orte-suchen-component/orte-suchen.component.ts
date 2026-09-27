@@ -8,7 +8,7 @@ import {
     output,
     signal,
 } from '@angular/core';
-import { Ort } from '../../model/schulkatalog.model';
+import { Ort } from '../../../../core/model/schulkatalog.model';
 import { debounce, form, FormField, pattern } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { OrtCardComponent } from '../ort-card-component/ort-card.component';

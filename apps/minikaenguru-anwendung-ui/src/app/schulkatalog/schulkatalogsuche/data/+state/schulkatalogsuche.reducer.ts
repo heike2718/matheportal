@@ -1,5 +1,5 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';

@@ -1,4 +1,4 @@
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { SchulkatalogsucheState } from './schulkatalogsuche.reducer';
 import {
     orteLoaded,

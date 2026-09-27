@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 
 const orte: Ort[] = [

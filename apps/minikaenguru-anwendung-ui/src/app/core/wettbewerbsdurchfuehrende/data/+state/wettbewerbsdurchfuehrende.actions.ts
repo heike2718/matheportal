@@ -5,7 +5,7 @@ import {
 } from '../../model/wettbewerbsdurchfuehrende.model';
 
 export const wettbewerbsdurchfuehrendeActions = createActionGroup({
-    source: 'MKA Wettbewerbsdurchfuerende API',
+    source: 'MKA Wettbewerbsdurchfuehrende',
     events: {
         durchfuehrungsartSchuleGewaehlt: emptyProps(),
         durchfuehrungsartPrivatGewaehlt: emptyProps(),
@@ -13,7 +13,7 @@ export const wettbewerbsdurchfuehrendeActions = createActionGroup({
         durchfuehrenderAngelegt: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
         durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
         durchfuehrendenLaden: emptyProps(),
-        durchfuehrendenGeladen: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
+        durchfuehrenderGeladen: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
         durchfuehrendenLadenFailed: props<{ error: Error }>(),
     },
 });

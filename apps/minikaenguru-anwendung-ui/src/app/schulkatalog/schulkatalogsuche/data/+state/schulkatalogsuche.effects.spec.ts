@@ -1,9 +1,9 @@
-import { finalize, firstValueFrom, of, ReplaySubject, Subject, throwError } from 'rxjs';
+import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { SchulkatalogsucheEffects } from './schulkatalogsuche.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { SchulkatalogsucheHttpService } from '../schulkatalogsuche-http.service';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';

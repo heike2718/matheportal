@@ -3,7 +3,7 @@ import { SchulkatalogsucheFacade } from './schulkatalogsuche.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { schulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
-import { Ort, Schule } from '../model/schulkatalog.model';
+import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 
 describe('SchulkatalosucheFacade tests', () => {
     const ort: Ort = {

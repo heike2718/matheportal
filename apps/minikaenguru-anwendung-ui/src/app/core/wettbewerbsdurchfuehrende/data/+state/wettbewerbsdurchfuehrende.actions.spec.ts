@@ -11,14 +11,14 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt();
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrungsartPrivatGewaehlt',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrungsartPrivatGewaehlt',
         });
     });
     it('should create the durchfuehrungsartSchuleGewaehlt action', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt();
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrungsartSchuleGewaehlt',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrungsartSchuleGewaehlt',
         });
     });
     it('should create the durchfuehrendenAnlegen action', () => {
@@ -30,7 +30,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenAnlegen',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrendenAnlegen',
             requestDto,
         });
     });
@@ -46,7 +46,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrenderAngelegt',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrenderAngelegt',
             wettbewerbsdurchfuehrender,
         });
     });
@@ -57,7 +57,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenAnlegenFailed',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrendenAnlegenFailed',
             error,
         });
     });
@@ -66,22 +66,22 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden();
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenLaden',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrendenLaden',
         });
     });
-    it('should create durchfuehrendenGeladen action', () => {
+    it('should create durchfuehrenderGeladen action', () => {
         const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             newsletter: false,
             zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
         };
 
-        const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({
+        const action = wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({
             wettbewerbsdurchfuehrender: wettbewerbsdurchfuehrender,
         });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenGeladen',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrenderGeladen',
             wettbewerbsdurchfuehrender,
         });
     });
@@ -92,7 +92,7 @@ describe('wettbewerbsdurchfuehrendeActions', () => {
         const action = wettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Wettbewerbsdurchfuerende API] durchfuehrendenLadenFailed',
+            type: '[MKA Wettbewerbsdurchfuehrende] durchfuehrendenLadenFailed',
             error,
         });
     });

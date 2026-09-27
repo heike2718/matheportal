@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SchulkatalogsucheFacade } from '../../api/schulkatalogsuche.facade';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Schule, Ort } from '../../../../core/model/schulkatalog.model';
 import { OrteSuchenComponent } from '../orte-suchen-component/orte-suchen.component';
 import { SchulenListComponent } from '../schulen-list-component/schulen-list.component';
 

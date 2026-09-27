@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OrteSuchenComponent } from './orte-suchen.component';
-import { Ort } from '../../model/schulkatalog.model';
+import { Ort } from '../../../../core/model/schulkatalog.model';
 import { By } from '@angular/platform-browser';
 import { OrtCardComponent } from '../ort-card-component/ort-card.component';
 import { MockComponent, ngMocks } from 'ng-mocks';

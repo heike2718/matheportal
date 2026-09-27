@@ -6,6 +6,7 @@ import {
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
+import { Schule } from '../../model/schulkatalog.model';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
 export class WettbewerbsdurchfuehrendeHttpService {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { Ort } from '../../model/schulkatalog.model';
+import { Ort } from '../../../../core/model/schulkatalog.model';
 
 @Component({
     selector: 'mka-ort-card',

@@ -1,4 +1,4 @@
-import { firstValueFrom, of, ReplaySubject, Subject, throwError } from 'rxjs';
+import { firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { WettbewerbsdurchfuehrendeEffects } from './wettbewerbsdurchfuehrende.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -13,7 +13,7 @@ import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { Schule } from '../../../../schulkatalog/schulkatalogsuche/model/schulkatalog.model';
+import { Schule } from '../../../../core/model/schulkatalog.model';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { Action } from '@ngrx/store';
 import { User } from '@matheportal/auth-model';

@@ -4,7 +4,7 @@ import {
     schulkatalogsucheFeature,
     SchulkatalogsucheState,
 } from './schulkatalogsuche.reducer';
-import { Land, Ort, Schule } from '../../model/schulkatalog.model';
+import { Land, Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { HttpErrorResponse } from '@angular/common/http';

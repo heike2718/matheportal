@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { Schule } from '../../model/schulkatalog.model';
+import { Schule } from '../../../../core/model/schulkatalog.model';
 
 @Component({
     selector: 'mka-schule-card',

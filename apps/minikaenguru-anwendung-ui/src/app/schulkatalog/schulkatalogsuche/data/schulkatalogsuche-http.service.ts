@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Ort, Schule } from '../model/schulkatalog.model';
+import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 import { paths } from '../../../generated/api-types';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!

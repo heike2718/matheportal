@@ -138,7 +138,7 @@ export class WettbewerbsdurchfuehrendeEffects {
             exhaustMap(() =>
                 this.#httpService.loadWettbewerbsdurchfuehrenden().pipe(
                     map((responseDto: Wettbewerbsdurchfuehrender) =>
-                        wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen({
+                        wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({
                             wettbewerbsdurchfuehrender: responseDto,
                         })
                     ),

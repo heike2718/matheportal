@@ -19,7 +19,7 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
         initialWettbewerbsdurchfuehrendeState,
         on(
             wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt,
-            wettbewerbsdurchfuehrendeActions.durchfuehrendenGeladen,
+            wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen,
             (state, { wettbewerbsdurchfuehrender: responseDto }) => {
                 return { ...state, wettbewerbsdurchfuehrender: responseDto };
             }

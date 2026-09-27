@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchulenListComponent } from './schulen-list.component';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { By } from '@angular/platform-browser';
 import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
 import { MockComponent, ngMocks } from 'ng-mocks';

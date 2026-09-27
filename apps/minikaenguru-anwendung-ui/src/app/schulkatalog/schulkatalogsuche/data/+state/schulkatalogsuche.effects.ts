@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchulkatalogsucheHttpService } from '../schulkatalogsuche-http.service';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { isTermSearchable, normalizeSearchTerm } from '../schulkatalogsuche-data.utils';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
