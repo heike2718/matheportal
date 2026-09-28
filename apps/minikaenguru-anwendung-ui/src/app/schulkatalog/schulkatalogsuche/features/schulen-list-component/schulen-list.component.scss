@@ -15,7 +15,6 @@
     max-width: 100%;
     min-width: 0;
     gap: mp-theme.$mp-space-5;
-    padding: mp-theme.$mp-space-6;
     font-family: mp-theme.$mp-font-family;
 
     &__back {
@@ -158,7 +157,6 @@
 @media (width <= 480px) and (hover: none) {
     .mka-schulen-list {
         gap: mp-theme.$mp-space-4;
-        padding: mp-theme.$mp-space-4;
 
         &__back {
             min-height: 2.75rem;

@@ -1,3 +1,40 @@
+@use 'mp-theme' as mp-theme;
+
 :host {
     display: block;
+    min-width: 0;
+}
+
+.lehrperson-dashboard {
+    min-width: 0;
+    font-family: mp-theme.$mp-font-family;
+
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-3;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-xl;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__hint {
+        max-width: 44rem;
+        margin: 0;
+        color: mp-theme.$mp-color-text-muted;
+        font-size: mp-theme.$mp-font-size-s;
+        line-height: mp-theme.$mp-line-height-normal;
+    }
+
+    &__schulenlist-header {
+        margin: mp-theme.$mp-space-6 0 mp-theme.$mp-space-2;
+        color: mp-theme.$mp-color-text-default;
+        font-size: mp-theme.$mp-font-size-l;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    mka-lehrperson-schulen {
+        display: block;
+        margin-top: mp-theme.$mp-space-5;
+    }
 }

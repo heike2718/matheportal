@@ -15,7 +15,6 @@
     max-width: 100%;
     min-width: 0;
     gap: mp-theme.$mp-space-5;
-    padding: mp-theme.$mp-space-6;
     font-family: mp-theme.$mp-font-family;
 
     &__title {
@@ -148,7 +147,6 @@
 @media (width <= 480px) {
     .mka-orte-suchen {
         gap: mp-theme.$mp-space-4;
-        padding: mp-theme.$mp-space-4;
 
         &__title {
             font-size: mp-theme.$mp-font-size-m;

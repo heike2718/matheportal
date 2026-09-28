@@ -14,8 +14,15 @@
 
     padding: mp-theme.$mp-space-6;
 
+    &__title {
+        margin: 0 0 mp-theme.$mp-space-5;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-xl;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
     @media (width <= 37.5rem) {
-        padding-inline: mp-theme.$mp-space-1;
-        padding-block: mp-theme.$mp-space-4;
+        padding: mp-theme.$mp-space-4;
     }
 }
