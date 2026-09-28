@@ -1,24 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchuleCardComponent } from './schule-card.component';
 import { By } from '@angular/platform-browser';
-import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
+import { Schule } from '../../../core/model/schulkatalog.model';
 
 describe('SchuleCardComponentComponent', () => {
-    const ort: Ort = {
-        name: 'Ort 1',
-        kuerzel: 'O-1',
-        land: {
-            kuerzel: 'DE-HE',
-            name: 'Hessen',
-            anzahlOrte: 8,
-        },
-        anzahlSchulen: 2,
-    };
-
     const schule: Schule = {
         kuerzel: 'S-1',
         name: 'Erste Schule',
-        ort,
+        ort: {
+            name: 'Ort 1',
+            kuerzel: 'O-1',
+            land: {
+                kuerzel: 'DE-HE',
+                name: 'Hessen',
+                anzahlOrte: 8,
+            },
+            anzahlSchulen: 2,
+        },
     };
 
     let component: SchuleCardComponent;

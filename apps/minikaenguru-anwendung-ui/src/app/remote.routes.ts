@@ -18,6 +18,7 @@ import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-l
 import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 import { schulenDataProvider } from './schulen/api/schulen-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
+import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
 
 export const remoteRoutes: Routes = [
     {
@@ -66,6 +67,7 @@ export const remoteRoutes: Routes = [
             ...mkaSchulkatalogsucheDataProvider,
             ...schulkatalogantragDataProvider,
             ...schulenDataProvider,
+            ...lehrpersonDataProvider,
             ArbeitskontextHttpService,
         ],
     },

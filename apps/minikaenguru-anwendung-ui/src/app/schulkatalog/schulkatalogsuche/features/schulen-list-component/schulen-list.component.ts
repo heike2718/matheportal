@@ -1,7 +1,7 @@
 import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
 import { Schule } from '../../../../core/model/schulkatalog.model';
 import { debounce, form, FormField } from '@angular/forms/signals';
+import { SchuleCardComponent } from '../../../../shared/components/schule-card-component/schule-card.component';
 
 @Component({
     selector: 'mka-schulen-list',

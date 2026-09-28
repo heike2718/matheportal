@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { LehrpersonFacade } from '../../api/lehrperson.facade';
 
 @Component({
     selector: 'mka-dashboard-lehrperson',
@@ -7,4 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     styleUrl: './dashboard-lehrperson.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardLehrpersonComponent {}
+export class DashboardLehrpersonComponent {
+    readonly lehrpersonFacade = inject(LehrpersonFacade);
+}

@@ -10,6 +10,7 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
 import { MockComponent, ngMocks } from 'ng-mocks';
+import { LehrpersonFacade } from '../../lehrperson/api/lehrperson.facade';
 
 describe('StartComponent tests', () => {
     let fixture: ComponentFixture<StartComponent>;
@@ -29,6 +30,8 @@ describe('StartComponent tests', () => {
         isLoggedIn: computed(() => false),
     };
 
+    const lehrpersonFacadeMock = {};
+
     async function setup(startViewState: StartViewState) {
         mkaAuthorizationFacadeMock.startViewState = computed(() => startViewState);
         await TestBed.configureTestingModule({
@@ -37,6 +40,7 @@ describe('StartComponent tests', () => {
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
                 { provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock },
                 { provide: WettbewerbsdurchfuehrendeFacade, useValue: wettbewerbsdurchfuehrendeFacadeMock },
+                { provide: LehrpersonFacade, useValue: lehrpersonFacadeMock },
                 provideRouter([{ path: 'minikaenguru-anwendung/guest', component: DummyRouteComponent }]),
             ],
         })
