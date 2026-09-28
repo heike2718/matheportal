@@ -18,7 +18,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @QuarkusTest
-public class KuerzelZugriffInterceptorTest {
+class KuerzelZugriffInterceptorTest {
 
     @Inject
     AuthorizationTestService testService;
@@ -49,7 +49,7 @@ public class KuerzelZugriffInterceptorTest {
         verify(authorizationService, never()).checkAuthorization(anyString(), anyString());
 
         assertEquals(
-                "Missing authorization context: public void de.mathejungalt.minikaenguru.anwendung.domain.authorization.AuthorizationTestService.withoutAuditContext(java.lang.String)",
+                "Missing authorization context: void de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationTestService.withoutAuditContext(java.lang.String)",
                 exception.getMessage());
     }
 
@@ -63,7 +63,7 @@ public class KuerzelZugriffInterceptorTest {
         verify(authorizationService, never()).checkAuthorization(anyString(), anyString());
 
         assertEquals(
-                "Exactly one @AuthorizationKey is required: public void de.mathejungalt.minikaenguru.anwendung.domain.authorization.AuthorizationTestService.withoutAuthorizationKey(java.lang.String)",
+                "Exactly one @AuthorizationKey is required: void de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationTestService.withoutAuthorizationKey(java.lang.String)",
                 exception.getMessage());
     }
 
@@ -77,7 +77,7 @@ public class KuerzelZugriffInterceptorTest {
         verify(authorizationService, never()).checkAuthorization(anyString(), anyString());
 
         assertEquals(
-                "Exactly one @AuthorizationKey is required: public void de.mathejungalt.minikaenguru.anwendung.domain.authorization.AuthorizationTestService.withMultipleAuthorizationKeys(java.lang.String,java.lang.String)",
+                "Exactly one @AuthorizationKey is required: void de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationTestService.withMultipleAuthorizationKeys(java.lang.String,java.lang.String)",
                 exception.getMessage());
     }
 
@@ -91,7 +91,7 @@ public class KuerzelZugriffInterceptorTest {
         verify(authorizationService, never()).checkAuthorization(anyString(), anyString());
 
         assertEquals(
-                "@AuthorizationKey requires a String parameter: public void de.mathejungalt.minikaenguru.anwendung.domain.authorization.AuthorizationTestService.withInvalidAuthorizationKey(java.lang.Long)",
+                "@AuthorizationKey requires a String parameter: void de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationTestService.withInvalidAuthorizationKey(java.lang.Long)",
                 exception.getMessage());
     }
 }

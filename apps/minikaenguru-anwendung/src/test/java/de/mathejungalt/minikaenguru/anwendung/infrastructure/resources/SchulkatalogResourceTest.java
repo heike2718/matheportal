@@ -31,7 +31,7 @@ public class SchulkatalogResourceTest {
         final Ort[] orte = given()
                 .accept(ContentType.JSON)
                 .queryParam("name", "halle")
-                .get("orte")
+                .get()
                 .then()
                 .statusCode(200)
                 .and()
@@ -61,7 +61,7 @@ public class SchulkatalogResourceTest {
         final Ort[] orte = given()
                 .accept(ContentType.JSON)
                 .queryParam("name", "berl")
-                .get("orte")
+                .get()
                 .then()
                 .statusCode(200)
                 .and()
@@ -84,7 +84,7 @@ public class SchulkatalogResourceTest {
         final Ort[] orte = given()
                 .accept(ContentType.JSON)
                 .queryParam("name", "ein vollkommen unbekannter ort")
-                .get("orte")
+                .get()
                 .then()
                 .statusCode(200)
                 .and()
@@ -100,7 +100,7 @@ public class SchulkatalogResourceTest {
     @Test
     void should_findOrte_unauthorized() {
 
-        given().accept(ContentType.JSON).queryParam("name", "halle").get("orte").then().statusCode(401);
+        given().accept(ContentType.JSON).queryParam("name", "halle").get().then().statusCode(401);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SchulkatalogResourceTest {
         final Schule[] schulen = given()
                 .accept(ContentType.JSON)
                 .pathParam("ortId", ortId)
-                .get("orte/{ortId}/schulen")
+                .get("{ortId}/schulen")
                 .then()
                 .statusCode(200)
                 .and()
@@ -139,7 +139,7 @@ public class SchulkatalogResourceTest {
         final Schule[] schulen = given()
                 .accept(ContentType.JSON)
                 .pathParam("ortId", ortId)
-                .get("orte/{ortId}/schulen")
+                .get("{ortId}/schulen")
                 .then()
                 .statusCode(200)
                 .and()
@@ -156,7 +156,7 @@ public class SchulkatalogResourceTest {
     void should_loadSchulen_unauthorized() {
 
         final String ortId = "RV0JFG9U";
-        given().accept(ContentType.JSON).pathParam("ortId", ortId).get("orte/{ortId}/schulen").then().statusCode(401);
+        given().accept(ContentType.JSON).pathParam("ortId", ortId).get("{ortId}/schulen").then().statusCode(401);
     }
 
 }
