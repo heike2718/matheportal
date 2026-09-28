@@ -17,7 +17,7 @@ export class SchulenEffects {
     #actions = inject(Actions);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
 
-    readonly loadSchulenOnWettbewerbsdurchfuehrenderGeladen$ = createEffect(() => {
+    readonly checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(durchfuehrenderGeladen, durchfuehrenderAngelegt),
             filter(
@@ -28,7 +28,7 @@ export class SchulenEffects {
         );
     });
 
-    readonly schulenLadenRequested$ = createEffect(() => {
+    readonly schulenLaden$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schulenActions.schulenLaden),
             switchMap(() =>
