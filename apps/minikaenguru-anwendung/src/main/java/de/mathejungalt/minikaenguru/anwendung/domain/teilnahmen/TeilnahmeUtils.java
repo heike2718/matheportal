@@ -31,8 +31,8 @@ public final class TeilnahmeUtils {
             return false;
         }
 
-        return (aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.ERFASST
-                && aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.BEENDET);
+        return aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.ERFASST
+                && aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.BEENDET;
     }
 
 }
