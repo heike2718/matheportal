@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -32,12 +33,12 @@ public interface AuthproviderRestClient {
     /**
      * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
      */
-    int MAX_RETRIES = 3;
+    int MAX_RETRIES = 2;
 
     /**
      * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
      */
-    int DELAY_SECONDS = 1000;
+    int DELAY_SECONDS = 300;
 
     /**
      * Timeout.
@@ -52,7 +53,7 @@ public interface AuthproviderRestClient {
      */
     @POST
     @Path("clients/client/accesstoken")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
+    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS, retryOn = TimeoutException.class)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     Response authenticateClient(OAuthClientCredentials clientSecrets);
 

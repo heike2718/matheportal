@@ -365,7 +365,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
+                                type: object
                                 items:
                                     $ref: '#/components/schemas/Teilnahme'
                 '400':
@@ -386,6 +386,55 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}:
+        get:
+            tags:
+                - Schulen
+            summary: 'Wettbewerbskontext einer Schule'
+            description: 'stellt den Wettbewerbskontext einer bestimmten Schule zur Verfügung'
+            operationId: getWettbewerbskontext
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/SchuleWettbewerbskontext'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Schule nicht sehen.
+                '404':
+                    description: diese Schule gibt es nicht.
                 '500':
                     description: Serverfehler
                     content:
@@ -641,3 +690,41 @@ components:
                 angemeldetDurch:
                     type: string
                     description: 'uuid des Benutzers, der die Teilnahme eingetragen hat'
+        TeilnahmeReferenz:
+            type: object
+            required:
+                - jahr
+                - teilnahmenummer
+            properties:
+                jahr:
+                    type: integer
+                teilnahmenummer:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    minLength: 8
+                    maxLength: 10
+        SchuleWettbewerbskontext:
+            type: object
+            required:
+                - schule
+                - kollegen
+                - teilnahmerefs
+                - vertragDSGVOVorhanden
+                - anmeldungMoeglich
+            properties:
+                schule:
+                    $ref: '#/components/schemas/Schule'
+                kollegen:
+                    type: array
+                    items:
+                        type: string
+                        pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                        maxLength: 201
+                teilnahmerefs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TeilnahmeReferenz'
+                vertragDSGVOVorhanden:
+                    type: boolean
+                anmeldungMoeglich:
+                    type: boolean

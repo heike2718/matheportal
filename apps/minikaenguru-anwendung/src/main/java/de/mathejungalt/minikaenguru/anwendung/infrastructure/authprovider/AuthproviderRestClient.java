@@ -11,14 +11,17 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.error.AuthproviderRestClientResponseExceptionMapper;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLoggingFilter;
 
 @RegisterRestClient(configKey = "authprovider")
 @RegisterProvider(RestClientLoggingFilter.class)
+@RegisterProvider(AuthproviderRestClientResponseExceptionMapper.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
 @FunctionalInterface
@@ -27,12 +30,12 @@ public interface AuthproviderRestClient {
     /**
      * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
      */
-    int MAX_RETRIES = 3;
+    int MAX_RETRIES = 2;
 
     /**
      * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
      */
-    int DELAY_SECONDS = 1000;
+    int DELAY_SECONDS = 300;
 
     /**
      * Timeout.
@@ -50,7 +53,7 @@ public interface AuthproviderRestClient {
      */
     @GET
     @Path("/users/{uuid}/name")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
+    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS, retryOn = TimeoutException.class)
     @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
     UserDetails getUserDetails(@PathParam("uuid") String uuid, @HeaderParam("X-CLIENT-ID") String clientId,
             @HeaderParam("X-CLIENT-SECRET") String clientSecret, @HeaderParam("X-NONCE") String nonce);
