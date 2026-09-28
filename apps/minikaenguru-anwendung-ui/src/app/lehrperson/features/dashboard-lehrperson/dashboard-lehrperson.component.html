@@ -1,16 +1,16 @@
 <div class="lehrperson-dashboard">
-    <h2 data-testid="lehrperson-dashboard-title" class="lehrperson-dashboard__title">Minikänguru an Ihrer Schule</h2>
+    <h2 class="lehrperson-dashboard__title">Minikänguru an Ihrer Schule</h2>
 
-    <p class="lehrperson-dashboard__hint">
+    <p data-testid="lehrperson-dashboard-general-hint" class="lehrperson-dashboard__hint">
         Hier organisieren Sie die Teilnahme Ihrer Schule am Minikänguru-Wettbewerb.
     </p>
 
     @if (isSchulenLoaded()) {
-        <h3 data-testid="lehrperson-dashboard-schulenlist-header" class="lehrperson-dashboard__schulenlist-header">
-            Mit welcher Schule möchten Sie arbeiten?
-        </h3>
+        <h3 class="lehrperson-dashboard__schulenlist-header">Mit welcher Schule möchten Sie arbeiten?</h3>
 
-        <p class="lehrperson-dashboard__hint">Wählen Sie eine Schule aus, um deren Übersicht zu öffnen.</p>
+        <p data-testid="lehrperson-dashboard-schulenlist-hint" class="lehrperson-dashboard__hint">
+            Wählen Sie eine Schule aus, um deren Übersicht zu öffnen.
+        </p>
 
         <mka-lehrperson-schulen
             [schulen]="schulen()"

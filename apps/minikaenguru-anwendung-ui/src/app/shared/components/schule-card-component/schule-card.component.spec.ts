@@ -19,6 +19,21 @@ describe('SchuleCardComponentComponent', () => {
         },
     };
 
+    const hamburg: Schule = {
+        kuerzel: 'S-1',
+        name: 'Erste Schule',
+        ort: {
+            name: 'Hamburg',
+            kuerzel: 'O-1',
+            land: {
+                kuerzel: 'DE-HH',
+                name: 'Hamburg',
+                anzahlOrte: 8,
+            },
+            anzahlSchulen: 2,
+        },
+    };
+
     let component: SchuleCardComponent;
     let fixture: ComponentFixture<SchuleCardComponent>;
 
@@ -45,9 +60,19 @@ describe('SchuleCardComponentComponent', () => {
         expect(nameDe).toBeTruthy();
         expect(nameDe.nativeElement.textContent.trim()).toBe('Erste Schule');
 
-        const landDe = fixture.debugElement.query(By.css('.mka-schule-card__land'));
-        expect(landDe).toBeTruthy();
-        expect(landDe.nativeElement.textContent.trim()).toBe('Hessen');
+        const ortLandDe = fixture.debugElement.query(By.css('.mka-schule-card__ortland'));
+        expect(ortLandDe).toBeTruthy();
+        expect(ortLandDe.nativeElement.textContent.trim()).toBe('Ort 1 · Hessen');
+    });
+
+    it('should show only ort when land === ort', () => {
+        fixture.componentRef.setInput('schule', hamburg);
+
+        fixture.detectChanges();
+
+        const ortLandDe = fixture.debugElement.query(By.css('.mka-schule-card__ortland'));
+        expect(ortLandDe).toBeTruthy();
+        expect(ortLandDe.nativeElement.textContent.trim()).toBe('Hamburg');
     });
 
     it('should emit schuleSelected when clicked', () => {

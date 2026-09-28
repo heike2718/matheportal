@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { Schule } from '../../../core/model/schulkatalog.model';
 
 @Component({
@@ -11,4 +11,10 @@ import { Schule } from '../../../core/model/schulkatalog.model';
 export class SchuleCardComponent {
     readonly schule = input.required<Schule>();
     readonly schuleSelected = output<Schule>();
+
+    readonly ortUndLand = computed(() => {
+        const { name, land } = this.schule().ort;
+
+        return name === land.name ? name : `${name} · ${land.name}`;
+    });
 }

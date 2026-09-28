@@ -59,8 +59,8 @@
         white-space: nowrap;
     }
 
-    &__land {
-        font-size: mp-theme.$mp-font-size-m;
+    &__ortland {
+        font-size: mp-theme.$mp-font-size-s;
         line-height: mp-theme.$mp-line-height-normal;
     }
 
@@ -78,7 +78,7 @@
         gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;
 
-        &__land {
+        &__ortland {
             font-size: mp-theme.$mp-font-size-s;
         }
 

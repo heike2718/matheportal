@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartComponent } from './start.component';
 import { By } from '@angular/platform-browser';
-import { Component, computed } from '@angular/core';
+import { Component, computed, signal, Signal, WritableSignal } from '@angular/core';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 import { StartViewState } from '../../core/authorization/authorization-model';
 import { provideRouter } from '@angular/router';
@@ -11,6 +11,7 @@ import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfueh
 import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
 import { MockComponent, ngMocks } from 'ng-mocks';
 import { LehrpersonFacade } from '../../lehrperson/api/lehrperson.facade';
+import { Schule } from '../../core/model/schulkatalog.model';
 
 describe('StartComponent tests', () => {
     let fixture: ComponentFixture<StartComponent>;
@@ -30,10 +31,27 @@ describe('StartComponent tests', () => {
         isLoggedIn: computed(() => false),
     };
 
-    const lehrpersonFacadeMock = {};
+    let lehrpersonFacadeMock: {
+        isSchulenLoaded: Signal<boolean>;
+        schulen: Signal<Schule[]>;
+        schuleAusgewaehlt: ReturnType<typeof vi.fn>;
+    };
+
+    let schulenSignal: WritableSignal<Schule[]>;
+    let isSchulenLoadedSignal: WritableSignal<boolean>;
 
     async function setup(startViewState: StartViewState) {
         mkaAuthorizationFacadeMock.startViewState = computed(() => startViewState);
+
+        schulenSignal = signal([]);
+        isSchulenLoadedSignal = signal(false);
+
+        lehrpersonFacadeMock = {
+            schulen: schulenSignal,
+            isSchulenLoaded: isSchulenLoadedSignal,
+            schuleAusgewaehlt: vi.fn(),
+        };
+
         await TestBed.configureTestingModule({
             imports: [StartComponent],
             providers: [
