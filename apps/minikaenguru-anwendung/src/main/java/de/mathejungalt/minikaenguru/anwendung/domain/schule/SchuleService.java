@@ -7,6 +7,7 @@ import java.util.UUID;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.core.Response.Status;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
@@ -78,7 +79,6 @@ public class SchuleService {
     public SchuleWettbewerbskontext loadWettbewerbskontext(@AuthorizationKey final String schuleId) {
 
         final Schule schule = schulkatalogService.loadSchulenByKuerzel(new String[] { schuleId }).getFirst();
-        final List<String> kollegen = loadKollegen(schuleId);
         final List<TeilnahmeReferenz> teilnahmerefs = teilnahmeDao.loadTeilnahmereferenzen(schuleId);
         final boolean vertragDSGVOVorhanden = vertragAuftragsdatenverarbeitungDao.schuleHasVertragDSGVO(schuleId);
 
@@ -86,13 +86,20 @@ public class SchuleService {
 
         return new SchuleWettbewerbskontext()
                 .schule(schule)
-                .kollegen(kollegen)
+                .kollegen(new ArrayList<>())
                 .teilnahmerefs(teilnahmerefs)
                 .vertragDSGVOVorhanden(vertragDSGVOVorhanden)
                 .anmeldungMoeglich(TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs));
     }
 
-    List<String> loadKollegen(final String schuleId) {
+    /**
+     * Fragt die Kollegen des eingeloggten Users beim Authprovider ab.
+     *
+     * @param schuleId String
+     * @return List
+     */
+    @KuerzelZugriff("schule: Kollegen")
+    public List<String> getKollegen(@AuthorizationKey final String schuleId) {
 
         final String ownUuid = securityIdentity.getPrincipal().getName();
 
@@ -121,12 +128,38 @@ public class SchuleService {
         try {
             final UserDetails userDetails = authproviderRestClient
                     .getUserDetails(userUuid, clientId, clientSecret, nonce);
+
+            if (userDetails == null) {
+                log.warn("authprovider hat kein response payload gesendet! Abfrage kollege mit uuid={}", userUuid);
+                return null;
+            }
             return userDetails.getVorname() + " " + userDetails.getNachname();
+
         } catch (final AuthproviderHttpException e) {
-            log.warn("http-status {} beim Laden der Namen fuer {}", e.getStatus(), userUuid);
-            return null;
+
+            if (e.getStatus() < Status.BAD_REQUEST.getStatusCode()
+                    || e.getStatus() > Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+                log
+                        .warn("status {} bei Kommunikation mit authprovider beim Abfragen fuer kollege {} (wird ignoriert)",
+                                e.getStatus(), userUuid);
+                return null;
+            }
+
+            if (Status.NOT_FOUND.getStatusCode() == e.getStatus()) {
+                log.warn("USER mit uuid {} existiert nicht oder nicht mehr", userUuid);
+                return null;
+            }
+            if (Status.INTERNAL_SERVER_ERROR.getStatusCode() == e.getStatus()) {
+                log
+                        .warn("authprovider hat ein Problem (INTERNAL_SERVER_ERROR) - kollege mit uuid {} wird ignoriert",
+                                userUuid);
+                return null;
+            }
+            throw e;
         } catch (TimeoutException | ProcessingException e) {
-            log.error("Fehler beim laden des Namen fuer kollege {} (wird ignoriert): {}", userUuid, e.getMessage(), e);
+            log
+                    .error("Timeout beim Abfragen des Namen fuer kollege {} (wird ignoriert): {}", userUuid,
+                            e.getMessage(), e);
             return null;
         }
     }

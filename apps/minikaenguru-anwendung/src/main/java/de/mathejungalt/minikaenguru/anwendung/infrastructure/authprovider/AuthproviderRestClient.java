@@ -16,7 +16,6 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.error.AuthproviderRestClientResponseExceptionMapper;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLoggingFilter;
 
 @RegisterRestClient(configKey = "authprovider")
@@ -26,21 +25,6 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.filter.RestClientLo
 @Produces(MediaType.APPLICATION_JSON)
 @FunctionalInterface
 public interface AuthproviderRestClient {
-
-    /**
-     * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
-     */
-    int MAX_RETRIES = 2;
-
-    /**
-     * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
-     */
-    int DELAY_SECONDS = 300;
-
-    /**
-     * Timeout.
-     */
-    int TIMEOUT_SECONDS = 10;
 
     /**
      * Läd die Details des Users mit einer gegebenen uuid.
@@ -53,8 +37,8 @@ public interface AuthproviderRestClient {
      */
     @GET
     @Path("/users/{uuid}/name")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS, retryOn = TimeoutException.class)
-    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
+    @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS)
     UserDetails getUserDetails(@PathParam("uuid") String uuid, @HeaderParam("X-CLIENT-ID") String clientId,
             @HeaderParam("X-CLIENT-SECRET") String clientSecret, @HeaderParam("X-NONCE") String nonce);
 

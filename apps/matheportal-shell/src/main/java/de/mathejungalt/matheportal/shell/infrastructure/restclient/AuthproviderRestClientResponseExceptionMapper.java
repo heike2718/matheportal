@@ -1,4 +1,4 @@
-package de.mathejungalt.minikaenguru.anwendung.infrastructure.error;
+package de.mathejungalt.matheportal.shell.infrastructure.restclient;
 
 import java.text.MessageFormat;
 
@@ -6,9 +6,6 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
-
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderHttpException;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.MessagePayload;
 
 /**
  * AuthproviderResponseExceptionMapper.
@@ -34,12 +31,17 @@ public class AuthproviderRestClientResponseExceptionMapper implements ResponseEx
         case 500:
             return mapToExceptionWithMessagePayload(response);
         case 401:
+        case 403:
+            return new AuthproviderHttpException(status,
+                    "Konfiguration des AuthproviderRestClient-Aufrufs ist falsch - client.id und client.secret prüfen");
+        case 404:
             return new AuthproviderHttpException(status, "Diese Resource gibt es nicht");
         case 503:
         case 504:
             return new AuthproviderHttpException(status, "Authprovider kann nicht erreicht werden");
         default:
-            return new AuthproviderHttpException(status, "authprovider antwortet mit unerwartetem http-Status");
+            return new AuthproviderHttpException(status,
+                    "authprovider antwortet mit unerwartetem http-Status " + status);
         }
     }
 

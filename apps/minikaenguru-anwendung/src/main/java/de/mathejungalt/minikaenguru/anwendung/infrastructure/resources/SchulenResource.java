@@ -24,4 +24,9 @@ public class SchulenResource implements SchulenApi {
         return Response.ok(schuleService.loadWettbewerbskontext(schuleId)).build();
     }
 
+    @Override
+    public Response getKollegen(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+        return Response.ok(schuleService.getKollegen(schuleId)).build();
+    }
+
 }
