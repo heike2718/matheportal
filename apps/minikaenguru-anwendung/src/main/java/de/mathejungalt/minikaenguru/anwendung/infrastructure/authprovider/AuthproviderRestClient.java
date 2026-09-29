@@ -38,7 +38,7 @@ public interface AuthproviderRestClient {
     @GET
     @Path("/users/{uuid}/name")
     @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
-    @Timeout(value = 10000, unit = ChronoUnit.MILLIS)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
     UserDetails getUserDetails(@PathParam("uuid") String uuid, @HeaderParam("X-CLIENT-ID") String clientId,
             @HeaderParam("X-CLIENT-SECRET") String clientSecret, @HeaderParam("X-NONCE") String nonce);
 
