@@ -4,7 +4,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Schule } from '../model/schulkatalog.model';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
-import { SILENT_LOAD_CONTEXT } from '@matheportal/feedback-api';
+import { SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 
 @Injectable()
 export class ArbeitskontextHttpService {

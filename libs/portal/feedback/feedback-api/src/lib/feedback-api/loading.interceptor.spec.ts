@@ -1,9 +1,9 @@
 import { HttpContext, HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { LoadingService } from './loading.service';
-import { SILENT_LOAD_CONTEXT } from './silent-load.context';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { loadingInterceptor } from './loading.interceptor';
+import { SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 
 describe('loadingInterceptor', () => {
     const loadingService = {

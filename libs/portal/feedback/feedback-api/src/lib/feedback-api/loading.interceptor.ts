@@ -1,7 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { LoadingService } from './loading.service';
-import { SILENT_LOAD_CONTEXT } from './silent-load.context';
+import { SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 import { finalize } from 'rxjs/operators';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
