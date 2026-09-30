@@ -2,7 +2,7 @@ import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 import { LehrpersonActions } from './lehrperson.actions';
 
 describe('LehrpersonActions', () => {
-    it('should create the', () => {
+    it('should create the wettbewerbsorganisationGestartet action', () => {
         const ort: Ort = {
             name: 'Ort 1',
             kuerzel: 'O-1',
@@ -20,9 +20,9 @@ describe('LehrpersonActions', () => {
             ort,
         };
 
-        const action = LehrpersonActions.schuleSelected({ schule });
+        const action = LehrpersonActions.wettbewerbsorganisationGestartet({ schule });
         expect(action).toEqual({
-            type: '[MKA Lehrperson] schuleSelected',
+            type: '[MKA Lehrperson] wettbewerbsorganisationGestartet',
             schule,
         });
     });

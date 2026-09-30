@@ -23,7 +23,9 @@ describe('schulenSelectors', () => {
     const state: SchulenState = {
         schulenLoadingState: 'loaded',
         schulen: schulen,
-        selectedSchule: undefined,
+        wettbewerbskontext: undefined,
+        wettbewerbskontextLoadingState: 'not-loaded',
+        schulkollegiumLoadingState: 'not-loaded',
     };
 
     it('should expose schulen', () => {
@@ -35,19 +37,32 @@ describe('schulenSelectors', () => {
         const result = selectSchulenLoaded.projector(state);
         expect(result).toEqual(true);
     });
-    it('should selectSchulenLoaded return false when not-loaded', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'not-loaded', selectedSchule: undefined };
-        const result = selectSchulenLoaded.projector(theState);
-        expect(result).toEqual(false);
+
+    describe('selectSchulenLloaded', () => {
+        const theState: SchulenState = {
+            schulen,
+            schulenLoadingState: 'not-loaded',
+            wettbewerbskontext: undefined,
+            wettbewerbskontextLoadingState: 'not-loaded',
+            schulkollegiumLoadingState: 'not-loaded',
+        };
+
+        it('should selectSchulenLoaded return false when not-loaded', () => {
+            const result = selectSchulenLoaded.projector(theState);
+            expect(result).toEqual(false);
+        });
+        it('should selectSchulenLoaded return false when technical-error', () => {
+            const result = selectSchulenLoaded.projector(theState);
+            expect(result).toEqual(false);
+        });
+        it('should selectSchulenLoaded return false when unauthorized', () => {
+            const result = selectSchulenLoaded.projector(theState);
+            expect(result).toEqual(false);
+        });
     });
-    it('should selectSchulenLoaded return false when technical-error', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'technical-error', selectedSchule: undefined };
-        const result = selectSchulenLoaded.projector(theState);
-        expect(result).toEqual(false);
-    });
-    it('should selectSchulenLoaded return false when unauthorized', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'unauthorized', selectedSchule: undefined };
-        const result = selectSchulenLoaded.projector(theState);
-        expect(result).toEqual(false);
+
+    it('should expose selectedSchule undefined', () => {
+        const result = selectSchulen.projector(state);
+        expect(result).toEqual(schulen);
     });
 });

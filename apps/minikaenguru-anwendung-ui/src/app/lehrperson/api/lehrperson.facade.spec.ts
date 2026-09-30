@@ -98,7 +98,9 @@ describe('LehrpersonFacade', () => {
             facade.schuleAusgewaehlt(schulen[0]);
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(LehrpersonActions.schuleSelected({ schule: schulen[0] }));
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                LehrpersonActions.wettbewerbsorganisationGestartet({ schule: schulen[0] })
+            );
         });
     });
 });

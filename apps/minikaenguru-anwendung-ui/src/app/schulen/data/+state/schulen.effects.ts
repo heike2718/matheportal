@@ -10,7 +10,7 @@ import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model
 import { schulenActions } from './schulen.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
-import { schuleFuerWettbewerbSelected } from '../../../lehrperson/api/lehrperson-store.events';
+import { wettbewerbsorganisationGestartet } from '../../../lehrperson/api/lehrperson-store.events';
 
 @Injectable()
 export class SchulenEffects {
@@ -41,20 +41,39 @@ export class SchulenEffects {
         );
     });
 
-    readonly schuleFuerWettbewerbSelected$ = createEffect(() =>
+    readonly wettbewerbsorganisationGestartet$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schuleFuerWettbewerbSelected),
-            map(({ schule }) => schulenActions.schuleWettbewerbskontextLaden({ schule }))
+            ofType(wettbewerbsorganisationGestartet),
+            map(({ schule }) => schulenActions.wettbewerbskontextLaden({ schule }))
         )
     );
 
-    readonly schuleWettbewerbskontextLaden$ = createEffect(() => {
+    readonly wettbewerbskontextLaden$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(schulenActions.schuleWettbewerbskontextLaden),
+            ofType(schulenActions.wettbewerbskontextLaden),
             switchMap(({ schule }) =>
                 this.#httpService.loadSchuleWettbewerbskontext(schule.kuerzel).pipe(
-                    map(schule => schulenActions.schuleWettbewerbskontextGeladen({ schule })),
-                    catchError((error: Error) => of(schulenActions.schuleWettbewerbskontextLadenFailed({ error })))
+                    map(wettbewerbskontext => schulenActions.wettbewerbskontextGeladen({ wettbewerbskontext })),
+                    catchError((error: Error) => of(schulenActions.wettbewerbskontextLadenFailed({ error })))
+                )
+            )
+        );
+    });
+
+    readonly wettbewerbskontextGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schulenActions.wettbewerbskontextGeladen),
+            map(({ wettbewerbskontext }) => schulenActions.schulkollegiumLaden({ schule: wettbewerbskontext.schule }))
+        )
+    );
+
+    readonly schulkollegiumLaden$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(schulenActions.schulkollegiumLaden),
+            switchMap(({ schule }) =>
+                this.#httpService.loadSchulkollegium(schule.kuerzel).pipe(
+                    map(schulkollegium => schulenActions.schulkollegiumGeladen({ schulkollegium })),
+                    catchError((error: Error) => of(schulenActions.schulkollegiumLadenFailed({ error })))
                 )
             )
         );
@@ -63,7 +82,7 @@ export class SchulenEffects {
     readonly loadActionFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(schulenActions.schulenLadenFailed, schulenActions.schuleWettbewerbskontextLadenFailed),
+                ofType(schulenActions.schulenLadenFailed, schulenActions.wettbewerbskontextLadenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);

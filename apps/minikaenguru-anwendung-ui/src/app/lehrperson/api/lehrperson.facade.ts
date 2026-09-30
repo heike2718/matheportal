@@ -12,6 +12,6 @@ export class LehrpersonFacade {
     readonly schulen = this.#store.selectSignal(selectSchulen);
 
     public schuleAusgewaehlt(schule: Schule): void {
-        this.#store.dispatch(LehrpersonActions.schuleSelected({ schule }));
+        this.#store.dispatch(LehrpersonActions.wettbewerbsorganisationGestartet({ schule }));
     }
 }
