@@ -333,6 +333,11 @@ export interface components {
             readonly vertragDSGVOVorhanden: boolean;
             readonly anmeldungMoeglich: boolean;
         };
+        readonly Schulkollegium: {
+            /** @description das Kürzel der Schule */
+            readonly kuerzel: string;
+            readonly kollegium: readonly string[];
+        };
     };
     responses: never;
     parameters: never;
@@ -916,7 +921,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly 'application/json': readonly string[];
+                    readonly 'application/json': components['schemas']['Schulkollegium'];
                 };
             };
             /** @description Request ist ungültig */

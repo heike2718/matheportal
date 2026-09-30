@@ -51,7 +51,7 @@ describe('schulenReducer', () => {
             expect(state).toBe(initialSchulenState);
         });
         it('should return the previous state, when unknown action and defined state', () => {
-            const previousState: SchulenState = { schulenLoadingState: 'loaded', schulen };
+            const previousState: SchulenState = { schulenLoadingState: 'loaded', schulen, selectedSchule: undefined };
             const state = schulenFeature.reducer(previousState, unknownAction);
             expect(state).toBe(previousState);
         });
@@ -96,6 +96,7 @@ describe('schulenReducer', () => {
         const previousState: SchulenState = {
             schulenLoadingState: 'loaded',
             schulen: schulen,
+            selectedSchule: undefined,
         };
 
         it('should reset to the initialState on userLoggedOut', () => {

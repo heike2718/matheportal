@@ -10,6 +10,7 @@ import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model
 import { schulenActions } from './schulen.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
+import { schuleFuerWettbewerbSelected } from '../../../lehrperson/api/lehrperson-store.events';
 
 @Injectable()
 export class SchulenEffects {
@@ -40,10 +41,29 @@ export class SchulenEffects {
         );
     });
 
-    readonly schulenLadenFailed$ = createEffect(
+    readonly schuleFuerWettbewerbSelected$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(schuleFuerWettbewerbSelected),
+            map(({ schule }) => schulenActions.schuleWettbewerbskontextLaden({ schule }))
+        )
+    );
+
+    readonly schuleWettbewerbskontextLaden$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(schulenActions.schuleWettbewerbskontextLaden),
+            switchMap(({ schule }) =>
+                this.#httpService.loadSchuleWettbewerbskontext(schule.kuerzel).pipe(
+                    map(schule => schulenActions.schuleWettbewerbskontextGeladen({ schule })),
+                    catchError((error: Error) => of(schulenActions.schuleWettbewerbskontextLadenFailed({ error })))
+                )
+            )
+        );
+    });
+
+    readonly loadActionFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(schulenActions.schulenLadenFailed),
+                ofType(schulenActions.schulenLadenFailed, schulenActions.schuleWettbewerbskontextLadenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);

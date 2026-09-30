@@ -17,6 +17,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schulkollegium;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.schulkatalog.SchulkatalogService;
@@ -96,10 +97,10 @@ public class SchuleService {
      * Fragt die Kollegen des eingeloggten Users beim Authprovider ab.
      *
      * @param schuleId String
-     * @return List
+     * @return Schulkollegium
      */
     @KuerzelZugriff("schule: Kollegen")
-    public List<String> getKollegen(@AuthorizationKey final String schuleId) {
+    public Schulkollegium getKollegium(@AuthorizationKey final String schuleId) {
 
         final String ownUuid = securityIdentity.getPrincipal().getName();
 
@@ -109,16 +110,16 @@ public class SchuleService {
                 .filter(k -> !k.getUserUuid().equals(ownUuid))
                 .toList();
 
-        final List<String> result = new ArrayList<>();
+        final List<String> namen = new ArrayList<>();
 
         for (final SchulkollegiumsmitgliedEntity kollege : kollegen) {
             final String name = loadKollege(kollege.getUserUuid());
             if (name != null) {
-                result.add(name);
+                namen.add(name);
             }
         }
 
-        return result;
+        return new Schulkollegium().kuerzel(schuleId).kollegium(namen);
 
     }
 

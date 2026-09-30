@@ -11,6 +11,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schulkollegium;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
 
@@ -98,7 +99,7 @@ public class SchulenResourceTest {
         when(authproviderRestClient.getUserDetails(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(userDetails);
 
-        final String[] result = given()
+        final Schulkollegium result = given()
                 .accept(ContentType.JSON)
                 .pathParam("schuleId", schuleId)
                 .get("kollegen")
@@ -109,10 +110,11 @@ public class SchulenResourceTest {
                 .contentType(ContentType.JSON)
                 .and()
                 .extract()
-                .as(String[].class);
+                .as(Schulkollegium.class);
 
-        assertEquals(1, result.length);
-        assertEquals("Anna Johanna", result[0]);
+        assertEquals(schuleId, result.getKuerzel());
+        assertEquals(1, result.getKollegium().size());
+        assertEquals("Anna Johanna", result.getKollegium().getFirst());
         verify(authproviderRestClient).getUserDetails(anyString(), anyString(), anyString(), anyString());
 
     }

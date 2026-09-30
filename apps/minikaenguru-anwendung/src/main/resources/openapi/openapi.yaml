@@ -465,9 +465,8 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    type: string
+                                type: object
+                                $ref: '#/components/schemas/Schulkollegium'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -777,3 +776,18 @@ components:
                     type: boolean
                 anmeldungMoeglich:
                     type: boolean
+        Schulkollegium:
+            type: object
+            required:
+                - kuerzel
+                - kollegium
+            properties:
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
+                    description: 'das Kürzel der Schule'
+                kollegium:
+                    type: array
+                    items:
+                        type: string

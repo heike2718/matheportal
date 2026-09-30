@@ -292,9 +292,9 @@ describe('SchulenEffects', () => {
         });
     });
 
-    describe('schulenLadenFailed$', () => {
+    describe('loadActionFailed$', () => {
         it('should publish the technical error message for an HttpErrorResponse', async () => {
-            const promise = firstValueFrom(effects.schulenLadenFailed$);
+            const promise = firstValueFrom(effects.loadActionFailed$);
 
             action$.next(schulenActions.schulenLadenFailed({ error: httpServerErrorResponse }));
             await promise;
@@ -306,7 +306,7 @@ describe('SchulenEffects', () => {
 
         it('should publish the technical error message for another Error', async () => {
             const error = new Error('uiuiui!');
-            const promise = firstValueFrom(effects.schulenLadenFailed$);
+            const promise = firstValueFrom(effects.loadActionFailed$);
 
             action$.next(schulenActions.schulenLadenFailed({ error }));
             await promise;
@@ -321,7 +321,7 @@ describe('SchulenEffects', () => {
                 status: 403,
                 statusText: 'Forbidden',
             });
-            const promise = firstValueFrom(effects.schulenLadenFailed$);
+            const promise = firstValueFrom(effects.loadActionFailed$);
 
             action$.next(schulenActions.schulenLadenFailed({ error }));
             await promise;
@@ -335,12 +335,12 @@ describe('SchulenEffects', () => {
         it('should be configured not to dispatch any action', () => {
             const metadata = getEffectsMetadata(effects);
 
-            expect(metadata.schulenLadenFailed$?.dispatch).toBe(false);
+            expect(metadata.loadActionFailed$?.dispatch).toBe(false);
         });
 
         it('should ignore unrelated actions', () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.schulenLadenFailed$.subscribe(action => {
+            const subscription = effects.loadActionFailed$.subscribe(action => {
                 emittedActions.push(action);
             });
 
