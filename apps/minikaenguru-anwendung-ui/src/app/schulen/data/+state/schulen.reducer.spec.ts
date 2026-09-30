@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 import { initialSchulenState, schulenFeature, SchulenState } from './schulen.reducer';
-import { components } from '../../../generated/api-types';
 import { schulenActions } from './schulen.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';

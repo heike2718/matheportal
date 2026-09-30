@@ -4,7 +4,7 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { schulenActions } from './schulen.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
-import { SchuleWettbewerbskontext } from '../../model/schule.model';
+import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchulen';
 
