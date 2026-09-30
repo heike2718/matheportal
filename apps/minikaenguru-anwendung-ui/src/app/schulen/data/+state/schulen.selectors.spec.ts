@@ -23,6 +23,7 @@ describe('schulenSelectors', () => {
     const state: SchulenState = {
         schulenLoadingState: 'loaded',
         schulen: schulen,
+        selectedSchule: undefined,
     };
 
     it('should expose schulen', () => {
@@ -35,17 +36,17 @@ describe('schulenSelectors', () => {
         expect(result).toEqual(true);
     });
     it('should selectSchulenLoaded return false when not-loaded', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'not-loaded' };
+        const theState: SchulenState = { schulen, schulenLoadingState: 'not-loaded', selectedSchule: undefined };
         const result = selectSchulenLoaded.projector(theState);
         expect(result).toEqual(false);
     });
     it('should selectSchulenLoaded return false when technical-error', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'technical-error' };
+        const theState: SchulenState = { schulen, schulenLoadingState: 'technical-error', selectedSchule: undefined };
         const result = selectSchulenLoaded.projector(theState);
         expect(result).toEqual(false);
     });
     it('should selectSchulenLoaded return false when unauthorized', () => {
-        const theState: SchulenState = { schulen, schulenLoadingState: 'unauthorized' };
+        const theState: SchulenState = { schulen, schulenLoadingState: 'unauthorized', selectedSchule: undefined };
         const result = selectSchulenLoaded.projector(theState);
         expect(result).toEqual(false);
     });
