@@ -19,6 +19,8 @@ import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-le
 import { schulenDataProvider } from './schulen/api/schulen-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
 import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
+import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
+import { mkaSchuleDashboardGuard } from './schulen/api/mka-schule-dashboard.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -44,6 +46,12 @@ export const remoteRoutes: Routes = [
                 canActivate: [mkaLehrpersonGuard()],
                 canActivateChild: [mkaLehrpersonGuard()],
                 component: DashboardLehrpersonComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.schuleDashboad,
+                canActivate: [mkaSchuleDashboardGuard()],
+                canActivateChild: [mkaSchuleDashboardGuard()],
+                component: SchuleDashboardComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.schulkatalogsuche,

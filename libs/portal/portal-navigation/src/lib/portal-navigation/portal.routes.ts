@@ -7,6 +7,7 @@ export const portalRoutes = {
         schulkatalogsuche: 'schulkatalogsuche',
         dashboardPrivatperson: 'dashboard-privatperson',
         dashboardLehrperson: 'dashboard-lehrperson',
+        schuleDashboad: 'lehrperson/schule/:schulkuerzel',
         unknown: '**',
     },
 

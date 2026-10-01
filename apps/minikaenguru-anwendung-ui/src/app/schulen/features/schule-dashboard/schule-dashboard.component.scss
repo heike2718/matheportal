@@ -1,0 +1,235 @@
+@use '@angular/material' as mat;
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.schule-dashboard {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: mp-theme.$mp-content-max-width;
+    min-width: 0;
+
+    color: mp-theme.$mp-color-text-default;
+    font-family: mp-theme.$mp-font-family;
+    font-size: mp-theme.$mp-font-size-m;
+    line-height: mp-theme.$mp-line-height-normal;
+
+    // Material-Aktionen im Minikänguru-Branding.
+    @include mat.button-overrides(
+        (
+            filled-container-color: mp-theme.mp-brand(minikaenguru),
+            filled-label-text-color: mp-theme.$mp-color-on-brand,
+            filled-state-layer-color: mp-theme.$mp-color-on-brand,
+            filled-container-shape: mp-theme.$mp-radius-m,
+            outlined-label-text-color: mp-theme.mp-brand(minikaenguru),
+            outlined-outline-color: mp-theme.mp-brand-border(minikaenguru),
+            outlined-state-layer-color: mp-theme.mp-brand(minikaenguru),
+            outlined-container-shape: mp-theme.$mp-radius-m,
+        )
+    );
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: mp-theme.$mp-space-4;
+        margin-bottom: mp-theme.$mp-space-5;
+
+        > div {
+            min-width: 0;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-xl;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+        overflow-wrap: anywhere;
+    }
+
+    &__location {
+        margin: mp-theme.$mp-space-2 0 0;
+        color: mp-theme.$mp-color-text-muted;
+        font-size: mp-theme.$mp-font-size-s;
+        overflow-wrap: anywhere;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-5;
+    }
+
+    &__secondary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: mp-theme.$mp-space-5;
+    }
+
+    &__card {
+        min-width: 0;
+        color: mp-theme.$mp-color-text-default;
+
+        @include mat.card-overrides(
+            (
+                outlined-container-color: mp-theme.$mp-color-surface,
+                outlined-container-shape: mp-theme.$mp-radius-m,
+                outlined-outline-color: mp-theme.$mp-border-color-subtle,
+                outlined-outline-width: mp-theme.$mp-border-width,
+                subtitle-text-color: mp-theme.$mp-color-text-muted,
+            )
+        );
+
+        mat-card-header {
+            padding: mp-theme.$mp-space-4 mp-theme.$mp-space-4 mp-theme.$mp-space-3;
+        }
+
+        mat-card-title {
+            color: mp-theme.mp-brand(minikaenguru);
+            font-family: mp-theme.$mp-font-family;
+            font-size: mp-theme.$mp-font-size-l;
+            font-weight: 700;
+            line-height: mp-theme.$mp-line-height-tight;
+        }
+
+        mat-card-subtitle {
+            margin-top: mp-theme.$mp-space-1;
+            font-family: mp-theme.$mp-font-family;
+            font-size: mp-theme.$mp-font-size-s;
+            line-height: mp-theme.$mp-line-height-normal;
+        }
+
+        mat-card-content {
+            padding: 0 mp-theme.$mp-space-4 mp-theme.$mp-space-4;
+        }
+
+        mat-divider {
+            border-top-color: mp-theme.$mp-border-color-subtle;
+        }
+    }
+
+    &__card--current {
+        border-top: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
+    }
+
+    &__current-state,
+    &__section-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: mp-theme.$mp-space-4;
+
+        > div,
+        > span {
+            min-width: 0;
+            flex: 1 1 12rem;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            flex-shrink: 0;
+        }
+    }
+
+    &__current-state {
+        padding-top: mp-theme.$mp-space-2;
+
+        p {
+            margin: 0;
+            color: mp-theme.$mp-color-text-muted;
+        }
+    }
+
+    &__current-state h2,
+    &__section h2 {
+        margin: 0 0 mp-theme.$mp-space-2;
+        color: mp-theme.$mp-color-text-default;
+        font-size: mp-theme.$mp-font-size-m;
+        font-weight: 700;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+
+    &__school {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-4;
+    }
+
+    &__colleagues {
+        margin: 0;
+        padding-left: mp-theme.$mp-space-5;
+        overflow-wrap: anywhere;
+
+        li + li {
+            margin-top: mp-theme.$mp-space-1;
+        }
+    }
+
+    &__secondary-text {
+        margin: 0;
+        color: mp-theme.$mp-color-text-muted;
+        font-size: mp-theme.$mp-font-size-s;
+    }
+
+    &__participations {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__participation {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: mp-theme.$mp-space-3;
+        padding: mp-theme.$mp-space-3 0;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
+    &__year {
+        font-size: mp-theme.$mp-font-size-m;
+        font-weight: 700;
+    }
+
+    button[mat-flat-button],
+    button[mat-stroked-button] {
+        &:focus-visible {
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-brand(minikaenguru);
+            outline-offset: mp-theme.$mp-focus-ring-offset;
+        }
+    }
+}
+
+@media (width <= 800px) {
+    .schule-dashboard {
+        &__secondary {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        &__current-state,
+        &__section-row {
+            flex-direction: column;
+            align-items: flex-start;
+
+            > div,
+            > span {
+                flex: initial;
+            }
+        }
+    }
+}

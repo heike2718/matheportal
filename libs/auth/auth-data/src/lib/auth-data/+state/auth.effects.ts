@@ -92,15 +92,6 @@ export class AuthEffects {
         { dispatch: false }
     );
 
-    createSession$ = createEffect(() => {
-        return this.#actions.pipe(
-            ofType(authActions.createSession),
-            switchMap(({ idToken }) => this.#authHttpService.createSession(idToken)),
-            map((user: User) => authActions.sessionCreated({ user })),
-            catchError(() => of(authActions.createSessionFailed()))
-        );
-    });
-
     clearAuthCallbackHash$ = createEffect(
         () =>
             this.#actions.pipe(
@@ -114,6 +105,20 @@ export class AuthEffects {
             ),
         { dispatch: false }
     );
+
+    createSession$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(authActions.createSession),
+            switchMap(({ idToken }) =>
+                this.#authHttpService.createSession(idToken).pipe(
+                    map((user: User) => authActions.sessionCreated({ user })),
+                    catchError(() => {
+                        return of(authActions.createSessionFailed());
+                    })
+                )
+            )
+        );
+    });
 
     createSessionFailed$ = createEffect(
         () =>
