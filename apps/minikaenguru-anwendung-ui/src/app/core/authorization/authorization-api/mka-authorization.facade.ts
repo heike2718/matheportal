@@ -1,15 +1,11 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {
-    AuthorizationLoadState,
-    MinikaenguruBerechtigungstyp,
-    MINIKAENGURU_BERECHTIGUNGSTYP,
-} from '../authorization-model';
+import { AuthorizationLoadState, MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model';
 import { fromMkaAuthorization } from '../authorization-data';
 import { Store } from '@ngrx/store';
 import { mkaAuthorizationActions } from '../authorization-data/+state/mka-authorization.actions';
 import { Observable } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable() // kein providedIn: 'root', aber mittels mkaAuthorizationDataProvider in den remote.routes.ts im remote-Kontext providen
 export class MkaAuthorizationFacade {
@@ -20,24 +16,27 @@ export class MkaAuthorizationFacade {
         fromMkaAuthorization.authorizationLoadState
     );
 
-    readonly #berechtigungstyp$: Observable<MinikaenguruBerechtigungstyp> = this.#store.select(
-        fromMkaAuthorization.berechtigungstyp
-    );
+    readonly #berechtigungstyp = this.#store.selectSignal(fromMkaAuthorization.berechtigungstyp);
+
     readonly #authorizationLoadState = toSignal(this.authorizationLoadState$, { initialValue: 'not-loaded' });
-    readonly #berechtigungstyp = toSignal(this.#berechtigungstyp$, {
-        initialValue: MINIKAENGURU_BERECHTIGUNGSTYP.none,
-    });
 
     readonly isLehrperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
     readonly isPrivatperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
-        const authorizationState = this.#authorizationLoadState();
+        const sessionState = this.#authSessionFacade.sessionLoadingState();
 
-        if (!this.#authSessionFacade.isLoggedIn()) {
-            return 'guest';
+        switch (sessionState) {
+            case 'not-loaded':
+                return 'loading';
+            case 'unauthorized':
+                return 'guest';
+            case 'technical-error':
+                return 'failed';
         }
+
+        const authorizationState = this.#authorizationLoadState();
 
         if (authorizationState === 'not-loaded') {
             return 'loading';
@@ -59,8 +58,6 @@ export class MkaAuthorizationFacade {
     });
 
     ensureAuthorizationLoaded(): void {
-        if (this.#authSessionFacade.isLoggedIn()) {
-            this.#store.dispatch(mkaAuthorizationActions.loadMkaAuthorization());
-        }
+        this.#store.dispatch(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
     }
 }

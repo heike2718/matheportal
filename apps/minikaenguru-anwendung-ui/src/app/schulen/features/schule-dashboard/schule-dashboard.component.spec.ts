@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchuleDashboardComponent } from './schule-dashboard.component';
 import { signal, Signal, WritableSignal } from '@angular/core';
-import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
+import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
 import { SchuleFacade } from '../../api/schule.facade';
 import { Schule } from '../../../core/model/schulkatalog.model';
 
@@ -28,20 +28,14 @@ describe('SchuleDashboardComponent', () => {
     let schulauswahlMoeglichSignal: WritableSignal<boolean>;
     let wettbewerbskontextLoadedSignal: WritableSignal<boolean>;
     let schulkollegiumLoadedSignal: WritableSignal<boolean>;
-    let anmeldungMoeglichSignal: WritableSignal<boolean>;
-    let vertragDSGVOVorhandenSignal: WritableSignal<boolean>;
-    let teilnahmenSignal: WritableSignal<TeilnahmeReferenz[]>;
-    let kollegenSignal: WritableSignal<string[]>;
+    let wettbewerbskontextSignal: WritableSignal<SchuleWettbewerbskontext | undefined>;
 
     let facadeMock: {
         schule: Signal<Schule>;
         schulauswahlMoeglich: Signal<boolean>;
         wettbewerbskontextLoaded: Signal<boolean>;
         schulkollegiumLoaded: Signal<boolean>;
-        anmeldungMoeglich: Signal<boolean>;
-        vertragDSGVOVorhanden: Signal<boolean>;
-        teilnahmen: Signal<TeilnahmeReferenz[]>;
-        kollegen: Signal<string[]>;
+        wettbewerbskontext: Signal<SchuleWettbewerbskontext | undefined>;
     };
 
     beforeEach(async () => {
@@ -49,20 +43,14 @@ describe('SchuleDashboardComponent', () => {
         schulauswahlMoeglichSignal = signal(false);
         wettbewerbskontextLoadedSignal = signal(false);
         schulkollegiumLoadedSignal = signal(false);
-        anmeldungMoeglichSignal = signal(false);
-        vertragDSGVOVorhandenSignal = signal(false);
-        teilnahmenSignal = signal([]);
-        kollegenSignal = signal([]);
+        wettbewerbskontextSignal = signal(undefined);
 
         facadeMock = {
             schule: schuleSignal,
             schulauswahlMoeglich: schulauswahlMoeglichSignal,
             wettbewerbskontextLoaded: wettbewerbskontextLoadedSignal,
             schulkollegiumLoaded: schulkollegiumLoadedSignal,
-            anmeldungMoeglich: anmeldungMoeglichSignal,
-            vertragDSGVOVorhanden: vertragDSGVOVorhandenSignal,
-            teilnahmen: teilnahmenSignal,
-            kollegen: kollegenSignal,
+            wettbewerbskontext: wettbewerbskontextSignal,
         };
 
         await TestBed.configureTestingModule({

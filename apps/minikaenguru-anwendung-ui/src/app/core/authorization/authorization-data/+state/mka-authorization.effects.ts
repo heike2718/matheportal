@@ -3,14 +3,12 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
-import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, filter, map, of, take, tap, withLatestFrom } from 'rxjs';
 import { User } from '@matheportal/auth-model';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
-import { AuthSessionFacade } from '@matheportal/auth-api';
-import { wettbewerbActions } from '../../../wettbewerb/data/+state/wettbewerb.actions';
-import { wettbewerbsdurchfuehrendeActions } from '../../../wettbewerbsdurchfuehrende/data/+state/wettbewerbsdurchfuehrende.actions';
+import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
 
 @Injectable()
 export class MkaAuthorizationEffects {
@@ -19,6 +17,20 @@ export class MkaAuthorizationEffects {
     #httpService = inject(MkaAuthorizationHttpService);
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
+
+    readonly ensureMkaAuthorizationLoaded$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(mkaAuthorizationActions.ensureMkaAuthorizationLoaded),
+            exhaustMap(() =>
+                this.#store.select(sessionState).pipe(
+                    filter(loadState => loadState !== 'not-loaded'),
+                    take(1),
+                    filter(loadState => loadState === 'loaded'),
+                    map(() => mkaAuthorizationActions.loadMkaAuthorization())
+                )
+            )
+        );
+    });
 
     loadMkaAuthorization$ = createEffect(() => {
         return this.#actions.pipe(

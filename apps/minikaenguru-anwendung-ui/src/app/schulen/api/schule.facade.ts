@@ -1,13 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
-    selectAnmeldungMoeglich,
     selectKollegen,
     selectSchulauswahlMoeglich,
-    selectSchule,
     selectSchulkollegiumLoaded,
     selectTeilnahmen,
-    selectVertragDSGVOVorhanden,
+    selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
 } from '../data/+state/schulen.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
@@ -18,25 +16,18 @@ import { UrlTree } from '@angular/router';
 export class SchuleFacade {
     readonly #store = inject(Store);
 
-    readonly schule = this.#store.select(selectSchule);
-
     readonly schulauswahlMoeglich = this.#store.selectSignal(selectSchulauswahlMoeglich);
 
     readonly wettbewerbskontextLoaded = this.#store.selectSignal(selectWettbewerbskontextLoaded);
 
     readonly schulkollegiumLoaded = this.#store.selectSignal(selectSchulkollegiumLoaded);
 
-    readonly anmeldungMoeglich = this.#store.selectSignal(selectAnmeldungMoeglich);
-
-    readonly vertragDSGVOVorhanden = this.#store.selectSignal(selectVertragDSGVOVorhanden);
-
-    readonly teilnahmen = this.#store.selectSignal(selectTeilnahmen);
-
-    readonly kollegen = this.#store.selectSignal(selectKollegen);
+    readonly wettbewerbskontext = this.#store.selectSignal(selectWettbewerbskontext);
 
     readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
 
     public dashboardVorbereiten(schulkuerzel: string): Observable<boolean | UrlTree> {
+        console.log('dashboard für schule vorbereiten: ' + schulkuerzel);
         return of(true);
     }
 }

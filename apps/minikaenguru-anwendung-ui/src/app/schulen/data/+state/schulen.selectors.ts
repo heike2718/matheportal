@@ -28,20 +28,31 @@ export const selectSchulkollegiumLoaded = createSelector(
     state => state.schulkollegiumLoadingState === 'loaded'
 );
 
-const selectWettbewerbskontext = createSelector(selectMKASchulenState, state => state.wettbewerbskontext);
+export const selectWettbewerbskontext = createSelector(selectMKASchulenState, state => state.wettbewerbskontext);
 
-export const selectSchule = createSelector(selectWettbewerbskontext, kontext => kontext && kontext.schule);
+// export const selectSchule = createSelector(selectWettbewerbskontext, kontext => kontext && kontext.schule);
 
-export const selectAnmeldungMoeglich = createSelector(
-    selectWettbewerbskontext,
-    kontext => kontext && kontext.anmeldungMoeglich
+// export const selectAnmeldungMoeglich = createSelector(
+//     selectWettbewerbskontext,
+//     kontext => kontext && kontext.anmeldungMoeglich
+// );
+
+// export const selectVertragDSGVOVorhanden = createSelector(
+//     selectWettbewerbskontext,
+//     kontext => kontext && kontext.vertragDSGVOVorhanden
+// );
+
+export const selectTeilnahmen = createSelector(selectWettbewerbskontext, kontext =>
+    kontext === undefined ? [] : kontext.teilnahmerefs
 );
 
-export const selectVertragDSGVOVorhanden = createSelector(
+export const selectKollegen = createSelector(
+    selectSchulkollegiumLoaded,
     selectWettbewerbskontext,
-    kontext => kontext && kontext.vertragDSGVOVorhanden
+    (loaded, kontext) => {
+        if (!loaded) {
+            return [];
+        }
+        return kontext === undefined ? [] : kontext.kollegen;
+    }
 );
-
-export const selectTeilnahmen = createSelector(selectWettbewerbskontext, kontext => kontext && kontext.teilnahmerefs);
-
-export const selectKollegen = createSelector(selectWettbewerbskontext, kontext => kontext && kontext.kollegen);

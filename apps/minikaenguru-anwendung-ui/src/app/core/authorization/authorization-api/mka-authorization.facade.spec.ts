@@ -137,26 +137,11 @@ describe('MkaAuthorizationFacade tests', () => {
     });
 
     describe('ensureAuthorizationLoaded tests', () => {
-        it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
-            'should dispatch the loadMkaAuthorization when user is logged in and $authorizationLoadState',
-            async authorizationLoadState => {
-                await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
+        it('dispatches the correct action', () => {
+            facade.ensureAuthorizationLoaded();
 
-                facade.ensureAuthorizationLoaded();
-
-                expect(dispatchSpy).toHaveBeenCalledTimes(1);
-                expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.loadMkaAuthorization());
-            }
-        );
-        it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
-            'should not dispatch the loadMkaAuthorization when user is not logged in and $authorizationLoadState',
-            async authorizationLoadState => {
-                await setup(anonymousUser, authorizationLoadState, berechtigungstypNone);
-
-                facade.ensureAuthorizationLoaded();
-
-                expect(dispatchSpy).not.toHaveBeenCalled();
-            }
-        );
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+        });
     });
 });

@@ -2,6 +2,14 @@ import { User } from '@matheportal/auth-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 
 describe('mka-authorization.actions', () => {
+    it('should create the ensureMkaAuthorizationLoaded action', () => {
+        const action = mkaAuthorizationActions.ensureMkaAuthorizationLoaded();
+
+        expect(action).toEqual({
+            type: '[MKA Authorization] ensureMkaAuthorizationLoaded',
+        });
+    });
+
     it('should create the loadMkaAuthorization action', () => {
         const action = mkaAuthorizationActions.loadMkaAuthorization();
 

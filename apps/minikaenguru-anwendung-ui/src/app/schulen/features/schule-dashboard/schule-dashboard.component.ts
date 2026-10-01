@@ -1,9 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { SchuleFacade } from '../../api/schule.facade';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
 
 @Component({
     selector: 'mka-schule-dashboard',
-    imports: [],
+    imports: [MatButtonModule, MatCardModule, MatDividerModule, MatIconModule],
     templateUrl: './schule-dashboard.component.html',
     styleUrl: './schule-dashboard.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,13 +28,25 @@ export class SchuleDashboardComponent {
 
     readonly wettbewerbskontextLoaded = this.#schuleFacade.wettbewerbskontextLoaded;
 
-    readonly schule = this.#schuleFacade.schule;
+    readonly wettbewerbskontext = this.#schuleFacade.wettbewerbskontext;
 
-    readonly schulauswahlMoeglich = this.#schuleFacade.anmeldungMoeglich;
+    readonly schulauswahlMoeglich = this.#schuleFacade.schulauswahlMoeglich;
 
-    readonly teilnahmen = this.#schuleFacade.teilnahmen;
+    readonly schule = computed(() => this.wettbewerbskontext()?.schule);
 
-    readonly kollegen = this.#schuleFacade.kollegen;
+    readonly teilnahmen = computed(() => {
+        if (this.wettbewerbskontext()) {
+            return this.wettbewerbskontext()?.teilnahmerefs;
+        }
+        return [];
+    });
+
+    readonly kollegen = computed(() => {
+        if (this.#schuleFacade.schulkollegiumLoaded() && this.wettbewerbskontext()) {
+            return this.wettbewerbskontext()?.kollegen;
+        }
+        return [];
+    });
 
     readonly aktuelleTeilnahme = computed(() => {
         const alleTeilnahmen = this.teilnahmen();
@@ -43,9 +60,29 @@ export class SchuleDashboardComponent {
         return resultList === undefined ? [] : resultList;
     });
 
-    readonly anmeldungMoeglich = this.#schuleFacade.anmeldungMoeglich;
+    readonly anmeldungMoeglich = computed(() => this.wettbewerbskontext()?.anmeldungMoeglich);
 
-    readonly vertragDSGVOVorhanden = this.#schuleFacade.vertragDSGVOVorhanden;
+    readonly vertragDSGVOVorhanden = computed(() => this.wettbewerbskontext()?.vertragDSGVOVorhanden);
 
     readonly kollegenAnzeigen = computed(() => this.kollegen.length > 0);
+
+    public schuleWechseln(): void {
+        console.log('jetzt wettbewerbsorganisationVerlassen triggern');
+    }
+
+    public schuleAnmelden(): void {
+        console.log('jetzt action triggern zum Anmelden der Schule');
+    }
+
+    public dsgvoVertragHerunterladen(): void {
+        console.log('jetzt action triggern zum Herunterladen DSGVO-Vertrags');
+    }
+
+    public dsgvoVertragAbschliessen(): void {
+        console.log('jetzt action triggern zum Abschließen eines DSGVO-Vertrags');
+    }
+
+    public statistikHerunterladen(teilnahme: TeilnahmeReferenz): void {
+        console.log('jetzt action triggern zum Herunterladen der Statistik für ' + teilnahme.jahr);
+    }
 }

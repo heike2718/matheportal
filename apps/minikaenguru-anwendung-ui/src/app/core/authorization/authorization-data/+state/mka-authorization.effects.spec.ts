@@ -11,8 +11,7 @@ import { AuthorizationLoadState } from '../../authorization-model';
 import { mkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthSessionFacade } from '@matheportal/auth-api';
-import { wettbewerbActions } from '../../../wettbewerb/data/+state/wettbewerb.actions';
+import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
 
 describe('MkaAuthorizationEffects tests', () => {
     let action$: Subject<Action>;
@@ -58,6 +57,257 @@ describe('MkaAuthorizationEffects tests', () => {
 
         effects = TestBed.inject(MkaAuthorizationEffects);
         store = TestBed.inject(Store) as MockStore;
+    });
+
+    describe('ensureMkaAuthorizationLoaded$', () => {
+        it('should map to loadMkaAuthorization when the session is already loaded', async () => {
+            store.overrideSelector(sessionState, 'loaded');
+            store.refreshState();
+
+            const promise = firstValueFrom(effects.ensureMkaAuthorizationLoaded$);
+
+            action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(mkaAuthorizationActions.loadMkaAuthorization());
+            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+        });
+
+        it('should wait for the session to become loaded without requiring another action', () => {
+            const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                expect(emittedActions).toEqual([]);
+
+                // Die Änderung des Session-State muss den wartenden Auftrag fortsetzen.
+                sessionStateSelector.setResult('loaded');
+                store.refreshState();
+
+                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it.each(['unauthorized', 'technical-error'] as const)(
+            'should finish the current request without emitting when the session is already %s',
+            loadState => {
+                const sessionStateSelector = store.overrideSelector(sessionState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const onError = vi.fn();
+                const onComplete = vi.fn();
+
+                const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe({
+                    next: action => emittedActions.push(action),
+                    error: onError,
+                    complete: onComplete,
+                });
+
+                try {
+                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                    expect(emittedActions).toEqual([]);
+                    expect(onError).not.toHaveBeenCalled();
+                    expect(onComplete).not.toHaveBeenCalled();
+                    expect(subscription.closed).toBe(false);
+
+                    // Der vorherige Auftrag ist abgeschlossen und wartet nicht weiter.
+                    sessionStateSelector.setResult('loaded');
+                    store.refreshState();
+
+                    expect(emittedActions).toEqual([]);
+
+                    // Der äußere Effect verarbeitet weiterhin neue Aufträge.
+                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                    expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                    expect(onError).not.toHaveBeenCalled();
+                    expect(onComplete).not.toHaveBeenCalled();
+                    expect(subscription.closed).toBe(false);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+
+        it.each(['unauthorized', 'technical-error'] as const)(
+            'should finish a pending request without emitting when the session becomes %s',
+            loadState => {
+                const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const onError = vi.fn();
+                const onComplete = vi.fn();
+
+                const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe({
+                    next: action => emittedActions.push(action),
+                    error: onError,
+                    complete: onComplete,
+                });
+
+                try {
+                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                    expect(emittedActions).toEqual([]);
+
+                    sessionStateSelector.setResult(loadState);
+                    store.refreshState();
+
+                    expect(emittedActions).toEqual([]);
+                    expect(onError).not.toHaveBeenCalled();
+                    expect(onComplete).not.toHaveBeenCalled();
+                    expect(subscription.closed).toBe(false);
+
+                    // Ein Fehler beendet das innere Warten.
+                    // Ein späteres loaded darf den alten Auftrag nicht wiederbeleben.
+                    sessionStateSelector.setResult('loaded');
+                    store.refreshState();
+
+                    expect(emittedActions).toEqual([]);
+
+                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                    expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                    expect(onError).not.toHaveBeenCalled();
+                    expect(onComplete).not.toHaveBeenCalled();
+                    expect(subscription.closed).toBe(false);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+
+        it('should ignore further commands while waiting for the session (exhaustMap)', () => {
+            const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
+            store.refreshState();
+
+            const selectSpy = vi.spyOn(store, 'select');
+            const emittedActions: Action[] = [];
+
+            const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                expect(selectSpy).toHaveBeenCalledTimes(1);
+                expect(selectSpy).toHaveBeenCalledWith(sessionState);
+                expect(emittedActions).toEqual([]);
+
+                // Weitere Commands dürfen das laufende Warten weder ersetzen
+                // noch zusätzliche wartende Aufträge erzeugen.
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                expect(selectSpy).toHaveBeenCalledTimes(1);
+                expect(emittedActions).toEqual([]);
+
+                sessionStateSelector.setResult('loaded');
+                store.refreshState();
+
+                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(selectSpy).toHaveBeenCalledTimes(1);
+
+                // Nach Abschluss kann ein neuer Auftrag verarbeitet werden.
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                expect(selectSpy).toHaveBeenCalledTimes(2);
+                expect(emittedActions).toEqual([
+                    mkaAuthorizationActions.loadMkaAuthorization(),
+                    mkaAuthorizationActions.loadMkaAuthorization(),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+                selectSpy.mockRestore();
+            }
+        });
+
+        it('should stop observing the session after success and keep the effect stream alive', () => {
+            const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const onError = vi.fn();
+            const onComplete = vi.fn();
+
+            const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe({
+                next: action => emittedActions.push(action),
+                error: onError,
+                complete: onComplete,
+            });
+
+            try {
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                sessionStateSelector.setResult('loaded');
+                store.refreshState();
+
+                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(onComplete).not.toHaveBeenCalled();
+                expect(subscription.closed).toBe(false);
+
+                // Weitere State-Änderungen allein dürfen keine Folgeaction erzeugen.
+                sessionStateSelector.setResult('unauthorized');
+                store.refreshState();
+
+                sessionStateSelector.setResult('loaded');
+                store.refreshState();
+
+                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+
+                // Dieselbe Subscription muss weitere Commands verarbeiten.
+                // Ein take(1) im äußeren Stream würde dies verhindern.
+                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+
+                expect(emittedActions).toEqual([
+                    mkaAuthorizationActions.loadMkaAuthorization(),
+                    mkaAuthorizationActions.loadMkaAuthorization(),
+                ]);
+                expect(onError).not.toHaveBeenCalled();
+                expect(onComplete).not.toHaveBeenCalled();
+                expect(subscription.closed).toBe(false);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should ignore unrelated actions and session changes without an ensure command', () => {
+            const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureMkaAuthorizationLoaded$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+
+                sessionStateSelector.setResult('loaded');
+                store.refreshState();
+
+                action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+
+                expect(emittedActions).toEqual([]);
+                expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
     });
 
     describe('loadMkaAuthorization$ tests', () => {

@@ -1,14 +1,15 @@
 <div class="schule-dashboard">
     @if (wettbewerbskontextLoaded()) {
         <header class="schule-dashboard__header">
-            <div>
-                <h1 class="schule-dashboard__title">
-                    {{ schule().name }}
-                </h1>
+            @if (schule()) {
+                <div>
+                    <h1 class="schule-dashboard__title">
+                        {{ schule()!.name }}
+                    </h1>
 
-                <p class="schule-dashboard__location">{{ schule().ort }} · {{ schule().land }}</p>
-            </div>
-
+                    <p class="schule-dashboard__location">{{ schule()!.ort.name }} · {{ schule()!.ort.land.name }}</p>
+                </div>
+            }
             @if (schulauswahlMoeglich()) {
                 <button mat-stroked-button type="button" (click)="schuleWechseln()">
                     <mat-icon>swap_horiz</mat-icon>
@@ -28,7 +29,9 @@
 
                 <mat-card-content>
                     @if (aktuelleTeilnahme()) {
-                        <app-teilnahme [teilnahme]="aktuelleTeilnahme()!" />
+                        <div>
+                            <h2>Hier jetzt die teilnahme-component einhängen</h2>
+                        </div>
                     } @else if (anmeldungMoeglich()) {
                         <div class="schule-dashboard__current-state">
                             <div>
@@ -49,7 +52,7 @@
 
                                 <p>
                                     Die Anmeldung ist ab
-                                    {{ aktuellerWettbewerb().anmeldungAb }}
+                                    {{ aktuellerWettbewerb().beginn }}
                                     möglich.
                                 </p>
                             </div>
@@ -114,10 +117,10 @@
                     <mat-card-content>
                         @if (fruehereTeilnahmen().length > 0) {
                             <div class="schule-dashboard__participations">
-                                @for (teilnahme of fruehereTeilnahmen(); track teilnahme.id) {
+                                @for (teilnahme of fruehereTeilnahmen(); track teilnahme.jahr) {
                                     <div class="schule-dashboard__participation">
                                         <span class="schule-dashboard__year">
-                                            {{ teilnahme.wettbewerbsjahr }}
+                                            {{ teilnahme.jahr }}
                                         </span>
 
                                         <button
