@@ -12,16 +12,14 @@ import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 export class AuthSessionFacade {
     #store = inject(Store);
 
+    readonly sessionLoadingState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadingState);
     readonly user$: Observable<User> = this.#store.select(fromAuth.user);
 
-    readonly #sessionLoadingState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadingState);
-
-    readonly #isAdmin$: Observable<boolean> = this.#store.select(fromAuth.isAdmin);
+    readonly sessionLoadingState = toSignal(this.sessionLoadingState$, { initialValue: 'not-loaded' });
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
-    readonly sessionLoadingState = toSignal(this.#sessionLoadingState$, { initialValue: 'not-loaded' });
     readonly isLoggedIn = computed(() => this.sessionLoadingState() === 'loaded');
-    readonly isAdmin = toSignal(this.#isAdmin$, { initialValue: false });
+    readonly isAdmin = this.#store.selectSignal(fromAuth.isAdmin);
 
     /**
      * validiert die bestehende Session.

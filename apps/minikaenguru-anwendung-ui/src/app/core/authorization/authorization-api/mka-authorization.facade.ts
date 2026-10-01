@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable() // kein providedIn: 'root', aber mittels mkaAuthorizationDataProvider in den remote.routes.ts im remote-Kontext providen
 export class MkaAuthorizationFacade {
-    readonly #authSessionFacade = inject(AuthSessionFacade);
+    readonly #portalSessionFacade = inject(AuthSessionFacade);
     readonly #store = inject(Store);
 
     readonly authorizationLoadState$: Observable<AuthorizationLoadState> = this.#store.select(
@@ -25,7 +25,7 @@ export class MkaAuthorizationFacade {
     readonly isPrivatperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
-        const sessionState = this.#authSessionFacade.sessionLoadingState();
+        const sessionState = this.#portalSessionFacade.sessionLoadingState();
 
         switch (sessionState) {
             case 'not-loaded':

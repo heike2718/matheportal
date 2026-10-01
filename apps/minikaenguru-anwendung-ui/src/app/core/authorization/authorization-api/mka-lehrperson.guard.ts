@@ -3,12 +3,14 @@ import { CanActivateFn, Router } from '@angular/router';
 import { filter, map, of, switchMap, take } from 'rxjs';
 import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { AuthSessionFacade } from '@matheportal/auth-api';
 
 export const mkaLehrpersonGuard = (): CanActivateFn => () => {
-    const auth = inject(MkaAuthorizationFacade);
+    const portalSessionFacade = inject(AuthSessionFacade);
+    const mkaAuthFacade = inject(MkaAuthorizationFacade);
     const router = inject(Router);
 
-    return auth.authorizationLoadState$.pipe(
+    return portalSessionFacade.sessionLoadingState$.pipe(
         filter(sessionState => sessionState !== 'not-loaded'),
         take(1),
         switchMap(sessionState => {
@@ -16,13 +18,13 @@ export const mkaLehrpersonGuard = (): CanActivateFn => () => {
                 return of(router.createUrlTree(['/', portalRoutes.home]));
             }
 
-            auth.ensureAuthorizationLoaded();
+            mkaAuthFacade.ensureAuthorizationLoaded();
 
-            return auth.authorizationLoadState$.pipe(
+            return mkaAuthFacade.authorizationLoadState$.pipe(
                 filter(authorizationState => authorizationState !== 'not-loaded'),
                 take(1),
                 map(authorizationState =>
-                    authorizationState === 'loaded' && auth.isLehrperson()
+                    authorizationState === 'loaded' && mkaAuthFacade.isLehrperson()
                         ? true
                         : router.createUrlTree(['/', portalRoutes.minikaenguruAnwendung.root])
                 )
