@@ -24,7 +24,7 @@ export const authFeature = createFeature({
             return { ...initialAuthState, sessionLoadingState: 'technical-error' };
         }),
         on(authActions.signedUp, () => {
-            return initialAuthState;
+            return { ...initialAuthState, sessionLoadingState: 'unauthorized' };
         }),
         on(authActions.sessionCreated, (state, action) => {
             return { ...state, user: action.user, sessionLoadingState: 'loaded' };
@@ -43,7 +43,7 @@ export const authFeature = createFeature({
             return { ...state, user: action.user };
         }),
         on(authActions.loggedOut, () => {
-            return initialAuthState;
+            return { ...initialAuthState, sessionLoadingState: 'unauthorized' };
         })
     ),
 });

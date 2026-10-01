@@ -1,6 +1,7 @@
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthState } from './auth.reducer';
 import { fromAuth } from './auth.selectors';
+import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 describe('fromAuth tests', () => {
     const standardUser: User = {
@@ -18,6 +19,7 @@ describe('fromAuth tests', () => {
     it('should select user', () => {
         const state: AuthState = {
             user: standardUser,
+            sessionLoadingState: 'loaded',
         };
 
         const result = fromAuth.user.projector(state);
@@ -25,29 +27,20 @@ describe('fromAuth tests', () => {
         expect(result).toEqual(state.user);
     });
 
-    it('should select hasSession when user is anonym', () => {
-        const state: AuthState = {
-            user: anonymousUser,
-        };
-
-        const result = fromAuth.hasSession.projector(state);
-
-        expect(result).toBe(false);
-    });
-
-    it('should select hasSession when user is logged in', () => {
+    it.each([])('should select the sessionLoadingState with %s', (loadState: RESOURCE_LOAD_STATE) => {
         const state: AuthState = {
             user: standardUser,
+            sessionLoadingState: loadState,
         };
 
-        const result = fromAuth.hasSession.projector(state);
-
-        expect(result).toBe(true);
+        const result = fromAuth.sessionLoadingState.projector(state);
+        expect(result).toBe(loadState);
     });
 
     it('should select isAdmin when user is not logged in', () => {
         const state: AuthState = {
             user: anonymousUser,
+            sessionLoadingState: 'unauthorized',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 
@@ -57,6 +50,7 @@ describe('fromAuth tests', () => {
     it('should select isAdmin when user is standard', () => {
         const state: AuthState = {
             user: standardUser,
+            sessionLoadingState: 'loaded',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 
@@ -66,6 +60,7 @@ describe('fromAuth tests', () => {
     it('should select isAdmin when user is admin', () => {
         const state: AuthState = {
             user: admin,
+            sessionLoadingState: 'loaded',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 

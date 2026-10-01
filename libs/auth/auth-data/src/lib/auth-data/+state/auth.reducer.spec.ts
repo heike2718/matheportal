@@ -55,7 +55,7 @@ describe('authFeature tests', () => {
             const actualState: AuthState = { user, sessionLoadingState: 'loaded' };
             const state = authFeature.reducer(actualState, authActions.signedUp());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('not-loaded');
+            expect(state.sessionLoadingState).toEqual('unauthorized');
         });
     });
 
@@ -104,7 +104,7 @@ describe('authFeature tests', () => {
             const actualState: AuthState = { user: user, sessionLoadingState: 'loaded' };
             const state = authFeature.reducer(actualState, authActions.loggedOut());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('not-loaded');
+            expect(state.sessionLoadingState).toEqual('unauthorized');
         });
     });
 
