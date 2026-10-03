@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { mkaAuthorizationActions } from '../authorization-data/+state/mka-authorization.actions';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { portalRoutes } from '@matheportal/portal-navigation';
 
 @Injectable() // kein providedIn: 'root', aber mittels mkaAuthorizationDataProvider in den remote.routes.ts im remote-Kontext providen
 export class MkaAuthorizationFacade {

@@ -47,7 +47,7 @@ describe('schulenReducer', () => {
     const wettbewerbskontext: SchuleWettbewerbskontext = {
         schule: schulen[0],
         anmeldungMoeglich: true,
-        kollegen: [],
+        kollegen: ['Anna Johanna'],
         teilnahmerefs: [],
         vertragDSGVOVorhanden: true,
     };
@@ -100,9 +100,9 @@ describe('schulenReducer', () => {
             expect(state).toEqual({
                 schulenLoadingState: 'loaded',
                 schulen,
-                wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontext,
+                wettbewerbskontextLoadingState: 'loaded',
+                schulkollegiumLoadingState: 'loaded',
             });
         });
     });
@@ -235,12 +235,10 @@ describe('schulenReducer', () => {
                 schulenActions.schulkollegiumGeladen({ schulkollegium })
             );
 
-            const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };
-
             expect(state).toEqual({
                 schulen,
                 schulenLoadingState: 'loaded',
-                wettbewerbskontext: expectedWettbewerbskontext,
+                wettbewerbskontext,
                 wettbewerbskontextLoadingState: 'loaded',
                 schulkollegiumLoadingState: 'loaded',
             });

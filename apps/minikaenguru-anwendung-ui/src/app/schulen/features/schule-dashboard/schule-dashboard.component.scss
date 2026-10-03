@@ -60,10 +60,19 @@
         overflow-wrap: anywhere;
     }
 
-    &__content {
+    &__content,
+    &__school,
+    &__participations {
         display: flex;
         flex-direction: column;
+    }
+
+    &__content {
         gap: mp-theme.$mp-space-5;
+    }
+
+    &__school {
+        gap: mp-theme.$mp-space-4;
     }
 
     &__secondary {
@@ -76,6 +85,7 @@
     &__card {
         min-width: 0;
         color: mp-theme.$mp-color-text-default;
+        border-left: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
 
         @include mat.card-overrides(
             (
@@ -113,10 +123,6 @@
         mat-divider {
             border-top-color: mp-theme.$mp-border-color-subtle;
         }
-    }
-
-    &__card--current {
-        border-top: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
     }
 
     &__current-state,
@@ -157,12 +163,6 @@
         line-height: mp-theme.$mp-line-height-tight;
     }
 
-    &__school {
-        display: flex;
-        flex-direction: column;
-        gap: mp-theme.$mp-space-4;
-    }
-
     &__colleagues {
         margin: 0;
         padding-left: mp-theme.$mp-space-5;
@@ -177,11 +177,6 @@
         margin: 0;
         color: mp-theme.$mp-color-text-muted;
         font-size: mp-theme.$mp-font-size-s;
-    }
-
-    &__participations {
-        display: flex;
-        flex-direction: column;
     }
 
     &__participation {

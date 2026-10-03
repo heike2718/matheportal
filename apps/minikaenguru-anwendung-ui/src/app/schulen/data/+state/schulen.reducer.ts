@@ -33,9 +33,6 @@ export const schulenFeature = createFeature({
             ...state,
             schulenLoadingState: 'loaded',
             schulen,
-            wettbewerbskontextLoadingState: 'not-loaded',
-            wettbewerbskontext: undefined,
-            schulkollegiumLoadingState: 'not-loaded',
         })),
         on(schulenActions.schulenLadenFailed, (state, { error }) => ({
             ...state,

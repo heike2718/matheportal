@@ -8,7 +8,7 @@ export const schulenActions = createActionGroup({
         schulenLaden: emptyProps(),
         schulenGeladen: props<{ schulen: Schule[] }>(),
         schulenLadenFailed: props<{ error: Error }>(),
-        wettbewerbskontextLaden: props<{ schule: Schule }>(),
+        wettbewerbskontextLaden: props<{ schulkuerzel: string }>(),
         wettbewerbskontextGeladen: props<{ wettbewerbskontext: SchuleWettbewerbskontext }>(),
         wettbewerbskontextLadenFailed: props<{ error: Error }>(),
         schulkollegiumLaden: props<{ schule: Schule }>(),

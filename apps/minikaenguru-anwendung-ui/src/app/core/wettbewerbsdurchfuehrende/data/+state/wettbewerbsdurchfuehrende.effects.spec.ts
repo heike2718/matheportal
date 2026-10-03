@@ -398,11 +398,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-privatperson']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
 
-        it('should route to dashboard-lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
+        it('should route to lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: false,
@@ -420,7 +420,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-lehrperson']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
     });

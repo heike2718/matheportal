@@ -18,8 +18,12 @@ import { schulenActions } from './schulen.actions';
 import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { wettbewerbsorganisationGestartet } from '../../../lehrperson/api/lehrperson-store.events';
+import {
+    prepareWettbewerbsorganisation,
+    wettbewerbsorganisationGestartet,
+} from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
+import { Router } from '@angular/router';
 
 describe('SchulenEffects', () => {
     const expectedErrorMessage =
@@ -32,6 +36,10 @@ describe('SchulenEffects', () => {
         error: 'boom',
         url: '/authurls/login',
     });
+
+    const routerMock = {
+        navigate: vi.fn(),
+    };
 
     let action$: Subject<Action>;
     let effects: SchulenEffects;
@@ -62,6 +70,7 @@ describe('SchulenEffects', () => {
             providers: [
                 SchulenEffects,
                 provideMockActions(() => action$),
+                { provide: Router, useValue: routerMock },
                 {
                     provide: ArbeitskontextHttpService,
                     useValue: httpServiceMock,
@@ -296,7 +305,7 @@ describe('SchulenEffects', () => {
     });
 
     describe('wettbewerbsorganisationGestartet$', () => {
-        it('should dispatch wettbewerbskontextLaden when wettbewerbsorganisationGestartet', async () => {
+        it('should navigate to lehrperson/schule ', async () => {
             const schule: Schule = {
                 kuerzel: 'S1234567',
                 name: 'Baumschule',
@@ -314,11 +323,45 @@ describe('SchulenEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbsorganisationGestartet$);
 
-            action$.next(wettbewerbsorganisationGestartet({ schule }));
+            action$.next(wettbewerbsorganisationGestartet({ schulkuerzel: schule.kuerzel }));
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith([
+                '/',
+                'minikaenguru-anwendung',
+                'lehrperson',
+                'schule',
+                'S1234567',
+            ]);
+        });
+    });
+
+    describe('prepareWettbewerbsorganisation$', () => {
+        it('should dispatch wettbewerbskontextLaden when wettbewerbsorganisationGestartet', async () => {
+            const schule: Schule = {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 3,
+                    land: {
+                        kuerzel: 'DE-TH',
+                        name: 'Thüringen',
+                        anzahlOrte: 354,
+                    },
+                },
+            };
+
+            const promise = firstValueFrom(effects.prepareWettbewerbsorganisation$);
+
+            action$.next(prepareWettbewerbsorganisation({ schulkuerzel: schule.kuerzel }));
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(schulenActions.wettbewerbskontextLaden({ schule }));
+            expect(emitted).toEqual(schulenActions.wettbewerbskontextLaden({ schulkuerzel: 'S1234567' }));
         });
     });
 
@@ -373,7 +416,7 @@ describe('SchulenEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbskontextLaden$);
 
-            action$.next(schulenActions.wettbewerbskontextLaden({ schule }));
+            action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
             const emitted = await promise;
 
             expect(emitted).toEqual(schulenActions.wettbewerbskontextGeladen({ wettbewerbskontext }));
@@ -397,13 +440,13 @@ describe('SchulenEffects', () => {
 
             try {
                 // Erste Anfrage bleibt zunächst offen.
-                action$.next(schulenActions.wettbewerbskontextLaden({ schule }));
+                action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
 
                 expect(httpServiceMock.loadSchuleWettbewerbskontext).toHaveBeenCalledTimes(1);
                 expect(firstRequestFinalized).not.toHaveBeenCalled();
 
                 // Eine weitere Action muss die erste Anfrage sofort abbestellen.
-                action$.next(schulenActions.wettbewerbskontextLaden({ schule: andereSchule }));
+                action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
 
                 expect(firstRequestFinalized).toHaveBeenCalledOnce();
                 expect(httpServiceMock.loadSchuleWettbewerbskontext).toHaveBeenCalledTimes(2);
@@ -433,7 +476,7 @@ describe('SchulenEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbskontextLaden$);
 
-            action$.next(schulenActions.wettbewerbskontextLaden({ schule }));
+            action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
             const emitted = await promise;
 
             expect(emitted).toEqual(schulenActions.wettbewerbskontextLadenFailed({ error }));
@@ -459,7 +502,7 @@ describe('SchulenEffects', () => {
             });
 
             try {
-                action$.next(schulenActions.wettbewerbskontextLaden({ schule }));
+                action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
                 httpFirst$.error(httpServerErrorResponse);
 
                 expect(emittedActions).toEqual([
@@ -474,7 +517,7 @@ describe('SchulenEffects', () => {
                 // Dieselbe Subscription muss weitere Actions verarbeiten.
                 // Ein catchError außerhalb von switchMap würde bei Rückgabe
                 // von of(failedAction) den gesamten Effect-Stream beenden.
-                action$.next(schulenActions.wettbewerbskontextLaden({ schule: andereSchule }));
+                action$.next(schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel }));
 
                 expect(httpServiceMock.loadSchuleWettbewerbskontext).toHaveBeenCalledTimes(2);
 

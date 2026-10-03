@@ -47,11 +47,11 @@ describe('schulenActions', () => {
     });
 
     it('should create the wettbewerbskontextLaden action', () => {
-        const action = schulenActions.wettbewerbskontextLaden({ schule });
+        const action = schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel });
 
         expect(action).toEqual({
             type: '[MKA Schulen] wettbewerbskontextLaden',
-            schule,
+            schulkuerzel: 'S1234567',
         });
     });
 

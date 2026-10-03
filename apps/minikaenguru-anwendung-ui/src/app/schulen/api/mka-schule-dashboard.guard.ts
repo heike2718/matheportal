@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SchuleFacade } from './schule.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { filter, map, take } from 'rxjs';
 
 export const mkaSchuleDashboardGuard = (): CanActivateFn => route => {
     const router = inject(Router);
@@ -13,5 +14,19 @@ export const mkaSchuleDashboardGuard = (): CanActivateFn => route => {
         return router.createUrlTree(['/', portalRoutes.home]);
     }
 
-    return facade.dashboardVorbereiten(schulkuerzel);
+    facade.dashboardVorbereiten(schulkuerzel);
+
+    return facade.wettbewerbskontextLoadingState$.pipe(
+        filter(state => state !== 'not-loaded'),
+        take(1),
+        map(state =>
+            state === 'loaded'
+                ? true
+                : router.createUrlTree([
+                      '/',
+                      portalRoutes.minikaenguruAnwendung.root,
+                      portalRoutes.minikaenguruAnwendung.lehrperson,
+                  ])
+        )
+    );
 };

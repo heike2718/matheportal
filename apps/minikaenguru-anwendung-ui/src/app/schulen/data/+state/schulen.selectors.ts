@@ -1,6 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { schulenFeature, SchulenState } from './schulen.reducer';
-import { schulenLoaded } from '../../../schulkatalog/schulkatalogsuche/data/+state/schulkatalogsuche.selectors';
+import { schulenFeature } from './schulen.reducer';
 import { Schule } from '../../../core/model/schulkatalog.model';
 
 const { selectMKASchulenState } = schulenFeature;
@@ -13,14 +12,19 @@ export const selectSchulenLoaded = createSelector(
 );
 
 export const selectSchulauswahlMoeglich = createSelector(
-    schulenLoaded,
+    selectSchulenLoaded,
     selectSchulen,
     (loaded: boolean, schulen: Schule[]) => loaded && schulen.length > 1
 );
 
-export const selectWettbewerbskontextLoaded = createSelector(
+export const selectWettbewerbskontextLoadingState = createSelector(
     selectMKASchulenState,
-    state => state.wettbewerbskontextLoadingState === 'loaded'
+    state => state.wettbewerbskontextLoadingState
+);
+
+export const selectWettbewerbskontextLoaded = createSelector(
+    selectWettbewerbskontextLoadingState,
+    loadingState => loadingState === 'loaded'
 );
 
 export const selectSchulkollegiumLoaded = createSelector(
@@ -29,18 +33,6 @@ export const selectSchulkollegiumLoaded = createSelector(
 );
 
 export const selectWettbewerbskontext = createSelector(selectMKASchulenState, state => state.wettbewerbskontext);
-
-// export const selectSchule = createSelector(selectWettbewerbskontext, kontext => kontext && kontext.schule);
-
-// export const selectAnmeldungMoeglich = createSelector(
-//     selectWettbewerbskontext,
-//     kontext => kontext && kontext.anmeldungMoeglich
-// );
-
-// export const selectVertragDSGVOVorhanden = createSelector(
-//     selectWettbewerbskontext,
-//     kontext => kontext && kontext.vertragDSGVOVorhanden
-// );
 
 export const selectTeilnahmen = createSelector(selectWettbewerbskontext, kontext =>
     kontext === undefined ? [] : kontext.teilnahmerefs
@@ -55,4 +47,10 @@ export const selectKollegen = createSelector(
         }
         return kontext === undefined ? [] : kontext.kollegen;
     }
+);
+
+export const selectDsgvoVertragErforderlich = createSelector(
+    selectWettbewerbskontextLoaded,
+    selectWettbewerbskontext,
+    (loaded, kontext) => (!loaded ? false : !kontext?.vertragDSGVOVorhanden)
 );

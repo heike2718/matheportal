@@ -36,22 +36,27 @@ export const remoteRoutes: Routes = [
                 component: GuestInfoComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                path: portalRoutes.minikaenguruAnwendung.privatperson,
                 canActivate: [mkaPrivatpersonGuard()],
                 canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                path: portalRoutes.minikaenguruAnwendung.lehrperson,
                 canActivate: [mkaLehrpersonGuard()],
                 canActivateChild: [mkaLehrpersonGuard()],
-                component: DashboardLehrpersonComponent,
-            },
-            {
-                path: portalRoutes.minikaenguruAnwendung.schuleDashboad,
-                canActivate: [mkaSchuleDashboardGuard()],
-                canActivateChild: [mkaSchuleDashboardGuard()],
-                component: SchuleDashboardComponent,
+                children: [
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        component: DashboardLehrpersonComponent,
+                    },
+                    {
+                        path: portalRoutes.minikaenguruAnwendung.schule,
+                        canActivate: [mkaSchuleDashboardGuard()],
+                        component: SchuleDashboardComponent,
+                    },
+                ],
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.schulkatalogsuche,

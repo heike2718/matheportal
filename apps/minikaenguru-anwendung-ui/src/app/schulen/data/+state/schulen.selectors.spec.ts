@@ -1,6 +1,6 @@
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { SchulenState } from './schulen.reducer';
-import { selectSchulen, selectSchulenLoaded } from './schulen.selectors';
+import { selectSchulauswahlMoeglich, selectSchulen, selectSchulenLoaded } from './schulen.selectors';
 
 describe('schulenSelectors', () => {
     const schulen: Schule[] = [
@@ -64,5 +64,40 @@ describe('schulenSelectors', () => {
     it('should expose selectedSchule undefined', () => {
         const result = selectSchulen.projector(state);
         expect(result).toEqual(schulen);
+    });
+
+    describe('selectSchulauswahlMoeglich', () => {
+        it('should return false when loaded and only one school', () => {
+            const result = selectSchulauswahlMoeglich.projector(true, schulen);
+            expect(result).toBe(false);
+        });
+        it('should return false when not loaded and only one school', () => {
+            const result = selectSchulauswahlMoeglich.projector(false, schulen);
+            expect(result).toBe(false);
+        });
+        it('should return false when loaded and no school at all', () => {
+            const result = selectSchulauswahlMoeglich.projector(true, []);
+            expect(result).toBe(false);
+        });
+        it('should return true when loaded and more than one school', () => {
+            const result = selectSchulauswahlMoeglich.projector(true, [
+                ...schulen,
+                {
+                    kuerzel: 'SCHULE-2',
+                    name: 'Bauhausschule',
+                    ort: {
+                        kuerzel: 'ORT-2',
+                        name: 'zweiter Ort',
+                        land: {
+                            kuerzel: 'DE-SN',
+                            name: 'Sachsen-Anhalt',
+                            anzahlOrte: 13,
+                        },
+                        anzahlSchulen: 2,
+                    },
+                },
+            ]);
+            expect(result).toBe(true);
+        });
     });
 });

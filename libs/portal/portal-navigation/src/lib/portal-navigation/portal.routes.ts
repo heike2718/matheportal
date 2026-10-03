@@ -5,9 +5,9 @@ export const portalRoutes = {
         root: 'minikaenguru-anwendung',
         guests: 'guests',
         schulkatalogsuche: 'schulkatalogsuche',
-        dashboardPrivatperson: 'dashboard-privatperson',
-        dashboardLehrperson: 'dashboard-lehrperson',
-        schuleDashboad: 'lehrperson/schule/:schulkuerzel',
+        privatperson: 'privatperson',
+        lehrperson: 'lehrperson',
+        schule: 'schule/:schulkuerzel',
         unknown: '**',
     },
 

@@ -101,7 +101,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                             void this.#router.navigate([
                                 '/',
                                 portalRoutes.minikaenguruAnwendung.root,
-                                portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                                portalRoutes.minikaenguruAnwendung.privatperson,
                             ]);
                             this.#authSessionFacade.validateSession();
                             break;
@@ -109,7 +109,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                             void this.#router.navigate([
                                 '/',
                                 portalRoutes.minikaenguruAnwendung.root,
-                                portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
+                                portalRoutes.minikaenguruAnwendung.lehrperson,
                             ]);
                             this.#authSessionFacade.validateSession();
                             break;

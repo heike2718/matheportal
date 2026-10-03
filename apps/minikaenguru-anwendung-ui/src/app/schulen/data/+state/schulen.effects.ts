@@ -10,12 +10,18 @@ import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model
 import { schulenActions } from './schulen.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
-import { wettbewerbsorganisationGestartet } from '../../../lehrperson/api/lehrperson-store.events';
+import {
+    wettbewerbsorganisationGestartet,
+    prepareWettbewerbsorganisation,
+} from '../../../lehrperson/api/lehrperson-store.events';
+import { Router } from '@angular/router';
+import { portalRoutes } from '@matheportal/portal-navigation';
 
 @Injectable()
 export class SchulenEffects {
-    #httpService = inject(ArbeitskontextHttpService);
     #actions = inject(Actions);
+    #httpService = inject(ArbeitskontextHttpService);
+    #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
 
     readonly checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$ = createEffect(() => {
@@ -41,18 +47,36 @@ export class SchulenEffects {
         );
     });
 
-    readonly wettbewerbsorganisationGestartet$ = createEffect(() =>
+    readonly wettbewerbsorganisationGestartet$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(wettbewerbsorganisationGestartet),
+                tap(action => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
+                    void this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.lehrperson,
+                        'schule',
+                        action.schulkuerzel,
+                    ]);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly prepareWettbewerbsorganisation$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(wettbewerbsorganisationGestartet),
-            map(({ schule }) => schulenActions.wettbewerbskontextLaden({ schule }))
+            ofType(prepareWettbewerbsorganisation),
+            map(({ schulkuerzel }) => schulenActions.wettbewerbskontextLaden({ schulkuerzel }))
         )
     );
 
     readonly wettbewerbskontextLaden$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(schulenActions.wettbewerbskontextLaden),
-            switchMap(({ schule }) =>
-                this.#httpService.loadSchuleWettbewerbskontext(schule.kuerzel).pipe(
+            switchMap(({ schulkuerzel }) =>
+                this.#httpService.loadSchuleWettbewerbskontext(schulkuerzel).pipe(
                     map(wettbewerbskontext => schulenActions.wettbewerbskontextGeladen({ wettbewerbskontext })),
                     catchError((error: Error) => of(schulenActions.wettbewerbskontextLadenFailed({ error })))
                 )

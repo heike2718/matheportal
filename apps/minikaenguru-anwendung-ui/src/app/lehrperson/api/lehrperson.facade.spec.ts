@@ -99,7 +99,7 @@ describe('LehrpersonFacade', () => {
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenCalledWith(
-                LehrpersonActions.wettbewerbsorganisationGestartet({ schule: schulen[0] })
+                LehrpersonActions.wettbewerbsorganisationGestartet({ schulkuerzel: 'SCHULE-1' })
             );
         });
     });
