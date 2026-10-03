@@ -16,7 +16,7 @@ import { mkaLehrpersonGuard } from './mka-lehrperson.guard';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 
-// TODO: Bei Einführung von Child-Routes unter dashboard-privatperson zusätzliche Tests für die child routes
+// TODO: Bei Einführung von Child-Routes unter dashboard-lehrperson zusätzliche Tests für die child routes
 // - Lehrperson darf Child-Route aktivieren
 // - Privatperson wird blockiert/umgeleitet
 // - anonymer User wird blockiert/umgeleitet

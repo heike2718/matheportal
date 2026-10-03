@@ -4,7 +4,7 @@ import { SchuleFacade } from './schule.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { filter, map, take } from 'rxjs';
 
-export const mkaSchuleDashboardGuard = (): CanActivateFn => route => {
+export const mkaSchuleGuard = (): CanActivateFn => route => {
     const router = inject(Router);
     const facade = inject(SchuleFacade);
 
