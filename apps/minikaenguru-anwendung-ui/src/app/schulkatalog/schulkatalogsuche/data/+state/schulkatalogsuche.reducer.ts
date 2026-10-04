@@ -2,7 +2,7 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
+import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 const SCHULKATALOGSUCHE_FEATURE_KEY = 'MKASchulkatalogsuche';
@@ -39,7 +39,7 @@ export const schulkatalogsucheFeature = createFeature({
             selectedSchule: undefined,
         })),
         on(schulkatalogsucheActions.findOrteFailed, (state, { error }) => {
-            return { ...state, orteLoadingState: mapErrorResourceLoadingState(error), selectedOrt: undefined };
+            return { ...state, orteLoadingState: mapErrorToResourceLoadState(error), selectedOrt: undefined };
         }),
         on(schulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
@@ -58,7 +58,7 @@ export const schulkatalogsucheFeature = createFeature({
         on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
-                schulenLoadingState: mapErrorResourceLoadingState(error),
+                schulenLoadingState: mapErrorToResourceLoadState(error),
                 selectedSchule: undefined,
             };
         }),

@@ -2,7 +2,6 @@ import { anonymousUser, User } from '@matheportal/auth-model';
 import { on, createFeature, createReducer } from '@ngrx/store';
 import { authActions } from './auth.actions';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
 
 const AUTH_FEATURE_KEY = 'MPAuth';
 

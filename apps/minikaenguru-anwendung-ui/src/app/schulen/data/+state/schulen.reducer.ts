@@ -3,7 +3,7 @@ import { Schule } from '../../../core/model/schulkatalog.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { schulenActions } from './schulen.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
+import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
 import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrperson-store.events';
 
@@ -36,7 +36,7 @@ export const schulenFeature = createFeature({
         })),
         on(schulenActions.schulenLadenFailed, (state, { error }) => ({
             ...state,
-            schulenLoadingState: mapErrorResourceLoadingState(error),
+            schulenLoadingState: mapErrorToResourceLoadState(error),
             schulen: [],
             wettbewerbskontextLoadingState: 'not-loaded',
             wettbewerbskontext: undefined,
@@ -49,7 +49,7 @@ export const schulenFeature = createFeature({
         })),
         on(schulenActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
             ...state,
-            wettbewerbskontextLoadingState: mapErrorResourceLoadingState(error),
+            wettbewerbskontextLoadingState: mapErrorToResourceLoadState(error),
             wettbewerbskontext: undefined,
             schulkollegiumLoadingState: 'not-loaded',
         })),
@@ -70,12 +70,12 @@ export const schulenFeature = createFeature({
             return {
                 ...state,
                 wettbewerbskontext: neuerWettbewerbskontext,
-                schulkollegiumLoadingState: mapErrorResourceLoadingState(error),
+                schulkollegiumLoadingState: mapErrorToResourceLoadState(error),
             };
         }),
         on(schulenActions.schulkollegiumLadenFailed, (state, { error }) => ({
             ...state,
-            schulkollegiumLoadingState: mapErrorResourceLoadingState(error),
+            schulkollegiumLoadingState: mapErrorToResourceLoadState(error),
         })),
         on(wettbewerbsorganisationVerlassen, state => {
             return {

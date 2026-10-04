@@ -2,7 +2,7 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { Land, Ort, Schule, SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 import { schulkatalogActions } from './schulkatalog.actions';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
+import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
 import { userLoggedOut } from '@matheportal/auth-api';
 
 const SCHULKATALOG_FEATURE_KEY = 'MKAdminSchulkatalog';
@@ -100,7 +100,7 @@ export const schulkatalogFeature = createFeature({
             schulenLoadingState: 'loaded',
         })),
         on(schulkatalogActions.loadActionFailed, (state, action) => {
-            const loadingState = mapErrorResourceLoadingState(action.error);
+            const loadingState = mapErrorToResourceLoadState(action.error);
             switch (action.kontext) {
                 case SCHULKATALOG_ADMIN_KONTEXT.laender:
                     return {

@@ -1,10 +1,11 @@
-import { ErrorResponse, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE, ErrorResponse, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import {
     assertDefined,
     errorResponseToString,
     extractErrorResponse,
-    mapErrorResourceLoadingState,
+    mapErrorToResourceLoadState,
     mapErrorToMessage,
+    mapErrorToAuthorizedResourceLoadState,
 } from './shared.utils';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -41,9 +42,9 @@ describe('shared utils tests', () => {
         });
     });
 
-    describe('mapErrorResourceLoadingState', () => {
+    describe('mapErrorToResourceLoadState', () => {
         it('should return unauthorized when 401', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: 401,
                     statusText: 'unauthorized',
@@ -55,7 +56,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('unauthorized');
         });
         it('should return unauthorized when 403', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: 403,
                     statusText: 'forbidden',
@@ -67,7 +68,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('unauthorized');
         });
         it('should return loaded when 404', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: 404,
                     statusText: 'not-found',
@@ -79,7 +80,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('loaded');
         });
         it('should return technical when 400', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: 400,
                     statusText: 'bad request',
@@ -92,7 +93,7 @@ describe('shared utils tests', () => {
         });
         it('should return technical when minimum 500', () => {
             const httpStatusCode = Math.floor(Math.random() * 100) + 500;
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: httpStatusCode,
                     statusText: 'random error',
@@ -105,7 +106,7 @@ describe('shared utils tests', () => {
         });
         it('should return technical when not 401, 403, 404', () => {
             const httpStatusCode = Math.floor(Math.random() * 100) + 404;
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
                 new HttpErrorResponse({
                     status: httpStatusCode,
                     statusText: 'random error',
@@ -117,7 +118,89 @@ describe('shared utils tests', () => {
         });
         it('should return technical when other Error', () => {
             const error = new Error('uiuiui');
-            const result: RESOURCE_LOAD_STATE = mapErrorResourceLoadingState(error);
+            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(error);
+
+            expect(result).toBe('technical-error');
+        });
+    });
+
+    describe('mapErrorToAuthorizedResourceLoadState', () => {
+        it('should return unauthorized when 401', () => {
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: 401,
+                    statusText: 'unauthorized',
+                    error: 'boom',
+                    url: '/irgendeine/resource/',
+                })
+            );
+
+            expect(result).toBe('unauthorized');
+        });
+        it('should return forbidden when 403', () => {
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: 403,
+                    statusText: 'forbidden',
+                    error: 'boom',
+                    url: '/ORT-1/schulen/',
+                })
+            );
+
+            expect(result).toBe('forbidden');
+        });
+        it('should return loaded when 404', () => {
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: 404,
+                    statusText: 'not-found',
+                    error: 'boom',
+                    url: '/ORT-1/schulen/',
+                })
+            );
+
+            expect(result).toBe('loaded');
+        });
+        it('should return technical when 400', () => {
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: 400,
+                    statusText: 'bad request',
+                    error: 'boom',
+                    url: '/ORT-1/schulen/',
+                })
+            );
+
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when minimum 500', () => {
+            const httpStatusCode = Math.floor(Math.random() * 100) + 500;
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: httpStatusCode,
+                    statusText: 'random error',
+                    error: 'boom',
+                    url: '/ORT-1/schulen/',
+                })
+            );
+
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when not 401, 403, 404', () => {
+            const httpStatusCode = Math.floor(Math.random() * 100) + 404;
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(
+                new HttpErrorResponse({
+                    status: httpStatusCode,
+                    statusText: 'random error',
+                    error: 'boom',
+                    url: '/ORT-1/schulen/',
+                })
+            );
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when other Error', () => {
+            const error = new Error('uiuiui');
+            const result: AUTHORIZED_RESOURCE_LOAD_STATE = mapErrorToAuthorizedResourceLoadState(error);
 
             expect(result).toBe('technical-error');
         });

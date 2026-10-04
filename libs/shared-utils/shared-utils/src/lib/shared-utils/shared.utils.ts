@@ -1,18 +1,36 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import {
+    AUTHORIZED_RESOURCE_LOAD_STATE,
     ConstraintViolation,
     ErrorResponse,
     RESOURCE_LOAD_STATE,
     TECHNISCHER_FEHLER_MESSAGE,
 } from '@matheportal/shared-model';
 
-export function mapErrorResourceLoadingState(error: Error): RESOURCE_LOAD_STATE {
+export function mapErrorToResourceLoadState(error: Error): RESOURCE_LOAD_STATE {
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
             case 401:
             case 403:
                 return 'unauthorized';
+            case 404:
+                return 'loaded';
+            default:
+                return 'technical-error';
+        }
+    }
+    return 'technical-error';
+}
+
+export function mapErrorToAuthorizedResourceLoadState(error: Error): AUTHORIZED_RESOURCE_LOAD_STATE {
+    if (error.name === 'HttpErrorResponse') {
+        const httpError = error as HttpErrorResponse;
+        switch (httpError.status) {
+            case 401:
+                return 'unauthorized';
+            case 403:
+                return 'forbidden';
             case 404:
                 return 'loaded';
             default:
