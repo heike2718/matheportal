@@ -5,7 +5,10 @@ import { SchuleActions } from './schulen.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
-import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrperson-store.events';
+import {
+    prepareWettbewerbsorganisation,
+    wettbewerbsorganisationVerlassen,
+} from '../../../lehrperson/api/lehrperson-store.events';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchulen';
 
@@ -40,6 +43,12 @@ export const schulenFeature = createFeature({
             schulen: [],
             wettbewerbskontextLoadState: 'not-loaded',
             wettbewerbskontext: undefined,
+            schulkollegiumLoadState: 'not-loaded',
+        })),
+        on(prepareWettbewerbsorganisation, state => ({
+            ...state,
+            wettbewerbskontext: undefined,
+            wettbewerbskontextLoadState: 'not-loaded',
             schulkollegiumLoadState: 'not-loaded',
         })),
         on(SchuleActions.wettbewerbskontextGeladen, (state, { wettbewerbskontext }) => ({

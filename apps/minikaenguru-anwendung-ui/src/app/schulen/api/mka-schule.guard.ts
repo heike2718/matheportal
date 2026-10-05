@@ -2,11 +2,13 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SchuleFacade } from './schule.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { filter, map, take } from 'rxjs';
+import { combineLatest, filter, forkJoin, map, take } from 'rxjs';
+import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 
 export const mkaSchuleGuard = (): CanActivateFn => route => {
     const router = inject(Router);
-    const facade = inject(SchuleFacade);
+    const schuleFacade = inject(SchuleFacade);
+    const wettbewerbFacade = inject(WettbewerbFacade);
 
     const schulkuerzel = route.paramMap.get('schulkuerzel');
 
@@ -14,13 +16,18 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
         return router.createUrlTree(['/', portalRoutes.home]);
     }
 
-    facade.dashboardVorbereiten(schulkuerzel);
+    schuleFacade.dashboardVorbereiten(schulkuerzel);
 
-    return facade.wettbewerbskontextLoadState$.pipe(
-        filter(state => state !== 'not-loaded'),
+    return combineLatest([schuleFacade.wettbewerbskontextLoadState$, wettbewerbFacade.wettbewerbLoadState$]).pipe(
+        filter(([kontextState, wettbewerbState]) => {
+            const beideGeladen = kontextState === 'loaded' && wettbewerbState === 'loaded';
+            const kontextFehlgeschlagen = kontextState !== 'not-loaded' && kontextState !== 'loaded';
+            const wettbewerbFehlgeschlagen = wettbewerbState !== 'not-loaded' && wettbewerbState !== 'loaded';
+            return beideGeladen || kontextFehlgeschlagen || wettbewerbFehlgeschlagen;
+        }),
         take(1),
-        map(state =>
-            state === 'loaded'
+        map(([wettbewerbskontextLoadState, wettbewerbLoadState]) =>
+            wettbewerbskontextLoadState === 'loaded' && wettbewerbLoadState === 'loaded'
                 ? true
                 : router.createUrlTree([
                       '/',

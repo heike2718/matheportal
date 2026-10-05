@@ -5,7 +5,10 @@ import { SchuleActions } from './schulen.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
-import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrperson-store.events';
+import {
+    prepareWettbewerbsorganisation,
+    wettbewerbsorganisationVerlassen,
+} from '../../../lehrperson/api/lehrperson-store.events';
 
 describe('schulenReducer', () => {
     const orte: Ort[] = [
@@ -156,6 +159,31 @@ describe('schulenReducer', () => {
             expect(state).toEqual({
                 schulenLoadState: 'forbidden',
                 schulen: [],
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            });
+        });
+    });
+
+    describe('prepareWettbewerbskontext tests', () => {
+        it('should reset the wettbewerbskontext, schulkollegium and the corresponding loadStates on prepareWettbewerbskontext', () => {
+            const previousState: SchulenState = {
+                schulen,
+                schulenLoadState: 'loaded',
+                wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
+            };
+
+            const state = schulenFeature.reducer(
+                previousState,
+                prepareWettbewerbsorganisation({ schulkuerzel: 'Z7654321' })
+            );
+
+            expect(state).toEqual({
+                schulen,
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: undefined,
                 wettbewerbskontextLoadState: 'not-loaded',
                 schulkollegiumLoadState: 'not-loaded',

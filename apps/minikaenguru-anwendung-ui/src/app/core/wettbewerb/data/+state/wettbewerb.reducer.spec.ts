@@ -1,8 +1,9 @@
 import { Action } from '@ngrx/store';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
-import { wettbewerbFeature } from './wettbewerb.reducer';
+import { initialWettbewerbState, wettbewerbFeature, WettbewerbState } from './wettbewerb.reducer';
 import { WettbewerbActions } from './wettbewerb.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('wettebwerbFeature', () => {
     const unknownAction = { type: 'unknownAction' } as Action;
@@ -16,34 +17,77 @@ describe('wettebwerbFeature', () => {
         status: WETTBEWERBSSTATUS.anmeldung,
     };
 
+    const unauthorizedErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+        status: 401,
+        statusText: 'unauthorized',
+        error: 'boom',
+        url: '/schulen/',
+    });
+
+    const technicalErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+        status: 500,
+        statusText: 'Internal Server Error',
+        error: 'boom',
+        url: '/schulen/',
+    });
+
     describe('sanity checks', () => {
         it('should return the initial state, when unknown action and undefined state', () => {
             const state = wettbewerbFeature.reducer(undefined, unknownAction);
             expect(state.wettbewerb).not.toBeDefined();
         });
         it('should return the previous state, when unknown action and defined state', () => {
-            const state = wettbewerbFeature.reducer({ wettbewerb }, unknownAction);
+            const state = wettbewerbFeature.reducer({ wettbewerb, wettbewerbLoadState: 'loaded' }, unknownAction);
             expect(state.wettbewerb).toEqual(wettbewerb);
         });
     });
 
     describe('wettbewerbGeladen', () => {
-        it('should set wettbewerb', () => {
-            const previousState = {
+        it('should set wettbewerb and loadState', () => {
+            const previousState: WettbewerbState = {
+                wettbewerbLoadState: 'not-loaded',
                 wettbewerb: undefined,
             };
 
             const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbGeladen({ wettbewerb }));
 
-            expect(state).toEqual({ wettbewerb });
+            expect(state).toEqual({ wettbewerbLoadState: 'loaded', wettbewerb });
+        });
+    });
+
+    describe('wettbewerbLadenFailed', () => {
+        const previousState: WettbewerbState = { wettbewerbLoadState: 'loaded', wettbewerb };
+
+        it('should set the expected wettbewerbLoadState when unauthorized', () => {
+            const state = wettbewerbFeature.reducer(
+                previousState,
+                WettbewerbActions.wettbewerbLadenFailed({ error: unauthorizedErrorResponse })
+            );
+
+            expect(state).toEqual({
+                wettbewerbLoadState: 'unauthorized',
+                wettbewerb: undefined,
+            });
+        });
+
+        it('should set the expected wettbewerbLoadState when technical error', () => {
+            const state = wettbewerbFeature.reducer(
+                previousState,
+                WettbewerbActions.wettbewerbLadenFailed({ error: technicalErrorResponse })
+            );
+
+            expect(state).toEqual({
+                wettbewerbLoadState: 'technical-error',
+                wettbewerb: undefined,
+            });
         });
     });
 
     describe('userLoggedOut', () => {
         it('should return the initial state when user logged out', () => {
-            const state = wettbewerbFeature.reducer({ wettbewerb }, userLoggedOut);
+            const state = wettbewerbFeature.reducer({ wettbewerbLoadState: 'loaded', wettbewerb }, userLoggedOut);
 
-            expect(state).toEqual({ wettbewerb: undefined });
+            expect(state).toBe(initialWettbewerbState);
         });
     });
 });
