@@ -10,13 +10,13 @@ import {
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 import { prepareWettbewerbsorganisation } from '../../lehrperson/api/lehrperson-store.events';
 import { Observable } from 'rxjs';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 @Injectable()
 export class SchuleFacade {
     readonly #store = inject(Store);
 
-    readonly wettbewerbskontextLoadingState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(
+    readonly wettbewerbskontextLoadingState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE> = this.#store.select(
         selectWettbewerbskontextLoadingState
     );
 

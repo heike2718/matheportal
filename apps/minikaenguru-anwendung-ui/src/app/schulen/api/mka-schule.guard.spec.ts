@@ -9,13 +9,13 @@ import {
     convertToParamMap,
     UrlTree,
 } from '@angular/router';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { SchuleFacade } from './schule.facade';
 import { mkaSchuleGuard } from './mka-schule.guard';
 
 // Fehlende Tests: schulkuerzel undefined
-// RESOURCE_LOAD_STATE Ltechnical-error' und 'unauthorized
+// AUTHORIZED_RESOURCE_LOAD_STATE technical-error' und 'unauthorized
 // warten auf wettbewerbskontextLoadingState$ testen
 describe('mkaSchuleGuard', () => {
     const schulkuerzel = 'S123457';
@@ -23,10 +23,10 @@ describe('mkaSchuleGuard', () => {
 
     let route: ActivatedRouteSnapshot;
 
-    let wettbewerbskontextLoadingStateSubject: Subject<RESOURCE_LOAD_STATE>;
+    let wettbewerbskontextLoadingStateSubject: Subject<AUTHORIZED_RESOURCE_LOAD_STATE>;
 
     let schuleFacadeMock: {
-        wettbewerbskontextLoadingState$: Observable<RESOURCE_LOAD_STATE>;
+        wettbewerbskontextLoadingState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE>;
         dashboardVorbereiten: ReturnType<typeof vi.fn>;
     };
 
@@ -38,8 +38,8 @@ describe('mkaSchuleGuard', () => {
         return Promise.resolve(result as GuardResult);
     }
 
-    function setup(wettbewerbskontextLoadingState: RESOURCE_LOAD_STATE, schulkuerzel: string | undefined) {
-        wettbewerbskontextLoadingStateSubject = new BehaviorSubject<RESOURCE_LOAD_STATE>(
+    function setup(wettbewerbskontextLoadingState: AUTHORIZED_RESOURCE_LOAD_STATE, schulkuerzel: string | undefined) {
+        wettbewerbskontextLoadingStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(
             wettbewerbskontextLoadingState
         );
         schuleFacadeMock = {
@@ -76,32 +76,65 @@ describe('mkaSchuleGuard', () => {
         expect(result).toBe(true);
     });
 
-    it.each([])('should not allow when schulkuerzel undefined and load state %s', async loadingState => {
-        const { router } = setup(loadingState, undefined);
+    it.each(['loaded', 'not-loaded', 'unauthorized', 'forbidden', 'technical-error'] as const)(
+        'should not allow when schulkuerzel undefined and load state %s',
+        async loadingState => {
+            const { router } = setup(loadingState, undefined);
 
-        const resultPromise = TestBed.runInInjectionContext(() => resolveGuardResult(mkaSchuleGuard()(route, state)));
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaSchuleGuard()(route, state))
+            );
 
-        expect(schuleFacadeMock.dashboardVorbereiten).not.toHaveBeenCalled();
+            expect(schuleFacadeMock.dashboardVorbereiten).not.toHaveBeenCalled();
 
-        const result = await resultPromise;
+            const result = await resultPromise;
 
-        expect(result).toBeInstanceOf(UrlTree);
-        expect(router.serializeUrl(result as UrlTree)).toBe('/home');
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/home');
+        }
+    );
+
+    it.each(['unauthorized', 'forbidden', 'technical-error'] as const)(
+        'should redirect to lehrperson when loading state becomes %s',
+        async loadingState => {
+            const { router } = setup('not-loaded', schulkuerzel);
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaSchuleGuard()(route, state))
+            );
+
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
+
+            wettbewerbskontextLoadingStateSubject.next(loadingState);
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/lehrperson');
+        }
+    );
+
+    it('should wait while wettbewerbskontext is not-loaded', () => {
+        setup('not-loaded', schulkuerzel);
+
+        const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
+
+        if (!isObservable(result)) {
+            throw new Error('Expected an Observable guard result');
+        }
+
+        const next = vi.fn();
+        const complete = vi.fn();
+        const subscription = result.subscribe({ next, complete });
+
+        try {
+            wettbewerbskontextLoadingStateSubject.next('not-loaded');
+
+            expect(next).not.toHaveBeenCalled();
+            expect(complete).not.toHaveBeenCalled();
+        } finally {
+            subscription.unsubscribe();
+        }
     });
-
-    // it('should redirect to lehrperson when technical-error or unauthorized', async () => {
-    //     setup('not-loaded', schulkuerzel);
-
-    //     const resultPromise = TestBed.runInInjectionContext(() => resolveGuardResult(mkaSchuleGuard()(route, state)));
-
-    //     expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
-    //     expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
-
-    //     // Zuerst die Berechtigung setzen, dann die Autorisierung abschließen.
-    //     wettbewerbskontextLoadingStateSubject.next('loaded');
-
-    //     const result = await resultPromise;
-
-    //     expect(result).toBe(true);
-    // });
 });

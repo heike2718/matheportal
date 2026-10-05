@@ -52,9 +52,16 @@ describe('schulenReducer', () => {
         vertragDSGVOVorhanden: true,
     };
 
-    const authorizationErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+    const unauthorizedErrorResponse: HttpErrorResponse = new HttpErrorResponse({
         status: 401,
         statusText: 'unauthorized',
+        error: 'boom',
+        url: '/schulen/',
+    });
+
+    const forbiddenErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+        status: 403,
+        statusText: 'forbidden',
         error: 'boom',
         url: '/schulen/',
     });
@@ -128,13 +135,26 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadingState: 'not-loaded',
             });
         });
-        it('should reset previously loaded wettbewerbskontext and schulkollegiumset the loadingState when session expired', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadingState when session expired', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulenLadenFailed({ error: authorizationErrorResponse })
+                schulenActions.schulenLadenFailed({ error: unauthorizedErrorResponse })
             );
             expect(state).toEqual({
                 schulenLoadingState: 'unauthorized',
+                schulen: [],
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadingState: 'not-loaded',
+                schulkollegiumLoadingState: 'not-loaded',
+            });
+        });
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadingState when forbidden', () => {
+            const state = schulenFeature.reducer(
+                previousState,
+                schulenActions.schulenLadenFailed({ error: forbiddenErrorResponse })
+            );
+            expect(state).toEqual({
+                schulenLoadingState: 'forbidden',
                 schulen: [],
                 wettbewerbskontext: undefined,
                 wettbewerbskontextLoadingState: 'not-loaded',
@@ -181,7 +201,7 @@ describe('schulenReducer', () => {
         it('should not set the wettbewerbskontext but the loading state when session expired on wettbewerbskontextLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.wettbewerbskontextLadenFailed({ error: authorizationErrorResponse })
+                schulenActions.wettbewerbskontextLadenFailed({ error: unauthorizedErrorResponse })
             );
 
             expect(state).toEqual({
@@ -189,6 +209,20 @@ describe('schulenReducer', () => {
                 schulenLoadingState: 'loaded',
                 wettbewerbskontext: undefined,
                 wettbewerbskontextLoadingState: 'unauthorized',
+                schulkollegiumLoadingState: 'not-loaded',
+            });
+        });
+        it('should not set the wettbewerbskontext but the loading state when loading the wettbewerbskontext is forbidden', () => {
+            const state = schulenFeature.reducer(
+                previousState,
+                schulenActions.wettbewerbskontextLadenFailed({ error: forbiddenErrorResponse })
+            );
+
+            expect(state).toEqual({
+                schulen,
+                schulenLoadingState: 'loaded',
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadingState: 'forbidden',
                 schulkollegiumLoadingState: 'not-loaded',
             });
         });
@@ -259,10 +293,10 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadingState: 'technical-error',
             });
         });
-        it('should not change the kollegium but set the loading state when technical error on schulkollegiumLadenFailed', () => {
+        it('should not change the kollegium but set the loading state when unauthorized on schulkollegiumLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumLadenFailed({ error: authorizationErrorResponse })
+                schulenActions.schulkollegiumLadenFailed({ error: unauthorizedErrorResponse })
             );
 
             const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };
@@ -273,6 +307,22 @@ describe('schulenReducer', () => {
                 wettbewerbskontext: expectedWettbewerbskontext,
                 wettbewerbskontextLoadingState: 'loaded',
                 schulkollegiumLoadingState: 'unauthorized',
+            });
+        });
+        it('should not change the kollegium but set the loading state when schulkollegiumLadenFailed with 403', () => {
+            const state = schulenFeature.reducer(
+                previousState,
+                schulenActions.schulkollegiumLadenFailed({ error: forbiddenErrorResponse })
+            );
+
+            const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };
+
+            expect(state).toEqual({
+                schulen,
+                schulenLoadingState: 'loaded',
+                wettbewerbskontext: expectedWettbewerbskontext,
+                wettbewerbskontextLoadingState: 'loaded',
+                schulkollegiumLoadingState: 'forbidden',
             });
         });
     });
