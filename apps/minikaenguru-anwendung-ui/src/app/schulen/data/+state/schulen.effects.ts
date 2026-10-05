@@ -13,6 +13,7 @@ import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext
 import {
     wettbewerbsorganisationGestartet,
     prepareWettbewerbsorganisation,
+    wettbewerbsorganisationVerlassen,
 } from '../../../lehrperson/api/lehrperson-store.events';
 import { Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
@@ -110,6 +111,22 @@ export class SchulenEffects {
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly wettbewerbsorganisationVerlassen$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(wettbewerbsorganisationVerlassen),
+                tap(() => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
+                    void this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.lehrperson,
+                    ]);
                 })
             ),
         { dispatch: false }

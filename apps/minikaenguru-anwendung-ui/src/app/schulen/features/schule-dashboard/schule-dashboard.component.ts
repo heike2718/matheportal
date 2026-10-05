@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
+import { WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
 
 @Component({
     selector: 'mka-schule-dashboard',
@@ -34,6 +35,14 @@ export class SchuleDashboardComponent {
 
     readonly schule = computed(() => this.wettbewerbskontext()?.schule);
 
+    readonly schuleLocation = computed(() => {
+        const theSchule = this.schule();
+        if (theSchule?.ort.name === theSchule?.ort.land.name) {
+            return theSchule?.ort.name;
+        }
+        return theSchule?.ort.name + ' · ' + theSchule?.ort.land.name;
+    });
+
     readonly teilnahmen = computed(() => {
         if (this.wettbewerbskontext()) {
             return this.wettbewerbskontext()?.teilnahmerefs;
@@ -60,14 +69,21 @@ export class SchuleDashboardComponent {
         return resultList === undefined ? [] : resultList;
     });
 
+    readonly wettbewerbBeendet = computed(() => this.aktuellerWettbewerb().status === WETTBEWERBSSTATUS.beendet);
+
     readonly anmeldungMoeglich = computed(() => this.wettbewerbskontext()?.anmeldungMoeglich);
 
     readonly vertragDSGVOVorhanden = computed(() => this.wettbewerbskontext()?.vertragDSGVOVorhanden);
 
-    readonly kollegenAnzeigen = computed(() => this.kollegen.length > 0);
+    readonly kollegenAnzeigen = computed(() => {
+        if (this.kollegen()) {
+            return this.kollegen()?.length;
+        }
+        return 0;
+    });
 
     public schuleWechseln(): void {
-        console.log('jetzt wettbewerbsorganisationVerlassen triggern');
+        this.#schuleFacade.schuleWechselnRequested();
     }
 
     public schuleAnmelden(): void {

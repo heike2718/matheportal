@@ -7,11 +7,11 @@
                         {{ schule()!.name }}
                     </h1>
 
-                    <p class="schule-dashboard__location">{{ schule()!.ort.name }} · {{ schule()!.ort.land.name }}</p>
+                    <p class="schule-dashboard__location">{{ schuleLocation() }}</p>
                 </div>
             }
             @if (schulauswahlMoeglich()) {
-                <button mat-stroked-button type="button" (click)="schuleWechseln()">
+                <button mat-stroked-button type="button" data-testid="schule-wechseln-btn" (click)="schuleWechseln()">
                     <mat-icon>swap_horiz</mat-icon>
                     Schule wechseln
                 </button>
@@ -22,41 +22,65 @@
             <!-- Aktueller Wettbewerb -->
             <mat-card appearance="outlined" class="schule-dashboard__card">
                 <mat-card-header>
-                    <mat-card-title> Aktueller Wettbewerb </mat-card-title>
+                    <mat-card-title data-testid="aktueller-wettbewerb-title"> Aktueller Wettbewerb </mat-card-title>
 
-                    <mat-card-subtitle> Minikänguru {{ aktuellerWettbewerb().jahr }} </mat-card-subtitle>
+                    <mat-card-subtitle data-testid="aktueller-wettbewerb-subtitle">
+                        Minikänguru {{ aktuellerWettbewerb().jahr }}
+                    </mat-card-subtitle>
                 </mat-card-header>
 
                 <mat-card-content>
-                    @if (aktuelleTeilnahme()) {
-                        <div>
-                            <h2>Hier jetzt die teilnahme-component einhängen</h2>
-                        </div>
-                    } @else if (anmeldungMoeglich()) {
-                        <div class="schule-dashboard__current-state">
-                            <div>
-                                <h2>Schule noch nicht angemeldet</h2>
+                    @if (!anmeldungMoeglich()) {
+                        @if (wettbewerbBeendet()) {
+                            <div class="schule-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Anmeldung nicht mehr möglich</h2>
 
-                                <p>
-                                    Die Schule kann jetzt zum Wettbewerb
-                                    {{ aktuellerWettbewerb().jahr }} angemeldet werden.
-                                </p>
+                                    <p data-testid="anmeldung-description">
+                                        Der Wettbewerb {{ aktuellerWettbewerb().jahr }} ist beendet.
+                                    </p>
+                                </div>
                             </div>
+                        } @else {
+                            <div class="schule-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Anmeldung noch nicht möglich</h2>
 
-                            <button mat-flat-button type="button" (click)="schuleAnmelden()">Schule anmelden</button>
-                        </div>
+                                    <p data-testid="anmeldung-description">
+                                        Die Anmeldung ist ab
+                                        {{ aktuellerWettbewerb().beginn }}
+                                        möglich.
+                                    </p>
+                                </div>
+                            </div>
+                        }
                     } @else {
-                        <div class="schule-dashboard__current-state">
+                        @if (aktuelleTeilnahme()) {
                             <div>
-                                <h2>Anmeldung noch nicht möglich</h2>
-
-                                <p>
-                                    Die Anmeldung ist ab
-                                    {{ aktuellerWettbewerb().beginn }}
-                                    möglich.
-                                </p>
+                                <h2 data-testid="anmeldung-header">
+                                    PENDING!!! Hier jetzt die teilnahme-component einhängen
+                                </h2>
                             </div>
-                        </div>
+                        } @else {
+                            <div class="schule-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Schule noch nicht angemeldet</h2>
+
+                                    <p data-testid="anmeldung-description">
+                                        Die Schule kann jetzt zum Wettbewerb
+                                        {{ aktuellerWettbewerb().jahr }} angemeldet werden.
+                                    </p>
+                                </div>
+
+                                <button
+                                    mat-flat-button
+                                    type="button"
+                                    data-testid="schule-anmelden-btn"
+                                    (click)="schuleAnmelden()">
+                                    Schule anmelden
+                                </button>
+                            </div>
+                        }
                     }
                 </mat-card-content>
             </mat-card>
@@ -65,27 +89,37 @@
                 <!-- Schule -->
                 <mat-card appearance="outlined" class="schule-dashboard__card">
                     <mat-card-header>
-                        <mat-card-title> Schule </mat-card-title>
+                        <mat-card-title data-testid="schule-card-title"> Schule </mat-card-title>
                     </mat-card-header>
 
                     <mat-card-content class="schule-dashboard__school">
                         <section class="schule-dashboard__section">
-                            <h2>DSGVO-Vertrag</h2>
+                            <h2 data-testid="section-dsgvo-title">DSGVO-Vertrag</h2>
 
                             @if (vertragDSGVOVorhanden()) {
                                 <div class="schule-dashboard__section-row">
-                                    <span>Vertrag vorhanden</span>
+                                    <span data-testid="dsgvo-hinweis"> Vertrag vorhanden</span>
 
-                                    <button mat-stroked-button type="button" (click)="dsgvoVertragHerunterladen()">
+                                    <button
+                                        mat-stroked-button
+                                        type="button"
+                                        data-testid="dsgvo-btn"
+                                        (click)="dsgvoVertragHerunterladen()">
                                         <mat-icon>download</mat-icon>
                                         Herunterladen
                                     </button>
                                 </div>
                             } @else {
                                 <div class="schule-dashboard__section-row">
-                                    <span> Für diese Schule wurde noch kein DSGVO-Vertrag abgeschlossen. </span>
+                                    <span data-testid="dsgvo-hinweis">
+                                        Für diese Schule wurde noch kein DSGVO-Vertrag abgeschlossen.
+                                    </span>
 
-                                    <button mat-flat-button type="button" (click)="dsgvoVertragAbschliessen()">
+                                    <button
+                                        mat-flat-button
+                                        type="button"
+                                        data-testid="dsgvo-btn"
+                                        (click)="dsgvoVertragAbschliessen()">
                                         Vertrag abschließen
                                     </button>
                                 </div>
@@ -96,11 +130,11 @@
 
                         @if (kollegenAnzeigen()) {
                             <section class="schule-dashboard__section">
-                                <h2>Kolleginnen / Kollegen</h2>
+                                <h2 data-testid="section-kollegium-title">Kolleginnen / Kollegen</h2>
 
                                 <ul class="schule-dashboard__colleagues">
                                     @for (kollege of kollegen(); track kollege) {
-                                        <li>{{ kollege }}</li>
+                                        <li data-testid="kollege">{{ kollege }}</li>
                                     }
                                 </ul>
                             </section>
@@ -111,7 +145,7 @@
                 <!-- Frühere Teilnahmen -->
                 <mat-card appearance="outlined" class="schule-dashboard__card">
                     <mat-card-header>
-                        <mat-card-title> Frühere Teilnahmen </mat-card-title>
+                        <mat-card-title data-testid="teilnahmen-title"> Frühere Teilnahmen </mat-card-title>
                     </mat-card-header>
 
                     <mat-card-content>
@@ -126,6 +160,7 @@
                                         <button
                                             mat-stroked-button
                                             type="button"
+                                            data-testid="download-teilnahme-btn"
                                             (click)="statistikHerunterladen(teilnahme)">
                                             <mat-icon>download</mat-icon>
                                             Statistik
@@ -138,7 +173,7 @@
                                 }
                             </div>
                         } @else {
-                            <p class="schule-dashboard__secondary-text">
+                            <p class="schule-dashboard__secondary-text" data-testid="teilnahmen-description">
                                 Für diese Schule liegen noch keine früheren Teilnahmen vor.
                             </p>
                         }

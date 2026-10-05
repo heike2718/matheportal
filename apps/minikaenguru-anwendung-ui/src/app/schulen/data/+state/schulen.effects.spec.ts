@@ -21,6 +21,7 @@ import { Schule } from '../../../core/model/schulkatalog.model';
 import {
     prepareWettbewerbsorganisation,
     wettbewerbsorganisationGestartet,
+    wettbewerbsorganisationVerlassen,
 } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { Router } from '@angular/router';
@@ -803,6 +804,19 @@ describe('SchulenEffects', () => {
             } finally {
                 subscription.unsubscribe();
             }
+        });
+    });
+
+    describe('wettbewerbsorganisationVerlassen$', () => {
+        it('should navigate to lehrperson ', async () => {
+            const promise = firstValueFrom(effects.wettbewerbsorganisationVerlassen$);
+
+            action$.next(wettbewerbsorganisationVerlassen());
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
         });
     });
 });

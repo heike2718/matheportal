@@ -8,7 +8,10 @@ import {
     selectWettbewerbskontextLoadingState,
 } from '../data/+state/schulen.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
-import { prepareWettbewerbsorganisation } from '../../lehrperson/api/lehrperson-store.events';
+import {
+    prepareWettbewerbsorganisation,
+    wettbewerbsorganisationVerlassen,
+} from '../../lehrperson/api/lehrperson-store.events';
 import { Observable } from 'rxjs';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
@@ -32,5 +35,9 @@ export class SchuleFacade {
 
     public dashboardVorbereiten(schulkuerzel: string): void {
         this.#store.dispatch(prepareWettbewerbsorganisation({ schulkuerzel }));
+    }
+
+    public schuleWechselnRequested(): void {
+        this.#store.dispatch(wettbewerbsorganisationVerlassen());
     }
 }
