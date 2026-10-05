@@ -1,7 +1,7 @@
-import { Action, State } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Land, Ort, Schule, SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 import { initialSchulkatalogState, schulkatalogFeature, SchulkatalogState } from './schulkatalog.reducer';
-import { schulkatalogActions } from './schulkatalog.actions';
+import { SchulkatalogActions } from './schulkatalog.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 
@@ -95,7 +95,7 @@ describe('schulkatalogReducer tests', () => {
                     selectedSchule: schulen[0],
                 });
 
-                const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.loadLaender());
+                const state = schulkatalogFeature.reducer(previousState, SchulkatalogActions.loadLaender());
 
                 expect(state).toBe(initialSchulkatalogState);
             });
@@ -115,7 +115,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set laender and laenderLoadState and reset orte and schulen when there are laender', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadLaenderSucceeded({ laender })
+                    SchulkatalogActions.loadLaenderSucceeded({ laender })
                 );
 
                 expect(state).toEqual({
@@ -134,7 +134,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set laender and laenderLoadState when there are no laender', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadLaenderSucceeded({ laender: [] })
+                    SchulkatalogActions.loadLaenderSucceeded({ laender: [] })
                 );
 
                 expect(state).toEqual({
@@ -165,7 +165,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set laenderLoadState correctly when loadLaenderFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
                         error: httpServerAuthErroResponse,
                     })
@@ -187,7 +187,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set laenderLoadState correctly when loadLaenderFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.laender,
                         error: httpServerErrorResponse,
                     })
@@ -222,7 +222,7 @@ describe('schulkatalogReducer tests', () => {
 
             const state = schulkatalogFeature.reducer(
                 previousState,
-                schulkatalogActions.landSelected({ land: laender[0] })
+                SchulkatalogActions.landSelected({ land: laender[0] })
             );
 
             expect(state).toEqual({
@@ -256,7 +256,7 @@ describe('schulkatalogReducer tests', () => {
 
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadOrte({ land: laender[1] })
+                    SchulkatalogActions.loadOrte({ land: laender[1] })
                 );
 
                 expect(state).toEqual({
@@ -288,7 +288,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadState and orte on loadOrteSucceeded with orte', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadOrteSucceeded({ orte })
+                    SchulkatalogActions.loadOrteSucceeded({ orte })
                 );
 
                 expect(state).toEqual({
@@ -306,7 +306,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadState and orte on loadOrteSucceeded with empty orte', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadOrteSucceeded({ orte: [] })
+                    SchulkatalogActions.loadOrteSucceeded({ orte: [] })
                 );
 
                 expect(state).toEqual({
@@ -337,7 +337,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadState correctly when loadOrteFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
                         error: httpServerAuthErroResponse,
                     })
@@ -359,7 +359,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set orteLoadState correctly when loadOrteFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.orte,
                         error: httpServerErrorResponse,
                     })
@@ -392,7 +392,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedSchule: undefined,
             });
 
-            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.backToLaenderRequested());
+            const state = schulkatalogFeature.reducer(previousState, SchulkatalogActions.backToLaenderRequested());
 
             expect(state).toEqual({
                 laender,
@@ -420,7 +420,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedSchule: schulen[0],
             });
 
-            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.ortSelected({ ort: orte[1] }));
+            const state = schulkatalogFeature.reducer(previousState, SchulkatalogActions.ortSelected({ ort: orte[1] }));
 
             expect(state).toEqual({
                 laender,
@@ -453,7 +453,7 @@ describe('schulkatalogReducer tests', () => {
 
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadSchulen({ ort: orte[0] })
+                    SchulkatalogActions.loadSchulen({ ort: orte[0] })
                 );
 
                 expect(state).toEqual({
@@ -484,7 +484,7 @@ describe('schulkatalogReducer tests', () => {
             it('schould set the schulenLoadedState and schulen when schulen not empty', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadSchulenSucceeded({ schulen })
+                    SchulkatalogActions.loadSchulenSucceeded({ schulen })
                 );
 
                 expect(state).toEqual({
@@ -502,7 +502,7 @@ describe('schulkatalogReducer tests', () => {
             it('schould set the schulenLoadedState and schulen when schulen empty', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadSchulenSucceeded({ schulen: [] })
+                    SchulkatalogActions.loadSchulenSucceeded({ schulen: [] })
                 );
 
                 expect(state).toEqual({
@@ -533,7 +533,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set schulenLoadState correctly when loadSchulenFailed with 403', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
                         error: httpServerAuthErroResponse,
                     })
@@ -555,7 +555,7 @@ describe('schulkatalogReducer tests', () => {
             it('should set schulenLoadState correctly when loadSchulenFailed with 500', () => {
                 const state = schulkatalogFeature.reducer(
                     previousState,
-                    schulkatalogActions.loadActionFailed({
+                    SchulkatalogActions.loadActionFailed({
                         kontext: SCHULKATALOG_ADMIN_KONTEXT.schulen,
                         error: httpServerErrorResponse,
                     })
@@ -587,7 +587,7 @@ describe('schulkatalogReducer tests', () => {
                 selectedSchule: undefined,
             });
 
-            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.backToOrteRequested());
+            const state = schulkatalogFeature.reducer(previousState, SchulkatalogActions.backToOrteRequested());
 
             expect(state).toEqual({
                 laender,
@@ -616,7 +616,7 @@ describe('schulkatalogReducer tests', () => {
 
             const state = schulkatalogFeature.reducer(
                 previousState,
-                schulkatalogActions.schuleUmbenennenRequested({ schule: schulen[1] })
+                SchulkatalogActions.schuleUmbenennenRequested({ schule: schulen[1] })
             );
 
             expect(state).toEqual({
@@ -646,7 +646,7 @@ describe('schulkatalogReducer tests', () => {
         });
 
         it('should return the initialState on resetSchulkatalog', () => {
-            const state = schulkatalogFeature.reducer(previousState, schulkatalogActions.resetSchulkatalog());
+            const state = schulkatalogFeature.reducer(previousState, SchulkatalogActions.resetSchulkatalog());
 
             expect(state).toBe(initialSchulkatalogState);
         });

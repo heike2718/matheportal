@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { schulkatalogActions } from '../data/+state/schulkatalog.actions';
+import { SchulkatalogActions } from '../data/+state/schulkatalog.actions';
 import { filter, map, exhaustMap, EMPTY } from 'rxjs';
 import { concatLatestFrom } from '@ngrx/operators';
 import { Dialog } from '@angular/cdk/dialog';
@@ -28,7 +28,7 @@ export class SchulkatalogDialogEffects {
 
     readonly landMitOrtUndSchuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested),
+            ofType(SchulkatalogActions.landMitOrtUndSchuleAnlegenRequested),
             exhaustMap(() => {
                 const dialogRef = this.#dialog.open<LandMitOrtUndSchuleAnlegenRequest>(
                     LandMitOrtUndSchuleAnlegenDialogComponent,
@@ -41,7 +41,7 @@ export class SchulkatalogDialogEffects {
                 return dialogRef.closed.pipe(
                     filter((result): result is LandMitOrtUndSchuleAnlegenRequest => result !== undefined),
                     map(result =>
-                        schulkatalogActions.landMitOrtUndSchuleAnlegen({
+                        SchulkatalogActions.landMitOrtUndSchuleAnlegen({
                             payload: result,
                         })
                     )
@@ -52,7 +52,7 @@ export class SchulkatalogDialogEffects {
 
     readonly ortMitSchuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.ortMitSchuleAnlegenRequested),
+            ofType(SchulkatalogActions.ortMitSchuleAnlegenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedLand)),
             exhaustMap(([, selectedLand]) => {
                 if (!selectedLand) {
@@ -70,7 +70,7 @@ export class SchulkatalogDialogEffects {
                 return dialogRef.closed.pipe(
                     filter((result): result is OrtMitSchuleAnlegenRequest => result !== undefined),
                     map(payload =>
-                        schulkatalogActions.ortMitSchuleAnlegen({
+                        SchulkatalogActions.ortMitSchuleAnlegen({
                             land: selectedLand,
                             payload,
                         })
@@ -82,7 +82,7 @@ export class SchulkatalogDialogEffects {
 
     readonly schuleAnlegenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.schuleAnlegenRequested),
+            ofType(SchulkatalogActions.schuleAnlegenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedOrt)),
             exhaustMap(([, selectedOrt]) => {
                 if (!selectedOrt) {
@@ -101,7 +101,7 @@ export class SchulkatalogDialogEffects {
                 return dialogRef.closed.pipe(
                     filter((result): result is SchuleAnlegenOderAendernRequest => result !== undefined),
                     map(payload =>
-                        schulkatalogActions.schuleAnlegen({
+                        SchulkatalogActions.schuleAnlegen({
                             ort: selectedOrt,
                             payload,
                         })
@@ -113,7 +113,7 @@ export class SchulkatalogDialogEffects {
 
     readonly schuleUmbenennenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogActions.schuleUmbenennenRequested),
+            ofType(SchulkatalogActions.schuleUmbenennenRequested),
             concatLatestFrom(() => this.#store.select(fromSchulkatalog.selectSelectedSchule)),
             exhaustMap(([, selectedSchule]) => {
                 if (!selectedSchule) {
@@ -132,7 +132,7 @@ export class SchulkatalogDialogEffects {
                 return dialogRef.closed.pipe(
                     filter((result): result is SchuleAnlegenOderAendernRequest => result !== undefined),
                     map(payload =>
-                        schulkatalogActions.schuleUmbenennen({
+                        SchulkatalogActions.schuleUmbenennen({
                             schule: selectedSchule,
                             payload,
                         })

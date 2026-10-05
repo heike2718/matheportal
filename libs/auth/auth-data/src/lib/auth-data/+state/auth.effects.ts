@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthHttpService } from '../auth-http.service';
-import { authActions } from './auth.actions';
+import { AuthActions } from './auth.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
@@ -24,11 +24,11 @@ export class AuthEffects {
 
     requestLoginUrl$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(authActions.requestLoginUrl),
+            ofType(AuthActions.requestLoginUrl),
             switchMap(() =>
                 this.#authHttpService.getLoginUrl().pipe(
-                    map((urlResponse: AuthUrlResponse) => authActions.redirectToIam({ iamUrl: urlResponse.url })),
-                    catchError(() => of(authActions.requestLoginUrlFailed()))
+                    map((urlResponse: AuthUrlResponse) => AuthActions.redirectToIam({ iamUrl: urlResponse.url })),
+                    catchError(() => of(AuthActions.requestLoginUrlFailed()))
                 )
             )
         );
@@ -37,7 +37,7 @@ export class AuthEffects {
     requestLoginUrlFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.requestLoginUrlFailed),
+                ofType(AuthActions.requestLoginUrlFailed),
                 tap(() => {
                     this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
@@ -47,11 +47,11 @@ export class AuthEffects {
 
     requestSignupUrl$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(authActions.requestSignupUrl),
+            ofType(AuthActions.requestSignupUrl),
             switchMap(() =>
                 this.#authHttpService.getSignupUrl().pipe(
-                    map((urlResponse: AuthUrlResponse) => authActions.redirectToIam({ iamUrl: urlResponse.url })),
-                    catchError(() => of(authActions.requestSignupUrlFailed()))
+                    map((urlResponse: AuthUrlResponse) => AuthActions.redirectToIam({ iamUrl: urlResponse.url })),
+                    catchError(() => of(AuthActions.requestSignupUrlFailed()))
                 )
             )
         );
@@ -60,7 +60,7 @@ export class AuthEffects {
     requestSignupUrlFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.requestSignupUrlFailed),
+                ofType(AuthActions.requestSignupUrlFailed),
                 tap(() => {
                     this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
@@ -71,7 +71,7 @@ export class AuthEffects {
     signedUp$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.signedUp),
+                ofType(AuthActions.signedUp),
                 tap(() => {
                     this.#messagePublisher.publishInfo(
                         'Ihr Benutzerkonto wurde erfolgreich angelegt. Bevor Sie sich einloggen, muss es noch aktiviert werden. Bitte prüfen Sie Ihre Mail.'
@@ -84,7 +84,7 @@ export class AuthEffects {
     redirectToIam$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.redirectToIam),
+                ofType(AuthActions.redirectToIam),
                 tap(({ iamUrl }) => {
                     this.#browserNavigationService.redirectToUrl(iamUrl);
                 })
@@ -96,10 +96,10 @@ export class AuthEffects {
         () =>
             this.#actions.pipe(
                 ofType(
-                    authActions.sessionCreated,
-                    authActions.createSessionFailed,
-                    authActions.invalidOAuthFlowHash,
-                    authActions.signedUp
+                    AuthActions.sessionCreated,
+                    AuthActions.createSessionFailed,
+                    AuthActions.invalidOAuthFlowHash,
+                    AuthActions.signedUp
                 ),
                 tap(() => this.#locationHashService.clear())
             ),
@@ -108,12 +108,12 @@ export class AuthEffects {
 
     createSession$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(authActions.createSession),
+            ofType(AuthActions.createSession),
             switchMap(({ idToken }) =>
                 this.#authHttpService.createSession(idToken).pipe(
-                    map((user: User) => authActions.sessionCreated({ user })),
+                    map((user: User) => AuthActions.sessionCreated({ user })),
                     catchError(() => {
-                        return of(authActions.createSessionFailed());
+                        return of(AuthActions.createSessionFailed());
                     })
                 )
             )
@@ -123,7 +123,7 @@ export class AuthEffects {
     createSessionFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.createSessionFailed),
+                ofType(AuthActions.createSessionFailed),
                 tap(() => {
                     this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
@@ -134,7 +134,7 @@ export class AuthEffects {
     invalidOAuthFlowHash$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(authActions.invalidOAuthFlowHash),
+                ofType(AuthActions.invalidOAuthFlowHash),
                 tap(() => {
                     this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })
@@ -144,31 +144,31 @@ export class AuthEffects {
 
     logOut$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(authActions.logOut),
+            ofType(AuthActions.logOut),
             switchMap(() => this.#authHttpService.logOut()),
-            map(() => authActions.loggedOut()),
-            catchError(() => of(authActions.loggedOut()))
+            map(() => AuthActions.loggedOut()),
+            catchError(() => of(AuthActions.loggedOut()))
         );
     });
 
     validateSession$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(authActions.validateSession),
+            ofType(AuthActions.validateSession),
             switchMap(() =>
                 this.#authHttpService.reloadSession().pipe(
-                    map((user: User) => authActions.sessionValidated({ user })),
+                    map((user: User) => AuthActions.sessionValidated({ user })),
                     catchError((error: unknown) => {
                         if (error instanceof HttpErrorResponse) {
                             const reason: SESSION_VALIDATION_FAILED_REASON =
                                 mapHttpErrorToSessionValidationFailedReason(error);
                             return of(
-                                authActions.sessionValidationFailed({
+                                AuthActions.sessionValidationFailed({
                                     reason: reason,
                                 })
                             );
                         }
 
-                        return of(authActions.sessionValidationFailed({ reason: 'technical' }));
+                        return of(AuthActions.sessionValidationFailed({ reason: 'technical' }));
                     })
                 )
             )

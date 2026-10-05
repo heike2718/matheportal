@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { authFeature, AuthState } from './auth.reducer';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { authActions } from './auth.actions';
+import { AuthActions } from './auth.actions';
 
 describe('authFeature tests', () => {
     const unknownAction = { type: 'unknownAction' } as Action;
@@ -26,7 +26,7 @@ describe('authFeature tests', () => {
     describe('sessionCreated', () => {
         it('returns the expected state, when initialState and sessionCreated', () => {
             const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
-            const state = authFeature.reducer(actualState, authActions.sessionCreated({ user: user }));
+            const state = authFeature.reducer(actualState, AuthActions.sessionCreated({ user: user }));
             expect(state.user).toEqual(user);
             expect(state.sessionLoadState).toEqual('loaded');
         });
@@ -35,7 +35,7 @@ describe('authFeature tests', () => {
     describe('createSessionFailed', () => {
         it('returns the expected state, when initialState and createSessionFailed', () => {
             const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
-            const state = authFeature.reducer(actualState, authActions.createSessionFailed());
+            const state = authFeature.reducer(actualState, AuthActions.createSessionFailed());
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('technical-error');
         });
@@ -44,7 +44,7 @@ describe('authFeature tests', () => {
     describe('invalidOAuthFlowHash', () => {
         it('returns the expected state, when initialState and invalidOAuthFlowHash', () => {
             const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
-            const state = authFeature.reducer(actualState, authActions.invalidOAuthFlowHash());
+            const state = authFeature.reducer(actualState, AuthActions.invalidOAuthFlowHash());
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('technical-error');
         });
@@ -53,7 +53,7 @@ describe('authFeature tests', () => {
     describe('signedUp', () => {
         it('returns the expected state, when loaded state and signedUp', () => {
             const actualState: AuthState = { user, sessionLoadState: 'loaded' };
-            const state = authFeature.reducer(actualState, authActions.signedUp());
+            const state = authFeature.reducer(actualState, AuthActions.signedUp());
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('unauthorized');
         });
@@ -62,7 +62,7 @@ describe('authFeature tests', () => {
     describe('sessionValidated', () => {
         it('returns the expected state, when initialState and sessionValidated', () => {
             const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
-            const state = authFeature.reducer(actualState, authActions.sessionValidated({ user: user }));
+            const state = authFeature.reducer(actualState, AuthActions.sessionValidated({ user: user }));
             expect(state.user).toEqual(user);
             expect(state.sessionLoadState).toEqual('loaded');
         });
@@ -71,7 +71,7 @@ describe('authFeature tests', () => {
     describe('sessionValidationFailed', () => {
         it('returns the initialState, when user and sessionValidationFailed with expired', () => {
             const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
-            const state = authFeature.reducer(actualState, authActions.sessionValidationFailed({ reason: 'expired' }));
+            const state = authFeature.reducer(actualState, AuthActions.sessionValidationFailed({ reason: 'expired' }));
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('unauthorized');
         });
@@ -79,7 +79,7 @@ describe('authFeature tests', () => {
             const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
             const state = authFeature.reducer(
                 actualState,
-                authActions.sessionValidationFailed({ reason: 'technical' })
+                AuthActions.sessionValidationFailed({ reason: 'technical' })
             );
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('technical-error');
@@ -93,7 +93,7 @@ describe('authFeature tests', () => {
                 ...user,
                 berechtigungen: [...user.berechtigungen, 'SCHULE'],
             };
-            const state = authFeature.reducer(actualState, authActions.sessionCreated({ user: augmentedUser }));
+            const state = authFeature.reducer(actualState, AuthActions.sessionCreated({ user: augmentedUser }));
             expect(state.user).toEqual(augmentedUser);
             expect(state.sessionLoadState).toEqual('loaded');
         });
@@ -102,7 +102,7 @@ describe('authFeature tests', () => {
     describe('loggedOut', () => {
         it('returns the initialState, when user has logged out', () => {
             const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
-            const state = authFeature.reducer(actualState, authActions.loggedOut());
+            const state = authFeature.reducer(actualState, AuthActions.loggedOut());
             expect(state.user).toEqual(anonymousUser);
             expect(state.sessionLoadState).toEqual('unauthorized');
         });
@@ -112,11 +112,11 @@ describe('authFeature tests', () => {
         const actualState: AuthState = { user, sessionLoadState: 'loaded' };
 
         it('should not listen to createSession', () => {
-            const state = authFeature.reducer(actualState, authActions.createSession({ idToken: 'uquiq' }));
+            const state = authFeature.reducer(actualState, AuthActions.createSession({ idToken: 'uquiq' }));
             expect(state).toBe(actualState);
         });
         it('should not listen to validateSession', () => {
-            const state = authFeature.reducer(actualState, authActions.validateSession());
+            const state = authFeature.reducer(actualState, AuthActions.validateSession());
             expect(state).toBe(actualState);
         });
     });

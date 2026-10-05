@@ -5,8 +5,8 @@ import { SchulkatalogantragDialogEffects } from './schulkatalogantrag-dialog.eff
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Dialog } from '@angular/cdk/dialog';
-import { schulkatalogsucheActions } from '../../schulkatalogsuche/data/+state/schulkatalogsuche.actions';
-import { schulkatalogantragActions } from '../data/+state/schulkatalogantrag.actions';
+import { SchulkatalogsucheActions } from '../../schulkatalogsuche/data/+state/schulkatalogsuche.actions';
+import { SchulkatalogantragActions } from '../data/+state/schulkatalogantrag.actions';
 
 describe('SchulkatalogantragDialogEffects', () => {
     const antrag: Schulkatalogantrag = {
@@ -62,13 +62,13 @@ describe('SchulkatalogantragDialogEffects', () => {
             const promise = firstValueFrom(effects.submitSchulkatalogantragRequested$);
 
             // act
-            action$.next(schulkatalogsucheActions.submitSchulkatalogantragRequested());
+            action$.next(SchulkatalogsucheActions.submitSchulkatalogantragRequested());
             closed$.next(antrag);
 
             const emitted = await promise;
 
             // assert
-            expect(emitted).toEqual(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            expect(emitted).toEqual(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
         });
 
         it('should open a dialog but not dispatch any action when cancelled', async () => {
@@ -82,7 +82,7 @@ describe('SchulkatalogantragDialogEffects', () => {
             const promise = firstValueFrom(effects.submitSchulkatalogantragRequested$.pipe(toArray()));
 
             // act
-            action$.next(schulkatalogsucheActions.submitSchulkatalogantragRequested());
+            action$.next(SchulkatalogsucheActions.submitSchulkatalogantragRequested());
             cancelled$.next(undefined);
             cancelled$.complete();
             action$.complete();

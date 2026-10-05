@@ -4,7 +4,7 @@ import {
     WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 
-export const wettbewerbsdurchfuehrendeActions = createActionGroup({
+export const WettbewerbsdurchfuehrendeActions = createActionGroup({
     source: 'MKA Wettbewerbsdurchfuehrende',
     events: {
         durchfuehrungsartSchuleGewaehlt: emptyProps(),

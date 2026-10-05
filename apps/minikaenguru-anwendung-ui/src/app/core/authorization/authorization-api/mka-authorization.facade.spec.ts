@@ -9,7 +9,7 @@ import {
     MINIKAENGURU_BERECHTIGUNGSTYP,
     MinikaenguruBerechtigungstyp,
 } from '../authorization-model';
-import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
+import { fromMkaAuthorization, MkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
@@ -170,7 +170,7 @@ describe('MkaAuthorizationFacade tests', () => {
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).toHaveBeenCalledTimes(1);
-                expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                expect(dispatchSpy).toHaveBeenCalledWith(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
             }
         );
     });

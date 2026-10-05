@@ -1,7 +1,7 @@
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { schulenActions } from './schulen.actions';
+import { SchuleActions } from './schulen.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
@@ -29,12 +29,12 @@ export const schulenFeature = createFeature({
     name: SCHULEN_FEATURE_KEY,
     reducer: createReducer<SchulenState>(
         initialSchulenState,
-        on(schulenActions.schulenGeladen, (state, { schulen }) => ({
+        on(SchuleActions.schulenGeladen, (state, { schulen }) => ({
             ...state,
             schulenLoadState: 'loaded',
             schulen,
         })),
-        on(schulenActions.schulenLadenFailed, (state, { error }) => ({
+        on(SchuleActions.schulenLadenFailed, (state, { error }) => ({
             ...state,
             schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
             schulen: [],
@@ -42,18 +42,18 @@ export const schulenFeature = createFeature({
             wettbewerbskontext: undefined,
             schulkollegiumLoadState: 'not-loaded',
         })),
-        on(schulenActions.wettbewerbskontextGeladen, (state, { wettbewerbskontext }) => ({
+        on(SchuleActions.wettbewerbskontextGeladen, (state, { wettbewerbskontext }) => ({
             ...state,
             wettbewerbskontext: wettbewerbskontext,
             wettbewerbskontextLoadState: 'loaded',
         })),
-        on(schulenActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
+        on(SchuleActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
             ...state,
             wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error),
             wettbewerbskontext: undefined,
             schulkollegiumLoadState: 'not-loaded',
         })),
-        on(schulenActions.schulkollegiumGeladen, (state, { schulkollegium }) => {
+        on(SchuleActions.schulkollegiumGeladen, (state, { schulkollegium }) => {
             if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel === schulkollegium.kuerzel) {
                 return {
                     ...state,
@@ -63,7 +63,7 @@ export const schulenFeature = createFeature({
             }
             return { ...state, schulkollegiumLoadState: 'loaded' };
         }),
-        on(schulenActions.schulkollegiumLadenFailed, (state, { error }) => {
+        on(SchuleActions.schulkollegiumLadenFailed, (state, { error }) => {
             const neuerWettbewerbskontext = !state.wettbewerbskontext
                 ? undefined
                 : { ...state.wettbewerbskontext, kollegen: [] };
@@ -73,7 +73,7 @@ export const schulenFeature = createFeature({
                 schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
             };
         }),
-        on(schulenActions.schulkollegiumLadenFailed, (state, { error }) => ({
+        on(SchuleActions.schulkollegiumLadenFailed, (state, { error }) => ({
             ...state,
             schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
         })),

@@ -1,7 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 
-export const schulkatalogsucheActions = createActionGroup({
+export const SchulkatalogsucheActions = createActionGroup({
     source: 'MKA Schulkatalogsuche',
     events: {
         findOrte: props<{ name: string }>(),

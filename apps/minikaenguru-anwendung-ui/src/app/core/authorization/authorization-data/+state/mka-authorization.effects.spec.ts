@@ -8,7 +8,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { User } from '@matheportal/auth-model';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthorizationLoadState } from '../../authorization-model';
-import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
@@ -66,11 +66,11 @@ describe('MkaAuthorizationEffects tests', () => {
 
             const promise = firstValueFrom(effects.ensureMkaAuthorizationLoaded$);
 
-            action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+            action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(mkaAuthorizationActions.loadMkaAuthorization());
+            expect(emitted).toEqual(MkaAuthorizationActions.loadMkaAuthorization());
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
         });
 
@@ -84,7 +84,7 @@ describe('MkaAuthorizationEffects tests', () => {
             });
 
             try {
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 expect(emittedActions).toEqual([]);
 
@@ -92,7 +92,7 @@ describe('MkaAuthorizationEffects tests', () => {
                 sessionStateSelector.setResult('loaded');
                 store.refreshState();
 
-                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
                 expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
             } finally {
                 subscription.unsubscribe();
@@ -116,7 +116,7 @@ describe('MkaAuthorizationEffects tests', () => {
                 });
 
                 try {
-                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                    action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                     expect(emittedActions).toEqual([]);
                     expect(onError).not.toHaveBeenCalled();
@@ -130,9 +130,9 @@ describe('MkaAuthorizationEffects tests', () => {
                     expect(emittedActions).toEqual([]);
 
                     // Der äußere Effect verarbeitet weiterhin neue Aufträge.
-                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                    action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
-                    expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                    expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
                     expect(onError).not.toHaveBeenCalled();
                     expect(onComplete).not.toHaveBeenCalled();
                     expect(subscription.closed).toBe(false);
@@ -159,7 +159,7 @@ describe('MkaAuthorizationEffects tests', () => {
                 });
 
                 try {
-                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                    action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                     expect(emittedActions).toEqual([]);
 
@@ -178,9 +178,9 @@ describe('MkaAuthorizationEffects tests', () => {
 
                     expect(emittedActions).toEqual([]);
 
-                    action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                    action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
-                    expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                    expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
                     expect(onError).not.toHaveBeenCalled();
                     expect(onComplete).not.toHaveBeenCalled();
                     expect(subscription.closed).toBe(false);
@@ -202,7 +202,7 @@ describe('MkaAuthorizationEffects tests', () => {
             });
 
             try {
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 expect(selectSpy).toHaveBeenCalledTimes(1);
                 expect(selectSpy).toHaveBeenCalledWith(sessionState);
@@ -210,8 +210,8 @@ describe('MkaAuthorizationEffects tests', () => {
 
                 // Weitere Commands dürfen das laufende Warten weder ersetzen
                 // noch zusätzliche wartende Aufträge erzeugen.
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 expect(selectSpy).toHaveBeenCalledTimes(1);
                 expect(emittedActions).toEqual([]);
@@ -219,16 +219,16 @@ describe('MkaAuthorizationEffects tests', () => {
                 sessionStateSelector.setResult('loaded');
                 store.refreshState();
 
-                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
                 expect(selectSpy).toHaveBeenCalledTimes(1);
 
                 // Nach Abschluss kann ein neuer Auftrag verarbeitet werden.
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 expect(selectSpy).toHaveBeenCalledTimes(2);
                 expect(emittedActions).toEqual([
-                    mkaAuthorizationActions.loadMkaAuthorization(),
-                    mkaAuthorizationActions.loadMkaAuthorization(),
+                    MkaAuthorizationActions.loadMkaAuthorization(),
+                    MkaAuthorizationActions.loadMkaAuthorization(),
                 ]);
             } finally {
                 subscription.unsubscribe();
@@ -251,12 +251,12 @@ describe('MkaAuthorizationEffects tests', () => {
             });
 
             try {
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 sessionStateSelector.setResult('loaded');
                 store.refreshState();
 
-                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
                 expect(onComplete).not.toHaveBeenCalled();
                 expect(subscription.closed).toBe(false);
 
@@ -267,15 +267,15 @@ describe('MkaAuthorizationEffects tests', () => {
                 sessionStateSelector.setResult('loaded');
                 store.refreshState();
 
-                expect(emittedActions).toEqual([mkaAuthorizationActions.loadMkaAuthorization()]);
+                expect(emittedActions).toEqual([MkaAuthorizationActions.loadMkaAuthorization()]);
 
                 // Dieselbe Subscription muss weitere Commands verarbeiten.
                 // Ein take(1) im äußeren Stream würde dies verhindern.
-                action$.next(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+                action$.next(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
 
                 expect(emittedActions).toEqual([
-                    mkaAuthorizationActions.loadMkaAuthorization(),
-                    mkaAuthorizationActions.loadMkaAuthorization(),
+                    MkaAuthorizationActions.loadMkaAuthorization(),
+                    MkaAuthorizationActions.loadMkaAuthorization(),
                 ]);
                 expect(onError).not.toHaveBeenCalled();
                 expect(onComplete).not.toHaveBeenCalled();
@@ -295,12 +295,12 @@ describe('MkaAuthorizationEffects tests', () => {
             });
 
             try {
-                action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+                action$.next(MkaAuthorizationActions.loadMkaAuthorization());
 
                 sessionStateSelector.setResult('loaded');
                 store.refreshState();
 
-                action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+                action$.next(MkaAuthorizationActions.loadMkaAuthorization());
 
                 expect(emittedActions).toEqual([]);
                 expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
@@ -327,10 +327,10 @@ describe('MkaAuthorizationEffects tests', () => {
 
             const promise = firstValueFrom(effects.loadMkaAuthorization$);
 
-            action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+            action$.next(MkaAuthorizationActions.loadMkaAuthorization());
             const emitted = await promise;
 
-            expect(emitted).toEqual(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
+            expect(emitted).toEqual(MkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
         });
 
@@ -341,7 +341,7 @@ describe('MkaAuthorizationEffects tests', () => {
             const emitted = vi.fn();
             const subscription = effects.loadMkaAuthorization$.subscribe(emitted);
 
-            action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+            action$.next(MkaAuthorizationActions.loadMkaAuthorization());
 
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
             expect(emitted).not.toHaveBeenCalled();
@@ -356,7 +356,7 @@ describe('MkaAuthorizationEffects tests', () => {
             const emitted = vi.fn();
             const subscription = effects.loadMkaAuthorization$.subscribe(emitted);
 
-            action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+            action$.next(MkaAuthorizationActions.loadMkaAuthorization());
 
             expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
             expect(emitted).not.toHaveBeenCalled();
@@ -380,10 +380,10 @@ describe('MkaAuthorizationEffects tests', () => {
 
             const promise = firstValueFrom(effects.loadMkaAuthorization$);
 
-            action$.next(mkaAuthorizationActions.loadMkaAuthorization());
+            action$.next(MkaAuthorizationActions.loadMkaAuthorization());
             const emitted = await promise;
 
-            expect(emitted).toEqual(mkaAuthorizationActions.loadMkaAuthorizationFailed());
+            expect(emitted).toEqual(MkaAuthorizationActions.loadMkaAuthorizationFailed());
             expect(httpServiceMock.loadMkaAuthorization).toHaveBeenCalledTimes(1);
         });
     });
@@ -398,7 +398,7 @@ describe('MkaAuthorizationEffects tests', () => {
 
             const promise = firstValueFrom(effects.mkaAuthorizationLoaded$);
 
-            action$.next(mkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
+            action$.next(MkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
             await promise;
 
             expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
@@ -410,7 +410,7 @@ describe('MkaAuthorizationEffects tests', () => {
         it('publishes error when loadMkaAuthorizationFailed', async () => {
             const promise = firstValueFrom(effects.loadMkaAuthorizationFailed$);
 
-            action$.next(mkaAuthorizationActions.loadMkaAuthorizationFailed());
+            action$.next(MkaAuthorizationActions.loadMkaAuthorizationFailed());
             await promise;
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledTimes(1);

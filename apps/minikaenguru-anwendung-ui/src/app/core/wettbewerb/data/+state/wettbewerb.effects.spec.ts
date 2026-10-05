@@ -7,7 +7,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
-import { wettbewerbActions } from './wettbewerb.actions';
+import { WettbewerbActions } from './wettbewerb.actions';
 import { User } from '@matheportal/auth-model';
 import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 
@@ -74,7 +74,7 @@ describe('WettbewerbEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbActions.wettbewerbLaden());
+            expect(emitted).toEqual(WettbewerbActions.wettbewerbLaden());
         });
     });
 
@@ -93,11 +93,11 @@ describe('WettbewerbEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbLaden$);
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbActions.wettbewerbGeladen({ wettbewerb }));
+            expect(emitted).toEqual(WettbewerbActions.wettbewerbGeladen({ wettbewerb }));
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledOnce();
         });
 
@@ -116,12 +116,12 @@ describe('WettbewerbEffects', () => {
                 emittedActions.push(action);
             });
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             expect(firstRequestFinalized).not.toHaveBeenCalled();
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledTimes(1);
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             expect(firstRequestFinalized).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledTimes(2);
@@ -132,7 +132,7 @@ describe('WettbewerbEffects', () => {
             httpSecond$.next(wettbewerb);
             httpSecond$.complete();
 
-            expect(emittedActions).toEqual([wettbewerbActions.wettbewerbGeladen({ wettbewerb })]);
+            expect(emittedActions).toEqual([WettbewerbActions.wettbewerbGeladen({ wettbewerb })]);
 
             subscription.unsubscribe();
         });
@@ -142,11 +142,11 @@ describe('WettbewerbEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbLaden$);
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }));
+            expect(emitted).toEqual(WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }));
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledOnce();
         });
 
@@ -157,11 +157,11 @@ describe('WettbewerbEffects', () => {
 
             const promise = firstValueFrom(effects.wettbewerbLaden$);
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbActions.wettbewerbLadenFailed({ error }));
+            expect(emitted).toEqual(WettbewerbActions.wettbewerbLadenFailed({ error }));
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledOnce();
         });
 
@@ -177,15 +177,15 @@ describe('WettbewerbEffects', () => {
                 emittedActions.push(action);
             });
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             httpFirst$.error(httpServerErrorResponse);
 
             expect(emittedActions).toEqual([
-                wettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
+                WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
             ]);
 
-            action$.next(wettbewerbActions.wettbewerbLaden());
+            action$.next(WettbewerbActions.wettbewerbLaden());
 
             expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledTimes(2);
 
@@ -193,8 +193,8 @@ describe('WettbewerbEffects', () => {
             httpSecond$.complete();
 
             expect(emittedActions).toEqual([
-                wettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
-                wettbewerbActions.wettbewerbGeladen({ wettbewerb }),
+                WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
+                WettbewerbActions.wettbewerbGeladen({ wettbewerb }),
             ]);
 
             subscription.unsubscribe();
@@ -205,7 +205,7 @@ describe('WettbewerbEffects', () => {
         it('should trigger an error message and not dispatch any action', async () => {
             const promise = firstValueFrom(effects.wettbewerbLadenFailed$);
 
-            action$.next(wettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }));
+            action$.next(WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }));
             await promise;
 
             expect(httpServiceMock.loadWettbewerb).not.toHaveBeenCalled();

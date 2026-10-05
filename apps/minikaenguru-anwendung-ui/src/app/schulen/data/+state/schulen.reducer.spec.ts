@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 import { initialSchulenState, schulenFeature, SchulenState } from './schulen.reducer';
-import { schulenActions } from './schulen.actions';
+import { SchuleActions } from './schulen.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
@@ -103,7 +103,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'loaded',
             };
 
-            const state = schulenFeature.reducer(previousState, schulenActions.schulenGeladen({ schulen }));
+            const state = schulenFeature.reducer(previousState, SchuleActions.schulenGeladen({ schulen }));
             expect(state).toEqual({
                 schulenLoadState: 'loaded',
                 schulen,
@@ -125,7 +125,7 @@ describe('schulenReducer', () => {
         it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when technical error', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulenLadenFailed({ error: technicalErrorResponse })
+                SchuleActions.schulenLadenFailed({ error: technicalErrorResponse })
             );
             expect(state).toEqual({
                 schulenLoadState: 'technical-error',
@@ -138,7 +138,7 @@ describe('schulenReducer', () => {
         it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when session expired', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulenLadenFailed({ error: unauthorizedErrorResponse })
+                SchuleActions.schulenLadenFailed({ error: unauthorizedErrorResponse })
             );
             expect(state).toEqual({
                 schulenLoadState: 'unauthorized',
@@ -151,7 +151,7 @@ describe('schulenReducer', () => {
         it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when forbidden', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulenLadenFailed({ error: forbiddenErrorResponse })
+                SchuleActions.schulenLadenFailed({ error: forbiddenErrorResponse })
             );
             expect(state).toEqual({
                 schulenLoadState: 'forbidden',
@@ -173,7 +173,7 @@ describe('schulenReducer', () => {
         it('should set the wettbewerbskontext', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.wettbewerbskontextGeladen({ wettbewerbskontext })
+                SchuleActions.wettbewerbskontextGeladen({ wettbewerbskontext })
             );
 
             expect(state).toEqual({
@@ -187,7 +187,7 @@ describe('schulenReducer', () => {
         it('should not set the wettbewerbskontext but the loading state when technical error on wettbewerbskontextLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.wettbewerbskontextLadenFailed({ error: technicalErrorResponse })
+                SchuleActions.wettbewerbskontextLadenFailed({ error: technicalErrorResponse })
             );
 
             expect(state).toEqual({
@@ -201,7 +201,7 @@ describe('schulenReducer', () => {
         it('should not set the wettbewerbskontext but the loading state when session expired on wettbewerbskontextLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.wettbewerbskontextLadenFailed({ error: unauthorizedErrorResponse })
+                SchuleActions.wettbewerbskontextLadenFailed({ error: unauthorizedErrorResponse })
             );
 
             expect(state).toEqual({
@@ -215,7 +215,7 @@ describe('schulenReducer', () => {
         it('should not set the wettbewerbskontext but the loading state when loading the wettbewerbskontext is forbidden', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.wettbewerbskontextLadenFailed({ error: forbiddenErrorResponse })
+                SchuleActions.wettbewerbskontextLadenFailed({ error: forbiddenErrorResponse })
             );
 
             expect(state).toEqual({
@@ -245,7 +245,7 @@ describe('schulenReducer', () => {
 
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumGeladen({ schulkollegium })
+                SchuleActions.schulkollegiumGeladen({ schulkollegium })
             );
 
             const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: ['Leo Lemma', 'Rita Reihe'] };
@@ -266,7 +266,7 @@ describe('schulenReducer', () => {
 
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumGeladen({ schulkollegium })
+                SchuleActions.schulkollegiumGeladen({ schulkollegium })
             );
 
             expect(state).toEqual({
@@ -280,7 +280,7 @@ describe('schulenReducer', () => {
         it('should not change the kollegium but set the loading state when technical error on schulkollegiumLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumLadenFailed({ error: technicalErrorResponse })
+                SchuleActions.schulkollegiumLadenFailed({ error: technicalErrorResponse })
             );
 
             const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };
@@ -296,7 +296,7 @@ describe('schulenReducer', () => {
         it('should not change the kollegium but set the loading state when unauthorized on schulkollegiumLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumLadenFailed({ error: unauthorizedErrorResponse })
+                SchuleActions.schulkollegiumLadenFailed({ error: unauthorizedErrorResponse })
             );
 
             const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };
@@ -312,7 +312,7 @@ describe('schulenReducer', () => {
         it('should not change the kollegium but set the loading state when schulkollegiumLadenFailed with 403', () => {
             const state = schulenFeature.reducer(
                 previousState,
-                schulenActions.schulkollegiumLadenFailed({ error: forbiddenErrorResponse })
+                SchuleActions.schulkollegiumLadenFailed({ error: forbiddenErrorResponse })
             );
 
             const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: [] };

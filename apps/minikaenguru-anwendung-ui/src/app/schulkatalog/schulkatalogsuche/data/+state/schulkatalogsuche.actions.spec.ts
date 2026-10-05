@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
-import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
+import { SchulkatalogsucheActions } from './schulkatalogsuche.actions';
 
 const orte: Ort[] = [
     {
@@ -32,10 +32,10 @@ const httpServerErrorResponse = new HttpErrorResponse({
     url: '/ORT-1/schulen/',
 });
 
-describe('schulkatalogsucheActions', () => {
+describe('SchulkatalogsucheActions', () => {
     it('should create findOrte action', () => {
         const name = 'Halle (Saale)';
-        const action = schulkatalogsucheActions.findOrte({ name });
+        const action = SchulkatalogsucheActions.findOrte({ name });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] findOrte',
@@ -44,7 +44,7 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create findOrteSucceeded action', () => {
-        const action = schulkatalogsucheActions.findOrteSucceeded({ orte });
+        const action = SchulkatalogsucheActions.findOrteSucceeded({ orte });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] findOrteSucceeded',
@@ -53,7 +53,7 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create findOrtFailed action when HttpErrorResponse', () => {
-        const action = schulkatalogsucheActions.findOrteFailed({ error: httpServerErrorResponse });
+        const action = SchulkatalogsucheActions.findOrteFailed({ error: httpServerErrorResponse });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] findOrteFailed',
@@ -62,7 +62,7 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create loadSchulen action', () => {
-        const action = schulkatalogsucheActions.loadSchulen({ ort: orte[0] });
+        const action = SchulkatalogsucheActions.loadSchulen({ ort: orte[0] });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] loadSchulen',
@@ -79,7 +79,7 @@ describe('schulkatalogsucheActions', () => {
                 name: 'Albert-Einstein-Schule',
             },
         ];
-        const action = schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen });
+        const action = SchulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] loadSchulenSucceeded',
@@ -90,7 +90,7 @@ describe('schulkatalogsucheActions', () => {
 
     it('should create loadSchulenFailed action when http error', () => {
         const error = new Error('uiuiui');
-        const action = schulkatalogsucheActions.loadSchulenFailed({ error });
+        const action = SchulkatalogsucheActions.loadSchulenFailed({ error });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] loadSchulenFailed',
@@ -100,7 +100,7 @@ describe('schulkatalogsucheActions', () => {
 
     it('should create ortSelected action', () => {
         const ort = orte[1];
-        const action = schulkatalogsucheActions.ortSelected({ ort });
+        const action = SchulkatalogsucheActions.ortSelected({ ort });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] ortSelected',
@@ -109,7 +109,7 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create orteCleared action', () => {
-        const action = schulkatalogsucheActions.orteCleared();
+        const action = SchulkatalogsucheActions.orteCleared();
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] orteCleared',
@@ -117,7 +117,7 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create schulenCleared action', () => {
-        const action = schulkatalogsucheActions.schulenCleared();
+        const action = SchulkatalogsucheActions.schulenCleared();
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] schulenCleared',
@@ -130,7 +130,7 @@ describe('schulkatalogsucheActions', () => {
             kuerzel: 'SCHULE-1',
             name: 'Albert-Einstein-Schule',
         };
-        const action = schulkatalogsucheActions.schuleSelected({ schule });
+        const action = SchulkatalogsucheActions.schuleSelected({ schule });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] schuleSelected',
@@ -139,13 +139,13 @@ describe('schulkatalogsucheActions', () => {
     });
 
     it('should create the submitSchulkatalogantragRequested action', () => {
-        expect(schulkatalogsucheActions.submitSchulkatalogantragRequested()).toEqual({
+        expect(SchulkatalogsucheActions.submitSchulkatalogantragRequested()).toEqual({
             type: '[MKA Schulkatalogsuche] submitSchulkatalogantragRequested',
         });
     });
 
     it('should create resetSuche action', () => {
-        const action = schulkatalogsucheActions.resetSuche();
+        const action = SchulkatalogsucheActions.resetSuche();
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogsuche] resetSuche',

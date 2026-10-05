@@ -9,7 +9,7 @@ import {
     Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderRequest,
 } from '../../model/wettbewerbsdurchfuehrende.model';
-import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthSessionFacade } from '@matheportal/auth-api';
@@ -99,12 +99,12 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         it('should map to durchfuehrendenAnlegen when durchfuehrungsartPrivatGewaehlt', async () => {
             const promise = firstValueFrom(effects.durchfuehrungsartPrivatGewaehlt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
 
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat })
             );
         });
     });
@@ -117,7 +117,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 effectTriggered = true;
             });
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
 
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'schulkatalogsuche']);
@@ -153,7 +153,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto }));
+            expect(emitted).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto }));
         });
     });
 
@@ -169,11 +169,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
@@ -211,7 +211,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // --- ACTION 1: Erste Action triggern ---
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: firstRequestDto,
                 })
             );
@@ -222,7 +222,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: secondRequestDto,
                 })
             );
@@ -237,7 +237,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             httpFirst$.complete();
 
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
                     wettbewerbsdurchfuehrender: responseDto1,
                 }),
             ]);
@@ -250,12 +250,12 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
 
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
             );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
@@ -267,11 +267,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
 
             const emmited = await promise;
 
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }));
+            expect(emmited).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }));
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
         });
@@ -310,7 +310,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             });
 
             // --- SCHRITT 1: Ersten Request triggern und Fehler simulieren ---
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: firstRequestDto }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: firstRequestDto }));
 
             expect(firstRequestFinalized).not.toHaveBeenCalled();
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
@@ -321,13 +321,13 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // failed action muss getriggert worden sein
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
             // Die Action wird dann komplett ignoriert und der HTTP-Service wird NICHT aufgerufen.
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: secondRequestDto }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: secondRequestDto }));
 
             // der HTTP-Service muss trotz des errors aufgerufen worden sein
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(2);
@@ -340,8 +340,8 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // die success action ist ebenfalls im array
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
             ]);
 
             // Aufräumen
@@ -354,7 +354,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: conflictErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: conflictErrorResponse })
             );
             await promise;
 
@@ -368,7 +368,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
             );
             await promise;
 
@@ -390,7 +390,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             await promise;
@@ -412,7 +412,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             await promise;
@@ -439,7 +439,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+            expect(emitted).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
         });
 
         it('should not dispatch durchfuehrendenLaden when keine Minikänguru-Rolle', async () => {

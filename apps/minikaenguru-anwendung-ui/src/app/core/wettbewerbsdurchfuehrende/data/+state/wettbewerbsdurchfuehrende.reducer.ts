@@ -1,6 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
-import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 
 const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'MKAWettbewerbsdurchfuehrende';
@@ -18,8 +18,8 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
     reducer: createReducer<WettbewerbsdurchfuehrendeState>(
         initialWettbewerbsdurchfuehrendeState,
         on(
-            wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt,
-            wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen,
+            WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt,
+            WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen,
             (state, { wettbewerbsdurchfuehrender: responseDto }) => {
                 return { ...state, wettbewerbsdurchfuehrender: responseDto };
             }

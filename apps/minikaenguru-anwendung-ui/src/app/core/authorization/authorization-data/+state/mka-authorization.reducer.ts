@@ -4,7 +4,7 @@ import {
     MinikaenguruBerechtigungstyp,
     MINIKAENGURU_BERECHTIGUNGSTYP,
 } from '../../authorization-model';
-import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapDtoToBerechtigungstyp, resolveBerechtigungstyp } from '../mka-authorization.utils';
 import { durchfuehrenderAngelegt } from '../../../wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
@@ -25,11 +25,11 @@ export const mkaAuthorizationFeature = createFeature({
     name: MKA_AUTHORIZATION_FEATURE_KEY,
     reducer: createReducer<MkaAuthorizationState>(
         initialMkaAuthorizationState,
-        on(mkaAuthorizationActions.mkaAuthorizationLoaded, (state, action) => {
+        on(MkaAuthorizationActions.mkaAuthorizationLoaded, (state, action) => {
             const berechtigungstyp = resolveBerechtigungstyp(action.user);
             return { ...state, berechtigungstyp: berechtigungstyp, authorizationLoadState: 'loaded' };
         }),
-        on(mkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
+        on(MkaAuthorizationActions.loadMkaAuthorizationFailed, state => {
             return { ...state, authorizationLoadState: 'failed' };
         }),
         on(durchfuehrenderAngelegt, (state, { wettbewerbsdurchfuehrender: responseDto }) => {

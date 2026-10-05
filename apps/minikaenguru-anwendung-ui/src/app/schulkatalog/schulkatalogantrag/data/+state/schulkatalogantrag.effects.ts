@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchulkatalogantragHttpService } from '../schulkatalogantrag-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
-import { schulkatalogantragActions } from './schulkatalogantrag.actions';
+import { SchulkatalogantragActions } from './schulkatalogantrag.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 
 @Injectable()
@@ -17,12 +17,12 @@ export class SchulkatalogantragEffects {
 
     readonly submitSchulkatalogantrag$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogantragActions.submitSchulkatalogantrag),
+            ofType(SchulkatalogantragActions.submitSchulkatalogantrag),
             exhaustMap(({ antrag }) => {
                 return this.#httpService.submitSchulkatalogantrag(antrag).pipe(
-                    map(() => schulkatalogantragActions.submitSchulkatalogantragSucceeded()),
+                    map(() => SchulkatalogantragActions.submitSchulkatalogantragSucceeded()),
                     catchError((error: Error) =>
-                        of(schulkatalogantragActions.submitSchulkatalogantragFailed({ error }))
+                        of(SchulkatalogantragActions.submitSchulkatalogantragFailed({ error }))
                     )
                 );
             })
@@ -32,7 +32,7 @@ export class SchulkatalogantragEffects {
     readonly submitSchulkatalogantragSucceeded$ = createEffect(
         () => {
             return this.#actions.pipe(
-                ofType(schulkatalogantragActions.submitSchulkatalogantragSucceeded),
+                ofType(SchulkatalogantragActions.submitSchulkatalogantragSucceeded),
                 tap(() => {
                     this.#messagePublisherService.publishInfo(this.#infoMessage);
                 })
@@ -44,7 +44,7 @@ export class SchulkatalogantragEffects {
     readonly submitSchulkatalogantragFailed$ = createEffect(
         () => {
             return this.#actions.pipe(
-                ofType(schulkatalogantragActions.submitSchulkatalogantragFailed),
+                ofType(SchulkatalogantragActions.submitSchulkatalogantragFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisherService.publishError(errorMessage);

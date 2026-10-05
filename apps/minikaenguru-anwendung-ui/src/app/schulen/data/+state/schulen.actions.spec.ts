@@ -1,8 +1,8 @@
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { schulenActions } from './schulen.actions';
+import { SchuleActions } from './schulen.actions';
 
-describe('schulenActions', () => {
+describe('SchuleActions', () => {
     const schule: Schule = {
         kuerzel: 'S1234567',
         name: 'Baumschule',
@@ -19,38 +19,38 @@ describe('schulenActions', () => {
     };
 
     it('should create the schulenLaden action', () => {
-        const action = schulenActions.schulenLaden();
+        const action = SchuleActions.schulenLaden();
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulenLaden',
+            type: '[MKA Schule] schulenLaden',
         });
     });
 
     it('should create the schulenGeladen action', () => {
         const schulen: Schule[] = [schule];
-        const action = schulenActions.schulenGeladen({ schulen });
+        const action = SchuleActions.schulenGeladen({ schulen });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulenGeladen',
+            type: '[MKA Schule] schulenGeladen',
             schulen,
         });
     });
 
     it('should create the schulenLadenFailed action', () => {
         const error = new Error('uiuiui');
-        const action = schulenActions.schulenLadenFailed({ error });
+        const action = SchuleActions.schulenLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulenLadenFailed',
+            type: '[MKA Schule] schulenLadenFailed',
             error,
         });
     });
 
     it('should create the wettbewerbskontextLaden action', () => {
-        const action = schulenActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel });
+        const action = SchuleActions.wettbewerbskontextLaden({ schulkuerzel: schule.kuerzel });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] wettbewerbskontextLaden',
+            type: '[MKA Schule] wettbewerbskontextLaden',
             schulkuerzel: 'S1234567',
         });
     });
@@ -64,29 +64,29 @@ describe('schulenActions', () => {
             vertragDSGVOVorhanden: false,
         };
 
-        const action = schulenActions.wettbewerbskontextGeladen({ wettbewerbskontext });
+        const action = SchuleActions.wettbewerbskontextGeladen({ wettbewerbskontext });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] wettbewerbskontextGeladen',
+            type: '[MKA Schule] wettbewerbskontextGeladen',
             wettbewerbskontext,
         });
     });
 
     it('should create the wettbewerbskontextLadenFailed action', () => {
         const error = new Error('uiuiui');
-        const action = schulenActions.wettbewerbskontextLadenFailed({ error });
+        const action = SchuleActions.wettbewerbskontextLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] wettbewerbskontextLadenFailed',
+            type: '[MKA Schule] wettbewerbskontextLadenFailed',
             error,
         });
     });
 
     it('should create the schulkollegiumLaden action', () => {
-        const action = schulenActions.schulkollegiumLaden({ schule });
+        const action = SchuleActions.schulkollegiumLaden({ schule });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulkollegiumLaden',
+            type: '[MKA Schule] schulkollegiumLaden',
             schule,
         });
     });
@@ -97,20 +97,20 @@ describe('schulenActions', () => {
             kollegium: ['Anna Johanna', 'Hermann Mann'],
         };
 
-        const action = schulenActions.schulkollegiumGeladen({ schulkollegium });
+        const action = SchuleActions.schulkollegiumGeladen({ schulkollegium });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulkollegiumGeladen',
+            type: '[MKA Schule] schulkollegiumGeladen',
             schulkollegium,
         });
     });
 
     it('should create the schulkollegiumLadenFailed action', () => {
         const error = new Error('uiuiui');
-        const action = schulenActions.schulkollegiumLadenFailed({ error });
+        const action = SchuleActions.schulkollegiumLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Schulen] schulkollegiumLadenFailed',
+            type: '[MKA Schule] schulkollegiumLadenFailed',
             error,
         });
     });

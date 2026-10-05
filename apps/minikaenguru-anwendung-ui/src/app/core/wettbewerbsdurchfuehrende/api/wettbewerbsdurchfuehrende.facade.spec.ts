@@ -2,7 +2,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { WettbewerbsdurchfuehrendeFacade } from './wettbewerbsdurchfuehrende.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { wettbewerbsdurchfuehrendeActions } from '../data/+state/wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from '../data/+state/wettbewerbsdurchfuehrende.actions';
 
 describe('WettbewerbsdurchfuehrendeFacade tests', () => {
     let facade: WettbewerbsdurchfuehrendeFacade;
@@ -23,13 +23,13 @@ describe('WettbewerbsdurchfuehrendeFacade tests', () => {
         facade.durchfuehrungsartPrivatGewaehlt();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
+        expect(dispatchSpy).toHaveBeenCalledWith(WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
     });
 
     it('durchfuehrungsartSchuleGewaehlt should dispatch the expected action', () => {
         facade.durchfuehrungsartSchuleGewaehlt();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
+        expect(dispatchSpy).toHaveBeenCalledWith(WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
     });
 });

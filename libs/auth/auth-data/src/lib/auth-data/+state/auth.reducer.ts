@@ -1,6 +1,6 @@
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { on, createFeature, createReducer } from '@ngrx/store';
-import { authActions } from './auth.actions';
+import { AuthActions } from './auth.actions';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 const AUTH_FEATURE_KEY = 'MPAuth';
@@ -19,29 +19,29 @@ export const authFeature = createFeature({
     name: AUTH_FEATURE_KEY,
     reducer: createReducer<AuthState>(
         initialAuthState,
-        on(authActions.invalidOAuthFlowHash, () => {
+        on(AuthActions.invalidOAuthFlowHash, () => {
             return { ...initialAuthState, sessionLoadState: 'technical-error' };
         }),
-        on(authActions.signedUp, () => {
+        on(AuthActions.signedUp, () => {
             return { ...initialAuthState, sessionLoadState: 'unauthorized' };
         }),
-        on(authActions.sessionCreated, (state, action) => {
+        on(AuthActions.sessionCreated, (state, action) => {
             return { ...state, user: action.user, sessionLoadState: 'loaded' };
         }),
-        on(authActions.createSessionFailed, state => {
+        on(AuthActions.createSessionFailed, state => {
             return { ...state, user: anonymousUser, sessionLoadState: 'technical-error' };
         }),
-        on(authActions.sessionValidated, (state, action) => {
+        on(AuthActions.sessionValidated, (state, action) => {
             return { ...state, user: action.user, sessionLoadState: 'loaded' };
         }),
-        on(authActions.sessionValidationFailed, (state, { reason }) => {
+        on(AuthActions.sessionValidationFailed, (state, { reason }) => {
             const LoadState: RESOURCE_LOAD_STATE = reason === 'technical' ? 'technical-error' : 'unauthorized';
             return { ...state, user: anonymousUser, sessionLoadState: LoadState };
         }),
-        on(authActions.userAugmented, (state, action) => {
+        on(AuthActions.userAugmented, (state, action) => {
             return { ...state, user: action.user };
         }),
-        on(authActions.loggedOut, () => {
+        on(AuthActions.loggedOut, () => {
             return { ...initialAuthState, sessionLoadState: 'unauthorized' };
         })
     ),

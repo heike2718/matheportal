@@ -1,4 +1,4 @@
-import { authActions } from '@matheportal/auth-data';
+import { AuthActions } from '@matheportal/auth-data';
 
-export const userLoggedOut = authActions.loggedOut;
-export const sessionValidationFailed = authActions.sessionValidationFailed;
+export const userLoggedOut = AuthActions.loggedOut;
+export const sessionValidationFailed = AuthActions.sessionValidationFailed;

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { wettbewerbActions } from './wettbewerb.actions';
+import { WettbewerbActions } from './wettbewerb.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
@@ -16,17 +16,17 @@ export class WettbewerbEffects {
     wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
-            map(() => wettbewerbActions.wettbewerbLaden())
+            map(() => WettbewerbActions.wettbewerbLaden())
         );
     });
 
     readonly wettbewerbLaden$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(wettbewerbActions.wettbewerbLaden),
+            ofType(WettbewerbActions.wettbewerbLaden),
             switchMap(() =>
                 this.#httpService.loadWettbewerb().pipe(
-                    map(wettbewerb => wettbewerbActions.wettbewerbGeladen({ wettbewerb })),
-                    catchError((error: Error) => of(wettbewerbActions.wettbewerbLadenFailed({ error })))
+                    map(wettbewerb => WettbewerbActions.wettbewerbGeladen({ wettbewerb })),
+                    catchError((error: Error) => of(WettbewerbActions.wettbewerbLadenFailed({ error })))
                 )
             )
         );
@@ -35,7 +35,7 @@ export class WettbewerbEffects {
     readonly wettbewerbLadenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbActions.wettbewerbLadenFailed),
+                ofType(WettbewerbActions.wettbewerbLadenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);

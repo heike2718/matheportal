@@ -15,7 +15,7 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { schulkatalogActions } from '../data/+state/schulkatalog.actions';
+import { SchulkatalogActions } from '../data/+state/schulkatalog.actions';
 import { fromSchulkatalog } from '../data/+state/schulkatalog.selectors';
 import { OrtMitSchuleAnlegenDialogComponent } from './ort-mit-schule-anlegen-dialog-component/ort-mit-schule-anlegen-dialog.component';
 import { SchuleDialogComponent } from './schule-dialog-component/schule-dialog.component';
@@ -81,13 +81,13 @@ describe('SchulkatalogDialogEffects', () => {
             const promise = firstValueFrom(effects.landMitOrtUndSchuleAnlegenRequested$);
 
             // act
-            action$.next(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
+            action$.next(SchulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
             closed$.next(result);
 
             const emitted = await promise;
 
             // assert
-            expect(emitted).toEqual(schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload: result }));
+            expect(emitted).toEqual(SchulkatalogActions.landMitOrtUndSchuleAnlegen({ payload: result }));
         });
     });
 
@@ -126,14 +126,14 @@ describe('SchulkatalogDialogEffects', () => {
 
             const promise = firstValueFrom(effects.ortMitSchuleAnlegenRequested$);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegenRequested());
+            action$.next(SchulkatalogActions.ortMitSchuleAnlegenRequested());
 
             closed$.next(result);
 
             const emitted = await promise;
 
             expect(emitted).toEqual(
-                schulkatalogActions.ortMitSchuleAnlegen({
+                SchulkatalogActions.ortMitSchuleAnlegen({
                     land: selectedLand,
                     payload: result,
                 })
@@ -156,7 +156,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             const subscription = effects.ortMitSchuleAnlegenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.ortMitSchuleAnlegenRequested());
+            action$.next(SchulkatalogActions.ortMitSchuleAnlegenRequested());
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();
@@ -206,14 +206,14 @@ describe('SchulkatalogDialogEffects', () => {
 
             const promise = firstValueFrom(effects.schuleAnlegenRequested$);
 
-            action$.next(schulkatalogActions.schuleAnlegenRequested());
+            action$.next(SchulkatalogActions.schuleAnlegenRequested());
 
             closed$.next(result);
 
             const emitted = await promise;
 
             expect(emitted).toEqual(
-                schulkatalogActions.schuleAnlegen({
+                SchulkatalogActions.schuleAnlegen({
                     ort: selectedOrt,
                     payload: result,
                 })
@@ -237,7 +237,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             const subscription = effects.schuleAnlegenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.schuleAnlegenRequested());
+            action$.next(SchulkatalogActions.schuleAnlegenRequested());
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();
@@ -293,14 +293,14 @@ describe('SchulkatalogDialogEffects', () => {
 
             const promise = firstValueFrom(effects.schuleUmbenennenRequested$);
 
-            action$.next(schulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
+            action$.next(SchulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
 
             closed$.next(result);
 
             const emitted = await promise;
 
             expect(emitted).toEqual(
-                schulkatalogActions.schuleUmbenennen({
+                SchulkatalogActions.schuleUmbenennen({
                     schule: selectedSchule,
                     payload: result,
                 })
@@ -324,7 +324,7 @@ describe('SchulkatalogDialogEffects', () => {
 
             const subscription = effects.schuleUmbenennenRequested$.subscribe(next);
 
-            action$.next(schulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
+            action$.next(SchulkatalogActions.schuleUmbenennenRequested({ schule: selectedSchule }));
 
             expect(next).not.toHaveBeenCalled();
             expect(dialogMock.open).not.toHaveBeenCalled();

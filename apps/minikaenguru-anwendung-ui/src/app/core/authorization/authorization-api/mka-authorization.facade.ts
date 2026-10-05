@@ -3,7 +3,7 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState, MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model';
 import { fromMkaAuthorization } from '../authorization-data';
 import { Store } from '@ngrx/store';
-import { mkaAuthorizationActions } from '../authorization-data/+state/mka-authorization.actions';
+import { MkaAuthorizationActions } from '../authorization-data/+state/mka-authorization.actions';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -58,6 +58,6 @@ export class MkaAuthorizationFacade {
     });
 
     ensureAuthorizationLoaded(): void {
-        this.#store.dispatch(mkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+        this.#store.dispatch(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
     }
 }

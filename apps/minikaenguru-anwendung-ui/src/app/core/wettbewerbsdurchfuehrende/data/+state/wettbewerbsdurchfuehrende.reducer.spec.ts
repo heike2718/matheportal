@@ -6,7 +6,7 @@ import {
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 
 describe('wettbewerbsdurchfuehrendeFeature tests', () => {
     const unknownAction = { type: 'unknownAction' } as Action;
@@ -41,7 +41,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
                 { wettbewerbsdurchfuehrender: undefined },
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);
@@ -62,7 +62,7 @@ describe('wettbewerbsdurchfuehrendeFeature tests', () => {
 
             const state = wettbewerbsdurchfuehrendeFeature.reducer(
                 { wettbewerbsdurchfuehrender: undefined },
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             expect(state.wettbewerbsdurchfuehrender?.durchfuehrungsart).toBe(DURCHFUEHRUNGSART.schule);

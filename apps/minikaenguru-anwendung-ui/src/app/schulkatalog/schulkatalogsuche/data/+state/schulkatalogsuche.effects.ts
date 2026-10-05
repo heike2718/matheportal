@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchulkatalogsucheHttpService } from '../schulkatalogsuche-http.service';
-import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
+import { SchulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
@@ -16,15 +16,15 @@ export class SchulkatalogsucheEffects {
 
     findOrte$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(schulkatalogsucheActions.findOrte),
+            ofType(SchulkatalogsucheActions.findOrte),
             map(({ name }) => normalizeSearchTerm(name)),
             switchMap(term => {
                 if (!isTermSearchable(term)) {
-                    return of(schulkatalogsucheActions.orteCleared());
+                    return of(SchulkatalogsucheActions.orteCleared());
                 }
                 return this.#httpService.findOrte(term).pipe(
-                    map((orte: Ort[]) => schulkatalogsucheActions.findOrteSucceeded({ orte })),
-                    catchError((error: Error) => of(schulkatalogsucheActions.findOrteFailed({ error })))
+                    map((orte: Ort[]) => SchulkatalogsucheActions.findOrteSucceeded({ orte })),
+                    catchError((error: Error) => of(SchulkatalogsucheActions.findOrteFailed({ error })))
                 );
             })
         )
@@ -33,7 +33,7 @@ export class SchulkatalogsucheEffects {
     findOrteFailed$ = createEffect(
         () => {
             return this.#actions.pipe(
-                ofType(schulkatalogsucheActions.findOrteFailed),
+                ofType(SchulkatalogsucheActions.findOrteFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisherService.publishError(errorMessage);
@@ -45,20 +45,20 @@ export class SchulkatalogsucheEffects {
 
     ortSelected$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(schulkatalogsucheActions.ortSelected),
-            map(({ ort }) => schulkatalogsucheActions.loadSchulen({ ort }))
+            ofType(SchulkatalogsucheActions.ortSelected),
+            map(({ ort }) => SchulkatalogsucheActions.loadSchulen({ ort }))
         );
     });
 
     loadSchulen$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(schulkatalogsucheActions.loadSchulen),
+            ofType(SchulkatalogsucheActions.loadSchulen),
             switchMap(({ ort }) =>
                 this.#httpService.loadSchulen(ort.kuerzel).pipe(
                     map((schulen: Schule[]) =>
-                        schulkatalogsucheActions.loadSchulenSucceeded({ ortId: ort.kuerzel, schulen })
+                        SchulkatalogsucheActions.loadSchulenSucceeded({ ortId: ort.kuerzel, schulen })
                     ),
-                    catchError((error: Error) => of(schulkatalogsucheActions.loadSchulenFailed({ error })))
+                    catchError((error: Error) => of(SchulkatalogsucheActions.loadSchulenFailed({ error })))
                 )
             )
         );
@@ -67,7 +67,7 @@ export class SchulkatalogsucheEffects {
     loadSchulenFailed$ = createEffect(
         () => {
             return this.#actions.pipe(
-                ofType(schulkatalogsucheActions.loadSchulenFailed),
+                ofType(SchulkatalogsucheActions.loadSchulenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisherService.publishError(errorMessage);

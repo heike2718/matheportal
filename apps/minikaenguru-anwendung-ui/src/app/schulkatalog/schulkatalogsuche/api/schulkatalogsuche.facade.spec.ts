@@ -2,7 +2,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SchulkatalogsucheFacade } from './schulkatalogsuche.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { schulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
+import { SchulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
 import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 
 describe('SchulkatalosucheFacade tests', () => {
@@ -36,14 +36,14 @@ describe('SchulkatalosucheFacade tests', () => {
         facade.findOrte(name);
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.findOrte({ name }));
+        expect(dispatchSpy).toHaveBeenCalledWith(SchulkatalogsucheActions.findOrte({ name }));
     });
 
     it('ortSelected should dispatch the expected action', () => {
         facade.ortSelected(ort);
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.ortSelected({ ort }));
+        expect(dispatchSpy).toHaveBeenCalledWith(SchulkatalogsucheActions.ortSelected({ ort }));
     });
 
     it('schuleSelcted should dispatch the expeted action', () => {
@@ -54,13 +54,13 @@ describe('SchulkatalosucheFacade tests', () => {
         };
         facade.schuleSelected(schule);
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.schuleSelected({ schule }));
+        expect(dispatchSpy).toHaveBeenCalledWith(SchulkatalogsucheActions.schuleSelected({ schule }));
     });
 
     it('schuleNichtGefunden should dispatch the selected action', () => {
         facade.schuleNichtGefunden();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(schulkatalogsucheActions.submitSchulkatalogantragRequested());
+        expect(dispatchSpy).toHaveBeenCalledWith(SchulkatalogsucheActions.submitSchulkatalogantragRequested());
     });
 });

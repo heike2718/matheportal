@@ -1,9 +1,9 @@
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
-import { wettbewerbActions } from './wettbewerb.actions';
+import { WettbewerbActions } from './wettbewerb.actions';
 
-describe('wettbewerbActions', () => {
+describe('WettbewerbActions', () => {
     it('should create the wettbewerbLaden action', () => {
-        const action = wettbewerbActions.wettbewerbLaden();
+        const action = WettbewerbActions.wettbewerbLaden();
 
         expect(action).toEqual({
             type: '[MKA Wettbewerb] wettbewerbLaden',
@@ -20,7 +20,7 @@ describe('wettbewerbActions', () => {
             status: WETTBEWERBSSTATUS.anmeldung,
         };
 
-        const action = wettbewerbActions.wettbewerbGeladen({ wettbewerb });
+        const action = WettbewerbActions.wettbewerbGeladen({ wettbewerb });
 
         expect(action).toEqual({
             type: '[MKA Wettbewerb] wettbewerbGeladen',
@@ -31,7 +31,7 @@ describe('wettbewerbActions', () => {
     it('should create the wettbewerbLadenFailed action', () => {
         const error = new Error('schlimm');
 
-        const action = wettbewerbActions.wettbewerbLadenFailed({ error });
+        const action = WettbewerbActions.wettbewerbLadenFailed({ error });
 
         expect(action).toEqual({
             type: '[MKA Wettbewerb] wettbewerbLadenFailed',

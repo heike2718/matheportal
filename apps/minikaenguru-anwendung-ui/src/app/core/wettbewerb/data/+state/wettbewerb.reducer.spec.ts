@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
 import { wettbewerbFeature } from './wettbewerb.reducer';
-import { wettbewerbActions } from './wettbewerb.actions';
+import { WettbewerbActions } from './wettbewerb.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 
 describe('wettebwerbFeature', () => {
@@ -33,7 +33,7 @@ describe('wettebwerbFeature', () => {
                 wettbewerb: undefined,
             };
 
-            const state = wettbewerbFeature.reducer(previousState, wettbewerbActions.wettbewerbGeladen({ wettbewerb }));
+            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbGeladen({ wettbewerb }));
 
             expect(state).toEqual({ wettbewerb });
         });

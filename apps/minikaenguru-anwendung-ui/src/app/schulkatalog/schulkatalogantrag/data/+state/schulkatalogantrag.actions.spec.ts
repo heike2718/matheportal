@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Schulkatalogantrag } from '../../model/schulkatalogantrag.model';
-import { schulkatalogantragActions } from './schulkatalogantrag.actions';
+import { SchulkatalogantragActions } from './schulkatalogantrag.actions';
 
-describe('schulkatalogantragActions', () => {
+describe('SchulkatalogantragActions', () => {
     const httpServerErrorResponse = new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
@@ -20,20 +20,20 @@ describe('schulkatalogantragActions', () => {
             strasseUndHausnummer: 'Schulgässli 8',
         };
 
-        expect(schulkatalogantragActions.submitSchulkatalogantrag({ antrag })).toEqual({
+        expect(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag })).toEqual({
             type: '[MKA Schulkatalogantrag] submitSchulkatalogantrag',
             antrag,
         });
     });
 
     it('should create the submitSchulkatalogantragSucceeded action', () => {
-        expect(schulkatalogantragActions.submitSchulkatalogantragSucceeded()).toEqual({
+        expect(SchulkatalogantragActions.submitSchulkatalogantragSucceeded()).toEqual({
             type: '[MKA Schulkatalogantrag] submitSchulkatalogantragSucceeded',
         });
     });
 
     it('should create the submitSchulkatalogantrag action', () => {
-        const action = schulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse });
+        const action = SchulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse });
 
         expect(action).toEqual({
             type: '[MKA Schulkatalogantrag] submitSchulkatalogantragFailed',

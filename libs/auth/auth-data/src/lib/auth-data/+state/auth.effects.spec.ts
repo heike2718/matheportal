@@ -4,7 +4,7 @@ import { of, throwError, firstValueFrom, Subject } from 'rxjs';
 import { AuthEffects } from './auth.effects';
 import { Action, provideStore } from '@ngrx/store';
 import { AuthHttpService } from '../auth-http.service';
-import { authActions } from './auth.actions';
+import { AuthActions } from './auth.actions';
 import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserNavigationService } from '../browser-navigation.service';
@@ -98,11 +98,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.requestLoginUrl$);
 
-            action$.next(authActions.requestLoginUrl());
+            action$.next(AuthActions.requestLoginUrl());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.redirectToIam({ iamUrl: urlResponse.url }));
+            expect(emitted).toEqual(AuthActions.redirectToIam({ iamUrl: urlResponse.url }));
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
         });
 
@@ -111,11 +111,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.requestLoginUrl$);
 
-            action$.next(authActions.requestLoginUrl());
+            action$.next(AuthActions.requestLoginUrl());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.requestLoginUrlFailed());
+            expect(emitted).toEqual(AuthActions.requestLoginUrlFailed());
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
         });
 
@@ -124,11 +124,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.requestLoginUrl$);
 
-            action$.next(authActions.requestLoginUrl());
+            action$.next(AuthActions.requestLoginUrl());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.requestLoginUrlFailed());
+            expect(emitted).toEqual(AuthActions.requestLoginUrlFailed());
             expect(httpServiceMock.getLoginUrl).toHaveBeenCalledTimes(1);
         });
     });
@@ -139,7 +139,7 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.redirectToIam$);
 
-            action$.next(authActions.redirectToIam({ iamUrl }));
+            action$.next(AuthActions.redirectToIam({ iamUrl }));
 
             await promise;
 
@@ -151,7 +151,7 @@ describe('AuthEffects', () => {
         it('should publish an error message', async () => {
             const promise = firstValueFrom(effects.requestLoginUrlFailed$);
 
-            action$.next(authActions.requestLoginUrlFailed());
+            action$.next(AuthActions.requestLoginUrlFailed());
 
             await promise;
 
@@ -169,18 +169,18 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.requestSignupUrl$);
 
-            action$.next(authActions.requestSignupUrl());
+            action$.next(AuthActions.requestSignupUrl());
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.redirectToIam({ iamUrl: urlResponse.url }));
+            expect(emitted).toEqual(AuthActions.redirectToIam({ iamUrl: urlResponse.url }));
             expect(httpServiceMock.getSignupUrl).toHaveBeenCalledTimes(1);
         });
 
         it('should publish an error message', async () => {
             const promise = firstValueFrom(effects.requestSignupUrlFailed$);
 
-            action$.next(authActions.requestSignupUrlFailed());
+            action$.next(AuthActions.requestSignupUrlFailed());
 
             await promise;
 
@@ -192,7 +192,7 @@ describe('AuthEffects', () => {
         it('should publish an info message', async () => {
             const promise = firstValueFrom(effects.signedUp$);
 
-            action$.next(authActions.signedUp());
+            action$.next(AuthActions.signedUp());
 
             await promise;
 
@@ -217,11 +217,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.createSession$);
 
-            action$.next(authActions.createSession({ idToken }));
+            action$.next(AuthActions.createSession({ idToken }));
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionCreated({ user: userResponse }));
+            expect(emitted).toEqual(AuthActions.sessionCreated({ user: userResponse }));
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
         });
@@ -233,11 +233,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.createSession$);
 
-            action$.next(authActions.createSession({ idToken }));
+            action$.next(AuthActions.createSession({ idToken }));
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.createSessionFailed());
+            expect(emitted).toEqual(AuthActions.createSessionFailed());
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
         });
@@ -249,11 +249,11 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.createSession$);
 
-            action$.next(authActions.createSession({ idToken }));
+            action$.next(AuthActions.createSession({ idToken }));
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.createSessionFailed());
+            expect(emitted).toEqual(AuthActions.createSessionFailed());
             expect(httpServiceMock.createSession).toHaveBeenCalledTimes(1);
             expect(httpServiceMock.createSession).toHaveBeenCalledWith(idToken);
         });
@@ -261,7 +261,7 @@ describe('AuthEffects', () => {
         it('should publish error message when createSessionFailed is dispatched', async () => {
             const promise = firstValueFrom(effects.createSessionFailed$);
 
-            action$.next(authActions.createSessionFailed());
+            action$.next(AuthActions.createSessionFailed());
 
             await promise;
 
@@ -273,7 +273,7 @@ describe('AuthEffects', () => {
     describe('invalidOAuthFlowHash$', () => {
         it('should publish error message when invalidOAuthFlowHash is dispatched', async () => {
             const promise = firstValueFrom(effects.invalidOAuthFlowHash$);
-            action$.next(authActions.invalidOAuthFlowHash());
+            action$.next(AuthActions.invalidOAuthFlowHash());
 
             await promise;
 
@@ -284,16 +284,16 @@ describe('AuthEffects', () => {
 
     describe('clearAuthCallbackHash$', () => {
         it.each([
-            authActions.sessionCreated({
+            AuthActions.sessionCreated({
                 user: {
                     anonym: false,
                     fullName: 'Checki',
                     berechtigungen: ['ADMIN'],
                 },
             }),
-            authActions.signedUp(),
-            authActions.createSessionFailed(),
-            authActions.invalidOAuthFlowHash(),
+            AuthActions.signedUp(),
+            AuthActions.createSessionFailed(),
+            AuthActions.invalidOAuthFlowHash(),
         ])('should clear auth location hash for %s', async action => {
             const promise = firstValueFrom(effects.clearAuthCallbackHash$);
 
@@ -317,10 +317,10 @@ describe('AuthEffects', () => {
 
             httpServiceMock.reloadSession.mockReturnValue(of(userResponse));
 
-            action$.next(authActions.validateSession());
+            action$.next(AuthActions.validateSession());
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionValidated({ user: userResponse }));
+            expect(emitted).toEqual(AuthActions.sessionValidated({ user: userResponse }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
         });
 
@@ -329,10 +329,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.validateSession$);
 
-            action$.next(authActions.validateSession());
+            action$.next(AuthActions.validateSession());
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'expired' }));
+            expect(emitted).toEqual(AuthActions.sessionValidationFailed({ reason: 'expired' }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
         });
 
@@ -340,10 +340,10 @@ describe('AuthEffects', () => {
             httpServiceMock.reloadSession.mockReturnValue(throwError(() => httpUnauthorizedMissingErrorResponse));
 
             const promise = firstValueFrom(effects.validateSession$);
-            action$.next(authActions.validateSession());
+            action$.next(AuthActions.validateSession());
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'missing' }));
+            expect(emitted).toEqual(AuthActions.sessionValidationFailed({ reason: 'missing' }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
         });
 
@@ -352,10 +352,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.validateSession$);
 
-            action$.next(authActions.validateSession());
+            action$.next(AuthActions.validateSession());
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'technical' }));
+            expect(emitted).toEqual(AuthActions.sessionValidationFailed({ reason: 'technical' }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
         });
 
@@ -364,10 +364,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.validateSession$);
 
-            action$.next(authActions.validateSession());
+            action$.next(AuthActions.validateSession());
             const emitted = await promise;
 
-            expect(emitted).toEqual(authActions.sessionValidationFailed({ reason: 'technical' }));
+            expect(emitted).toEqual(AuthActions.sessionValidationFailed({ reason: 'technical' }));
             expect(httpServiceMock.reloadSession).toHaveBeenCalledTimes(1);
         });
     });
@@ -378,10 +378,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.logOut$);
 
-            action$.next(authActions.logOut());
+            action$.next(AuthActions.logOut());
             const emmited = await promise;
 
-            expect(emmited).toEqual(authActions.loggedOut());
+            expect(emmited).toEqual(AuthActions.loggedOut());
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
         });
 
@@ -390,10 +390,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.logOut$);
 
-            action$.next(authActions.logOut());
+            action$.next(AuthActions.logOut());
             const emmited = await promise;
 
-            expect(emmited).toEqual(authActions.loggedOut());
+            expect(emmited).toEqual(AuthActions.loggedOut());
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
         });
 
@@ -402,10 +402,10 @@ describe('AuthEffects', () => {
 
             const promise = firstValueFrom(effects.logOut$);
 
-            action$.next(authActions.logOut());
+            action$.next(AuthActions.logOut());
             const emmited = await promise;
 
-            expect(emmited).toEqual(authActions.loggedOut());
+            expect(emmited).toEqual(AuthActions.loggedOut());
             expect(httpServiceMock.logOut).toHaveBeenCalledTimes(1);
         });
     });

@@ -1,6 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
-import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
+import { SchulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
@@ -29,7 +29,7 @@ export const schulkatalogsucheFeature = createFeature({
     name: SCHULKATALOGSUCHE_FEATURE_KEY,
     reducer: createReducer<SchulkatalogsucheState>(
         initialSchulkatalogsucheState,
-        on(schulkatalogsucheActions.findOrteSucceeded, (state, { orte }) => ({
+        on(SchulkatalogsucheActions.findOrteSucceeded, (state, { orte }) => ({
             ...state,
             orte,
             orteLoadState: 'loaded',
@@ -38,31 +38,31 @@ export const schulkatalogsucheFeature = createFeature({
             selectedOrt: undefined,
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.findOrteFailed, (state, { error }) => {
+        on(SchulkatalogsucheActions.findOrteFailed, (state, { error }) => {
             return { ...state, orteLoadState: mapErrorToResourceLoadState(error), selectedOrt: undefined };
         }),
-        on(schulkatalogsucheActions.ortSelected, (state, { ort }) => ({
+        on(SchulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
             selectedOrt: ort,
             schulen: [],
             schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
-        on(schulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
+        on(SchulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
+        on(SchulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
             if (state.selectedOrt?.kuerzel !== ortId) {
                 return state;
             }
             return { ...state, schulen, schulenLoadState: 'loaded', selectedSchule: undefined };
         }),
-        on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
+        on(SchulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
                 schulenLoadState: mapErrorToResourceLoadState(error),
                 selectedSchule: undefined,
             };
         }),
-        on(schulkatalogsucheActions.schuleSelected, (state, { schule }) => {
+        on(SchulkatalogsucheActions.schuleSelected, (state, { schule }) => {
             if (state.selectedOrt?.kuerzel !== schule.ort.kuerzel) {
                 return state;
             }
@@ -71,13 +71,13 @@ export const schulkatalogsucheFeature = createFeature({
                 selectedSchule: schule,
             };
         }),
-        on(schulkatalogsucheActions.schulenCleared, state => ({
+        on(SchulkatalogsucheActions.schulenCleared, state => ({
             ...state,
             schulen: [],
             schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),
+        on(SchulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),
         on(userLoggedOut, () => initialSchulkatalogsucheState)
     ),
 });

@@ -1,9 +1,9 @@
 import { User } from '@matheportal/auth-model';
-import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { MkaAuthorizationActions } from './mka-authorization.actions';
 
 describe('mka-authorization.actions', () => {
     it('should create the ensureMkaAuthorizationLoaded action', () => {
-        const action = mkaAuthorizationActions.ensureMkaAuthorizationLoaded();
+        const action = MkaAuthorizationActions.ensureMkaAuthorizationLoaded();
 
         expect(action).toEqual({
             type: '[MKA Authorization] ensureMkaAuthorizationLoaded',
@@ -11,7 +11,7 @@ describe('mka-authorization.actions', () => {
     });
 
     it('should create the loadMkaAuthorization action', () => {
-        const action = mkaAuthorizationActions.loadMkaAuthorization();
+        const action = MkaAuthorizationActions.loadMkaAuthorization();
 
         expect(action).toEqual({
             type: '[MKA Authorization] loadMkaAuthorization',
@@ -25,7 +25,7 @@ describe('mka-authorization.actions', () => {
             fullName: 'Levi Lehrer',
         };
 
-        const action = mkaAuthorizationActions.mkaAuthorizationLoaded({ user });
+        const action = MkaAuthorizationActions.mkaAuthorizationLoaded({ user });
 
         expect(action).toEqual({
             type: '[MKA Authorization] mkaAuthorizationLoaded',
@@ -34,7 +34,7 @@ describe('mka-authorization.actions', () => {
     });
 
     it('should create the loadMkaAuthorizationFailed action', () => {
-        const action = mkaAuthorizationActions.loadMkaAuthorizationFailed();
+        const action = MkaAuthorizationActions.loadMkaAuthorizationFailed();
 
         expect(action).toEqual({
             type: '[MKA Authorization] loadMkaAuthorizationFailed',

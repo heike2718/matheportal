@@ -2,8 +2,8 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 
-export const schulenActions = createActionGroup({
-    source: 'MKA Schulen',
+export const SchuleActions = createActionGroup({
+    source: 'MKA Schule',
     events: {
         schulenLaden: emptyProps(),
         schulenGeladen: props<{ schulen: Schule[] }>(),

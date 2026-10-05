@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { authActions, fromAuth } from '@matheportal/auth-data';
+import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -25,7 +25,7 @@ export class AuthSessionFacade {
      * validiert die bestehende Session.
      */
     validateSession(): void {
-        this.#store.dispatch(authActions.validateSession());
+        this.#store.dispatch(AuthActions.validateSession());
     }
 
     /**
@@ -33,6 +33,6 @@ export class AuthSessionFacade {
      * @param user User
      */
     synchronizeUser(user: User): void {
-        this.#store.dispatch(authActions.userAugmented({ user }));
+        this.#store.dispatch(AuthActions.userAugmented({ user }));
     }
 }

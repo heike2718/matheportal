@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
-import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { catchError, exhaustMap, filter, map, of, take, tap, withLatestFrom } from 'rxjs';
 import { User } from '@matheportal/auth-model';
 import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
@@ -20,13 +20,13 @@ export class MkaAuthorizationEffects {
 
     readonly ensureMkaAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(mkaAuthorizationActions.ensureMkaAuthorizationLoaded),
+            ofType(MkaAuthorizationActions.ensureMkaAuthorizationLoaded),
             exhaustMap(() =>
                 this.#store.select(sessionState).pipe(
                     filter(LoadState => LoadState !== 'not-loaded'),
                     take(1),
                     filter(LoadState => LoadState === 'loaded'),
-                    map(() => mkaAuthorizationActions.loadMkaAuthorization())
+                    map(() => MkaAuthorizationActions.loadMkaAuthorization())
                 )
             )
         );
@@ -34,13 +34,13 @@ export class MkaAuthorizationEffects {
 
     loadMkaAuthorization$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(mkaAuthorizationActions.loadMkaAuthorization),
+            ofType(MkaAuthorizationActions.loadMkaAuthorization),
             withLatestFrom(this.#store.select(fromMkaAuthorization.authorizationLoadState)),
             filter(([, LoadState]) => LoadState === 'not-loaded'),
             exhaustMap(() =>
                 this.#httpService.loadMkaAuthorization().pipe(
-                    map((user: User) => mkaAuthorizationActions.mkaAuthorizationLoaded({ user })),
-                    catchError(() => of(mkaAuthorizationActions.loadMkaAuthorizationFailed()))
+                    map((user: User) => MkaAuthorizationActions.mkaAuthorizationLoaded({ user })),
+                    catchError(() => of(MkaAuthorizationActions.loadMkaAuthorizationFailed()))
                 )
             )
         );
@@ -49,7 +49,7 @@ export class MkaAuthorizationEffects {
     mkaAuthorizationLoaded$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(mkaAuthorizationActions.mkaAuthorizationLoaded),
+                ofType(MkaAuthorizationActions.mkaAuthorizationLoaded),
                 tap(action => {
                     this.#authSessionFacade.synchronizeUser(action.user);
                 })
@@ -60,7 +60,7 @@ export class MkaAuthorizationEffects {
     loadMkaAuthorizationFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(mkaAuthorizationActions.loadMkaAuthorizationFailed),
+                ofType(MkaAuthorizationActions.loadMkaAuthorizationFailed),
                 tap(() => {
                     this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
                 })

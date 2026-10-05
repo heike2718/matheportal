@@ -3,7 +3,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { WettbewerbsdurchfuehrendeHttpService } from '../wettbewerbsdurchfuehrende-http.service';
-import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { catchError, exhaustMap, filter, map, of, tap } from 'rxjs';
 import { DURCHFUEHRUNGSART, Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { portalRoutes } from '@matheportal/portal-navigation';
@@ -23,9 +23,9 @@ export class WettbewerbsdurchfuehrendeEffects {
 
     readonly durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt),
+            ofType(WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt),
             map(() =>
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: {
                         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                         schulkuerzel: undefined,
@@ -38,7 +38,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     readonly durchfuehrungsartSchuleGewaelt$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt),
+                ofType(WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt),
                 tap(() => {
                     this.#router.navigate([
                         '/',
@@ -54,7 +54,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         return this.#actions.pipe(
             ofType(schuleSelected),
             map(({ schule }) =>
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: { durchfuehrungsart: DURCHFUEHRUNGSART.schule, schulkuerzel: schule.kuerzel },
                 })
             )
@@ -63,16 +63,16 @@ export class WettbewerbsdurchfuehrendeEffects {
 
     readonly durchfuehrendenAnlegen$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen),
+            ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen),
             exhaustMap(({ requestDto }) =>
                 this.#httpService.createWettbewerbsdurchfuehrenden(requestDto).pipe(
                     map((responseDto: Wettbewerbsdurchfuehrender) =>
-                        wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                        WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
                             wettbewerbsdurchfuehrender: responseDto,
                         })
                     ),
                     catchError((error: Error) =>
-                        of(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }))
+                        of(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }))
                     )
                 )
             )
@@ -82,7 +82,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     readonly durchfuehrendenAnlegenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
+                ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);
@@ -94,7 +94,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     readonly durchfuehrenderAngelegt$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt),
+                ofType(WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt),
                 tap(({ wettbewerbsdurchfuehrender: responseDto }) => {
                     switch (responseDto.durchfuehrungsart) {
                         case 'PRIVAT':
@@ -128,22 +128,22 @@ export class WettbewerbsdurchfuehrendeEffects {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
             filter(({ user }) => hasBerechtigungFuerMinikaenguru(user)),
-            map(() => wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden())
+            map(() => WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden())
         );
     });
 
     readonly durchfuehrendenLaden$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden),
+            ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden),
             exhaustMap(() =>
                 this.#httpService.loadWettbewerbsdurchfuehrenden().pipe(
                     map((responseDto: Wettbewerbsdurchfuehrender) =>
-                        wettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({
+                        WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({
                             wettbewerbsdurchfuehrender: responseDto,
                         })
                     ),
                     catchError((error: Error) =>
-                        of(wettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error }))
+                        of(WettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error }))
                     )
                 )
             )
