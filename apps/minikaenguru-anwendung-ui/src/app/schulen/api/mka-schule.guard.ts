@@ -16,7 +16,7 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
 
     facade.dashboardVorbereiten(schulkuerzel);
 
-    return facade.wettbewerbskontextLoadingState$.pipe(
+    return facade.wettbewerbskontextLoadState$.pipe(
         filter(state => state !== 'not-loaded'),
         take(1),
         map(state =>

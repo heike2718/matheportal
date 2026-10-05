@@ -7,4 +7,4 @@ export { credentialsInterceptor } from './lib/auth-api/credentials.interceptor';
 
 export { userLoggedOut, sessionValidationFailed } from './lib/auth-api/auth-store.events';
 
-export const sessionState = fromAuth.sessionLoadingState;
+export const sessionState = fromAuth.sessionLoadState;

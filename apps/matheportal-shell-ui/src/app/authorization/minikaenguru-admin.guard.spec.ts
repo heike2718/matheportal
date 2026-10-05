@@ -22,7 +22,7 @@ describe('matheportalShellAdminAuthGuard tests', () => {
     let userSubject: Subject<User>;
 
     let authSessionFacadeMock: {
-        sessionLoadingState$: Observable<RESOURCE_LOAD_STATE>;
+        sessionLoadState$: Observable<RESOURCE_LOAD_STATE>;
         user$: Observable<User>;
     };
 
@@ -39,7 +39,7 @@ describe('matheportalShellAdminAuthGuard tests', () => {
         userSubject = new BehaviorSubject<User>(user);
 
         authSessionFacadeMock = {
-            sessionLoadingState$: sessionLoadStateSubject.asObservable(),
+            sessionLoadState$: sessionLoadStateSubject.asObservable(),
             user$: userSubject.asObservable(),
         };
 

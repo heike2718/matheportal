@@ -82,11 +82,11 @@ describe('schulenReducer', () => {
         });
         it('should return the previous state, when unknown action and defined state', () => {
             const previousState: SchulenState = {
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 schulen,
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             };
             const state = schulenFeature.reducer(previousState, unknownAction);
             expect(state).toBe(previousState);
@@ -94,71 +94,71 @@ describe('schulenReducer', () => {
     });
 
     describe('schulenGeladen', () => {
-        it('should reset previously loaded wettbewerbskontext and schulkollegizm and set the loadingState and the schulen', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegizm and set the LoadState and the schulen', () => {
             const previousState: SchulenState = {
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 schulen: [],
                 wettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             };
 
             const state = schulenFeature.reducer(previousState, schulenActions.schulenGeladen({ schulen }));
             expect(state).toEqual({
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 schulen,
                 wettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             });
         });
     });
     describe('schulenLadenFailed', () => {
         const previousState: SchulenState = {
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             schulen: [],
             wettbewerbskontext,
-            wettbewerbskontextLoadingState: 'loaded',
-            schulkollegiumLoadingState: 'loaded',
+            wettbewerbskontextLoadState: 'loaded',
+            schulkollegiumLoadState: 'loaded',
         };
 
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadingState when technical error', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when technical error', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 schulenActions.schulenLadenFailed({ error: technicalErrorResponse })
             );
             expect(state).toEqual({
-                schulenLoadingState: 'technical-error',
+                schulenLoadState: 'technical-error',
                 schulen: [],
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadingState when session expired', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when session expired', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 schulenActions.schulenLadenFailed({ error: unauthorizedErrorResponse })
             );
             expect(state).toEqual({
-                schulenLoadingState: 'unauthorized',
+                schulenLoadState: 'unauthorized',
                 schulen: [],
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadingState when forbidden', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when forbidden', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 schulenActions.schulenLadenFailed({ error: forbiddenErrorResponse })
             );
             expect(state).toEqual({
-                schulenLoadingState: 'forbidden',
+                schulenLoadState: 'forbidden',
                 schulen: [],
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
     });
@@ -167,7 +167,7 @@ describe('schulenReducer', () => {
         const previousState: SchulenState = {
             ...initialSchulenState,
             schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
         };
 
         it('should set the wettbewerbskontext', () => {
@@ -178,10 +178,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
         it('should not set the wettbewerbskontext but the loading state when technical error on wettbewerbskontextLadenFailed', () => {
@@ -192,10 +192,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'technical-error',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'technical-error',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
         it('should not set the wettbewerbskontext but the loading state when session expired on wettbewerbskontextLadenFailed', () => {
@@ -206,10 +206,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'unauthorized',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'unauthorized',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
         it('should not set the wettbewerbskontext but the loading state when loading the wettbewerbskontext is forbidden', () => {
@@ -220,10 +220,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'forbidden',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'forbidden',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
     });
@@ -231,10 +231,10 @@ describe('schulenReducer', () => {
     describe('schulkollegium tests', () => {
         const previousState: SchulenState = {
             schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
             wettbewerbskontext,
-            wettbewerbskontextLoadingState: 'loaded',
-            schulkollegiumLoadingState: 'not-loaded',
+            wettbewerbskontextLoadState: 'loaded',
+            schulkollegiumLoadState: 'not-loaded',
         };
 
         it('should set the kollegium and the loading state when loaded and same schule', () => {
@@ -252,10 +252,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: expectedWettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             });
         });
         it('should not change the kollegium but set the loading state when loaded and other schule', () => {
@@ -271,10 +271,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             });
         });
         it('should not change the kollegium but set the loading state when technical error on schulkollegiumLadenFailed', () => {
@@ -287,10 +287,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: expectedWettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'technical-error',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'technical-error',
             });
         });
         it('should not change the kollegium but set the loading state when unauthorized on schulkollegiumLadenFailed', () => {
@@ -303,10 +303,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: expectedWettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'unauthorized',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'unauthorized',
             });
         });
         it('should not change the kollegium but set the loading state when schulkollegiumLadenFailed with 403', () => {
@@ -319,10 +319,10 @@ describe('schulenReducer', () => {
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: expectedWettbewerbskontext,
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'forbidden',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'forbidden',
             });
         });
     });
@@ -331,31 +331,31 @@ describe('schulenReducer', () => {
         it('should reset wettbewerbskontext and loading states', () => {
             const previousState: SchulenState = {
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Leo Lemma', 'Rita Reihe'] },
-                wettbewerbskontextLoadingState: 'loaded',
-                schulkollegiumLoadingState: 'loaded',
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             };
 
             const state = schulenFeature.reducer(previousState, wettbewerbsorganisationVerlassen());
 
             expect(state).toEqual({
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
     });
 
     describe('reset and userLoggedOut', () => {
         const previousState: SchulenState = {
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
             schulen: schulen,
             wettbewerbskontext: undefined,
-            wettbewerbskontextLoadingState: 'not-loaded',
-            schulkollegiumLoadingState: 'not-loaded',
+            wettbewerbskontextLoadState: 'not-loaded',
+            schulkollegiumLoadState: 'not-loaded',
         };
 
         it('should reset to the initialState on userLoggedOut', () => {

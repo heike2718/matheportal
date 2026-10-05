@@ -49,10 +49,10 @@ describe('schulkatalogsucheSelectors', () => {
 
     const state: SchulkatalogsucheState = {
         orte: orte,
-        orteLoadingState: 'loaded',
+        orteLoadState: 'loaded',
         selectedOrt: orte[1],
         schulen: schulen,
-        schulenLoadingState: 'loaded',
+        schulenLoadState: 'loaded',
         selectedSchule: undefined,
     };
 
@@ -84,27 +84,27 @@ describe('schulkatalogsucheSelectors', () => {
     });
 
     it('should select schulenLoaded', () => {
-        const result = schulenLoaded.projector({ ...state, schulenLoadingState: 'not-loaded' });
+        const result = schulenLoaded.projector({ ...state, schulenLoadState: 'not-loaded' });
         expect(result).toBe(false);
     });
 
     describe('selectSchuleEintragenMoeglich', () => {
         it('selectSchuleEintragenMoeglich should return false with orteLoaded === not-loaded', () => {
-            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'not-loaded' });
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadState: 'not-loaded' });
             expect(result).toBe(false);
         });
         it('selectSchuleEintragenMoeglich should return false with orteLoaded === unauthorized', () => {
-            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'unauthorized' });
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadState: 'unauthorized' });
             expect(result).toBe(false);
         });
         it('selectSchuleEintragenMoeglich should return false with orteLoaded === technical-error', () => {
-            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadingState: 'technical-error' });
+            const result = selectSchuleEintragenMoeglich.projector({ ...state, orteLoadState: 'technical-error' });
             expect(result).toBe(false);
         });
         it('selectSchuleEintragenMoeglich should return false with orteLoaded === loaded und mindestens 1 Treffer', () => {
             const result = selectSchuleEintragenMoeglich.projector({
                 ...state,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 orte: [orte[0]],
             });
             expect(result).toBe(false);
@@ -112,7 +112,7 @@ describe('schulkatalogsucheSelectors', () => {
         it('selectSchuleEintragenMoeglich should return true with orteLoaded === loaded und 0 treffer', () => {
             const result = selectSchuleEintragenMoeglich.projector({
                 ...state,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 orte: [],
             });
             expect(result).toBe(true);

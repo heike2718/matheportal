@@ -6,10 +6,7 @@ const { selectMKASchulenState } = schulenFeature;
 
 export const selectSchulen = createSelector(selectMKASchulenState, state => state.schulen);
 
-export const selectSchulenLoaded = createSelector(
-    selectMKASchulenState,
-    state => state.schulenLoadingState === 'loaded'
-);
+export const selectSchulenLoaded = createSelector(selectMKASchulenState, state => state.schulenLoadState === 'loaded');
 
 export const selectSchulauswahlMoeglich = createSelector(
     selectSchulenLoaded,
@@ -17,19 +14,19 @@ export const selectSchulauswahlMoeglich = createSelector(
     (loaded: boolean, schulen: Schule[]) => loaded && schulen.length > 1
 );
 
-export const selectWettbewerbskontextLoadingState = createSelector(
+export const selectWettbewerbskontextLoadState = createSelector(
     selectMKASchulenState,
-    state => state.wettbewerbskontextLoadingState
+    state => state.wettbewerbskontextLoadState
 );
 
 export const selectWettbewerbskontextLoaded = createSelector(
-    selectWettbewerbskontextLoadingState,
-    loadingState => loadingState === 'loaded'
+    selectWettbewerbskontextLoadState,
+    LoadState => LoadState === 'loaded'
 );
 
 export const selectSchulkollegiumLoaded = createSelector(
     selectMKASchulenState,
-    state => state.schulkollegiumLoadingState === 'loaded'
+    state => state.schulkollegiumLoadState === 'loaded'
 );
 
 export const selectWettbewerbskontext = createSelector(selectMKASchulenState, state => state.wettbewerbskontext);

@@ -5,7 +5,7 @@ import {
     selectSchulkollegiumLoaded,
     selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
-    selectWettbewerbskontextLoadingState,
+    selectWettbewerbskontextLoadState,
 } from '../data/+state/schulen.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 import {
@@ -19,8 +19,8 @@ import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 export class SchuleFacade {
     readonly #store = inject(Store);
 
-    readonly wettbewerbskontextLoadingState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE> = this.#store.select(
-        selectWettbewerbskontextLoadingState
+    readonly wettbewerbskontextLoadState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE> = this.#store.select(
+        selectWettbewerbskontextLoadState
     );
 
     readonly schulauswahlMoeglich = this.#store.selectSignal(selectSchulauswahlMoeglich);

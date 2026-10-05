@@ -19,7 +19,7 @@ describe('fromAuth tests', () => {
     it('should select user', () => {
         const state: AuthState = {
             user: standardUser,
-            sessionLoadingState: 'loaded',
+            sessionLoadState: 'loaded',
         };
 
         const result = fromAuth.user.projector(state);
@@ -27,20 +27,20 @@ describe('fromAuth tests', () => {
         expect(result).toEqual(state.user);
     });
 
-    it.each([])('should select the sessionLoadingState with %s', (loadState: RESOURCE_LOAD_STATE) => {
+    it.each([])('should select the sessionLoadState with %s', (LoadState: RESOURCE_LOAD_STATE) => {
         const state: AuthState = {
             user: standardUser,
-            sessionLoadingState: loadState,
+            sessionLoadState: LoadState,
         };
 
-        const result = fromAuth.sessionLoadingState.projector(state);
-        expect(result).toBe(loadState);
+        const result = fromAuth.sessionLoadState.projector(state);
+        expect(result).toBe(LoadState);
     });
 
     it('should select isAdmin when user is not logged in', () => {
         const state: AuthState = {
             user: anonymousUser,
-            sessionLoadingState: 'unauthorized',
+            sessionLoadState: 'unauthorized',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 
@@ -50,7 +50,7 @@ describe('fromAuth tests', () => {
     it('should select isAdmin when user is standard', () => {
         const state: AuthState = {
             user: standardUser,
-            sessionLoadingState: 'loaded',
+            sessionLoadState: 'loaded',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 
@@ -60,7 +60,7 @@ describe('fromAuth tests', () => {
     it('should select isAdmin when user is admin', () => {
         const state: AuthState = {
             user: admin,
-            sessionLoadingState: 'loaded',
+            sessionLoadState: 'loaded',
         };
         const result = fromAuth.isAdmin.projector(state.user);
 

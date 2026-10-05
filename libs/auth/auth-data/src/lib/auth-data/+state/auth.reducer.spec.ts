@@ -18,98 +18,98 @@ describe('authFeature tests', () => {
             expect(state.user).toEqual(anonymousUser);
         });
         it('should return the previous state, when unknown action and defined state', () => {
-            const state = authFeature.reducer({ user: user, sessionLoadingState: 'not-loaded' }, unknownAction);
+            const state = authFeature.reducer({ user: user, sessionLoadState: 'not-loaded' }, unknownAction);
             expect(state.user).toEqual(user);
         });
     });
 
     describe('sessionCreated', () => {
         it('returns the expected state, when initialState and sessionCreated', () => {
-            const actualState: AuthState = { user: anonymousUser, sessionLoadingState: 'not-loaded' };
+            const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
             const state = authFeature.reducer(actualState, authActions.sessionCreated({ user: user }));
             expect(state.user).toEqual(user);
-            expect(state.sessionLoadingState).toEqual('loaded');
+            expect(state.sessionLoadState).toEqual('loaded');
         });
     });
 
     describe('createSessionFailed', () => {
         it('returns the expected state, when initialState and createSessionFailed', () => {
-            const actualState: AuthState = { user: anonymousUser, sessionLoadingState: 'not-loaded' };
+            const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
             const state = authFeature.reducer(actualState, authActions.createSessionFailed());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('technical-error');
+            expect(state.sessionLoadState).toEqual('technical-error');
         });
     });
 
     describe('invalidOAuthFlowHash', () => {
         it('returns the expected state, when initialState and invalidOAuthFlowHash', () => {
-            const actualState: AuthState = { user: anonymousUser, sessionLoadingState: 'not-loaded' };
+            const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
             const state = authFeature.reducer(actualState, authActions.invalidOAuthFlowHash());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('technical-error');
+            expect(state.sessionLoadState).toEqual('technical-error');
         });
     });
 
     describe('signedUp', () => {
         it('returns the expected state, when loaded state and signedUp', () => {
-            const actualState: AuthState = { user, sessionLoadingState: 'loaded' };
+            const actualState: AuthState = { user, sessionLoadState: 'loaded' };
             const state = authFeature.reducer(actualState, authActions.signedUp());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('unauthorized');
+            expect(state.sessionLoadState).toEqual('unauthorized');
         });
     });
 
     describe('sessionValidated', () => {
         it('returns the expected state, when initialState and sessionValidated', () => {
-            const actualState: AuthState = { user: anonymousUser, sessionLoadingState: 'not-loaded' };
+            const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
             const state = authFeature.reducer(actualState, authActions.sessionValidated({ user: user }));
             expect(state.user).toEqual(user);
-            expect(state.sessionLoadingState).toEqual('loaded');
+            expect(state.sessionLoadState).toEqual('loaded');
         });
     });
 
     describe('sessionValidationFailed', () => {
         it('returns the initialState, when user and sessionValidationFailed with expired', () => {
-            const actualState: AuthState = { user: user, sessionLoadingState: 'loaded' };
+            const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
             const state = authFeature.reducer(actualState, authActions.sessionValidationFailed({ reason: 'expired' }));
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('unauthorized');
+            expect(state.sessionLoadState).toEqual('unauthorized');
         });
         it('returns the initialState, when user and sessionValidationFailed with technical error', () => {
-            const actualState: AuthState = { user: user, sessionLoadingState: 'loaded' };
+            const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
             const state = authFeature.reducer(
                 actualState,
                 authActions.sessionValidationFailed({ reason: 'technical' })
             );
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('technical-error');
+            expect(state.sessionLoadState).toEqual('technical-error');
         });
     });
 
     describe('sessionCreated', () => {
         it('returns the expected state, when initialState and sessionCreated', () => {
-            const actualState: AuthState = { user: anonymousUser, sessionLoadingState: 'not-loaded' };
+            const actualState: AuthState = { user: anonymousUser, sessionLoadState: 'not-loaded' };
             const augmentedUser: User = {
                 ...user,
                 berechtigungen: [...user.berechtigungen, 'SCHULE'],
             };
             const state = authFeature.reducer(actualState, authActions.sessionCreated({ user: augmentedUser }));
             expect(state.user).toEqual(augmentedUser);
-            expect(state.sessionLoadingState).toEqual('loaded');
+            expect(state.sessionLoadState).toEqual('loaded');
         });
     });
 
     describe('loggedOut', () => {
         it('returns the initialState, when user has logged out', () => {
-            const actualState: AuthState = { user: user, sessionLoadingState: 'loaded' };
+            const actualState: AuthState = { user: user, sessionLoadState: 'loaded' };
             const state = authFeature.reducer(actualState, authActions.loggedOut());
             expect(state.user).toEqual(anonymousUser);
-            expect(state.sessionLoadingState).toEqual('unauthorized');
+            expect(state.sessionLoadState).toEqual('unauthorized');
         });
     });
 
     describe('ignored actions', () => {
-        const actualState: AuthState = { user, sessionLoadingState: 'loaded' };
+        const actualState: AuthState = { user, sessionLoadState: 'loaded' };
 
         it('should not listen to createSession', () => {
             const state = authFeature.reducer(actualState, authActions.createSession({ idToken: 'uquiq' }));

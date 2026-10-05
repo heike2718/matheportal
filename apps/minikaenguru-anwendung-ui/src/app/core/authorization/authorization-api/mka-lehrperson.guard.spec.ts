@@ -62,7 +62,7 @@ describe('mkaLehrpersonGuard tests', () => {
                 {
                     provide: AuthSessionFacade,
                     useValue: {
-                        sessionLoadingState$: sessionLoadStateSubject.asObservable(),
+                        sessionLoadState$: sessionLoadStateSubject.asObservable(),
                     },
                 },
                 { provide: MkaAuthorizationFacade, useValue: mkaAuthFacadeMock },

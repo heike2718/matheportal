@@ -25,7 +25,7 @@ export class MkaAuthorizationFacade {
     readonly isPrivatperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     readonly startViewState = computed(() => {
-        const sessionState = this.#portalSessionFacade.sessionLoadingState();
+        const sessionState = this.#portalSessionFacade.sessionLoadState();
 
         switch (sessionState) {
             case 'not-loaded':

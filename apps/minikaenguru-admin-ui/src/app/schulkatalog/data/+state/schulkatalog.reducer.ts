@@ -9,25 +9,25 @@ const SCHULKATALOG_FEATURE_KEY = 'MKAdminSchulkatalog';
 
 export interface SchulkatalogState {
     readonly laender: Land[];
-    readonly laenderLoadingState: RESOURCE_LOAD_STATE;
+    readonly laenderLoadState: RESOURCE_LOAD_STATE;
     readonly selectedLand: Land | undefined;
     readonly orte: Ort[];
-    readonly orteLoadingState: RESOURCE_LOAD_STATE;
+    readonly orteLoadState: RESOURCE_LOAD_STATE;
     readonly selectedOrt: Ort | undefined;
     readonly schulen: Schule[];
-    readonly schulenLoadingState: RESOURCE_LOAD_STATE;
+    readonly schulenLoadState: RESOURCE_LOAD_STATE;
     readonly selectedSchule: Schule | undefined;
 }
 
 export const initialSchulkatalogState: SchulkatalogState = {
     laender: [],
-    laenderLoadingState: 'not-loaded',
+    laenderLoadState: 'not-loaded',
     selectedLand: undefined,
     orte: [],
-    orteLoadingState: 'not-loaded',
+    orteLoadState: 'not-loaded',
     selectedOrt: undefined,
     schulen: [],
-    schulenLoadingState: 'not-loaded',
+    schulenLoadState: 'not-loaded',
     selectedSchule: undefined,
 };
 
@@ -39,44 +39,44 @@ export const schulkatalogFeature = createFeature({
         on(schulkatalogActions.loadLaenderSucceeded, (state, { laender }) => ({
             ...state,
             laender: laender,
-            laenderLoadingState: 'loaded',
+            laenderLoadState: 'loaded',
             selectedLand: undefined,
             orte: [],
-            orteLoadingState: 'not-loaded',
+            orteLoadState: 'not-loaded',
             selectedOrt: undefined,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.landSelected, (state, { land }) => ({
             ...state,
             selectedLand: land,
             orte: [],
-            orteLoadingState: 'not-loaded',
+            orteLoadState: 'not-loaded',
             selectedOrt: undefined,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.loadOrte, state => ({
             ...state,
             orte: [],
-            orteLoadingState: 'not-loaded',
+            orteLoadState: 'not-loaded',
             selectedOrt: undefined,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.loadOrteSucceeded, (state, { orte }) => ({
             ...state,
             orte: orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
         })),
         on(schulkatalogActions.backToLaenderRequested, state => ({
             ...state,
-            orteLoadingState: 'not-loaded',
+            orteLoadState: 'not-loaded',
             orte: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             schulen: [],
             selectedLand: undefined,
             selectedOrt: undefined,
@@ -85,55 +85,55 @@ export const schulkatalogFeature = createFeature({
             ...state,
             selectedOrt: ort,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.loadSchulen, state => ({
             ...state,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogActions.loadSchulenSucceeded, (state, { schulen }) => ({
             ...state,
             schulen: schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
         })),
         on(schulkatalogActions.loadActionFailed, (state, action) => {
-            const loadingState = mapErrorToResourceLoadState(action.error);
+            const LoadState = mapErrorToResourceLoadState(action.error);
             switch (action.kontext) {
                 case SCHULKATALOG_ADMIN_KONTEXT.laender:
                     return {
                         ...state,
-                        laenderLoadingState: loadingState,
+                        laenderLoadState: LoadState,
                         selectedLand: undefined,
                         orte: [],
-                        orteLoadingState: 'not-loaded',
+                        orteLoadState: 'not-loaded',
                         selectedOrt: undefined,
                         schulen: [],
-                        schulenLoadingState: 'not-loaded',
+                        schulenLoadState: 'not-loaded',
                         selectedSchule: undefined,
                     };
                 case SCHULKATALOG_ADMIN_KONTEXT.orte:
                     return {
                         ...state,
-                        orteLoadingState: loadingState,
+                        orteLoadState: LoadState,
                         selectedOrt: undefined,
                         schulen: [],
-                        schulenLoadingState: 'not-loaded',
+                        schulenLoadState: 'not-loaded',
                         selectedSchule: undefined,
                     };
                 case SCHULKATALOG_ADMIN_KONTEXT.schulen:
                     return {
                         ...state,
-                        schulenLoadingState: loadingState,
+                        schulenLoadState: LoadState,
                         selectedSchule: undefined,
                     };
             }
         }),
         on(schulkatalogActions.backToOrteRequested, state => ({
             ...state,
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             schulen: [],
             selectedOrt: undefined,
             selectedSchule: undefined,

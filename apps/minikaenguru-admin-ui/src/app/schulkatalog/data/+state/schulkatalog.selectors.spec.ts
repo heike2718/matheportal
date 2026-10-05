@@ -39,13 +39,13 @@ describe('schulkatalogSelectors', () => {
 
     const state: SchulkatalogState = {
         laender,
-        laenderLoadingState: 'loaded',
+        laenderLoadState: 'loaded',
         selectedLand: laender[0],
         orte,
-        orteLoadingState: 'loaded',
+        orteLoadState: 'loaded',
         selectedOrt: orte[1],
         schulen: [],
-        schulenLoadingState: 'not-loaded',
+        schulenLoadState: 'not-loaded',
         selectedSchule: undefined,
     };
 

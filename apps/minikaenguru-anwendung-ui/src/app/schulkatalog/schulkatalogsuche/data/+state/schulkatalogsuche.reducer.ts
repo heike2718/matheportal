@@ -9,19 +9,19 @@ const SCHULKATALOGSUCHE_FEATURE_KEY = 'MKASchulkatalogsuche';
 
 export interface SchulkatalogsucheState {
     readonly orte: Ort[];
-    readonly orteLoadingState: RESOURCE_LOAD_STATE;
+    readonly orteLoadState: RESOURCE_LOAD_STATE;
     readonly selectedOrt: Ort | undefined;
     readonly schulen: Schule[];
-    readonly schulenLoadingState: RESOURCE_LOAD_STATE;
+    readonly schulenLoadState: RESOURCE_LOAD_STATE;
     readonly selectedSchule: Schule | undefined;
 }
 
 export const initialSchulkatalogsucheState: SchulkatalogsucheState = {
     orte: [],
-    orteLoadingState: 'not-loaded',
+    orteLoadState: 'not-loaded',
     selectedOrt: undefined,
     schulen: [],
-    schulenLoadingState: 'not-loaded',
+    schulenLoadState: 'not-loaded',
     selectedSchule: undefined,
 };
 
@@ -32,20 +32,20 @@ export const schulkatalogsucheFeature = createFeature({
         on(schulkatalogsucheActions.findOrteSucceeded, (state, { orte }) => ({
             ...state,
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedOrt: undefined,
             selectedSchule: undefined,
         })),
         on(schulkatalogsucheActions.findOrteFailed, (state, { error }) => {
-            return { ...state, orteLoadingState: mapErrorToResourceLoadState(error), selectedOrt: undefined };
+            return { ...state, orteLoadState: mapErrorToResourceLoadState(error), selectedOrt: undefined };
         }),
         on(schulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
             selectedOrt: ort,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
@@ -53,12 +53,12 @@ export const schulkatalogsucheFeature = createFeature({
             if (state.selectedOrt?.kuerzel !== ortId) {
                 return state;
             }
-            return { ...state, schulen, schulenLoadingState: 'loaded', selectedSchule: undefined };
+            return { ...state, schulen, schulenLoadState: 'loaded', selectedSchule: undefined };
         }),
         on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
-                schulenLoadingState: mapErrorToResourceLoadState(error),
+                schulenLoadState: mapErrorToResourceLoadState(error),
                 selectedSchule: undefined,
             };
         }),
@@ -74,7 +74,7 @@ export const schulkatalogsucheFeature = createFeature({
         on(schulkatalogsucheActions.schulenCleared, state => ({
             ...state,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
         on(schulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),

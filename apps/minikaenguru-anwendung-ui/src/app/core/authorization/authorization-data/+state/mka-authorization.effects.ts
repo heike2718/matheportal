@@ -23,9 +23,9 @@ export class MkaAuthorizationEffects {
             ofType(mkaAuthorizationActions.ensureMkaAuthorizationLoaded),
             exhaustMap(() =>
                 this.#store.select(sessionState).pipe(
-                    filter(loadState => loadState !== 'not-loaded'),
+                    filter(LoadState => LoadState !== 'not-loaded'),
                     take(1),
-                    filter(loadState => loadState === 'loaded'),
+                    filter(LoadState => LoadState === 'loaded'),
                     map(() => mkaAuthorizationActions.loadMkaAuthorization())
                 )
             )
@@ -36,7 +36,7 @@ export class MkaAuthorizationEffects {
         return this.#actions.pipe(
             ofType(mkaAuthorizationActions.loadMkaAuthorization),
             withLatestFrom(this.#store.select(fromMkaAuthorization.authorizationLoadState)),
-            filter(([, loadState]) => loadState === 'not-loaded'),
+            filter(([, LoadState]) => LoadState === 'not-loaded'),
             exhaustMap(() =>
                 this.#httpService.loadMkaAuthorization().pipe(
                     map((user: User) => mkaAuthorizationActions.mkaAuthorizationLoaded({ user })),

@@ -8,7 +8,7 @@ const selectLaender = createSelector(selectMKAdminSchulkatalogState, state => st
 
 const selectLaenderLoadad = createSelector(
     selectMKAdminSchulkatalogState,
-    state => state.laenderLoadingState === 'loaded'
+    state => state.laenderLoadState === 'loaded'
 );
 
 const selectSelectedLand = createSelector(selectMKAdminSchulkatalogState, state => state.selectedLand);
@@ -19,7 +19,7 @@ const selectLandSelected = createSelector(selectSelectedLand, land => land !== u
 
 const selectOrte = createSelector(selectMKAdminSchulkatalogState, state => state.orte);
 
-const selectOrteLoaded = createSelector(selectMKAdminSchulkatalogState, state => state.orteLoadingState === 'loaded');
+const selectOrteLoaded = createSelector(selectMKAdminSchulkatalogState, state => state.orteLoadState === 'loaded');
 
 const selectSelectedOrt = createSelector(selectMKAdminSchulkatalogState, state => state.selectedOrt);
 
@@ -33,7 +33,7 @@ const selectSchulen = createSelector(selectMKAdminSchulkatalogState, state => st
 
 const selectSchulenLoaded = createSelector(
     selectMKAdminSchulkatalogState,
-    state => state.schulenLoadingState === 'loaded'
+    state => state.schulenLoadState === 'loaded'
 );
 
 const selectSelectedSchule = createSelector(selectMKAdminSchulkatalogState, state => state.selectedSchule);

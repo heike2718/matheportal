@@ -21,11 +21,11 @@ describe('schulenSelectors', () => {
     ];
 
     const state: SchulenState = {
-        schulenLoadingState: 'loaded',
+        schulenLoadState: 'loaded',
         schulen: schulen,
         wettbewerbskontext: undefined,
-        wettbewerbskontextLoadingState: 'not-loaded',
-        schulkollegiumLoadingState: 'not-loaded',
+        wettbewerbskontextLoadState: 'not-loaded',
+        schulkollegiumLoadState: 'not-loaded',
     };
 
     it('should expose schulen', () => {
@@ -41,10 +41,10 @@ describe('schulenSelectors', () => {
     describe('selectSchulenLloaded', () => {
         const theState: SchulenState = {
             schulen,
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             wettbewerbskontext: undefined,
-            wettbewerbskontextLoadingState: 'not-loaded',
-            schulkollegiumLoadingState: 'not-loaded',
+            wettbewerbskontextLoadState: 'not-loaded',
+            schulkollegiumLoadState: 'not-loaded',
         };
 
         it('should selectSchulenLoaded return false when not-loaded', () => {

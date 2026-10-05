@@ -10,7 +10,7 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
     const mkaAuthFacade = inject(MkaAuthorizationFacade);
     const router = inject(Router);
 
-    return portalSessionFacade.sessionLoadingState$.pipe(
+    return portalSessionFacade.sessionLoadState$.pipe(
         filter(sessionState => sessionState !== 'not-loaded'),
         take(1),
         switchMap(sessionState => {

@@ -12,13 +12,13 @@ import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 export class AuthSessionFacade {
     #store = inject(Store);
 
-    readonly sessionLoadingState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadingState);
+    readonly sessionLoadState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadState);
     readonly user$: Observable<User> = this.#store.select(fromAuth.user);
 
-    readonly sessionLoadingState = toSignal(this.sessionLoadingState$, { initialValue: 'not-loaded' });
+    readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
-    readonly isLoggedIn = computed(() => this.sessionLoadingState() === 'loaded');
+    readonly isLoggedIn = computed(() => this.sessionLoadState() === 'loaded');
     readonly isAdmin = this.#store.selectSignal(fromAuth.isAdmin);
 
     /**

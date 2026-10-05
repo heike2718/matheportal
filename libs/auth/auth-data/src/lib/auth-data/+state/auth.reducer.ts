@@ -6,12 +6,12 @@ import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 const AUTH_FEATURE_KEY = 'MPAuth';
 
 export interface AuthState {
-    readonly sessionLoadingState: RESOURCE_LOAD_STATE;
+    readonly sessionLoadState: RESOURCE_LOAD_STATE;
     readonly user: User;
 }
 
 const initialAuthState: AuthState = {
-    sessionLoadingState: 'not-loaded',
+    sessionLoadState: 'not-loaded',
     user: anonymousUser,
 };
 
@@ -20,29 +20,29 @@ export const authFeature = createFeature({
     reducer: createReducer<AuthState>(
         initialAuthState,
         on(authActions.invalidOAuthFlowHash, () => {
-            return { ...initialAuthState, sessionLoadingState: 'technical-error' };
+            return { ...initialAuthState, sessionLoadState: 'technical-error' };
         }),
         on(authActions.signedUp, () => {
-            return { ...initialAuthState, sessionLoadingState: 'unauthorized' };
+            return { ...initialAuthState, sessionLoadState: 'unauthorized' };
         }),
         on(authActions.sessionCreated, (state, action) => {
-            return { ...state, user: action.user, sessionLoadingState: 'loaded' };
+            return { ...state, user: action.user, sessionLoadState: 'loaded' };
         }),
         on(authActions.createSessionFailed, state => {
-            return { ...state, user: anonymousUser, sessionLoadingState: 'technical-error' };
+            return { ...state, user: anonymousUser, sessionLoadState: 'technical-error' };
         }),
         on(authActions.sessionValidated, (state, action) => {
-            return { ...state, user: action.user, sessionLoadingState: 'loaded' };
+            return { ...state, user: action.user, sessionLoadState: 'loaded' };
         }),
         on(authActions.sessionValidationFailed, (state, { reason }) => {
-            const loadingState: RESOURCE_LOAD_STATE = reason === 'technical' ? 'technical-error' : 'unauthorized';
-            return { ...state, user: anonymousUser, sessionLoadingState: loadingState };
+            const LoadState: RESOURCE_LOAD_STATE = reason === 'technical' ? 'technical-error' : 'unauthorized';
+            return { ...state, user: anonymousUser, sessionLoadState: LoadState };
         }),
         on(authActions.userAugmented, (state, action) => {
             return { ...state, user: action.user };
         }),
         on(authActions.loggedOut, () => {
-            return { ...initialAuthState, sessionLoadingState: 'unauthorized' };
+            return { ...initialAuthState, sessionLoadState: 'unauthorized' };
         })
     ),
 });

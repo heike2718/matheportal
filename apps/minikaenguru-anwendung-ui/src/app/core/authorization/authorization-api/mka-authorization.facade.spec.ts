@@ -48,17 +48,17 @@ describe('MkaAuthorizationFacade tests', () => {
 
     const authSessionFacadeMock = {
         user: computed(() => anonymousUser),
-        sessionLoadingState: computed(() => 'not-loaded'),
+        sessionLoadState: computed(() => 'not-loaded'),
     };
 
     async function setup(
-        sessionLoadingState: RESOURCE_LOAD_STATE,
+        sessionLoadState: RESOURCE_LOAD_STATE,
         user: User,
         authorizationLoadState: AuthorizationLoadState,
         berechtigungstyp: MinikaenguruBerechtigungstyp
     ) {
         authSessionFacadeMock.user = computed(() => user);
-        authSessionFacadeMock.sessionLoadingState = computed(() => sessionLoadingState);
+        authSessionFacadeMock.sessionLoadState = computed(() => sessionLoadState);
 
         TestBed.configureTestingModule({
             providers: [
@@ -158,11 +158,11 @@ describe('MkaAuthorizationFacade tests', () => {
 
     describe('ensureAuthorizationLoaded tests', () => {
         it.each(['not-loaded', 'loaded', 'unauthorized', 'technical-error'] as const)(
-            'dispatches the ensure action when sessionLoadingState is %s',
-            async sessionLoadingState => {
+            'dispatches the ensure action when sessionLoadState is %s',
+            async sessionLoadState => {
                 await setup(
-                    sessionLoadingState,
-                    sessionLoadingState === 'loaded' ? loggedInStandardUser : anonymousUser,
+                    sessionLoadState,
+                    sessionLoadState === 'loaded' ? loggedInStandardUser : anonymousUser,
                     'not-loaded',
                     berechtigungstypNone
                 );

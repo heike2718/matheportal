@@ -10,19 +10,19 @@ import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrpe
 export const SCHULEN_FEATURE_KEY = 'MKASchulen';
 
 export interface SchulenState {
-    readonly schulenLoadingState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly schulenLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
     readonly schulen: Schule[];
     readonly wettbewerbskontext: SchuleWettbewerbskontext | undefined;
-    readonly wettbewerbskontextLoadingState: AUTHORIZED_RESOURCE_LOAD_STATE;
-    readonly schulkollegiumLoadingState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly wettbewerbskontextLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly schulkollegiumLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
 }
 
 export const initialSchulenState: SchulenState = {
-    schulenLoadingState: 'not-loaded',
+    schulenLoadState: 'not-loaded',
     schulen: [],
     wettbewerbskontext: undefined,
-    wettbewerbskontextLoadingState: 'not-loaded',
-    schulkollegiumLoadingState: 'not-loaded',
+    wettbewerbskontextLoadState: 'not-loaded',
+    schulkollegiumLoadState: 'not-loaded',
 };
 
 export const schulenFeature = createFeature({
@@ -31,37 +31,37 @@ export const schulenFeature = createFeature({
         initialSchulenState,
         on(schulenActions.schulenGeladen, (state, { schulen }) => ({
             ...state,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
             schulen,
         })),
         on(schulenActions.schulenLadenFailed, (state, { error }) => ({
             ...state,
-            schulenLoadingState: mapErrorToAuthorizedResourceLoadState(error),
+            schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
             schulen: [],
-            wettbewerbskontextLoadingState: 'not-loaded',
+            wettbewerbskontextLoadState: 'not-loaded',
             wettbewerbskontext: undefined,
-            schulkollegiumLoadingState: 'not-loaded',
+            schulkollegiumLoadState: 'not-loaded',
         })),
         on(schulenActions.wettbewerbskontextGeladen, (state, { wettbewerbskontext }) => ({
             ...state,
             wettbewerbskontext: wettbewerbskontext,
-            wettbewerbskontextLoadingState: 'loaded',
+            wettbewerbskontextLoadState: 'loaded',
         })),
         on(schulenActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
             ...state,
-            wettbewerbskontextLoadingState: mapErrorToAuthorizedResourceLoadState(error),
+            wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error),
             wettbewerbskontext: undefined,
-            schulkollegiumLoadingState: 'not-loaded',
+            schulkollegiumLoadState: 'not-loaded',
         })),
         on(schulenActions.schulkollegiumGeladen, (state, { schulkollegium }) => {
             if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel === schulkollegium.kuerzel) {
                 return {
                     ...state,
                     wettbewerbskontext: { ...state.wettbewerbskontext, kollegen: schulkollegium.kollegium },
-                    schulkollegiumLoadingState: 'loaded',
+                    schulkollegiumLoadState: 'loaded',
                 };
             }
-            return { ...state, schulkollegiumLoadingState: 'loaded' };
+            return { ...state, schulkollegiumLoadState: 'loaded' };
         }),
         on(schulenActions.schulkollegiumLadenFailed, (state, { error }) => {
             const neuerWettbewerbskontext = !state.wettbewerbskontext
@@ -70,19 +70,19 @@ export const schulenFeature = createFeature({
             return {
                 ...state,
                 wettbewerbskontext: neuerWettbewerbskontext,
-                schulkollegiumLoadingState: mapErrorToAuthorizedResourceLoadState(error),
+                schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
             };
         }),
         on(schulenActions.schulkollegiumLadenFailed, (state, { error }) => ({
             ...state,
-            schulkollegiumLoadingState: mapErrorToAuthorizedResourceLoadState(error),
+            schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
         })),
         on(wettbewerbsorganisationVerlassen, state => {
             return {
                 ...state,
                 wettbewerbskontext: undefined,
-                wettbewerbskontextLoadingState: 'not-loaded',
-                schulkollegiumLoadingState: 'not-loaded',
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
             };
         }),
         on(userLoggedOut, () => initialSchulenState)
