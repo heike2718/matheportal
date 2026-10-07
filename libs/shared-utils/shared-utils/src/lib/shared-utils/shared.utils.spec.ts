@@ -279,6 +279,14 @@ describe('shared utils tests', () => {
             statusText: 'conflict',
             error: conflictErrorResponse,
         });
+        const preconditionFailed = new HttpErrorResponse({
+            status: 412,
+            statusText: 'precondition',
+            error: {
+                message: 'Die Aktion kann leider nicht durchgeführt werden (Vorbedingung nicht erfüllt)',
+                constraintViolations: [],
+            },
+        });
 
         it('maps unauthorized', () => {
             expect(mapErrorToMessage(unauthorized)).toBe('Sie haben leider keine Berechtigung für diese Aktion');
@@ -299,6 +307,11 @@ describe('shared utils tests', () => {
         });
         it('maps conflict when it contains an ErrorResponse', () => {
             expect(mapErrorToMessage(conflict)).toBe('Die Aktion kann leider nicht durchgeführt werden (Konflikt)');
+        });
+        it('maps preconditionFailed when it contains an ErrorResponse', () => {
+            expect(mapErrorToMessage(preconditionFailed)).toBe(
+                'Die Aktion kann leider nicht durchgeführt werden (Vorbedingung nicht erfüllt)'
+            );
         });
         it('maps conflict request when it does not contain an ErrorResponse', () => {
             expect(mapErrorToMessage(new HttpErrorResponse({ status: 409 }))).toBe(expectedTechnischeFehlermeldung);

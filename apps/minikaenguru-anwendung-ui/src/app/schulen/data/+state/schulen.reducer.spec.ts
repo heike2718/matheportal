@@ -125,7 +125,7 @@ describe('schulenReducer', () => {
             schulkollegiumLoadState: 'loaded',
         };
 
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when technical error', () => {
+        it('should not reset previously loaded wettbewerbskontext and schulkollegium but schulen when technical error', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulenLadenFailed({ error: technicalErrorResponse })
@@ -133,12 +133,12 @@ describe('schulenReducer', () => {
             expect(state).toEqual({
                 schulenLoadState: 'technical-error',
                 schulen: [],
-                wettbewerbskontext: undefined,
-                wettbewerbskontextLoadState: 'not-loaded',
-                schulkollegiumLoadState: 'not-loaded',
+                wettbewerbskontext,
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
             });
         });
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when session expired', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadState when session expired', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulenLadenFailed({ error: unauthorizedErrorResponse })
@@ -151,7 +151,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'not-loaded',
             });
         });
-        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the LoadState when forbidden', () => {
+        it('should reset previously loaded wettbewerbskontext and schulkollegium and set the loadState when forbidden', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulenLadenFailed({ error: forbiddenErrorResponse })

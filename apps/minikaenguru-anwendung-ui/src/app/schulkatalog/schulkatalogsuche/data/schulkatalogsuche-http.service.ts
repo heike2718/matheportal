@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ort, Schule } from '../../../core/model/schulkatalog.model';
 import { paths } from '../../../generated/api-types';
+import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
 export class SchulkatalogsucheHttpService {
@@ -11,7 +12,11 @@ export class SchulkatalogsucheHttpService {
     #httpClient = inject(HttpClient);
 
     public findOrte(term: string): Observable<Ort[]> {
-        const options = { params: new HttpParams().set('name', term.trim()), withCredentials: true };
+        const options = {
+            params: new HttpParams().set('name', term.trim()),
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        };
         const path: keyof paths = '/api/schulkatalog/orte';
 
         return this.#httpClient.get<Ort[]>(this.#config.apiUrl + path, options);

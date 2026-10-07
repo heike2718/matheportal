@@ -82,6 +82,7 @@ export function mapErrorToMessage(error: Error): string {
         switch (httpError.status) {
             case HttpStatusCode.BadRequest:
             case HttpStatusCode.Conflict:
+            case HttpStatusCode.PreconditionFailed:
                 errorResponse = extractErrorResponse(httpError);
                 break;
             case HttpStatusCode.Unauthorized:

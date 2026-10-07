@@ -37,14 +37,24 @@ export const schulenFeature = createFeature({
             schulenLoadState: 'loaded',
             schulen,
         })),
-        on(SchuleActions.schulenLadenFailed, (state, { error }) => ({
-            ...state,
-            schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
-            schulen: [],
-            wettbewerbskontextLoadState: 'not-loaded',
-            wettbewerbskontext: undefined,
-            schulkollegiumLoadState: 'not-loaded',
-        })),
+        on(SchuleActions.schulenLadenFailed, (state, { error }) => {
+            const newSchulenLoadState = mapErrorToAuthorizedResourceLoadState(error);
+            if (newSchulenLoadState === 'technical-error') {
+                return {
+                    ...state,
+                    schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
+                    schulen: [],
+                };
+            }
+            return {
+                ...state,
+                schulenLoadState: newSchulenLoadState,
+                schulen: [],
+                wettbewerbskontextLoadState: 'not-loaded',
+                wettbewerbskontext: undefined,
+                schulkollegiumLoadState: 'not-loaded',
+            };
+        }),
         on(prepareWettbewerbsorganisation, state => ({
             ...state,
             wettbewerbskontext: undefined,

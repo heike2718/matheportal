@@ -4,7 +4,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Schule } from '../model/schulkatalog.model';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
-import { SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
+import { ERROR_MESSAGE_HANDLED_LOCALLY, SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 
 @Injectable()
 export class ArbeitskontextHttpService {
@@ -17,6 +17,7 @@ export class ArbeitskontextHttpService {
      */
     public loadLehrpersonSchulen(): Observable<Schule[]> {
         return this.#httpClient.get<Schule[]>(this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/me/schulen', {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
     }
@@ -28,6 +29,7 @@ export class ArbeitskontextHttpService {
      */
     public loadSchuleWettbewerbskontext(schuleId: string): Observable<SchuleWettbewerbskontext> {
         return this.#httpClient.get<SchuleWettbewerbskontext>(this.#config.apiUrl + '/api/schulen/' + schuleId, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
     }
@@ -39,7 +41,7 @@ export class ArbeitskontextHttpService {
      */
     public loadSchulkollegium(schuleId: string): Observable<Schulkollegium> {
         return this.#httpClient.get<Schulkollegium>(this.#config.apiUrl + '/api/schulen/' + schuleId + '/kollegen', {
-            context: new HttpContext().set(SILENT_LOAD_CONTEXT, true),
+            context: new HttpContext().set(SILENT_LOAD_CONTEXT, true).set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
     }

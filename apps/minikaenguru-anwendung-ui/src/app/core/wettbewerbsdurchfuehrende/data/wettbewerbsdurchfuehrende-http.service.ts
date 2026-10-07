@@ -4,9 +4,9 @@ import {
     WettbewerbsdurchfuehrenderRequest,
 } from '../model/wettbewerbsdurchfuehrende.model';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
-import { Schule } from '../../model/schulkatalog.model';
+import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden, weil sonst das InjectionToken im root gesucht wird!!!
 export class WettbewerbsdurchfuehrendeHttpService {
@@ -24,7 +24,7 @@ export class WettbewerbsdurchfuehrendeHttpService {
         return this.#httpClient.post<Wettbewerbsdurchfuehrender>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
             requestDto,
-            { withCredentials: true }
+            { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true }
         );
     }
 
@@ -35,7 +35,7 @@ export class WettbewerbsdurchfuehrendeHttpService {
     public loadWettbewerbsdurchfuehrenden(): Observable<Wettbewerbsdurchfuehrender> {
         return this.#httpClient.get<Wettbewerbsdurchfuehrender>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
-            { withCredentials: true }
+            { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true }
         );
     }
 }
