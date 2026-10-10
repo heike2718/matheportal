@@ -3,11 +3,20 @@ import { wettbewerbsdurchfuehrendeFeature } from './wettbewerbsdurchfuehrende.re
 
 const { selectMKAWettbewerbsdurchfuehrendeState } = wettbewerbsdurchfuehrendeFeature;
 
-const wettbewerbsdurchfuehrender = createSelector(
+const selectDurchfuehrender = createSelector(selectMKAWettbewerbsdurchfuehrendeState, state => state.durchfuehrender);
+
+const selectDurchfuehrenderLoadState = createSelector(
     selectMKAWettbewerbsdurchfuehrendeState,
-    state => state.wettbewerbsdurchfuehrender
+    state => state.durchfuehrenderLoadState
+);
+
+const selectDurchfuehrenderGeladen = createSelector(
+    selectDurchfuehrenderLoadState,
+    loadState => loadState === 'loaded'
 );
 
 export const fromWettbewerbsdurchfuehrender = {
-    wettbewerbsdurchfuehrender,
+    selectDurchfuehrender,
+    selectDurchfuehrenderLoadState,
+    selectDurchfuehrenderGeladen,
 };

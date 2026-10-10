@@ -12,6 +12,7 @@ export const WettbewerbsdurchfuehrendeActions = createActionGroup({
         durchfuehrendenAnlegen: props<{ requestDto: WettbewerbsdurchfuehrenderRequest }>(),
         durchfuehrenderAngelegt: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
         durchfuehrendenAnlegenFailed: props<{ error: Error }>(),
+        ensureDurchfuehrenderGeladen: emptyProps(),
         durchfuehrendenLaden: emptyProps(),
         durchfuehrenderGeladen: props<{ wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender }>(),
         durchfuehrendenLadenFailed: props<{ error: Error }>(),

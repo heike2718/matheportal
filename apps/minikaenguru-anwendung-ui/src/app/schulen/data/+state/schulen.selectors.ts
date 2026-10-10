@@ -6,6 +6,8 @@ const { selectMKASchulenState } = schulenFeature;
 
 export const selectSchulen = createSelector(selectMKASchulenState, state => state.schulen);
 
+export const selectSchulenLoadState = createSelector(selectMKASchulenState, state => state.schulenLoadState);
+
 export const selectSchulenLoaded = createSelector(selectMKASchulenState, state => state.schulenLoadState === 'loaded');
 
 export const selectSchulauswahlMoeglich = createSelector(

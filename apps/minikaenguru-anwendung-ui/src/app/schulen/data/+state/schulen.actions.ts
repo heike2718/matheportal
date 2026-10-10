@@ -5,6 +5,7 @@ import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/sc
 export const SchuleActions = createActionGroup({
     source: 'MKA Schule',
     events: {
+        ensureSchulenGeladen: emptyProps(),
         schulenLaden: emptyProps(),
         schulenGeladen: props<{ schulen: Schule[] }>(),
         schulenLadenFailed: props<{ error: Error }>(),

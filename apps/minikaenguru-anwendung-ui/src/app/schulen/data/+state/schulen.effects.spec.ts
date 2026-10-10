@@ -1,19 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { SchulenEffects } from './schulen.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import {
-    DURCHFUEHRUNGSART,
-    Wettbewerbsdurchfuehrender,
-    ZUGANGSBERECHTIGUNG_UNTERLAGEN,
-} from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import {
-    durchfuehrenderAngelegt,
-    durchfuehrenderGeladen,
-} from '../../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
 import { SchuleActions } from './schulen.actions';
 import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
@@ -25,6 +16,8 @@ import {
 } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { Router } from '@angular/router';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { selectSchulenLoadState } from './schulen.selectors';
 
 describe('SchulenEffects', () => {
     const expectedErrorMessage =
@@ -44,6 +37,7 @@ describe('SchulenEffects', () => {
 
     let action$: Subject<Action>;
     let effects: SchulenEffects;
+    let store: MockStore;
 
     let httpServiceMock: {
         loadLehrpersonSchulen: ReturnType<typeof vi.fn>;
@@ -71,6 +65,7 @@ describe('SchulenEffects', () => {
             providers: [
                 SchulenEffects,
                 provideMockActions(() => action$),
+                provideMockStore(),
                 { provide: Router, useValue: routerMock },
                 {
                     provide: ArbeitskontextHttpService,
@@ -84,64 +79,53 @@ describe('SchulenEffects', () => {
         });
 
         effects = TestBed.inject(SchulenEffects);
+        store = TestBed.inject(Store) as MockStore;
     });
 
-    describe('checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen', () => {
-        let wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
-            durchfuehrungsart: DURCHFUEHRUNGSART.privat,
-            newsletter: false,
-            zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
-        };
+    describe('ensureSchulenGeladen', () => {
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to wettbewerbLaden when loadState %s',
+            async loadState => {
+                store.overrideSelector(selectSchulenLoadState, loadState);
+                store.refreshState();
 
-        it('should not dispatch any action when durchfuehrenderAngelegt DURCHFUEHRUNGSART.privat', async () => {
-            const emittedActions: Action[] = [];
-            const subscription = effects.checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
+                const emittedActions: Action[] = [];
 
-            action$.next(durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender }));
+                const subscription = effects.ensureSchulenGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
 
-            expect(emittedActions).toEqual([]);
+                try {
+                    action$.next(SchuleActions.ensureSchulenGeladen());
 
-            subscription.unsubscribe();
-        });
+                    expect(emittedActions).toEqual([SchuleActions.schulenLaden()]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
 
-        it('should not dispatch any action when durchfuehrenderGeladen DURCHFUEHRUNGSART.privat', async () => {
-            const emittedActions: Action[] = [];
-            const subscription = effects.checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
+        it.each(['loaded', 'unauthorized'] as const)(
+            'should not map to wettbewerbLaden when state is %s',
+            async loadState => {
+                store.overrideSelector(selectSchulenLoadState, loadState);
+                store.refreshState();
 
-            action$.next(durchfuehrenderGeladen({ wettbewerbsdurchfuehrender }));
+                const emittedActions: Action[] = [];
 
-            expect(emittedActions).toEqual([]);
+                const subscription = effects.ensureSchulenGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
 
-            subscription.unsubscribe();
-        });
+                try {
+                    action$.next(SchuleActions.ensureSchulenGeladen());
 
-        it('should dispatch schulenLaden when durchfuehrenderAngelegt DURCHFUEHRUNGSART.schule', async () => {
-            wettbewerbsdurchfuehrender = { ...wettbewerbsdurchfuehrender, durchfuehrungsart: DURCHFUEHRUNGSART.schule };
-
-            const promise = firstValueFrom(effects.checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$);
-
-            action$.next(durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender }));
-
-            const emitted = await promise;
-
-            expect(emitted).toEqual(SchuleActions.schulenLaden());
-        });
-
-        it('should dispatch schulenLaden when durchfuehrenderGeladen DURCHFUEHRUNGSART.schule', async () => {
-            wettbewerbsdurchfuehrender = { ...wettbewerbsdurchfuehrender, durchfuehrungsart: DURCHFUEHRUNGSART.schule };
-
-            const promise = firstValueFrom(effects.checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$);
-
-            action$.next(durchfuehrenderGeladen({ wettbewerbsdurchfuehrender }));
-
-            const emitted = await promise;
-
-            expect(emitted).toEqual(SchuleActions.schulenLaden());
-        });
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     });
 
     describe('schulenLaden$', () => {

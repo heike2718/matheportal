@@ -3,9 +3,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { WettbewerbActions } from './wettbewerb.actions';
-import { catchError, exhaustMap, filter, map, of, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
-import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 import { Store } from '@ngrx/store';
 import { fromWettbewerb } from './wettbewerb.selectors';
 
@@ -15,13 +14,6 @@ export class WettbewerbEffects {
     #httpService = inject(WettbewerbHttpService);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
-
-    wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
-        return this.#actions.pipe(
-            ofType(mkaAuthorizationLoaded),
-            map(() => WettbewerbActions.wettbewerbLaden())
-        );
-    });
 
     readonly ensureWettbewerbGeladen$ = createEffect(() =>
         this.#actions.pipe(

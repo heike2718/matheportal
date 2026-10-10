@@ -18,6 +18,14 @@ describe('SchuleActions', () => {
         },
     };
 
+    it('should create the ensureSchulenGeladen action', () => {
+        const action = SchuleActions.ensureSchulenGeladen();
+
+        expect(action).toEqual({
+            type: '[MKA Schule] ensureSchulenGeladen',
+        });
+    });
+
     it('should create the schulenLaden action', () => {
         const action = SchuleActions.schulenLaden();
 

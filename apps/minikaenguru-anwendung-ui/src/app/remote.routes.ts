@@ -21,6 +21,7 @@ import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.s
 import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
 import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
 import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
+import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
 
 export const remoteRoutes: Routes = [
     {
@@ -75,6 +76,7 @@ export const remoteRoutes: Routes = [
                 useValue: minikaenguruAnwendungConfiguration,
             },
             ...mkaAuthorizationDataProvider,
+            ...ablaufsteuerungDataProvider,
             ...wettbewerbDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,

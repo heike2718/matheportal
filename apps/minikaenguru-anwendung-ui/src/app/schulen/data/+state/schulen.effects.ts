@@ -1,12 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import {
-    durchfuehrenderAngelegt,
-    durchfuehrenderGeladen,
-} from '../../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
-import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
-import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { SchuleActions } from './schulen.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
@@ -18,6 +13,8 @@ import {
 import { Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { LehrpersonActions } from '../../../lehrperson/data/+state/lehrperson.actions';
+import { Store } from '@ngrx/store';
+import { selectSchulenLoadState } from './schulen.selectors';
 
 @Injectable()
 export class SchulenEffects {
@@ -25,17 +22,16 @@ export class SchulenEffects {
     #httpService = inject(ArbeitskontextHttpService);
     #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
+    #store = inject(Store);
 
-    readonly checkLoadSchulenOnWettbewerbsdurchfuehrenderGeladen$ = createEffect(() => {
-        return this.#actions.pipe(
-            ofType(durchfuehrenderGeladen, durchfuehrenderAngelegt),
-            filter(
-                ({ wettbewerbsdurchfuehrender }) =>
-                    wettbewerbsdurchfuehrender.durchfuehrungsart === DURCHFUEHRUNGSART.schule
-            ),
+    readonly ensureSchulenGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchuleActions.ensureSchulenGeladen),
+            withLatestFrom(this.#store.select(selectSchulenLoadState)),
+            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
             map(() => SchuleActions.schulenLaden())
-        );
-    });
+        )
+    );
 
     readonly schulenLaden$ = createEffect(() => {
         return this.#actions.pipe(

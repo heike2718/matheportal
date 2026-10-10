@@ -43,18 +43,21 @@ describe('wettebwerbFeature', () => {
     });
 
     describe('wettbewerbLaden', () => {
-        it('should not reset the wettbewerbLoadState when loaded on wettbewerbLaden', () => {
-            const previousState: WettbewerbState = {
-                wettbewerbLoadState: 'loaded',
-                wettbewerb,
-            };
+        it.each(['not-loaded', 'loaded'] as const)(
+            'should not reset the wettbewerbLoadState when %s on wettbewerbLaden',
+            loadState => {
+                const previousState: WettbewerbState = {
+                    wettbewerbLoadState: loadState,
+                    wettbewerb,
+                };
 
-            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
+                const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
 
-            expect(state).toBe(previousState);
-        });
+                expect(state).toBe(previousState);
+            }
+        );
 
-        it('should reset the wettbewerbLoadState when technical on wettbewerbLaden', () => {
+        it('should reset the wettbewerbLoadState when technical-error on wettbewerbLaden', () => {
             const previousState: WettbewerbState = {
                 wettbewerbLoadState: 'technical-error',
                 wettbewerb: undefined,
@@ -66,17 +69,6 @@ describe('wettebwerbFeature', () => {
                 wettbewerbLoadState: 'not-loaded',
                 wettbewerb: undefined,
             });
-        });
-
-        it('should return the same state when wettbewerbLaden and not-loaded', () => {
-            const previousState: WettbewerbState = {
-                wettbewerbLoadState: 'not-loaded',
-                wettbewerb: undefined,
-            };
-
-            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
-
-            expect(state).toBe(previousState);
         });
     });
 

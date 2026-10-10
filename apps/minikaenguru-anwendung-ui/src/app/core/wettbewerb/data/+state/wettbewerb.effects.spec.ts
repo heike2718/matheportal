@@ -1,5 +1,5 @@
 import { Action, Store } from '@ngrx/store';
-import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
+import { firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { WettbewerbEffects } from './wettbewerb.effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
@@ -8,11 +8,8 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../model/wettbewerb.model';
 import { WettbewerbActions } from './wettbewerb.actions';
-import { User } from '@matheportal/auth-model';
-import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { fromWettbewerb } from './wettbewerb.selectors';
-import { a } from 'node_modules/vitest/dist/chunks/suite.d.udJtyAgw';
 
 describe('WettbewerbEffects', () => {
     let action$: Subject<Action>;
@@ -67,99 +64,49 @@ describe('WettbewerbEffects', () => {
     });
 
     describe('ensureWettbewerbGeladen$', () => {
-        it('should map to wettbewerbLaden when wettbewerb is not loaded', async () => {
-            store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'not-loaded');
-            store.refreshState();
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to wettbewerbLaden when loadState %s',
+            async loadState => {
+                store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, loadState);
+                store.refreshState();
 
-            const emittedActions: Action[] = [];
+                const emittedActions: Action[] = [];
 
-            const subscription = effects.ensureWettbewerbGeladen$.subscribe({
-                next: action => emittedActions.push(action),
-            });
+                const subscription = effects.ensureWettbewerbGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
 
-            try {
-                action$.next(WettbewerbActions.ensureWettbewerbGeladen());
+                try {
+                    action$.next(WettbewerbActions.ensureWettbewerbGeladen());
 
-                expect(emittedActions).toEqual([WettbewerbActions.wettbewerbLaden()]);
-            } finally {
-                subscription.unsubscribe();
+                    expect(emittedActions).toEqual([WettbewerbActions.wettbewerbLaden()]);
+                } finally {
+                    subscription.unsubscribe();
+                }
             }
-        });
+        );
 
-        it('should map to wettbewerbLaden when wettbewerbLoadSate is technical-error', async () => {
-            store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'technical-error');
-            store.refreshState();
+        it.each(['loaded', 'unauthorized'] as const)(
+            'should not map to wettbewerbLaden when state is %s',
+            async loadState => {
+                store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, loadState);
+                store.refreshState();
 
-            const emittedActions: Action[] = [];
+                const emittedActions: Action[] = [];
 
-            const subscription = effects.ensureWettbewerbGeladen$.subscribe({
-                next: action => emittedActions.push(action),
-            });
+                const subscription = effects.ensureWettbewerbGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
 
-            try {
-                action$.next(WettbewerbActions.ensureWettbewerbGeladen());
+                try {
+                    action$.next(WettbewerbActions.ensureWettbewerbGeladen());
 
-                expect(emittedActions).toEqual([WettbewerbActions.wettbewerbLaden()]);
-            } finally {
-                subscription.unsubscribe();
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
             }
-        });
-
-        it('should not map to wettbewerbLaden when wettbewerb is already loaded', async () => {
-            store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'loaded');
-            store.refreshState();
-
-            const emittedActions: Action[] = [];
-
-            const subscription = effects.ensureWettbewerbGeladen$.subscribe({
-                next: action => emittedActions.push(action),
-            });
-
-            try {
-                action$.next(WettbewerbActions.ensureWettbewerbGeladen());
-
-                expect(emittedActions).toEqual([]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-
-        it('should not map to wettbewerbLaden when wettbewerbLoadState is unauthorized', async () => {
-            store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'unauthorized');
-            store.refreshState();
-
-            const emittedActions: Action[] = [];
-
-            const subscription = effects.ensureWettbewerbGeladen$.subscribe({
-                next: action => emittedActions.push(action),
-            });
-
-            try {
-                action$.next(WettbewerbActions.ensureWettbewerbGeladen());
-
-                expect(emittedActions).toEqual([]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-    });
-
-    describe('wettbewerbLadenOnAuthorizationLoaded$', () => {
-        it('should dispatch loadWettbewerb', async () => {
-            const user: User = {
-                anonym: false,
-                berechtigungen: ['SCHULE', 'STANDARD'],
-                fullName: 'Amy',
-            };
-
-            const promise = firstValueFrom(effects.wettbewerbLadenOnAuthorizationLoaded$);
-
-            action$.next(mkaAuthorizationLoaded({ user }));
-
-            const emitted = await promise;
-
-            expect(emitted).toEqual(WettbewerbActions.wettbewerbLaden());
-        });
+        );
     });
 
     describe('wettbewerbLaden$', () => {
@@ -244,7 +191,7 @@ describe('WettbewerbEffects', () => {
             }
         });
 
-        it('should call the httpService and mat to loadWettbewerbFailed when httpErrorResponse', async () => {
+        it('should call the httpService and map to loadWettbewerbFailed when httpErrorResponse', async () => {
             store.overrideSelector(fromWettbewerb.selectWettbewerbLoaded, false);
             store.refreshState();
 
@@ -293,27 +240,29 @@ describe('WettbewerbEffects', () => {
                 emittedActions.push(action);
             });
 
-            action$.next(WettbewerbActions.wettbewerbLaden());
+            try {
+                action$.next(WettbewerbActions.wettbewerbLaden());
 
-            httpFirst$.error(httpServerErrorResponse);
+                httpFirst$.error(httpServerErrorResponse);
 
-            expect(emittedActions).toEqual([
-                WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
-            ]);
+                expect(emittedActions).toEqual([
+                    WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
+                ]);
 
-            action$.next(WettbewerbActions.wettbewerbLaden());
+                action$.next(WettbewerbActions.wettbewerbLaden());
 
-            expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadWettbewerb).toHaveBeenCalledTimes(2);
 
-            httpSecond$.next(wettbewerb);
-            httpSecond$.complete();
+                httpSecond$.next(wettbewerb);
+                httpSecond$.complete();
 
-            expect(emittedActions).toEqual([
-                WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
-                WettbewerbActions.wettbewerbGeladen({ wettbewerb }),
-            ]);
-
-            subscription.unsubscribe();
+                expect(emittedActions).toEqual([
+                    WettbewerbActions.wettbewerbLadenFailed({ error: httpServerErrorResponse }),
+                    WettbewerbActions.wettbewerbGeladen({ wettbewerb }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
     });
 
