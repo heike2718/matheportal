@@ -60,6 +60,14 @@
         overflow-wrap: anywhere;
     }
 
+    &__hint {
+        max-width: 44rem;
+        margin: mp-theme.$mp-space-3 0 0;
+        color: mp-theme.$mp-color-text-muted;
+        font-size: mp-theme.$mp-font-size-s;
+        line-height: mp-theme.$mp-line-height-normal;
+    }
+
     &__content,
     &__school,
     &__participations {

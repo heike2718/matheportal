@@ -391,4 +391,62 @@ describe('schulenReducer', () => {
             expect(state).toBe(initialSchulenState);
         });
     });
+
+    describe('race condition between wettbewerbskontext and schulen', () => {
+        it('should preserve wettbewerbskontext when wettbewerbskontext loaded before schulenLadenFailes', () => {
+            const previousState: SchulenState = {
+                schulenLoadState: 'not-loaded',
+                schulen: [],
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            };
+
+            const firstState = schulenFeature.reducer(
+                previousState,
+                SchuleActions.wettbewerbskontextGeladen({ wettbewerbskontext })
+            );
+
+            const state = schulenFeature.reducer(
+                firstState,
+                SchuleActions.schulenLadenFailed({ error: technicalErrorResponse })
+            );
+
+            expect(state).toEqual({
+                schulen: [],
+                schulenLoadState: 'technical-error',
+                wettbewerbskontext,
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            });
+        });
+
+        it('should preserve wettbewerbskontext when wettbewerbskontext loaded after schulenLadenFailes', () => {
+            const previousState: SchulenState = {
+                schulenLoadState: 'not-loaded',
+                schulen: [],
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'not-loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            };
+
+            const firstState = schulenFeature.reducer(
+                previousState,
+                SchuleActions.schulenLadenFailed({ error: technicalErrorResponse })
+            );
+
+            const state = schulenFeature.reducer(
+                firstState,
+                SchuleActions.wettbewerbskontextGeladen({ wettbewerbskontext })
+            );
+
+            expect(state).toEqual({
+                schulen: [],
+                schulenLoadState: 'technical-error',
+                wettbewerbskontext,
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            });
+        });
+    });
 });
