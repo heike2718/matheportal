@@ -305,6 +305,93 @@ describe('SchulenEffects', () => {
         });
     });
 
+    describe('schulenGeladen$', () => {
+        it('should map to prepareWettbewerbsdurchguehrung when exactly 1 school was loaded', async () => {
+            const schule: Schule = {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 3,
+                    land: {
+                        kuerzel: 'DE-TH',
+                        name: 'Thüringen',
+                        anzahlOrte: 354,
+                    },
+                },
+            };
+
+            const promise = firstValueFrom(effects.schulenGeladen$);
+
+            action$.next(SchuleActions.schulenGeladen({ schulen: [schule] }));
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(wettbewerbsorganisationGestartet({ schulkuerzel: 'S1234567' }));
+        });
+
+        it('should not emit an action when there are more than one schools', async () => {
+            const schule1: Schule = {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 3,
+                    land: {
+                        kuerzel: 'DE-TH',
+                        name: 'Thüringen',
+                        anzahlOrte: 354,
+                    },
+                },
+            };
+
+            const schule2: Schule = {
+                kuerzel: 'S7654321',
+                name: 'Krautschule',
+                ort: {
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 3,
+                    land: {
+                        kuerzel: 'DE-TH',
+                        name: 'Thüringen',
+                        anzahlOrte: 354,
+                    },
+                },
+            };
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulenGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.schulenGeladen({ schulen: [schule1, schule2] }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not emit an action when there is no school', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulenGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.schulenGeladen({ schulen: [] }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+    });
+
     describe('wettbewerbsorganisationGestartet$', () => {
         it('should navigate to lehrperson/schule ', async () => {
             const schule: Schule = {

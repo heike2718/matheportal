@@ -17,6 +17,7 @@ import {
 } from '../../../lehrperson/api/lehrperson-store.events';
 import { Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { LehrpersonActions } from '../../../lehrperson/data/+state/lehrperson.actions';
 
 @Injectable()
 export class SchulenEffects {
@@ -47,6 +48,18 @@ export class SchulenEffects {
             )
         );
     });
+
+    readonly schulenGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchuleActions.schulenGeladen),
+            filter(({ schulen }) => schulen.length === 1),
+            map(({ schulen }) =>
+                LehrpersonActions.wettbewerbsorganisationGestartet({
+                    schulkuerzel: schulen[0].kuerzel,
+                })
+            )
+        )
+    );
 
     readonly wettbewerbsorganisationGestartet$ = createEffect(
         () =>
