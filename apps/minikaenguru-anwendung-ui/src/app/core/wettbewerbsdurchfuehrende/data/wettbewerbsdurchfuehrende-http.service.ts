@@ -29,13 +29,13 @@ export class WettbewerbsdurchfuehrendeHttpService {
     }
 
     /**
-     * Läd die Daten des Wettbewerbsdurchfuehrender.
+     * Läd die Daten des Wettbewerbsdurchfuehrender. server error wird vom globalen error interceptor behandelt.
      * @returns Observable eines Wettbewerbsdurchfuehrender
      */
     public loadWettbewerbsdurchfuehrenden(): Observable<Wettbewerbsdurchfuehrender> {
         return this.#httpClient.get<Wettbewerbsdurchfuehrender>(
             this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/konto',
-            { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true }
+            { withCredentials: true }
         );
     }
 }

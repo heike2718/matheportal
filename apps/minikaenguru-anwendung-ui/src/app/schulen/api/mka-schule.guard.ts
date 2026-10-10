@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SchuleFacade } from './schule.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { combineLatest, filter, forkJoin, map, take } from 'rxjs';
+import { combineLatest, filter, map, take } from 'rxjs';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 
 export const mkaSchuleGuard = (): CanActivateFn => route => {
@@ -17,6 +17,7 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
     }
 
     schuleFacade.dashboardVorbereiten(schulkuerzel);
+    wettbewerbFacade.ensureWettbewergGeladen();
 
     return combineLatest([schuleFacade.wettbewerbskontextLoadState$, wettbewerbFacade.wettbewerbLoadState$]).pipe(
         filter(([kontextState, wettbewerbState]) => {

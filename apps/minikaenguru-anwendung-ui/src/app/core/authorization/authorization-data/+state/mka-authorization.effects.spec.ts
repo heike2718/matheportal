@@ -100,9 +100,9 @@ describe('MkaAuthorizationEffects tests', () => {
         });
 
         it.each(['unauthorized', 'technical-error'] as const)(
-            'should finish the current request without emitting when the session is already %s',
-            LoadState => {
-                const sessionStateSelector = store.overrideSelector(sessionState, LoadState);
+            'should finish the current request without emitting when the session has load state %s',
+            loadState => {
+                const sessionStateSelector = store.overrideSelector(sessionState, loadState);
                 store.refreshState();
 
                 const emittedActions: Action[] = [];
@@ -144,7 +144,7 @@ describe('MkaAuthorizationEffects tests', () => {
 
         it.each(['unauthorized', 'technical-error'] as const)(
             'should finish a pending request without emitting when the session becomes %s',
-            LoadState => {
+            loadState => {
                 const sessionStateSelector = store.overrideSelector(sessionState, 'not-loaded');
                 store.refreshState();
 
@@ -163,7 +163,7 @@ describe('MkaAuthorizationEffects tests', () => {
 
                     expect(emittedActions).toEqual([]);
 
-                    sessionStateSelector.setResult(LoadState);
+                    sessionStateSelector.setResult(loadState);
                     store.refreshState();
 
                     expect(emittedActions).toEqual([]);

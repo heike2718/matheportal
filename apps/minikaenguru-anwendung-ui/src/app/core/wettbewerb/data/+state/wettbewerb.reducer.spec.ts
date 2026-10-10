@@ -42,6 +42,44 @@ describe('wettebwerbFeature', () => {
         });
     });
 
+    describe('wettbewerbLaden', () => {
+        it('should not reset the wettbewerbLoadState when loaded on wettbewerbLaden', () => {
+            const previousState: WettbewerbState = {
+                wettbewerbLoadState: 'loaded',
+                wettbewerb,
+            };
+
+            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
+
+            expect(state).toBe(previousState);
+        });
+
+        it('should reset the wettbewerbLoadState when technical on wettbewerbLaden', () => {
+            const previousState: WettbewerbState = {
+                wettbewerbLoadState: 'technical-error',
+                wettbewerb: undefined,
+            };
+
+            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
+
+            expect(state).toEqual({
+                wettbewerbLoadState: 'not-loaded',
+                wettbewerb: undefined,
+            });
+        });
+
+        it('should return the same state when wettbewerbLaden and not-loaded', () => {
+            const previousState: WettbewerbState = {
+                wettbewerbLoadState: 'not-loaded',
+                wettbewerb: undefined,
+            };
+
+            const state = wettbewerbFeature.reducer(previousState, WettbewerbActions.wettbewerbLaden());
+
+            expect(state).toBe(previousState);
+        });
+    });
+
     describe('wettbewerbGeladen', () => {
         it('should set wettbewerb and loadState', () => {
             const previousState: WettbewerbState = {

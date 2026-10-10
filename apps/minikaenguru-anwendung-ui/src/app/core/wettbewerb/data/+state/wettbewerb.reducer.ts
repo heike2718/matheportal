@@ -21,6 +21,9 @@ export const wettbewerbFeature = createFeature({
     name: WETTBEWERB_FEATURE_KEY,
     reducer: createReducer<WettbewerbState>(
         initialWettbewerbState,
+        on(WettbewerbActions.wettbewerbLaden, state =>
+            state.wettbewerbLoadState === 'technical-error' ? { ...state, wettbewerbLoadState: 'not-loaded' } : state
+        ),
         on(WettbewerbActions.wettbewerbGeladen, (state, { wettbewerb }) => {
             return { ...state, wettbewerb, wettbewerbLoadState: 'loaded' };
         }),

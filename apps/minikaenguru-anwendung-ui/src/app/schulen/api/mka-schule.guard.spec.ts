@@ -32,7 +32,10 @@ describe('mkaSchuleGuard', () => {
         dashboardVorbereiten: ReturnType<typeof vi.fn>;
     };
 
-    let wettbewerbFacadeMock: Pick<WettbewerbFacade, 'wettbewerbLoadState$'>;
+    let wettbewerbFacadeMock: {
+        wettbewerbLoadState$: Observable<RESOURCE_LOAD_STATE>;
+        ensureWettbewergGeladen: ReturnType<typeof vi.fn>;
+    };
 
     async function resolveGuardResult(result: MaybeAsync<GuardResult>): Promise<GuardResult> {
         if (isObservable(result)) {
@@ -58,6 +61,7 @@ describe('mkaSchuleGuard', () => {
 
         wettbewerbFacadeMock = {
             wettbewerbLoadState$: wettbewerbLoadStateSubject.asObservable(),
+            ensureWettbewergGeladen: vi.fn(),
         };
 
         route = {
@@ -87,6 +91,7 @@ describe('mkaSchuleGuard', () => {
                 resolveGuardResult(mkaSchuleGuard()(route, state))
             );
 
+            expect(wettbewerbFacadeMock.ensureWettbewergGeladen).toHaveBeenCalledOnce();
             expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
             expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
 
