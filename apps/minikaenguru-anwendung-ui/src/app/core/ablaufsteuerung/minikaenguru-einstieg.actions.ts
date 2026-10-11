@@ -6,7 +6,7 @@ export const MinikaenguruEinstiegActions = createActionGroup({
     events: {
         kontextLadenOnWettbewerbsorganisationGestartet: props<{
             durchfuehrungsart: Durchfuehrungsart;
-            kontextkuerzel: string;
+            kontextkuerzel?: string;
         }>(),
     },
 });

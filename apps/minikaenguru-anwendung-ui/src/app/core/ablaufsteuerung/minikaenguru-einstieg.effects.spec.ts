@@ -177,7 +177,7 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: 'X12345678' }));
+            expect(emitted).toEqual(ensureWettbewerbskontextPrivatGeladen());
         });
     });
 });

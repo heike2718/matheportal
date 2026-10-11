@@ -50,8 +50,8 @@ export class MinikaenguruEinstiegEffects {
             ofType(MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet),
             map(({ durchfuehrungsart, kontextkuerzel }) =>
                 durchfuehrungsart === DURCHFUEHRUNGSART.schule
-                    ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel })
-                    : ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: kontextkuerzel })
+                    ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel ?? '' })
+                    : ensureWettbewerbskontextPrivatGeladen()
             )
         );
     });

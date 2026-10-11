@@ -8,13 +8,13 @@ import {
     UrlTree,
 } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
-import { AuthorizationLoadState } from '../authorization-model';
 import { TestBed } from '@angular/core/testing';
-import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { mkaPrivatpersonGuard } from './mka-privatperson.guard';
 import { signal, WritableSignal } from '@angular/core';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthorizationLoadState } from '../../core/authorization/authorization-model';
+import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 
 // TODO: Bei Einführung von Child-Routes unter dashboard-privatperson zusätzliche Tests für die child routes
 // - Privatperson darf Child-Route aktivieren

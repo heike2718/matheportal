@@ -9,7 +9,6 @@ import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfu
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
@@ -22,6 +21,7 @@ import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/sc
 import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
+import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
 
 export const remoteRoutes: Routes = [
     {

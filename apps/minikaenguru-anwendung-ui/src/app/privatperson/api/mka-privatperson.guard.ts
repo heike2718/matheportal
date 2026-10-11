@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { filter, map, of, switchMap, take } from 'rxjs';
-import { MkaAuthorizationFacade } from './mka-authorization.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 
 export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
     const portalSessionFacade = inject(AuthSessionFacade);
