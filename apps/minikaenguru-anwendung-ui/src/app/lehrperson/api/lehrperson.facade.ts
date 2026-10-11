@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectSchulen, selectSchulenLoaded } from '../../schulen/data/+state/schulen.selectors';
+import { selectSchulen, selectSchulenLoaded } from '../../schule/data/+state/schule.selectors';
 import { Schule } from '../../core/model/schulkatalog.model';
 import { LehrpersonActions } from '../data/+state/lehrperson.actions';
 

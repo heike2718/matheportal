@@ -1,6 +1,6 @@
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { SchulenState } from './schulen.reducer';
-import { selectSchulauswahlMoeglich, selectSchulen, selectSchulenLoaded } from './schulen.selectors';
+import { SchulenState } from './schule.reducer';
+import { selectSchulauswahlMoeglich, selectSchulen, selectSchulenLoaded } from './schule.selectors';
 
 describe('schulenSelectors', () => {
     const schulen: Schule[] = [

@@ -10,7 +10,7 @@ import {
     durchfuehrenderGeladen,
 } from '../wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
 import { DURCHFUEHRUNGSART } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { ensureSchulenGeladen } from '../../schulen/api/schulen-store.events';
+import { ensureSchulenGeladen } from '../../schule/api/schule-store.events';
 import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
 import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
 import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';

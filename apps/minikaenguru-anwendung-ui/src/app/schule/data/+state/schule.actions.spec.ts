@@ -1,6 +1,6 @@
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { SchuleActions } from './schulen.actions';
+import { SchuleActions } from './schule.actions';
 
 describe('SchuleActions', () => {
     const schule: Schule = {

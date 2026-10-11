@@ -6,7 +6,7 @@ import {
     selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
-} from '../data/+state/schulen.selectors';
+} from '../data/+state/schule.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 import { wettbewerbsorganisationVerlassen } from '../../lehrperson/api/lehrperson-store.events';
 import { Observable } from 'rxjs';

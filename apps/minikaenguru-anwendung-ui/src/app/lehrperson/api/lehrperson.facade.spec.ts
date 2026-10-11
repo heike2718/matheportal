@@ -2,7 +2,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Schule } from '../../core/model/schulkatalog.model';
 import { LehrpersonFacade } from './lehrperson.facade';
 import { TestBed } from '@angular/core/testing';
-import { selectSchulen, selectSchulenLoaded } from '../../schulen/data/+state/schulen.selectors';
+import { selectSchulen, selectSchulenLoaded } from '../../schule/data/+state/schule.selectors';
 import { LehrpersonActions } from '../data/+state/lehrperson.actions';
 
 describe('LehrpersonFacade', () => {

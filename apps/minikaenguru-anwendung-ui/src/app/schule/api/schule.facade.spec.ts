@@ -8,7 +8,7 @@ import {
     selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
-} from '../data/+state/schulen.selectors';
+} from '../data/+state/schule.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../core/wettbewerb/model/wettbewerb.model';
 import { SchuleWettbewerbskontext } from '../../core/model/schule-wettbewerbskontext.model';

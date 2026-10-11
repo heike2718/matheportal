@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { schulenFeature } from './schulen.reducer';
+import { schulenFeature } from './schule.reducer';
 import { Schule } from '../../../core/model/schulkatalog.model';
 
 const { selectMKASchulenState } = schulenFeature;

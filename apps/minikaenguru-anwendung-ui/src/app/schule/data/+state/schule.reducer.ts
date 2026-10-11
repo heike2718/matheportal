@@ -1,7 +1,7 @@
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { SchuleActions } from './schulen.actions';
+import { SchuleActions } from './schule.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';

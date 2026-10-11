@@ -14,11 +14,11 @@ import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantra
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
 import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
 import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
-import { schulenDataProvider } from './schulen/api/schulen-data.provider';
+import { schuleDataProvider } from './schule/api/schule-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
 import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
-import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
-import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
+import { SchuleDashboardComponent } from './schule/features/schule-dashboard/schule-dashboard.component';
+import { mkaSchuleGuard } from './schule/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
@@ -81,7 +81,7 @@ export const remoteRoutes: Routes = [
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,
             ...schulkatalogantragDataProvider,
-            ...schulenDataProvider,
+            ...schuleDataProvider,
             ...lehrpersonDataProvider,
             ArbeitskontextHttpService,
         ],

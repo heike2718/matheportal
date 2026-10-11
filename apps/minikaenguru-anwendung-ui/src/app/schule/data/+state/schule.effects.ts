@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
-import { SchuleActions } from './schulen.actions';
+import { SchuleActions } from './schule.actions';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import {
@@ -14,7 +14,7 @@ import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { LehrpersonActions } from '../../../lehrperson/data/+state/lehrperson.actions';
 import { Store } from '@ngrx/store';
-import { selectSchulenLoadState } from './schulen.selectors';
+import { selectSchulenLoadState } from './schule.selectors';
 
 @Injectable()
 export class SchulenEffects {

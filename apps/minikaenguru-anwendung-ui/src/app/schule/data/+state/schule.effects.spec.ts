@@ -1,11 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action, Store } from '@ngrx/store';
-import { SchulenEffects } from './schulen.effects';
+import { SchulenEffects } from './schule.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { SchuleActions } from './schulen.actions';
+import { SchuleActions } from './schule.actions';
 import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
@@ -17,7 +17,7 @@ import {
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectSchulenLoadState } from './schulen.selectors';
+import { selectSchulenLoadState } from './schule.selectors';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();

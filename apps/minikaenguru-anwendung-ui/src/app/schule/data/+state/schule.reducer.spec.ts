@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Ort, Schule } from '../../../core/model/schulkatalog.model';
-import { initialSchulenState, schulenFeature, SchulenState } from './schulen.reducer';
-import { SchuleActions } from './schulen.actions';
+import { initialSchulenState, schulenFeature, SchulenState } from './schule.reducer';
+import { SchuleActions } from './schule.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
