@@ -1,6 +1,7 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import jakarta.inject.Inject;
@@ -13,7 +14,9 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.PrivatpersonWettbewerbskontext;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
@@ -53,7 +56,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Test
     @TestSecurity(user = "nicht-existent")
-    void should_return_404_when_unknown() {
+    void should_getKonto_return_404_when_unknown() {
 
         given().get("/konto").then().statusCode(404);
     }
@@ -82,7 +85,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Test
     @TestSecurity(user = UUID_LEHRPERSON_READ)
-    void should_return_200_when_known_lehrperson() {
+    void should_getKonto_return_200_when_known_lehrperson() {
 
         final Wettbewerbsdurchfuehrender result = given()
                 .accept(ContentType.JSON)
@@ -104,7 +107,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Test
     @TestSecurity(user = UUID_MP_TEST_TO_PRIVATPERSON)
-    void should_create_privatperson() {
+    void should_postKonto_create_privatperson() {
 
         try {
 
@@ -137,7 +140,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Test
     @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
-    void should_create_lehrperson() {
+    void should_postKonto_create_lehrperson() {
 
         try {
 
@@ -177,7 +180,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
     @Test
     @TestSecurity(user = UUID_MP_TEST_TO_LEHRPERSON)
-    void should_return_400_when_schulkuerzel_invaid() {
+    void should_postKonto_return_400_when_schulkuerzel_invaid() {
 
         // arrange
         final WettbewerbsdurchfuehrenderRequest requestPayload = new WettbewerbsdurchfuehrenderRequest()
@@ -261,6 +264,47 @@ public class WettbewerbsdurchfuehrendeResourceTest {
     void should_loadMySchools_reurn_403_when_privatperson() {
 
         given().accept(ContentType.JSON).get("/me/schulen").then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_PRIVATPERSON_READ)
+    void should_loadMyWettbewerbskontext_work() {
+
+        final PrivatpersonWettbewerbskontext result = given()
+                .accept(ContentType.JSON)
+                .get("/me/wettbewerbskontext")
+                .then()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .and()
+                .extract()
+                .as(PrivatpersonWettbewerbskontext.class);
+
+        assertEquals(true, result.getAnmeldungMoeglich());
+        final List<TeilnahmeReferenz> teilnahmeRefs = result.getTeilnahmerefs();
+        assertEquals(1, teilnahmeRefs.size());
+        final TeilnahmeReferenz teilnahmeRef = teilnahmeRefs.getFirst();
+        assertEquals(2017, teilnahmeRef.getJahr());
+    }
+
+    @Test
+    void should_loadMyWettbewerbskontext_return_401_when_not_loggedIn() {
+
+        given().accept(ContentType.JSON).get("/me/wettbewerbskontext").then().statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = "abcdef")
+    void should_loadMyWettbewerbskontext_return_403_when_kein_wettbewerbsdurchfuehrender() {
+        given().accept(ContentType.JSON).get("/me/wettbewerbskontext").then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_LEHRPERSON_READ)
+    void should_loadMyWettbewerbskontext_return_403_when_kein_Lehrperson() {
+        given().accept(ContentType.JSON).get("/me/wettbewerbskontext").then().statusCode(403);
     }
 
 }

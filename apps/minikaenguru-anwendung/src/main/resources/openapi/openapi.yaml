@@ -182,6 +182,37 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerbsdurchfuehrende/me/wettbewerbskontext:
+        get:
+            tags:
+                - Wettbewerbsdurchfuehrende
+            summary: Wettbewerbskontext einer Privatperson
+            description: läd den Wettbewerbskontext einer Privatperson
+            operationId: loadMyWettbewerbskontext
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: '#/components/schemas/PrivatpersonWettbewerbskontext'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User ist kein Wettbewerbsdurchführender.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalog/orte:
         get:
             tags:
@@ -791,3 +822,15 @@ components:
                     type: array
                     items:
                         type: string
+        PrivatpersonWettbewerbskontext:
+            type: object
+            required:
+                - teilnahmerefs
+                - anmeldungMoeglich
+            properties:
+                teilnahmerefs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TeilnahmeReferenz'
+                anmeldungMoeglich:
+                    type: boolean

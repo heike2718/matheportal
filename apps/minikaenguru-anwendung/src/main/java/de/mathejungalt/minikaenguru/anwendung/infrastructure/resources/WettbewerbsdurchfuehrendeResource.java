@@ -51,4 +51,9 @@ public class WettbewerbsdurchfuehrendeResource implements Wettbewerbsdurchfuehre
         return Response.ok(wettbewerbsdurchfuehrendeService.loadMySchools()).build();
     }
 
+    @Override
+    public Response loadMyWettbewerbskontext() {
+        return Response.ok(wettbewerbsdurchfuehrendeService.loadMyWettbewerbskontext()).build();
+    }
+
 }

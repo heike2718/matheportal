@@ -6,7 +6,6 @@ import { minikaenguruAnwendungConfiguration } from './config/configuration';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from './config/minikaenguru-anwendung.configuration';
 import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
-import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
@@ -22,6 +21,7 @@ import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provide
 import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
 import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
+import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
 
 export const remoteRoutes: Routes = [
     {
