@@ -122,12 +122,11 @@ public class PrivatpersonAnlegenDelegateTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // act
-        final Wettbewerbsdurchfuehrender result = delegate.privatpersonAnlegen();
+        delegate.privatpersonAnlegen();
 
         // assert
-        assertAll(() -> assertEquals("E123456789", result.getTeilnahmenummern().iterator().next()),
-                () -> verify(wettbewerbsdurchfuehrenderDao, times(5))
-                        .saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)));
+        assertAll(() -> verify(wettbewerbsdurchfuehrenderDao, times(5))
+                .saveEntity(any(WettbewerbsdurchfuehrenderEntity.class)));
     }
 
     @Test

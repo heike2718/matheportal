@@ -2,31 +2,37 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { wettbewerbActions } from './wettbewerb.actions';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { WettbewerbActions } from './wettbewerb.actions';
+import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
 import { mapErrorToMessage } from '@matheportal/shared-utils';
-import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
+import { Store } from '@ngrx/store';
+import { fromWettbewerb } from './wettbewerb.selectors';
 
 @Injectable()
 export class WettbewerbEffects {
     #actions = inject(Actions);
     #httpService = inject(WettbewerbHttpService);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
+    #store = inject(Store);
 
-    wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
-        return this.#actions.pipe(
-            ofType(mkaAuthorizationLoaded),
-            map(() => wettbewerbActions.wettbewerbLaden())
-        );
-    });
+    readonly ensureWettbewerbGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(WettbewerbActions.ensureWettbewerbGeladen),
+            withLatestFrom(this.#store.select(fromWettbewerb.selectWettbewerbLoadState)),
+            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
+            map(() => WettbewerbActions.wettbewerbLaden())
+        )
+    );
 
     readonly wettbewerbLaden$ = createEffect(() => {
         return this.#actions.pipe(
-            ofType(wettbewerbActions.wettbewerbLaden),
-            switchMap(() =>
+            ofType(WettbewerbActions.wettbewerbLaden),
+            withLatestFrom(this.#store.select(fromWettbewerb.selectWettbewerbLoaded)),
+            filter(([, loaded]) => !loaded),
+            exhaustMap(() =>
                 this.#httpService.loadWettbewerb().pipe(
-                    map(wettbewerb => wettbewerbActions.wettbewerbGeladen({ wettbewerb })),
-                    catchError((error: Error) => of(wettbewerbActions.wettbewerbLadenFailed({ error })))
+                    map(wettbewerb => WettbewerbActions.wettbewerbGeladen({ wettbewerb })),
+                    catchError((error: Error) => of(WettbewerbActions.wettbewerbLadenFailed({ error })))
                 )
             )
         );
@@ -35,7 +41,7 @@ export class WettbewerbEffects {
     readonly wettbewerbLadenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(wettbewerbActions.wettbewerbLadenFailed),
+                ofType(WettbewerbActions.wettbewerbLadenFailed),
                 tap(action => {
                     const errorMessage = mapErrorToMessage(action.error);
                     this.#messagePublisher.publishError(errorMessage);

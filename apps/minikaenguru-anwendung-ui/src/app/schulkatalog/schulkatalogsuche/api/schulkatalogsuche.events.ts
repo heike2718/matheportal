@@ -1,3 +1,3 @@
-import { schulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
+import { SchulkatalogsucheActions } from '../data/+state/schulkatalogsuche.actions';
 
-export const schuleSelected = schulkatalogsucheActions.schuleSelected;
+export const schuleSelected = SchulkatalogsucheActions.schuleSelected;

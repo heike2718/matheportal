@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OrtCardComponent } from './ort-card.component';
-import { Ort } from '../../model/schulkatalog.model';
+import { Ort } from '../../../../core/model/schulkatalog.model';
 import { By } from '@angular/platform-browser';
 
 describe('OrtCardComponentComponent', () => {

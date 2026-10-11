@@ -1,0 +1,9 @@
+<div class="mka-lehrperson-schulen">
+    @if (schulenLoaded()) {
+        <div class="mka-lehrperson-schulen__results">
+            @for (schule of schulen(); track schule.kuerzel) {
+                <mka-schule-card [schule]="schule" (schuleSelected)="schuleSelected.emit($event)" />
+            }
+        </div>
+    }
+</div>

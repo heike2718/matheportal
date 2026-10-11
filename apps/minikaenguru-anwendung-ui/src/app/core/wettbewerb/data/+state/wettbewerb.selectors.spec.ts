@@ -15,6 +15,7 @@ describe('fromWettbewerb', () => {
     describe('selectWettbewerb', () => {
         it('should return undefined when wettbewerb not loaded', () => {
             const state: WettbewerbState = {
+                wettbewerbLoadState: 'not-loaded',
                 wettbewerb: undefined,
             };
 
@@ -24,6 +25,7 @@ describe('fromWettbewerb', () => {
 
         it('should return the wettbewerb when wettbewerb loaded', () => {
             const state: WettbewerbState = {
+                wettbewerbLoadState: 'loaded',
                 wettbewerb,
             };
 
@@ -32,11 +34,51 @@ describe('fromWettbewerb', () => {
         });
     });
 
+    describe('wettbewerbLoadState', () => {
+        it('should select the loadState', () => {
+            const state: WettbewerbState = {
+                wettbewerbLoadState: 'technical-error',
+                wettbewerb: undefined,
+            };
+
+            const result = fromWettbewerb.selectWettbewerbLoadState.projector(state);
+            expect(result).toBe('technical-error');
+        });
+    });
+
+    describe('wettbwerbLoaded', () => {
+        it.each(['not-loaded', 'unauthorized', 'technical-error'] as const)(
+            'should return false when loadState %s',
+            loadState => {
+                const state: WettbewerbState = {
+                    wettbewerbLoadState: loadState,
+                    wettbewerb: undefined,
+                };
+
+                const result = fromWettbewerb.selectWettbewerbLoaded.projector(state.wettbewerbLoadState);
+
+                expect(result).toBe(false);
+            }
+        );
+
+        it('should return true when loaded', () => {
+            const state: WettbewerbState = {
+                wettbewerbLoadState: 'loaded',
+                wettbewerb,
+            };
+
+            const result = fromWettbewerb.selectWettbewerbLoaded.projector(state.wettbewerbLoadState);
+
+            expect(result).toBe(true);
+        });
+    });
+
     describe('selectWettbewerbRunning', () => {
         it.each([WETTBEWERBSSTATUS.anmeldung, WETTBEWERBSSTATUS.downloadSchule, WETTBEWERBSSTATUS.downloadPrivat])(
             'should return true when wettbewerb defined and status %s',
             status => {
                 const state: WettbewerbState = {
+                    wettbewerbLoadState: 'loaded',
                     wettbewerb: { ...wettbewerb, status },
                 };
 
@@ -49,6 +91,7 @@ describe('fromWettbewerb', () => {
             'should return false when wettbewerb defined and status %s',
             status => {
                 const state: WettbewerbState = {
+                    wettbewerbLoadState: 'loaded',
                     wettbewerb: { ...wettbewerb, status },
                 };
 
@@ -59,6 +102,7 @@ describe('fromWettbewerb', () => {
 
         it('should return false when wettbewerb not loaded', () => {
             const state: WettbewerbState = {
+                wettbewerbLoadState: 'not-loaded',
                 wettbewerb: undefined,
             };
 

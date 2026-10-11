@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchulenListComponent } from './schulen-list.component';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { By } from '@angular/platform-browser';
-import { SchuleCardComponent } from '../schule-card-component/schule-card.component';
+import { SchuleCardComponent } from '../../../../shared/components/schule-card-component/schule-card.component';
 import { MockComponent, ngMocks } from 'ng-mocks';
 
 describe('SchulenListComponentComponent', () => {
@@ -69,9 +69,6 @@ describe('SchulenListComponentComponent', () => {
         });
 
         it('should show an input and the schulen when schulenLoaded', async () => {
-            fixture.componentRef.setInput('schulen', schulen);
-            fixture.componentRef.setInput('schulenLoaded', true);
-
             expect(component).toBeTruthy();
 
             const backButtonDe = fixture.debugElement.query(By.css('.mka-schulen-list__back'));
@@ -148,14 +145,14 @@ describe('SchulenListComponentComponent', () => {
         });
 
         it('should re-emit schuleSelected when SchuleCardComponent emits schuleSelected', () => {
-            const ortSelectedSpy = vi.spyOn(component.schuleSelected, 'emit');
+            const schuleSelectedSpy = vi.spyOn(component.schuleSelected, 'emit');
 
-            const ortCardsDe = fixture.debugElement.queryAll(By.directive(SchuleCardComponent));
+            const schuleCardDe = fixture.debugElement.queryAll(By.directive(SchuleCardComponent));
 
-            expect(ortCardsDe).toHaveLength(2);
+            expect(schuleCardDe).toHaveLength(2);
 
-            ngMocks.output(ortCardsDe[0], 'schuleSelected').emit(schulen[0]);
-            expect(ortSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[0]);
+            ngMocks.output(schuleCardDe[0], 'schuleSelected').emit(schulen[0]);
+            expect(schuleSelectedSpy).toHaveBeenCalledExactlyOnceWith(schulen[0]);
         });
     });
 

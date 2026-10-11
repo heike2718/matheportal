@@ -1,0 +1,90 @@
+### minikaenguru-anwendung
+
+
+### users/name 200
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/name
+Accept: application/json
+X-CLIENT-ID: k7AxUVYzr1FBAvD8e99orRqKqx4jBwcr7Dmgn5jdBf8J
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/name bad request 1
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/name
+Accept: application/json
+X-CLIENT-ID: k7AxUVYzr1FBAvD8e99orRqKqx4jBwcr7Dmgn5jdBf8J
+X-CLIENT-SECRET: start123
+X-NONCE: hallihallo?
+
+### users/name bad request 2
+GET http://localhost:9000/api/users/412b67dc=132f=465a-a3c3!468269e866cb/name
+Accept: application/json
+X-CLIENT-ID: k7AxUVYzr1FBAvD8e99orRqKqx4jBwcr7Dmgn5jdBf8J
+X-CLIENT-SECRET: start123
+X-NONCE: hallihallo?
+
+### users/name unauthorized
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/name
+Accept: application/json
+X-CLIENT-ID: k7AxUVYzr1FBAvD8e99orRqKqx4jBwcr7Dmgn5jdBf8J
+X-CLIENT-SECRET: ueberschreiben
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/name forbidden
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/name
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/name 404
+GET http://localhost:9000/api/users/f4d51914-8477-4970-8d3c-eb8cf9ecef14/name
+Accept: application/json
+X-CLIENT-ID: k7AxUVYzr1FBAvD8e99orRqKqx4jBwcr7Dmgn5jdBf8J
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+
+### minikaenguru-admin
+
+### users/admin-details 200
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/admin-details
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/admin-details bad request 1
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/admin-details
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: start123
+X-NONCE: hallihallo?
+
+### users/admin-details bad request 2
+GET http://localhost:9000/api/users/412b67dc=132f=465a-a3c3!468269e866cb/admin-details
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: start123
+X-NONCE: hallihallo?
+
+### users/admin-details unauthorized
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/admin-details
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: ueberschreiben
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/admin-details forbidden
+GET http://localhost:9000/api/users/412b67dc-132f-465a-a3c3-468269e866cb/admin-details
+Accept: application/json
+X-CLIENT-ID: N7SsGenun4znNUdQzyLD0wzOfRHOmc9XN35TOGfbBcvA
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+
+### users/admin-details 404
+GET http://localhost:9000/api/users/f4d51914-8477-4970-8d3c-eb8cf9ecef14/admin-details
+Accept: application/json
+X-CLIENT-ID: NBptB82KjFkelkF55Aq4SmQSL3DXZHHurbe7l5W9LT7U
+X-CLIENT-SECRET: start123
+X-NONCE: eea6d63c-db89-4979-8d60-29d05c761d66
+

@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Schulkatalogantrag } from '../model/schulkatalogantrag.model';
 import { Observable } from 'rxjs';
+import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 @Injectable()
 export class SchulkatalogantragHttpService {
@@ -10,7 +11,7 @@ export class SchulkatalogantragHttpService {
     #httpClient = inject(HttpClient);
 
     public submitSchulkatalogantrag(payload: Schulkatalogantrag): Observable<void> {
-        const options = { withCredentials: true };
+        const options = { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true };
         const path = '/api/schulkatalogantrag';
 
         return this.#httpClient.post<void>(this.#config.apiUrl + path, payload, options);

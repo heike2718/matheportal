@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { schulkatalogActions } from '../data/+state/schulkatalog.actions';
+import { SchulkatalogActions } from '../data/+state/schulkatalog.actions';
 import { fromSchulkatalog } from '../data/+state/schulkatalog.selectors';
 import { Land, Ort, Schule } from '../model/schulkatalog.model';
 import { SchulkatalogFacade } from './schulkatalog.facade';
@@ -183,7 +183,7 @@ describe('SchulkatalogFacade', () => {
         it('should dispatch loadLaender when loadLaender is called', () => {
             facade.loadLaender();
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.loadLaender());
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.loadLaender());
         });
 
         it('should dispatch landSelected', () => {
@@ -191,13 +191,13 @@ describe('SchulkatalogFacade', () => {
 
             facade.landSelected(land);
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landSelected({ land }));
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.landSelected({ land }));
         });
 
         it('should dispatch backToLaenderRequested', () => {
             facade.backToLaender();
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToLaenderRequested());
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.backToLaenderRequested());
         });
 
         it('should dispatch ortSelected', () => {
@@ -205,19 +205,19 @@ describe('SchulkatalogFacade', () => {
 
             facade.ortSelected(ort);
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.ortSelected({ ort }));
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.ortSelected({ ort }));
         });
 
         it('should dispatch backToOrteRequested', () => {
             facade.backToOrte();
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.backToOrteRequested());
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.backToOrteRequested());
         });
 
         it('should dispatch landMitOrtUndSchuleAnlegenSelected', () => {
             facade.landMitOrtUndSchuleAnlegen();
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
         });
 
         it('should dispatch schuleUmbenennenSelected', () => {
@@ -225,7 +225,7 @@ describe('SchulkatalogFacade', () => {
 
             facade.schuleUmbenennen(schule);
 
-            expect(storeMock.dispatch).toHaveBeenCalledWith(schulkatalogActions.schuleUmbenennenRequested({ schule }));
+            expect(storeMock.dispatch).toHaveBeenCalledWith(SchulkatalogActions.schuleUmbenennenRequested({ schule }));
         });
     });
 });

@@ -1,4 +1,4 @@
-import { Land, Ort } from '../model/schulkatalog.model';
+import { Land, Ort } from '../../../core/model/schulkatalog.model';
 import { getBeschreibungSelectedOrt } from './schulkatalogsuche-data.utils';
 
 describe('schulkatalogsuche-data.utils', () => {

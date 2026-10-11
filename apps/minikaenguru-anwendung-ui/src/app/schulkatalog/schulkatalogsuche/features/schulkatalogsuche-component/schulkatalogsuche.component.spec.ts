@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchulkatalogsucheComponent } from './schulkatalogsuche.component';
 import { signal, Signal, WritableSignal } from '@angular/core';
-import { Ort, Schule } from '../../model/schulkatalog.model';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { SchulkatalogsucheFacade } from '../../api/schulkatalogsuche.facade';
 import { MockComponent, ngMocks } from 'ng-mocks';
 import { OrteSuchenComponent } from '../orte-suchen-component/orte-suchen.component';

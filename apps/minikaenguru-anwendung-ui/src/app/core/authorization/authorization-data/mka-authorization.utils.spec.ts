@@ -39,7 +39,6 @@ describe('mka-authorization utils tests', () => {
             const dto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 newsletter: false,
-                teilnahmenummern: [],
                 zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.entzogen,
             };
 
@@ -52,7 +51,6 @@ describe('mka-authorization utils tests', () => {
             const draft: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: DURCHFUEHRUNGSART.schule,
                 newsletter: false,
-                teilnahmenummern: [],
                 zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.erteilt,
             };
 

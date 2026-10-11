@@ -1,4 +1,4 @@
-import { Ort } from '../model/schulkatalog.model';
+import { Ort } from '../../../core/model/schulkatalog.model';
 
 export function normalizeSearchTerm(term: string): string {
     return term.trim();

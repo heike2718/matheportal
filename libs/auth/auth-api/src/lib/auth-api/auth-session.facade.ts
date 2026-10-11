@@ -1,9 +1,10 @@
-import { inject, Injectable } from '@angular/core';
-import { authActions, fromAuth } from '@matheportal/auth-data';
+import { computed, inject, Injectable } from '@angular/core';
+import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { anonymousUser, User } from '@matheportal/auth-model';
+import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 @Injectable({
     providedIn: 'root',
@@ -11,19 +12,20 @@ import { anonymousUser, User } from '@matheportal/auth-model';
 export class AuthSessionFacade {
     #store = inject(Store);
 
-    user$: Observable<User> = this.#store.select(fromAuth.user);
-    #hasSession$: Observable<boolean> = this.#store.select(fromAuth.hasSession);
-    #isAdmin$: Observable<boolean> = this.#store.select(fromAuth.isAdmin);
+    readonly sessionLoadState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadState);
+    readonly user$: Observable<User> = this.#store.select(fromAuth.user);
+
+    readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
-    readonly isLoggedIn = toSignal(this.#hasSession$, { initialValue: false });
-    readonly isAdmin = toSignal(this.#isAdmin$, { initialValue: false });
+    readonly isLoggedIn = computed(() => this.sessionLoadState() === 'loaded');
+    readonly isAdmin = this.#store.selectSignal(fromAuth.isAdmin);
 
     /**
      * validiert die bestehende Session.
      */
     validateSession(): void {
-        this.#store.dispatch(authActions.validateSession());
+        this.#store.dispatch(AuthActions.validateSession());
     }
 
     /**
@@ -31,6 +33,6 @@ export class AuthSessionFacade {
      * @param user User
      */
     synchronizeUser(user: User): void {
-        this.#store.dispatch(authActions.userAugmented({ user }));
+        this.#store.dispatch(AuthActions.userAugmented({ user }));
     }
 }

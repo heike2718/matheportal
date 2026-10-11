@@ -10,11 +10,18 @@ import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatp
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { DashboardLehrpersonComponent } from './lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
-import { mkaSchulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
+import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
+import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
+import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
+import { schulenDataProvider } from './schulen/api/schulen-data.provider';
+import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
+import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
+import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
+import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
+import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
 
 export const remoteRoutes: Routes = [
     {
@@ -30,16 +37,27 @@ export const remoteRoutes: Routes = [
                 component: GuestInfoComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.dashboardPrivatperson,
+                path: portalRoutes.minikaenguruAnwendung.privatperson,
                 canActivate: [mkaPrivatpersonGuard()],
                 canActivateChild: [mkaPrivatpersonGuard()],
                 component: DashboardPrivatpersonComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.dashboardLehrperson,
-                // canActivate: fehlt noch
-                // canActivateChild: fehlt noch
-                component: DashboardLehrpersonComponent,
+                path: portalRoutes.minikaenguruAnwendung.lehrperson,
+                canActivate: [mkaLehrpersonGuard()],
+                canActivateChild: [mkaLehrpersonGuard()],
+                children: [
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        component: DashboardLehrpersonComponent,
+                    },
+                    {
+                        path: portalRoutes.minikaenguruAnwendung.schule,
+                        canActivate: [mkaSchuleGuard()],
+                        component: SchuleDashboardComponent,
+                    },
+                ],
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.schulkatalogsuche,
@@ -58,10 +76,14 @@ export const remoteRoutes: Routes = [
                 useValue: minikaenguruAnwendungConfiguration,
             },
             ...mkaAuthorizationDataProvider,
+            ...ablaufsteuerungDataProvider,
             ...wettbewerbDataProvider,
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,
-            ...mkaSchulkatalogantragDataProvider,
+            ...schulkatalogantragDataProvider,
+            ...schulenDataProvider,
+            ...lehrpersonDataProvider,
+            ArbeitskontextHttpService,
         ],
     },
 ];

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { schulkatalogActions } from '../data/+state/schulkatalog.actions';
+import { SchulkatalogActions } from '../data/+state/schulkatalog.actions';
 import { Land, Ort, Schule } from '../model/schulkatalog.model';
 import { fromSchulkatalog } from '../data/+state/schulkatalog.selectors';
 
@@ -28,38 +28,38 @@ export class SchulkatalogFacade {
     readonly beschreibungSelectedOrt = this.#store.selectSignal(fromSchulkatalog.selectBeschreibungSelectedOrt);
 
     public loadLaender(): void {
-        this.#store.dispatch(schulkatalogActions.loadLaender());
+        this.#store.dispatch(SchulkatalogActions.loadLaender());
     }
 
     public landSelected(land: Land): void {
-        this.#store.dispatch(schulkatalogActions.landSelected({ land }));
+        this.#store.dispatch(SchulkatalogActions.landSelected({ land }));
     }
 
     public backToLaender(): void {
-        this.#store.dispatch(schulkatalogActions.backToLaenderRequested());
+        this.#store.dispatch(SchulkatalogActions.backToLaenderRequested());
     }
 
     public ortSelected(ort: Ort): void {
-        this.#store.dispatch(schulkatalogActions.ortSelected({ ort }));
+        this.#store.dispatch(SchulkatalogActions.ortSelected({ ort }));
     }
 
     public backToOrte(): void {
-        this.#store.dispatch(schulkatalogActions.backToOrteRequested());
+        this.#store.dispatch(SchulkatalogActions.backToOrteRequested());
     }
 
     public landMitOrtUndSchuleAnlegen(): void {
-        this.#store.dispatch(schulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
+        this.#store.dispatch(SchulkatalogActions.landMitOrtUndSchuleAnlegenRequested());
     }
 
     public ortMitSchuleAnlegen(): void {
-        this.#store.dispatch(schulkatalogActions.ortMitSchuleAnlegenRequested());
+        this.#store.dispatch(SchulkatalogActions.ortMitSchuleAnlegenRequested());
     }
 
     public schuleAnlegen(): void {
-        this.#store.dispatch(schulkatalogActions.schuleAnlegenRequested());
+        this.#store.dispatch(SchulkatalogActions.schuleAnlegenRequested());
     }
 
     public schuleUmbenennen(schule: Schule): void {
-        this.#store.dispatch(schulkatalogActions.schuleUmbenennenRequested({ schule }));
+        this.#store.dispatch(SchulkatalogActions.schuleUmbenennenRequested({ schule }));
     }
 }

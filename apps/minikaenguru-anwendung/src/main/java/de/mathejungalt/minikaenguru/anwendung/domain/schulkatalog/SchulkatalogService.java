@@ -63,4 +63,15 @@ public class SchulkatalogService {
 
         return new Schule().kuerzel(entity.getKuerzel()).name(entity.getName().trim()).ort(ort);
     }
+
+    /**
+     * Läd die Schulen mit den gegebenen kuerzeln.
+     *
+     * @param kuerzels String[]
+     * @return List
+     */
+    public List<Schule> loadSchulenByKuerzel(final String[] kuerzels) { // NOPMD
+        final List<SchuleEntity> schulen = schulkatalogDao.loadSchulenByKuerzels(kuerzels);
+        return schulen.stream().map(this::mapFromDb).toList();
+    }
 }

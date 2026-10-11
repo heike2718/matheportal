@@ -16,11 +16,11 @@ export const selectNameSelectedOrt = createSelector(selectSelectedOrt, ort =>
 
 export const selectSelectedSchule = createSelector(selectMKASchulkatalogsucheState, state => state.selectedSchule);
 
-export const orteLoaded = createSelector(selectMKASchulkatalogsucheState, state => state.orteLoadingState === 'loaded');
+export const orteLoaded = createSelector(selectMKASchulkatalogsucheState, state => state.orteLoadState === 'loaded');
 
 export const schulenLoaded = createSelector(
     selectMKASchulkatalogsucheState,
-    state => state.schulenLoadingState === 'loaded'
+    state => state.schulenLoadState === 'loaded'
 );
 
 export const ortSelected = createSelector(selectMKASchulkatalogsucheState, state => state.selectedOrt !== undefined);
@@ -32,7 +32,7 @@ export const schuleSelected = createSelector(
 
 export const selectSchuleEintragenMoeglich = createSelector(
     selectMKASchulkatalogsucheState,
-    state => state.orteLoadingState === 'loaded' && state.orte.length === 0
+    state => state.orteLoadState === 'loaded' && state.orte.length === 0
 );
 
 export const fromSchulkatalogsuche = {

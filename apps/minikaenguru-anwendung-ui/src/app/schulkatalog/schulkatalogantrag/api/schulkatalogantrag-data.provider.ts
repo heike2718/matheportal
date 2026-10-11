@@ -3,7 +3,7 @@ import { SchulkatalogantragEffects } from '../data/+state/schulkatalogantrag.eff
 import { SchulkatalogantragHttpService } from '../data/schulkatalogantrag-http.service';
 import { SchulkatalogantragDialogEffects } from '../features/schulkatalogantrag-dialog.effects';
 
-export const mkaSchulkatalogantragDataProvider = [
+export const schulkatalogantragDataProvider = [
     SchulkatalogantragHttpService,
     provideEffects(SchulkatalogantragEffects, SchulkatalogantragDialogEffects),
 ];

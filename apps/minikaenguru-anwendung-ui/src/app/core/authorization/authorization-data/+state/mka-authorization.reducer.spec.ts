@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { mkaAuthorizationFeature, MkaAuthorizationState } from './mka-authorization.reducer';
 import { User } from '@matheportal/auth-model';
-import { mkaAuthorizationActions } from './mka-authorization.actions';
+import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../../authorization-model';
 import { userLoggedOut } from '@matheportal/auth-api';
 
@@ -37,7 +37,7 @@ describe('mkaAuthorizationFeature tests', () => {
             };
             const state = mkaAuthorizationFeature.reducer(
                 actualState,
-                mkaAuthorizationActions.mkaAuthorizationLoaded({ user })
+                MkaAuthorizationActions.mkaAuthorizationLoaded({ user })
             );
             expect(state.authorizationLoadState).toEqual('loaded');
             expect(state.berechtigungstyp).toEqual(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
@@ -54,7 +54,7 @@ describe('mkaAuthorizationFeature tests', () => {
             };
             const state = mkaAuthorizationFeature.reducer(
                 actualState,
-                mkaAuthorizationActions.mkaAuthorizationLoaded({ user })
+                MkaAuthorizationActions.mkaAuthorizationLoaded({ user })
             );
             expect(state.authorizationLoadState).toEqual('loaded');
             expect(state.berechtigungstyp).toEqual(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
@@ -71,7 +71,7 @@ describe('mkaAuthorizationFeature tests', () => {
             };
             const state = mkaAuthorizationFeature.reducer(
                 actualState,
-                mkaAuthorizationActions.mkaAuthorizationLoaded({ user })
+                MkaAuthorizationActions.mkaAuthorizationLoaded({ user })
             );
             expect(state.authorizationLoadState).toEqual('loaded');
             expect(state.berechtigungstyp).toEqual(MINIKAENGURU_BERECHTIGUNGSTYP.none);
@@ -94,7 +94,7 @@ describe('mkaAuthorizationFeature tests', () => {
             (actualState: MkaAuthorizationState) => {
                 const state = mkaAuthorizationFeature.reducer(
                     actualState,
-                    mkaAuthorizationActions.loadMkaAuthorizationFailed()
+                    MkaAuthorizationActions.loadMkaAuthorizationFailed()
                 );
 
                 expect(state.authorizationLoadState).toEqual('failed');

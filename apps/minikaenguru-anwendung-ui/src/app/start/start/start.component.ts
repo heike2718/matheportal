@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { GuestInfoComponent } from '../guest-info/guest-info.component';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
-import { DashboardLehrpersonComponent } from '../../lehrperson/dashboard-lehrperson/dashboard-lehrperson.component';
 import { DashboardPrivatpersonComponent } from '../../privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { GewaehlteDurchfuehrungsart } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.model';
 import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
+import { DashboardLehrpersonComponent } from '../../lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 
 @Component({
     selector: 'mka-start',

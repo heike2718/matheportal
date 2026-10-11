@@ -1,9 +1,9 @@
 import type { User } from '@matheportal/auth-model';
 import { describe, expect, it } from 'vitest';
 
-import { authActions } from './auth.actions';
+import { AuthActions } from './auth.actions';
 
-describe('authActions', () => {
+describe('AuthActions', () => {
     const user: User = {
         fullName: 'Ada Lovelace',
         berechtigungen: ['ADMIN'],
@@ -11,7 +11,7 @@ describe('authActions', () => {
     };
 
     it('should create requestLoginUrl action', () => {
-        const action = authActions.requestLoginUrl();
+        const action = AuthActions.requestLoginUrl();
 
         expect(action).toEqual({
             type: '[MP Auth] requestLoginUrl',
@@ -19,7 +19,7 @@ describe('authActions', () => {
     });
 
     it('should create requestLoginUrlFailed action', () => {
-        const action = authActions.requestLoginUrlFailed();
+        const action = AuthActions.requestLoginUrlFailed();
 
         expect(action).toEqual({
             type: '[MP Auth] requestLoginUrlFailed',
@@ -27,7 +27,7 @@ describe('authActions', () => {
     });
 
     it('should create requestSignupUrl action', () => {
-        const action = authActions.requestSignupUrl();
+        const action = AuthActions.requestSignupUrl();
 
         expect(action).toEqual({
             type: '[MP Auth] requestSignupUrl',
@@ -35,7 +35,7 @@ describe('authActions', () => {
     });
 
     it('should create requestSignupUrlFailed action', () => {
-        const action = authActions.requestSignupUrlFailed();
+        const action = AuthActions.requestSignupUrlFailed();
 
         expect(action).toEqual({
             type: '[MP Auth] requestSignupUrlFailed',
@@ -45,7 +45,7 @@ describe('authActions', () => {
     it('should create redirectToIam action', () => {
         const iamUrl = 'https://iam.example.org/login';
 
-        const action = authActions.redirectToIam({ iamUrl });
+        const action = AuthActions.redirectToIam({ iamUrl });
 
         expect(action).toEqual({
             type: '[MP Auth] redirectToIam',
@@ -54,7 +54,7 @@ describe('authActions', () => {
     });
 
     it('should create invalidOAuthFlowHash action', () => {
-        const action = authActions.invalidOAuthFlowHash();
+        const action = AuthActions.invalidOAuthFlowHash();
 
         expect(action).toEqual({
             type: '[MP Auth] invalidOAuthFlowHash',
@@ -64,7 +64,7 @@ describe('authActions', () => {
     it('should create createSession action', () => {
         const idToken = 'id-token';
 
-        const action = authActions.createSession({ idToken });
+        const action = AuthActions.createSession({ idToken });
 
         expect(action).toEqual({
             type: '[MP Auth] createSession',
@@ -73,7 +73,7 @@ describe('authActions', () => {
     });
 
     it('should create createSessionFailed action', () => {
-        const action = authActions.createSessionFailed();
+        const action = AuthActions.createSessionFailed();
 
         expect(action).toEqual({
             type: '[MP Auth] createSessionFailed',
@@ -81,7 +81,7 @@ describe('authActions', () => {
     });
 
     it('should create sessionCreated action', () => {
-        const action = authActions.sessionCreated({ user });
+        const action = AuthActions.sessionCreated({ user });
 
         expect(action).toEqual({
             type: '[MP Auth] sessionCreated',
@@ -90,7 +90,7 @@ describe('authActions', () => {
     });
 
     it('should create validateSession action', () => {
-        const action = authActions.validateSession();
+        const action = AuthActions.validateSession();
 
         expect(action).toEqual({
             type: '[MP Auth] validateSession',
@@ -98,7 +98,7 @@ describe('authActions', () => {
     });
 
     it('should create sessionValidated action', () => {
-        const action = authActions.sessionValidated({ user });
+        const action = AuthActions.sessionValidated({ user });
 
         expect(action).toEqual({
             type: '[MP Auth] sessionValidated',
@@ -107,7 +107,7 @@ describe('authActions', () => {
     });
 
     it('should create sessionValidationFailed action with expired reason', () => {
-        const action = authActions.sessionValidationFailed({
+        const action = AuthActions.sessionValidationFailed({
             reason: 'expired',
         });
 
@@ -118,7 +118,7 @@ describe('authActions', () => {
     });
 
     it('should create sessionValidationFailed action with missing reason', () => {
-        const action = authActions.sessionValidationFailed({
+        const action = AuthActions.sessionValidationFailed({
             reason: 'missing',
         });
 
@@ -129,7 +129,7 @@ describe('authActions', () => {
     });
 
     it('should create userAugmented action', () => {
-        const action = authActions.userAugmented({ user });
+        const action = AuthActions.userAugmented({ user });
 
         expect(action).toEqual({
             type: '[MP Auth] userAugmented',
@@ -138,7 +138,7 @@ describe('authActions', () => {
     });
 
     it('should create signedUp action', () => {
-        const action = authActions.signedUp();
+        const action = AuthActions.signedUp();
 
         expect(action).toEqual({
             type: '[MP Auth] signedUp',
@@ -146,7 +146,7 @@ describe('authActions', () => {
     });
 
     it('should create logOut action', () => {
-        const action = authActions.logOut();
+        const action = AuthActions.logOut();
 
         expect(action).toEqual({
             type: '[MP Auth] logOut',
@@ -154,7 +154,7 @@ describe('authActions', () => {
     });
 
     it('should create loggedOut action', () => {
-        const action = authActions.loggedOut();
+        const action = AuthActions.loggedOut();
 
         expect(action).toEqual({
             type: '[MP Auth] loggedOut',

@@ -52,6 +52,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/wettbewerbsdurchfuehrende/me/schulen': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * Schulen laden
+         * @description läd die Schulen eines Wettbewerbsdurchfuehrenden
+         */
+        readonly get: operations['loadMySchools'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/api/schulkatalog/orte': {
         readonly parameters: {
             readonly query?: never;
@@ -132,6 +152,66 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/teilnahmen/schule/{schuleId}': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * alle Teilnahmen einer Schule
+         * @description läd alle Teilnahmen der Schule mit der gegebenen ID
+         */
+        readonly get: operations['getSchulteilnahmen'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly '/api/schulen/{schuleId}': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * Wettbewerbskontext einer Schule
+         * @description stellt den Wettbewerbskontext einer bestimmten Schule zur Verfügung
+         */
+        readonly get: operations['getWettbewerbskontext'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly '/api/schulen/{schuleId}/kollegen': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * Kollegen einer Lehrperson
+         * @description liest die Kollegen der eingeloggten Lehrperson
+         */
+        readonly get: operations['getKollegen'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -157,6 +237,11 @@ export interface components {
         readonly ZugangsberechtigungUnterlagen: 'STANDARD' | 'ERTEILT' | 'ENTZOGEN';
         /** @enum {string} */
         readonly Wettbewerbsstatus: 'ERFASST' | 'ANMELDUNG' | 'DOWNLOAD_LEHRER' | 'DOWNLOAD_PRIVAT' | 'BEENDET';
+        /**
+         * @description Die Art, wie der Wettbewerb ausgewertet wird.
+         * @enum {string}
+         */
+        readonly Auswertungsart: 'ONLINE' | 'OFFLINE';
         /** @description Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden. */
         readonly WettbewerbsdurchfuehrenderRequest: {
             readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
@@ -166,14 +251,6 @@ export interface components {
         /** @description Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden. */
         readonly Wettbewerbsdurchfuehrender: {
             readonly durchfuehrungsart: components['schemas']['Wettbewerbsdurchfuehrungsart'];
-            /**
-             * @description Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
-             * @example [
-             *       "V8DDP4X9ZY",
-             *       "SSBXQUBN"
-             *     ]
-             */
-            readonly teilnahmenummern: readonly string[];
             /** @description Flag, ob der Durchführende Newsletter erhalten möchte */
             readonly newsletter: boolean;
             readonly zugangsberechtigungUnterlagen: components['schemas']['ZugangsberechtigungUnterlagen'];
@@ -235,6 +312,31 @@ export interface components {
             readonly freischaltungPrivat: string;
             /** @example 31.07.2029 */
             readonly ende: string;
+        };
+        readonly Teilnahme: {
+            readonly jahr?: number;
+            /** @description das Kürzel einer Schule oder eines privat Durchführenden */
+            readonly kuerzel?: string;
+            readonly teilnahmeart?: components['schemas']['Wettbewerbsdurchfuehrungsart'];
+            readonly auswertungsart?: components['schemas']['Auswertungsart'];
+            /** @description uuid des Benutzers, der die Teilnahme eingetragen hat */
+            readonly angemeldetDurch?: string;
+        };
+        readonly TeilnahmeReferenz: {
+            readonly jahr: number;
+            readonly teilnahmenummer: string;
+        };
+        readonly SchuleWettbewerbskontext: {
+            readonly schule: components['schemas']['Schule'];
+            readonly kollegen: readonly string[];
+            readonly teilnahmerefs: readonly components['schemas']['TeilnahmeReferenz'][];
+            readonly vertragDSGVOVorhanden: boolean;
+            readonly anmeldungMoeglich: boolean;
+        };
+        readonly Schulkollegium: {
+            /** @description das Kürzel der Schule */
+            readonly kuerzel: string;
+            readonly kollegium: readonly string[];
         };
     };
     responses: never;
@@ -444,6 +546,51 @@ export interface operations {
             };
         };
     };
+    readonly loadMySchools: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': readonly components['schemas']['Schule'][];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User ist keine Lehrperson. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
     readonly findOrte: {
         readonly parameters: {
             readonly query: {
@@ -621,6 +768,193 @@ export interface operations {
                 content: {
                     readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly getSchulteilnahmen: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                /** @description kuerzel der Schule */
+                readonly schuleId: string;
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': Record<string, never>;
+                };
+            };
+            /** @description Request ist ungültig */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User darf diese Teilnahme nicht sehen. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly getWettbewerbskontext: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                /** @description kuerzel der Schule */
+                readonly schuleId: string;
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': readonly components['schemas']['SchuleWettbewerbskontext'][];
+                };
+            };
+            /** @description Request ist ungültig */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User darf diese Schule nicht sehen. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description diese Schule gibt es nicht. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly getKollegen: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                /** @description kuerzel der Schule */
+                readonly schuleId: string;
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['Schulkollegium'];
+                };
+            };
+            /** @description Request ist ungültig */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User darf diese Schule nicht sehen. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description diese Schule gibt es nicht. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Serverfehler */
             readonly 500: {

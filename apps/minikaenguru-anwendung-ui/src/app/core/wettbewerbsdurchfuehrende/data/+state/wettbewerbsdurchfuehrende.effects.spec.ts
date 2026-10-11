@@ -1,4 +1,4 @@
-import { firstValueFrom, of, ReplaySubject, Subject, throwError } from 'rxjs';
+import { firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { WettbewerbsdurchfuehrendeEffects } from './wettbewerbsdurchfuehrende.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -8,26 +8,31 @@ import {
     DURCHFUEHRUNGSART,
     Wettbewerbsdurchfuehrender,
     WettbewerbsdurchfuehrenderRequest,
+    ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../../model/wettbewerbsdurchfuehrende.model';
-import { wettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
+import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { Schule } from '../../../../schulkatalog/schulkatalogsuche/model/schulkatalog.model';
+import { Schule } from '../../../../core/model/schulkatalog.model';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
-import { Action } from '@ngrx/store';
-import { User } from '@matheportal/auth-model';
-import { mkaAuthorizationLoaded } from '../../../authorization/authorization-api/mka-authorization-store.events';
+import { Action, Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { fromWettbewerbsdurchfuehrender } from './wettbewerbsdurchfuehrende.selectors';
 
 describe('WettbewerbsdurchfuehrendeEffects tests', () => {
     let action$: Subject<Action>;
     let effects: WettbewerbsdurchfuehrendeEffects;
+    let store: MockStore;
 
     const expectedErrorMessage =
         'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. ' +
         'Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
 
-    let httpServiceMock: { createWettbewerbsdurchfuehrenden: ReturnType<typeof vi.fn> };
+    let httpServiceMock: {
+        createWettbewerbsdurchfuehrenden: ReturnType<typeof vi.fn>;
+        loadWettbewerbsdurchfuehrenden: ReturnType<typeof vi.fn>;
+    };
 
     const requestDtoPrivat: WettbewerbsdurchfuehrenderRequest = {
         durchfuehrungsart: DURCHFUEHRUNGSART.privat,
@@ -58,6 +63,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
         httpServiceMock = {
             createWettbewerbsdurchfuehrenden: vi.fn(),
+            loadWettbewerbsdurchfuehrenden: vi.fn(),
         };
 
         messagePublisherMock = {
@@ -75,6 +81,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         TestBed.configureTestingModule({
             providers: [
                 WettbewerbsdurchfuehrendeEffects,
+                provideMockStore(),
                 provideMockActions(() => action$),
                 { provide: Router, useValue: routerMock },
                 {
@@ -93,18 +100,19 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
         });
 
         effects = TestBed.inject(WettbewerbsdurchfuehrendeEffects);
+        store = TestBed.inject(Store) as MockStore;
     });
 
     describe('durchfuehrungsartPrivatGewaehlt$', () => {
         it('should map to durchfuehrendenAnlegen when durchfuehrungsartPrivatGewaehlt', async () => {
             const promise = firstValueFrom(effects.durchfuehrungsartPrivatGewaehlt$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
 
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat })
             );
         });
     });
@@ -117,7 +125,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 effectTriggered = true;
             });
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
 
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'schulkatalogsuche']);
@@ -153,7 +161,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto }));
+            expect(emitted).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto }));
         });
     });
 
@@ -162,7 +170,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -170,11 +177,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
@@ -194,7 +201,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto1: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -213,7 +219,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // --- ACTION 1: Erste Action triggern ---
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: firstRequestDto,
                 })
             );
@@ -224,7 +230,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
                     requestDto: secondRequestDto,
                 })
             );
@@ -239,7 +245,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             httpFirst$.complete();
 
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
                     wettbewerbsdurchfuehrender: responseDto1,
                 }),
             ]);
@@ -252,12 +258,12 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
 
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
             );
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
@@ -269,11 +275,11 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             const promise = firstValueFrom(effects.durchfuehrendenAnlegen$);
 
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: requestDtoPrivat }));
 
             const emmited = await promise;
 
-            expect(emmited).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }));
+            expect(emmited).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error }));
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
             expect(routerMock.navigate).not.toHaveBeenCalled();
         });
@@ -292,7 +298,6 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto2: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
@@ -313,7 +318,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             });
 
             // --- SCHRITT 1: Ersten Request triggern und Fehler simulieren ---
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: firstRequestDto }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: firstRequestDto }));
 
             expect(firstRequestFinalized).not.toHaveBeenCalled();
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
@@ -324,13 +329,13 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // failed action muss getriggert worden sein
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
             ]);
 
             // --- SCHRITT 2: Zweiten Request triggern ---
             // Wenn catchError an der FALSCHEN Stelle sitzt, ist der Stream jetzt tot.
             // Die Action wird dann komplett ignoriert und der HTTP-Service wird NICHT aufgerufen.
-            action$.next(wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: secondRequestDto }));
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({ requestDto: secondRequestDto }));
 
             // der HTTP-Service muss trotz des errors aufgerufen worden sein
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(2);
@@ -343,8 +348,8 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
             // die success action ist ebenfalls im array
             expect(emittedActions).toEqual([
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse }),
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto2 }),
             ]);
 
             // Aufräumen
@@ -357,7 +362,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: conflictErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: conflictErrorResponse })
             );
             await promise;
 
@@ -371,7 +376,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const promise = firstValueFrom(effects.durchfuehrendenAnlegenFailed$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed({ error: httpServerErrorResponse })
             );
             await promise;
 
@@ -387,14 +392,13 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'PRIVAT',
                 newsletter: false,
-                teilnahmenummern: ['A123456789'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             await promise;
@@ -402,22 +406,21 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-privatperson']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
 
-        it('should route to dashboard-lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
+        it('should route to lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
             const responseDto: Wettbewerbsdurchfuehrender = {
                 durchfuehrungsart: 'SCHULE',
                 newsletter: false,
-                teilnahmenummern: ['A1234567'],
                 zugangsberechtigungUnterlagen: 'STANDARD',
             };
 
             const promise = firstValueFrom(effects.durchfuehrenderAngelegt$);
 
             action$.next(
-                wettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({ wettbewerbsdurchfuehrender: responseDto })
             );
 
             await promise;
@@ -425,44 +428,215 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(httpServiceMock.createWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'dashboard-lehrperson']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
             expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
     });
 
-    describe('loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$', () => {
-        it.each(['SCHULE', 'PRIVAT'])('should dispatch durchfuehrendenLaden when rolle %s', async rolle => {
-            const user: User = {
-                anonym: false,
-                berechtigungen: [rolle, 'STANDARD'],
-                fullName: 'Amy',
-            };
+    describe('ensureWettbewerbGeladen$', () => {
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to durchfuehrendenLaden when loadState %s',
+            async loadState => {
+                store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderLoadState, loadState);
+                store.refreshState();
 
-            const promise = firstValueFrom(effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$);
+                const emittedActions: Action[] = [];
 
-            action$.next(mkaAuthorizationLoaded({ user }));
+                const subscription = effects.ensureDurchfuehrenderGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
 
-            const emitted = await promise;
+                try {
+                    action$.next(WettbewerbsdurchfuehrendeActions.ensureDurchfuehrenderGeladen());
 
-            expect(emitted).toEqual(wettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
-        });
+                    expect(emittedActions).toEqual([WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden()]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
 
-        it('should not dispatch durchfuehrendenLaden when keine Minikänguru-Rolle', async () => {
-            const user: User = {
-                anonym: false,
-                berechtigungen: ['STANDARD'],
-                fullName: 'Amy',
-            };
+        it.each(['loaded', 'unauthorized'] as const)(
+            'should not map to wettbewerbLaden when state is %s',
+            async loadState => {
+                store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+
+                const subscription = effects.ensureDurchfuehrenderGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(WettbewerbsdurchfuehrendeActions.ensureDurchfuehrenderGeladen());
+
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    });
+
+    describe('durchfuehrendenLaden$', () => {
+        const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
+            durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+            newsletter: true,
+            zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.entzogen,
+        };
+
+        it('should not call the httpService and not emit an action when already loaded', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, true);
+            store.refreshState();
 
             const emittedActions: Action[] = [];
-            const subscription = effects.loadWettbewerbsdurchfuehrendenOnAuthorizationLoaded$.subscribe(action => {
+            const subscription = effects.durchfuehrendenLaden$.subscribe(action => {
                 emittedActions.push(action);
             });
 
-            action$.next(mkaAuthorizationLoaded({ user }));
+            try {
+                action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+                expect(emittedActions).toEqual([]);
+                expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).not.toHaveBeenCalled();
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
 
-            expect(emittedActions).toEqual([]);
-            subscription.unsubscribe();
+        it('should call the http-service and emit durchfuehrenderLoaded when not loaded', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
+            store.refreshState();
+
+            httpServiceMock.loadWettbewerbsdurchfuehrenden.mockReturnValueOnce(of(wettbewerbsdurchfuehrender));
+
+            const promise = firstValueFrom(effects.durchfuehrendenLaden$);
+
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(
+                WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender })
+            );
+            expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
+        });
+
+        it('should not cancel previous pending requests (exhaustMap)', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
+            store.refreshState();
+
+            const httpFirst$ = new Subject<Wettbewerbsdurchfuehrender>();
+            const firstRequestFinalized = vi.fn();
+
+            httpServiceMock.loadWettbewerbsdurchfuehrenden.mockReturnValueOnce(httpFirst$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.durchfuehrendenLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                // --- ACTION 1: Erste Action triggern ---
+                action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+
+                // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
+                action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+
+                httpFirst$.next(wettbewerbsdurchfuehrender);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([
+                    WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to loadWettbewerbFailed when httpErrorResponse', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
+            store.refreshState();
+
+            httpServiceMock.loadWettbewerbsdurchfuehrenden.mockReturnValue(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.durchfuehrendenLaden$);
+
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(
+                WettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error: httpServerErrorResponse })
+            );
+            expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
+        });
+
+        it('should call the httpService and map to loadWettbewerbFailed when other Error', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
+            store.refreshState();
+
+            const error = new Error('uiuiui!');
+
+            httpServiceMock.loadWettbewerbsdurchfuehrenden.mockReturnValue(throwError(() => error));
+
+            const promise = firstValueFrom(effects.durchfuehrendenLaden$);
+
+            action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(WettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error }));
+            expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
+        });
+
+        it('should keep the effect stream alive after an error occured', async () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
+            store.refreshState();
+
+            const httpFirst$ = new Subject<Wettbewerbsdurchfuehrender>();
+            const httpSecond$ = new Subject<Wettbewerbsdurchfuehrender>();
+
+            // Erster Request wirft error, zweiter Request erfolgreich
+            httpServiceMock.loadWettbewerbsdurchfuehrenden
+                .mockReturnValueOnce(httpFirst$)
+                .mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.durchfuehrendenLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    WettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+
+                action$.next(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden());
+
+                httpSecond$.next(wettbewerbsdurchfuehrender);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    WettbewerbsdurchfuehrendeActions.durchfuehrendenLadenFailed({ error: httpServerErrorResponse }),
+                    WettbewerbsdurchfuehrendeActions.durchfuehrenderGeladen({ wettbewerbsdurchfuehrender }),
+                ]);
+                expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(2);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
     });
 });

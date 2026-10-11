@@ -2,7 +2,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { AuthSessionFacade } from './auth-session.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { authActions, fromAuth } from '@matheportal/auth-data';
+import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
 describe('AuthSessionFacade', () => {
@@ -41,7 +41,7 @@ describe('AuthSessionFacade', () => {
         facade.validateSession();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(authActions.validateSession());
+        expect(dispatchSpy).toHaveBeenCalledWith(AuthActions.validateSession());
     });
 
     it('validateSession should dispatch validateSession when user is anonymous', () => {
@@ -51,6 +51,6 @@ describe('AuthSessionFacade', () => {
         facade.validateSession();
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(authActions.validateSession());
+        expect(dispatchSpy).toHaveBeenCalledWith(AuthActions.validateSession());
     });
 });

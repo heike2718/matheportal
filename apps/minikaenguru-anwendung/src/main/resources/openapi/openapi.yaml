@@ -150,6 +150,38 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerbsdurchfuehrende/me/schulen:
+        get:
+            tags:
+                - Wettbewerbsdurchfuehrende
+            summary: Schulen laden
+            description: läd die Schulen eines Wettbewerbsdurchfuehrenden
+            operationId: loadMySchools
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Schule'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User ist keine Lehrperson.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalog/orte:
         get:
             tags:
@@ -310,6 +342,153 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/teilnahmen/schule/{schuleId}:
+        get:
+            tags:
+                - Teilnahmen
+            summary: alle Teilnahmen einer Schule
+            description: läd alle Teilnahmen der Schule mit der gegebenen ID
+            operationId: getSchulteilnahmen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                items:
+                                    $ref: '#/components/schemas/Teilnahme'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Teilnahme nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}:
+        get:
+            tags:
+                - Schulen
+            summary: 'Wettbewerbskontext einer Schule'
+            description: 'stellt den Wettbewerbskontext einer bestimmten Schule zur Verfügung'
+            operationId: getWettbewerbskontext
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/SchuleWettbewerbskontext'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Schule nicht sehen.
+                '404':
+                    description: diese Schule gibt es nicht.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/kollegen:
+        get:
+            tags:
+                - Schulen
+            summary: 'Kollegen einer Lehrperson'
+            description: 'liest die Kollegen der eingeloggten Lehrperson'
+            operationId: getKollegen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: '#/components/schemas/Schulkollegium'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Schule nicht sehen.
+                '404':
+                    description: diese Schule gibt es nicht.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:
@@ -346,6 +525,12 @@ components:
                 - DOWNLOAD_LEHRER
                 - DOWNLOAD_PRIVAT
                 - BEENDET
+        Auswertungsart:
+            type: string
+            enum:
+                - ONLINE
+                - OFFLINE
+            description: Die Art, wie der Wettbewerb ausgewertet wird.
         WettbewerbsdurchfuehrenderRequest:
             type: object
             x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
@@ -373,17 +558,6 @@ components:
                 durchfuehrungsart:
                     type: object
                     $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                teilnahmenummern:
-                    type: array
-                    uniqueItems: true
-                    description: Teilnahmenummern sind bei Lehrpersonen die Schulkürzel, bei Privatpersonen ein eindeutiges 10stelliges Kürzel.
-                    items:
-                        type: string
-                        pattern: '^[A-Z0-9]*$'
-                        maxLength: 10
-                    example:
-                        - V8DDP4X9ZY
-                        - SSBXQUBN
                 newsletter:
                     type: boolean
                     description: Flag, ob der Durchführende Newsletter erhalten möchte
@@ -545,3 +719,75 @@ components:
                 ende:
                     type: string
                     example: 31.07.2029
+        Teilnahme:
+            type: object
+            properties:
+                jahr:
+                    type: integer
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
+                    description: 'das Kürzel einer Schule oder eines privat Durchführenden'
+                teilnahmeart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
+                auswertungsart:
+                    type: object
+                    $ref: '#/components/schemas/Auswertungsart'
+                angemeldetDurch:
+                    type: string
+                    description: 'uuid des Benutzers, der die Teilnahme eingetragen hat'
+        TeilnahmeReferenz:
+            type: object
+            required:
+                - jahr
+                - teilnahmenummer
+            properties:
+                jahr:
+                    type: integer
+                teilnahmenummer:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    minLength: 8
+                    maxLength: 10
+        SchuleWettbewerbskontext:
+            type: object
+            required:
+                - schule
+                - kollegen
+                - teilnahmerefs
+                - vertragDSGVOVorhanden
+                - anmeldungMoeglich
+            properties:
+                schule:
+                    $ref: '#/components/schemas/Schule'
+                kollegen:
+                    type: array
+                    items:
+                        type: string
+                        pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                        maxLength: 201
+                teilnahmerefs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TeilnahmeReferenz'
+                vertragDSGVOVorhanden:
+                    type: boolean
+                anmeldungMoeglich:
+                    type: boolean
+        Schulkollegium:
+            type: object
+            required:
+                - kuerzel
+                - kollegium
+            properties:
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
+                    description: 'das Kürzel der Schule'
+                kollegium:
+                    type: array
+                    items:
+                        type: string

@@ -10,7 +10,7 @@ import {
     Schulkuerzel,
 } from '../../model/schulkatalog.model';
 
-export const schulkatalogActions = createActionGroup({
+export const SchulkatalogActions = createActionGroup({
     source: 'MKAdmin Schulkatalog',
     events: {
         loadLaender: emptyProps(),

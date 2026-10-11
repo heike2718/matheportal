@@ -2,7 +2,7 @@ import { User } from '@matheportal/auth-model';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { SESSION_VALIDATION_FAILED_REASON } from '../auth-data.utils';
 
-export const authActions = createActionGroup({
+export const AuthActions = createActionGroup({
     source: 'MP Auth',
     events: {
         requestLoginUrl: emptyProps(),

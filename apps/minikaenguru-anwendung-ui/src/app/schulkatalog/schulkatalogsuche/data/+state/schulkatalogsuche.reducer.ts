@@ -1,27 +1,27 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { Ort, Schule } from '../../model/schulkatalog.model';
-import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
+import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
+import { SchulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { mapErrorResourceLoadingState } from '@matheportal/shared-utils';
+import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
 import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 const SCHULKATALOGSUCHE_FEATURE_KEY = 'MKASchulkatalogsuche';
 
 export interface SchulkatalogsucheState {
     readonly orte: Ort[];
-    readonly orteLoadingState: RESOURCE_LOAD_STATE;
+    readonly orteLoadState: RESOURCE_LOAD_STATE;
     readonly selectedOrt: Ort | undefined;
     readonly schulen: Schule[];
-    readonly schulenLoadingState: RESOURCE_LOAD_STATE;
+    readonly schulenLoadState: RESOURCE_LOAD_STATE;
     readonly selectedSchule: Schule | undefined;
 }
 
 export const initialSchulkatalogsucheState: SchulkatalogsucheState = {
     orte: [],
-    orteLoadingState: 'not-loaded',
+    orteLoadState: 'not-loaded',
     selectedOrt: undefined,
     schulen: [],
-    schulenLoadingState: 'not-loaded',
+    schulenLoadState: 'not-loaded',
     selectedSchule: undefined,
 };
 
@@ -29,40 +29,40 @@ export const schulkatalogsucheFeature = createFeature({
     name: SCHULKATALOGSUCHE_FEATURE_KEY,
     reducer: createReducer<SchulkatalogsucheState>(
         initialSchulkatalogsucheState,
-        on(schulkatalogsucheActions.findOrteSucceeded, (state, { orte }) => ({
+        on(SchulkatalogsucheActions.findOrteSucceeded, (state, { orte }) => ({
             ...state,
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedOrt: undefined,
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.findOrteFailed, (state, { error }) => {
-            return { ...state, orteLoadingState: mapErrorResourceLoadingState(error), selectedOrt: undefined };
+        on(SchulkatalogsucheActions.findOrteFailed, (state, { error }) => {
+            return { ...state, orteLoadState: mapErrorToResourceLoadState(error), selectedOrt: undefined };
         }),
-        on(schulkatalogsucheActions.ortSelected, (state, { ort }) => ({
+        on(SchulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
             selectedOrt: ort,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
-        on(schulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
+        on(SchulkatalogsucheActions.orteCleared, () => initialSchulkatalogsucheState),
+        on(SchulkatalogsucheActions.loadSchulenSucceeded, (state, { ortId, schulen }) => {
             if (state.selectedOrt?.kuerzel !== ortId) {
                 return state;
             }
-            return { ...state, schulen, schulenLoadingState: 'loaded', selectedSchule: undefined };
+            return { ...state, schulen, schulenLoadState: 'loaded', selectedSchule: undefined };
         }),
-        on(schulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
+        on(SchulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
-                schulenLoadingState: mapErrorResourceLoadingState(error),
+                schulenLoadState: mapErrorToResourceLoadState(error),
                 selectedSchule: undefined,
             };
         }),
-        on(schulkatalogsucheActions.schuleSelected, (state, { schule }) => {
+        on(SchulkatalogsucheActions.schuleSelected, (state, { schule }) => {
             if (state.selectedOrt?.kuerzel !== schule.ort.kuerzel) {
                 return state;
             }
@@ -71,13 +71,13 @@ export const schulkatalogsucheFeature = createFeature({
                 selectedSchule: schule,
             };
         }),
-        on(schulkatalogsucheActions.schulenCleared, state => ({
+        on(SchulkatalogsucheActions.schulenCleared, state => ({
             ...state,
             schulen: [],
-            schulenLoadingState: 'not-loaded',
+            schulenLoadState: 'not-loaded',
             selectedSchule: undefined,
         })),
-        on(schulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),
+        on(SchulkatalogsucheActions.resetSuche, () => initialSchulkatalogsucheState),
         on(userLoggedOut, () => initialSchulkatalogsucheState)
     ),
 });

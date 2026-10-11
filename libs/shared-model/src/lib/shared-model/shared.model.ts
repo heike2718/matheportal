@@ -6,6 +6,8 @@ export const SESSION_EXPIRED_MESSAGE = 'Ihre Sitzung ist abgelaufen. Bitte melde
 
 export type RESOURCE_LOAD_STATE = 'not-loaded' | 'loaded' | 'unauthorized' | 'technical-error';
 
+export type AUTHORIZED_RESOURCE_LOAD_STATE = RESOURCE_LOAD_STATE | 'forbidden';
+
 export interface ConstraintViolation {
     readonly field: string;
     readonly message: string;

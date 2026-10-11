@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { SchulkatalogantragHttpService } from '../schulkatalogantrag-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { Schulkatalogantrag } from '../../model/schulkatalogantrag.model';
-import { schulkatalogantragActions } from './schulkatalogantrag.actions';
+import { SchulkatalogantragActions } from './schulkatalogantrag.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('SchulkatalogantragEffects', () => {
@@ -84,19 +84,19 @@ describe('SchulkatalogantragEffects', () => {
                 emittedActions.push(action);
             });
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
 
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledOnce();
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledWith(antrag);
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
 
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledOnce();
 
             httpFirst$.next();
             httpFirst$.complete();
 
-            expect(emittedActions).toEqual([schulkatalogantragActions.submitSchulkatalogantragSucceeded()]);
+            expect(emittedActions).toEqual([SchulkatalogantragActions.submitSchulkatalogantragSucceeded()]);
 
             subscription.unsubscribe();
         });
@@ -106,11 +106,11 @@ describe('SchulkatalogantragEffects', () => {
 
             const promise = firstValueFrom(effects.submitSchulkatalogantrag$);
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
             const emmited = await promise;
 
             expect(emmited).toEqual(
-                schulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse })
+                SchulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse })
             );
 
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledOnce();
@@ -128,7 +128,7 @@ describe('SchulkatalogantragEffects', () => {
                 emittedActions.push(action);
             });
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
 
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledOnce();
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledWith(antrag);
@@ -136,10 +136,10 @@ describe('SchulkatalogantragEffects', () => {
             httpFirst$.error(httpServerErrorResponse);
 
             expect(emittedActions).toEqual([
-                schulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }),
+                SchulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }),
             ]);
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantrag({ antrag }));
 
             expect(httpServiceMock.submitSchulkatalogantrag).toHaveBeenCalledTimes(2);
 
@@ -147,8 +147,8 @@ describe('SchulkatalogantragEffects', () => {
             httpSecond$.complete();
 
             expect(emittedActions).toEqual([
-                schulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }),
-                schulkatalogantragActions.submitSchulkatalogantragSucceeded(),
+                SchulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }),
+                SchulkatalogantragActions.submitSchulkatalogantragSucceeded(),
             ]);
 
             subscription.unsubscribe();
@@ -159,7 +159,7 @@ describe('SchulkatalogantragEffects', () => {
         it('should show the expected message', async () => {
             const promise = firstValueFrom(effects.submitSchulkatalogantragSucceeded$);
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantragSucceeded());
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantragSucceeded());
 
             await promise;
 
@@ -172,7 +172,7 @@ describe('SchulkatalogantragEffects', () => {
         it('should show the expected message', async () => {
             const promise = firstValueFrom(effects.submitSchulkatalogantragFailed$);
 
-            action$.next(schulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }));
+            action$.next(SchulkatalogantragActions.submitSchulkatalogantragFailed({ error: httpServerErrorResponse }));
 
             await promise;
 

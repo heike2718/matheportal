@@ -9,9 +9,9 @@ import {
     SCHULKATALOG_ADMIN_KONTEXT,
     Schulkuerzel,
 } from '../../model/schulkatalog.model';
-import { schulkatalogActions } from './schulkatalog.actions';
+import { SchulkatalogActions } from './schulkatalog.actions';
 
-describe('schulkatalogActions', () => {
+describe('SchulkatalogActions', () => {
     const emailAuftraggeber = 'test@provider.de';
 
     const schulkuerzel: Schulkuerzel = {
@@ -76,7 +76,7 @@ describe('schulkatalogActions', () => {
         };
 
         it('should create the loadLaender action', () => {
-            const action = schulkatalogActions.loadLaender();
+            const action = SchulkatalogActions.loadLaender();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadLaender',
@@ -84,7 +84,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the loadLaenderSucceeded action', () => {
-            const action = schulkatalogActions.loadLaenderSucceeded({ laender });
+            const action = SchulkatalogActions.loadLaenderSucceeded({ laender });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadLaenderSucceeded',
@@ -93,7 +93,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the landSelected action', () => {
-            const action = schulkatalogActions.landSelected({ land: laender[1] });
+            const action = SchulkatalogActions.landSelected({ land: laender[1] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] landSelected',
@@ -102,14 +102,14 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the ortMitSchuleAnlegenRequested action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenRequested();
+            const action = SchulkatalogActions.ortMitSchuleAnlegenRequested();
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenRequested',
             });
         });
 
         it('should create the landMitOrtUndSchuleAnlegen action', () => {
-            const action = schulkatalogActions.landMitOrtUndSchuleAnlegen({ payload });
+            const action = SchulkatalogActions.landMitOrtUndSchuleAnlegen({ payload });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegen',
@@ -118,7 +118,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the landMitOrtUndSchuleAnlegenSucceeded action', () => {
-            const action = schulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel });
+            const action = SchulkatalogActions.landMitOrtUndSchuleAnlegenSucceeded({ schulkuerzel });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] landMitOrtUndSchuleAnlegenSucceeded',
@@ -134,7 +134,7 @@ describe('schulkatalogActions', () => {
         };
 
         it('should create the loadOrte action', () => {
-            const action = schulkatalogActions.loadOrte({ land: laender[1] });
+            const action = SchulkatalogActions.loadOrte({ land: laender[1] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadOrte',
@@ -143,7 +143,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the loadOrteSucceeded action', () => {
-            const action = schulkatalogActions.loadOrteSucceeded({ orte });
+            const action = SchulkatalogActions.loadOrteSucceeded({ orte });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadOrteSucceeded',
@@ -152,7 +152,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the backToLaenderRequested action', () => {
-            const action = schulkatalogActions.backToLaenderRequested();
+            const action = SchulkatalogActions.backToLaenderRequested();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] backToLaenderRequested',
@@ -160,7 +160,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the landSelected action', () => {
-            const action = schulkatalogActions.ortSelected({ ort: orte[0] });
+            const action = SchulkatalogActions.ortSelected({ ort: orte[0] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortSelected',
@@ -169,7 +169,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleAnlegenRequested action', () => {
-            const action = schulkatalogActions.schuleAnlegenRequested();
+            const action = SchulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
@@ -177,7 +177,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the ortMitSchuleAnlegen action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegen({ land: laender[0], payload });
+            const action = SchulkatalogActions.ortMitSchuleAnlegen({ land: laender[0], payload });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegen',
@@ -187,7 +187,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the ortMitSchuleAnlegenSucceeded action', () => {
-            const action = schulkatalogActions.ortMitSchuleAnlegenSucceeded({ land: laender[0], schulkuerzel });
+            const action = SchulkatalogActions.ortMitSchuleAnlegenSucceeded({ land: laender[0], schulkuerzel });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] ortMitSchuleAnlegenSucceeded',
@@ -203,7 +203,7 @@ describe('schulkatalogActions', () => {
         };
 
         it('should create the loadSchulen action', () => {
-            const action = schulkatalogActions.loadSchulen({ ort: orte[0] });
+            const action = SchulkatalogActions.loadSchulen({ ort: orte[0] });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadSchulen',
@@ -212,7 +212,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the loadSchulenSucceeded action', () => {
-            const action = schulkatalogActions.loadSchulenSucceeded({ schulen });
+            const action = SchulkatalogActions.loadSchulenSucceeded({ schulen });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadSchulenSucceeded',
@@ -221,7 +221,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the backToOrteRequested action', () => {
-            const action = schulkatalogActions.backToOrteRequested();
+            const action = SchulkatalogActions.backToOrteRequested();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] backToOrteRequested',
@@ -229,7 +229,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleAnlegenRequested action', () => {
-            const action = schulkatalogActions.schuleAnlegenRequested();
+            const action = SchulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
@@ -237,7 +237,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleAnlegen action', () => {
-            const action = schulkatalogActions.schuleAnlegen({ ort: orte[0], payload });
+            const action = SchulkatalogActions.schuleAnlegen({ ort: orte[0], payload });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegen',
@@ -247,7 +247,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleAnlegenSucceeded action', () => {
-            const action = schulkatalogActions.schuleAnlegenSucceeded({ ort: orte[0], schulkuerzel });
+            const action = SchulkatalogActions.schuleAnlegenSucceeded({ ort: orte[0], schulkuerzel });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegenSucceeded',
@@ -257,7 +257,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleUmbenennenRequested action', () => {
-            const action = schulkatalogActions.schuleAnlegenRequested();
+            const action = SchulkatalogActions.schuleAnlegenRequested();
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleAnlegenRequested',
@@ -265,7 +265,7 @@ describe('schulkatalogActions', () => {
         });
 
         it('should create the schuleUmbenennen action', () => {
-            const action = schulkatalogActions.schuleUmbenennen({ schule: schulen[0], payload });
+            const action = SchulkatalogActions.schuleUmbenennen({ schule: schulen[0], payload });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleUmbenennen',
@@ -274,7 +274,7 @@ describe('schulkatalogActions', () => {
             });
         });
         it('should create the schuleUmbenennenSucceeded action', () => {
-            const action = schulkatalogActions.schuleUmbenennenSucceeded({ schule: schulen[0], schulkuerzel });
+            const action = SchulkatalogActions.schuleUmbenennenSucceeded({ schule: schulen[0], schulkuerzel });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] schuleUmbenennenSucceeded',
@@ -287,7 +287,7 @@ describe('schulkatalogActions', () => {
     it.each([SCHULKATALOG_ADMIN_KONTEXT.laender, SCHULKATALOG_ADMIN_KONTEXT.orte, SCHULKATALOG_ADMIN_KONTEXT.schulen])(
         'should create the loadActionFailed action with kontext %s',
         kontext => {
-            const action = schulkatalogActions.loadActionFailed({ kontext, error: httpServerErrorResponse });
+            const action = SchulkatalogActions.loadActionFailed({ kontext, error: httpServerErrorResponse });
 
             expect(action).toEqual({
                 type: '[MKAdmin Schulkatalog] loadActionFailed',
@@ -298,7 +298,7 @@ describe('schulkatalogActions', () => {
     );
 
     it('should create the changeActionFailed action', () => {
-        const action = schulkatalogActions.changeActionFailed({ error: httpServerErrorResponse });
+        const action = SchulkatalogActions.changeActionFailed({ error: httpServerErrorResponse });
 
         expect(action).toEqual({
             type: '[MKAdmin Schulkatalog] changeActionFailed',

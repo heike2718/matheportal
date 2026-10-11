@@ -4,8 +4,8 @@ import {
     schulkatalogsucheFeature,
     SchulkatalogsucheState,
 } from './schulkatalogsuche.reducer';
-import { Land, Ort, Schule } from '../../model/schulkatalog.model';
-import { schulkatalogsucheActions } from './schulkatalogsuche.actions';
+import { Land, Ort, Schule } from '../../../../core/model/schulkatalog.model';
+import { SchulkatalogsucheActions } from './schulkatalogsuche.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -59,7 +59,7 @@ describe('schulkatalogsucheFeature tests', () => {
             expect(state).toBe(initialSchulkatalogsucheState);
         });
         it('should return the previous state, when unknown action and defined state', () => {
-            const previousState = createState({ orte, orteLoadingState: 'loaded', selectedOrt: orte[1] });
+            const previousState = createState({ orte, orteLoadState: 'loaded', selectedOrt: orte[1] });
             const state = schulkatalogsucheFeature.reducer(previousState, unknownAction);
             expect(state).toBe(previousState);
         });
@@ -68,33 +68,33 @@ describe('schulkatalogsucheFeature tests', () => {
     describe('findOrteSucceeded', () => {
         const previousState = createState();
 
-        it('should set orte and orteLoadingState when orte found', () => {
+        it('should set orte and orteLoadState when orte found', () => {
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findOrteSucceeded({ orte })
+                SchulkatalogsucheActions.findOrteSucceeded({ orte })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: undefined,
                 schulen: [],
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });
-        it('should set  orte = [] and orteLoadingState when orte empty', () => {
+        it('should set  orte = [] and orteLoadState when orte empty', () => {
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findOrteSucceeded({ orte: [] })
+                SchulkatalogsucheActions.findOrteSucceeded({ orte: [] })
             );
 
             expect(state).toEqual({
                 orte: [],
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: undefined,
                 schulen: [],
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });
@@ -103,22 +103,22 @@ describe('schulkatalogsucheFeature tests', () => {
     describe('loadSchulenSucceeded', () => {
         const previousState = createState({
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             selectedOrt: orte[1],
         });
-        it('should set schulen and schulenLoadingState when same ortId', () => {
+        it('should set schulen and schulenLoadState when same ortId', () => {
             const ortId = orte[1].kuerzel;
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
+                SchulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 selectedSchule: undefined,
             });
         });
@@ -127,25 +127,25 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
+                SchulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen })
             );
 
             expect(state).toBe(previousState);
         });
-        it('should set schulen and schulenLOadingState when empty and and same ortId', () => {
+        it('should set schulen and schulenLoadState when empty and and same ortId', () => {
             const ortId = orte[1].kuerzel;
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
+                SchulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen: [],
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 selectedSchule: undefined,
             });
         });
@@ -154,7 +154,7 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
+                SchulkatalogsucheActions.loadSchulenSucceeded({ ortId, schulen: [] })
             );
 
             expect(state).toBe(previousState);
@@ -164,9 +164,9 @@ describe('schulkatalogsucheFeature tests', () => {
     describe('ortSelected', () => {
         const previousState = createState({
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             schulen: schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
             selectedSchule: schulen[1],
         });
         it('should set selectedOrt, keep orte and reset schulen and selectedSchule', () => {
@@ -174,15 +174,15 @@ describe('schulkatalogsucheFeature tests', () => {
 
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.ortSelected({ ort })
+                SchulkatalogsucheActions.ortSelected({ ort })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: ort,
                 schulen: [],
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });
@@ -192,14 +192,14 @@ describe('schulkatalogsucheFeature tests', () => {
         it('should return the initial state when orteCleared', () => {
             const previousState = createState({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 selectedSchule: schulen[1],
             });
 
-            const state = schulkatalogsucheFeature.reducer(previousState, schulkatalogsucheActions.orteCleared());
+            const state = schulkatalogsucheFeature.reducer(previousState, SchulkatalogsucheActions.orteCleared());
 
             expect(state).toBe(initialSchulkatalogsucheState);
         });
@@ -208,24 +208,24 @@ describe('schulkatalogsucheFeature tests', () => {
     describe('schuleSelected', () => {
         const previousState = createState({
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             selectedOrt: orte[1],
             schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
         });
         it('should set selectedSchule when ortId and schule.ort fit', () => {
             const schule = schulen[0];
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.schuleSelected({ schule })
+                SchulkatalogsucheActions.schuleSelected({ schule })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 selectedSchule: schule,
             });
         });
@@ -248,7 +248,7 @@ describe('schulkatalogsucheFeature tests', () => {
             };
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.schuleSelected({ schule })
+                SchulkatalogsucheActions.schuleSelected({ schule })
             );
 
             expect(state).toBe(previousState);
@@ -264,19 +264,19 @@ describe('schulkatalogsucheFeature tests', () => {
         });
         const previousState = initialSchulkatalogsucheState;
 
-        it('should set loadingState correctly when findOrteFailed with httpError', () => {
+        it('should set LoadState correctly when findOrteFailed with httpError', () => {
             // schulkatalogsuche-data.utils is responsible for the correct mapping and therefore comletely tested in its own spec
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.findOrteFailed({ error: httpServerErrorResponse })
+                SchulkatalogsucheActions.findOrteFailed({ error: httpServerErrorResponse })
             );
 
             expect(state).toEqual({
                 orte: [],
-                orteLoadingState: 'technical-error',
+                orteLoadState: 'technical-error',
                 selectedOrt: undefined,
                 schulen: [],
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });
@@ -289,44 +289,44 @@ describe('schulkatalogsucheFeature tests', () => {
             error: 'boom',
             url: '/ORT-1/schulen/',
         });
-        const previousState = createState({ orte, orteLoadingState: 'loaded', selectedOrt: orte[1] });
+        const previousState = createState({ orte, orteLoadState: 'loaded', selectedOrt: orte[1] });
         it('should set schulenLoadedState correctly when findSchulenFailed', () => {
             // schulkatalogsuche-data.utils is responsible for the correct mapping and therefore completely tested in its own spec
             const state = schulkatalogsucheFeature.reducer(
                 previousState,
-                schulkatalogsucheActions.loadSchulenFailed({ error: httpServerErrorResponse })
+                SchulkatalogsucheActions.loadSchulenFailed({ error: httpServerErrorResponse })
             );
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen: [],
-                schulenLoadingState: 'technical-error',
+                schulenLoadState: 'technical-error',
                 selectedSchule: undefined,
             });
         });
     });
 
     describe('schulenCleared', () => {
-        it('should set reset schulen and loadingState when schulenCleared', () => {
+        it('should set reset schulen and LoadState when schulenCleared', () => {
             const previousState = createState({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen,
-                schulenLoadingState: 'loaded',
+                schulenLoadState: 'loaded',
                 selectedSchule: schulen[1],
             });
 
-            const state = schulkatalogsucheFeature.reducer(previousState, schulkatalogsucheActions.schulenCleared());
+            const state = schulkatalogsucheFeature.reducer(previousState, SchulkatalogsucheActions.schulenCleared());
 
             expect(state).toEqual({
                 orte,
-                orteLoadingState: 'loaded',
+                orteLoadState: 'loaded',
                 selectedOrt: orte[1],
                 schulen: [],
-                schulenLoadingState: 'not-loaded',
+                schulenLoadState: 'not-loaded',
                 selectedSchule: undefined,
             });
         });
@@ -335,15 +335,15 @@ describe('schulkatalogsucheFeature tests', () => {
     describe('reset and userLoggedOut', () => {
         const previousState: SchulkatalogsucheState = {
             orte,
-            orteLoadingState: 'loaded',
+            orteLoadState: 'loaded',
             selectedOrt: orte[1],
             schulen,
-            schulenLoadingState: 'loaded',
+            schulenLoadState: 'loaded',
             selectedSchule: schulen[1],
         };
 
         it('should reset to the initialState on resetSuche', () => {
-            const state = schulkatalogsucheFeature.reducer(previousState, schulkatalogsucheActions.resetSuche());
+            const state = schulkatalogsucheFeature.reducer(previousState, SchulkatalogsucheActions.resetSuche());
 
             expect(state).toBe(initialSchulkatalogsucheState);
         });

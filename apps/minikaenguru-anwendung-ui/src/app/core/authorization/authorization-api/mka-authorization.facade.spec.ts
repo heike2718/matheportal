@@ -9,9 +9,10 @@ import {
     MINIKAENGURU_BERECHTIGUNGSTYP,
     MinikaenguruBerechtigungstyp,
 } from '../authorization-model';
-import { fromMkaAuthorization, mkaAuthorizationActions } from '../authorization-data';
+import { fromMkaAuthorization, MkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 interface TestParameters {
     readonly user: User;
@@ -47,16 +48,17 @@ describe('MkaAuthorizationFacade tests', () => {
 
     const authSessionFacadeMock = {
         user: computed(() => anonymousUser),
-        isLoggedIn: computed(() => false),
+        sessionLoadState: computed(() => 'not-loaded'),
     };
 
     async function setup(
+        sessionLoadState: RESOURCE_LOAD_STATE,
         user: User,
         authorizationLoadState: AuthorizationLoadState,
         berechtigungstyp: MinikaenguruBerechtigungstyp
     ) {
         authSessionFacadeMock.user = computed(() => user);
-        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        authSessionFacadeMock.sessionLoadState = computed(() => sessionLoadState);
 
         TestBed.configureTestingModule({
             providers: [
@@ -83,10 +85,22 @@ describe('MkaAuthorizationFacade tests', () => {
     }
 
     describe('startViewState tests', () => {
+        it('should return loading when the session is not-loaded', async () => {
+            await setup('not-loaded', anonymousUser, 'not-loaded', berechtigungstypNone);
+
+            expect(facade.startViewState()).toBe('loading');
+        });
+
+        it('should return failed when session initialization has a technical error', async () => {
+            await setup('technical-error', anonymousUser, 'not-loaded', berechtigungstypNone);
+
+            expect(facade.startViewState()).toBe('failed');
+        });
+
         it('should return guest when not logged in', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
             const berechtigungstyp: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
-            await setup(anonymousUser, authorizationLoadState, berechtigungstyp);
+            await setup('unauthorized', anonymousUser, authorizationLoadState, berechtigungstyp);
 
             expect(facade.startViewState()).toBe('guest');
         });
@@ -98,7 +112,7 @@ describe('MkaAuthorizationFacade tests', () => {
             'should return loading when logged in with $testParameter and not-loaded',
             async testParameter => {
                 const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-                await setup(testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
+                await setup('loaded', testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
 
                 expect(facade.startViewState()).toBe('loading');
             }
@@ -111,51 +125,52 @@ describe('MkaAuthorizationFacade tests', () => {
             'should return failed when logged in with $testParameter and failed',
             async testParameter => {
                 const authorizationLoadState: AuthorizationLoadState = 'failed';
-                await setup(testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
+                await setup('loaded', testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
 
                 expect(facade.startViewState()).toBe('failed');
             }
         );
         it('should return dashboard-privatperson when logged in as Privatperson', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInPrivatperson, authorizationLoadState, berechtigungstypPrivat);
+            await setup('loaded', loggedInPrivatperson, authorizationLoadState, berechtigungstypPrivat);
 
             expect(facade.startViewState()).toBe('dashboard-privatperson');
+            expect(facade.isPrivatperson()).toBe(true);
+            expect(facade.isLehrperson()).toBe(false);
         });
         it('should return dashboard-lehrperson when logged in with berechtigung SCHULE', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInLehrer, authorizationLoadState, berechtigungstypSchule);
+            await setup('loaded', loggedInLehrer, authorizationLoadState, berechtigungstypSchule);
 
             expect(facade.startViewState()).toBe('dashboard-lehrperson');
+            expect(facade.isPrivatperson()).toBe(false);
+            expect(facade.isLehrperson()).toBe(true);
         });
         it('should return wettbewerbsdurchfuehrenden-anlegen when logged in as standarduser', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
+            await setup('loaded', loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
 
             expect(facade.startViewState()).toBe('needs-wettbewerbsdurchfuehrenden');
+            expect(facade.isPrivatperson()).toBe(false);
+            expect(facade.isLehrperson()).toBe(false);
         });
     });
 
     describe('ensureAuthorizationLoaded tests', () => {
-        it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
-            'should dispatch the loadMkaAuthorization when user is logged in and $authorizationLoadState',
-            async authorizationLoadState => {
-                await setup(loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
+        it.each(['not-loaded', 'loaded', 'unauthorized', 'technical-error'] as const)(
+            'dispatches the ensure action when sessionLoadState is %s',
+            async sessionLoadState => {
+                await setup(
+                    sessionLoadState,
+                    sessionLoadState === 'loaded' ? loggedInStandardUser : anonymousUser,
+                    'not-loaded',
+                    berechtigungstypNone
+                );
 
                 facade.ensureAuthorizationLoaded();
 
                 expect(dispatchSpy).toHaveBeenCalledTimes(1);
-                expect(dispatchSpy).toHaveBeenCalledWith(mkaAuthorizationActions.loadMkaAuthorization());
-            }
-        );
-        it.each(['not-loaded', 'failed', 'loaded'] as AuthorizationLoadState[])(
-            'should not dispatch the loadMkaAuthorization when user is not logged in and $authorizationLoadState',
-            async authorizationLoadState => {
-                await setup(anonymousUser, authorizationLoadState, berechtigungstypNone);
-
-                facade.ensureAuthorizationLoaded();
-
-                expect(dispatchSpy).not.toHaveBeenCalled();
+                expect(dispatchSpy).toHaveBeenCalledWith(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
             }
         );
     });

@@ -1,3 +1,3 @@
-import { mkaAuthorizationActions } from '../authorization-data';
+import { MkaAuthorizationActions } from '../authorization-data';
 
-export const mkaAuthorizationLoaded = mkaAuthorizationActions.mkaAuthorizationLoaded;
+export const mkaAuthorizationLoaded = MkaAuthorizationActions.mkaAuthorizationLoaded;

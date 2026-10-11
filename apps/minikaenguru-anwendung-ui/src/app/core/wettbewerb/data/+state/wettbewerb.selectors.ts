@@ -6,6 +6,10 @@ const { selectMKAWettbewerbState } = wettbewerbFeature;
 
 const selectWettbewerb = createSelector(selectMKAWettbewerbState, state => state.wettbewerb);
 
+const selectWettbewerbLoadState = createSelector(selectMKAWettbewerbState, state => state.wettbewerbLoadState);
+
+const selectWettbewerbLoaded = createSelector(selectWettbewerbLoadState, loadState => loadState === 'loaded');
+
 const selectWettbewerbRunning = createSelector(
     selectWettbewerb,
     wettbewerb =>
@@ -16,6 +20,8 @@ const selectWettbewerbRunning = createSelector(
 );
 
 export const fromWettbewerb = {
+    selectWettbewerbLoadState,
+    selectWettbewerbLoaded,
     selectWettbewerb,
     selectWettbewerbRunning,
 };

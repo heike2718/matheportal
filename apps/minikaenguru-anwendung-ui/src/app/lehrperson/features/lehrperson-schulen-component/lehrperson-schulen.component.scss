@@ -1,0 +1,66 @@
+/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
+@use 'mp-theme' as mp-theme;
+@use 'libs/shared-ui-theme/src/lib/styles/_functions.scss' as functions;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.mka-lehrperson-schulen {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: mp-theme.$mp-space-5;
+    font-family: mp-theme.$mp-font-family;
+
+    &__results {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-3;
+    }
+
+    &__results {
+        width: min(100%, 44rem);
+    }
+
+    &__action {
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
+
+        color: mp-theme.$mp-color-surface;
+        font: inherit;
+        font-weight: 600;
+
+        background-color: mp-theme.mp-brand(minikaenguru);
+        border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru);
+        border-radius: mp-theme.$mp-radius-m;
+
+        cursor: pointer;
+
+        transition:
+            filter 140ms ease,
+            box-shadow 140ms ease;
+
+        &:hover {
+            filter: brightness(0.92);
+        }
+
+        &:focus-visible {
+            outline: 3px solid mp-theme.mp-brand(minikaenguru);
+            outline-offset: mp-theme.$mp-space-1;
+        }
+
+        &:active {
+            filter: brightness(0.84);
+        }
+    }
+}
+
+@media (width <= 480px) and (hover: none) {
+    .mka-lehrperson-schulen {
+        gap: mp-theme.$mp-space-4;
+    }
+}

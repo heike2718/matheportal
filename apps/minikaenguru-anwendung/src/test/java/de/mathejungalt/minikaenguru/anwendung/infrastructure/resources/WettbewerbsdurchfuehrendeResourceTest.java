@@ -1,5 +1,6 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import jakarta.inject.Inject;
@@ -12,6 +13,7 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
@@ -29,6 +31,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
@@ -52,7 +55,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
     @TestSecurity(user = "nicht-existent")
     void should_return_404_when_unknown() {
 
-        given().get().then().statusCode(404);
+        given().get("/konto").then().statusCode(404);
     }
 
     @Test
@@ -61,7 +64,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
         final Wettbewerbsdurchfuehrender result = given()
                 .accept(ContentType.JSON)
-                .get()
+                .get("/konto")
                 .then()
                 .statusCode(200)
                 .and()
@@ -72,14 +75,9 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                 .as(Wettbewerbsdurchfuehrender.class);
 
         // assert
-
-        result.getTeilnahmenummern();
-
         assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
                 () -> assertFalse(result.getNewsletter()),
-                () -> assertEquals(ZugangsberechtigungUnterlagen.ERTEILT, result.getZugangsberechtigungUnterlagen()),
-                () -> assertEquals(1, result.getTeilnahmenummern().size()),
-                () -> assertEquals("12BOH1XSMH", result.getTeilnahmenummern().iterator().next()));
+                () -> assertEquals(ZugangsberechtigungUnterlagen.ERTEILT, result.getZugangsberechtigungUnterlagen()));
     }
 
     @Test
@@ -88,7 +86,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
 
         final Wettbewerbsdurchfuehrender result = given()
                 .accept(ContentType.JSON)
-                .get()
+                .get("/konto")
                 .then()
                 .statusCode(200)
                 .and()
@@ -99,15 +97,9 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                 .as(Wettbewerbsdurchfuehrender.class);
 
         // assert
-
-        result.getTeilnahmenummern();
-
         assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.SCHULE, result.getDurchfuehrungsart()),
                 () -> assertTrue(result.getNewsletter()),
-                () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD, result.getZugangsberechtigungUnterlagen()),
-                () -> assertEquals(2, result.getTeilnahmenummern().size()),
-                () -> assertTrue(result.getTeilnahmenummern().contains("4T8VRTAA")),
-                () -> assertTrue(result.getTeilnahmenummern().contains("5SMMXW54")));
+                () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD, result.getZugangsberechtigungUnterlagen()));
     }
 
     @Test
@@ -123,7 +115,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                     .accept(ContentType.JSON)
                     .contentType(ContentType.JSON)
                     .body(requestPayload)
-                    .post()
+                    .post("/konto")
                     .then()
                     .statusCode(201)
                     .and()
@@ -136,8 +128,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
             assertAll(() -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, result.getDurchfuehrungsart()),
                     () -> assertFalse(result.getNewsletter()),
                     () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD,
-                            result.getZugangsberechtigungUnterlagen()),
-                    () -> assertEquals(1, result.getTeilnahmenummern().size()));
+                            result.getZugangsberechtigungUnterlagen()));
 
         } finally {
             this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuid(UUID_MP_TEST_TO_PRIVATPERSON);
@@ -158,7 +149,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                     .accept(ContentType.JSON)
                     .contentType(ContentType.JSON)
                     .body(requestPayload)
-                    .post()
+                    .post("/konto")
                     .then()
                     .statusCode(201)
                     .and()
@@ -176,9 +167,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                     () -> assertFalse(result.getNewsletter()),
                     () -> assertEquals(ZugangsberechtigungUnterlagen.STANDARD,
                             result.getZugangsberechtigungUnterlagen()),
-                    () -> assertEquals(1, result.getTeilnahmenummern().size()),
-                    () -> assertEquals("6V5AHV38", result.getTeilnahmenummern().iterator().next()),
-                    () -> assertEquals(1, result.getTeilnahmenummern().size()), () -> opt.isPresent());
+                    () -> opt.isPresent());
 
         } finally {
             this.cleanupDao.deleteWettbewerbsdurchfuehrendeByUserUuid(UUID_MP_TEST_TO_LEHRPERSON);
@@ -199,7 +188,7 @@ public class WettbewerbsdurchfuehrendeResourceTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(requestPayload)
-                .post()
+                .post("/konto")
                 .then()
                 .statusCode(400)
                 .and()
@@ -213,4 +202,65 @@ public class WettbewerbsdurchfuehrendeResourceTest {
         assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, result.getMessage());
 
     }
+
+    @Test
+    @TestSecurity(user = "412b67dc-132f-465a-a3c3-468269e866cb")
+    void should_loadMySchools_work() {
+
+        final Schule[] schulen = given()
+                .accept(ContentType.JSON)
+                .get("/me/schulen")
+                .then()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .and()
+                .extract()
+                .as(Schule[].class);
+
+        assertEquals(10, schulen.length);
+        {
+            final Optional<Schule> optSchule = Arrays
+                    .stream(schulen)
+                    .filter(schule -> "0LDKMW8U".equals(schule.getKuerzel()))
+                    .findFirst();
+
+            assertTrue(optSchule.isPresent());
+            final Schule schule = optSchule.get();
+            assertAll(() -> assertNotNull(schule.getOrt()), () -> assertNotNull(schule.getOrt().getLand()));
+        }
+        {
+            final Optional<Schule> optSchule = Arrays
+                    .stream(schulen)
+                    .filter(schule -> "G1HDI46O".equals(schule.getKuerzel()))
+                    .findFirst();
+
+            assertTrue(optSchule.isPresent());
+            final Schule schule = optSchule.get();
+            assertAll(() -> assertNotNull(schule.getOrt()), () -> assertNotNull(schule.getOrt().getLand()));
+        }
+
+    }
+
+    @Test
+    void should_loadMySchools_reurn_401_when_not_logged_in() {
+
+        given().accept(ContentType.JSON).get("/me/schulen").then().statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = "abcdef")
+    void should_loadMySchools_reurn_403_when_kein_wettbwerbsdurchfuehrender() {
+
+        given().accept(ContentType.JSON).get("/me/schulen").then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_PRIVATPERSON_READ)
+    void should_loadMySchools_reurn_403_when_privatperson() {
+
+        given().accept(ContentType.JSON).get("/me/schulen").then().statusCode(403);
+    }
+
 }
