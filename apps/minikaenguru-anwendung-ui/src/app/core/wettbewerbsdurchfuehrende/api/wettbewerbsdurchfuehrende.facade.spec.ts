@@ -1,35 +1,96 @@
+import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { WettbewerbsdurchfuehrendeFacade } from './wettbewerbsdurchfuehrende.facade';
-import { TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
 import { WettbewerbsdurchfuehrendeActions } from '../data/+state/wettbewerbsdurchfuehrende.actions';
+import { fromWettbewerbsdurchfuehrender } from '../data/+state/wettbewerbsdurchfuehrende.selectors';
+import {
+    DURCHFUEHRUNGSART,
+    Wettbewerbsdurchfuehrender,
+    ZUGANGSBERECHTIGUNG_UNTERLAGEN,
+} from '../model/wettbewerbsdurchfuehrende.model';
 
-describe('WettbewerbsdurchfuehrendeFacade tests', () => {
+describe('WettbewerbsdurchfuehrendeFacade', () => {
+    const durchfuehrender: Wettbewerbsdurchfuehrender = {
+        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+        newsletter: false,
+        zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
+    };
+
     let facade: WettbewerbsdurchfuehrendeFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [WettbewerbsdurchfuehrendeFacade, provideMockStore({})],
+            providers: [
+                WettbewerbsdurchfuehrendeFacade,
+                provideMockStore({
+                    initialState: {},
+                    selectors: [
+                        {
+                            selector: fromWettbewerbsdurchfuehrender.selectDurchfuehrender,
+                            value: durchfuehrender,
+                        },
+                    ],
+                }),
+            ],
         });
+
+        store = TestBed.inject(MockStore);
         facade = TestBed.inject(WettbewerbsdurchfuehrendeFacade);
-        store = TestBed.inject(Store) as MockStore;
 
         dispatchSpy = vi.spyOn(store, 'dispatch');
     });
 
-    it('durchfuehrungsartPrivatGewaehlt should dispatch the expected action', () => {
-        facade.durchfuehrungsartPrivatGewaehlt();
-
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt());
+    afterEach(() => {
+        store.resetSelectors();
+        vi.restoreAllMocks();
     });
 
-    it('durchfuehrungsartSchuleGewaehlt should dispatch the expected action', () => {
-        facade.durchfuehrungsartSchuleGewaehlt();
+    describe('signals', () => {
+        it('should expose wettbewerbsdurchfuehrender', () => {
+            expect(facade.wettbewerbsdurchfuehrender()).toEqual(durchfuehrender);
+        });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt());
+        it('should update wettbewerbsdurchfuehrender when the selector result changes', () => {
+            expect(facade.wettbewerbsdurchfuehrender()).toEqual(durchfuehrender);
+
+            const updatedDurchfuehrender: Wettbewerbsdurchfuehrender = {
+                ...durchfuehrender,
+                newsletter: true,
+            };
+
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrender, updatedDurchfuehrender);
+            store.refreshState();
+
+            expect(facade.wettbewerbsdurchfuehrender()).toEqual(updatedDurchfuehrender);
+        });
+
+        it('should expose undefined when the durchfuehrender is cleared', () => {
+            store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrender, undefined);
+            store.refreshState();
+
+            expect(facade.wettbewerbsdurchfuehrender()).toBeUndefined();
+        });
+    });
+
+    describe('methods', () => {
+        it('should dispatch the correct action on durchfuehrungsartPrivatGewaehlt', () => {
+            facade.durchfuehrungsartPrivatGewaehlt();
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                WettbewerbsdurchfuehrendeActions.durchfuehrungsartPrivatGewaehlt()
+            );
+        });
+
+        it('should dispatch the correct action on durchfuehrungsartSchuleGewaehlt', () => {
+            facade.durchfuehrungsartSchuleGewaehlt();
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                WettbewerbsdurchfuehrendeActions.durchfuehrungsartSchuleGewaehlt()
+            );
+        });
     });
 });

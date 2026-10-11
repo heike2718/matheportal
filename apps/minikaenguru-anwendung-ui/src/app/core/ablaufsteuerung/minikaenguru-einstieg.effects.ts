@@ -11,6 +11,9 @@ import {
 } from '../wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
 import { DURCHFUEHRUNGSART } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { ensureSchulenGeladen } from '../../schulen/api/schulen-store.events';
+import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
+import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
+import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';
 
 @Injectable()
 export class MinikaenguruEinstiegEffects {
@@ -39,6 +42,17 @@ export class MinikaenguruEinstiegEffects {
                     wettbewerbsdurchfuehrender.durchfuehrungsart === DURCHFUEHRUNGSART.schule
             ),
             map(() => ensureSchulenGeladen)
+        );
+    });
+
+    readonly kontextLadenOnWettbewerbsorganisationGestartet$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet),
+            map(({ durchfuehrungsart, kontextkuerzel }) =>
+                durchfuehrungsart === DURCHFUEHRUNGSART.schule
+                    ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel })
+                    : ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: kontextkuerzel })
+            )
         );
     });
 }

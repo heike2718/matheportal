@@ -4,7 +4,7 @@ export const LehrpersonActions = createActionGroup({
     source: 'MKA Lehrperson',
     events: {
         wettbewerbsorganisationGestartet: props<{ schulkuerzel: string }>(),
-        prepareWettbewerbsorganisation: props<{ schulkuerzel: string }>(),
+        ensureWettbewerbskontextGeladen: props<{ schulkuerzel: string }>(),
         wettbewerbsorganisationVerlassen: emptyProps(),
     },
 });

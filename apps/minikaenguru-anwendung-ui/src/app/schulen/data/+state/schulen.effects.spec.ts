@@ -10,16 +10,18 @@ import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import {
-    prepareWettbewerbsorganisation,
+    ensureWettbewerbskontextSchuleGeladen,
     wettbewerbsorganisationGestartet,
     wettbewerbsorganisationVerlassen,
 } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
-import { Router } from '@angular/router';
+import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectSchulenLoadState } from './schulen.selectors';
 
 describe('SchulenEffects', () => {
+    const urlSerializer = new DefaultUrlSerializer();
+
     const expectedErrorMessage =
         'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. ' +
         'Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
@@ -33,6 +35,9 @@ describe('SchulenEffects', () => {
 
     const routerMock = {
         navigate: vi.fn(),
+        currentNavigation: vi.fn<() => Pick<Navigation, 'extractedUrl' | 'finalUrl'> | null>(),
+        parseUrl: vi.fn((url: string) => urlSerializer.parse(url)),
+        url: '/minikaenguru-anwendung',
     };
 
     let action$: Subject<Action>;
@@ -49,6 +54,10 @@ describe('SchulenEffects', () => {
 
     beforeEach(() => {
         vi.resetAllMocks();
+        routerMock.currentNavigation.mockReturnValue(null);
+        routerMock.parseUrl.mockImplementation(url => urlSerializer.parse(url));
+        routerMock.url = '/minikaenguru-anwendung';
+
         action$ = new Subject<Action>();
 
         httpServiceMock = {
@@ -290,7 +299,7 @@ describe('SchulenEffects', () => {
     });
 
     describe('schulenGeladen$', () => {
-        it('should map to prepareWettbewerbsdurchguehrung when exactly 1 school was loaded', async () => {
+        it('should map to wettbewerbsorganisationGestartet when exactly 1 school was loaded and einstiegsseite', async () => {
             const schule: Schule = {
                 kuerzel: 'S1234567',
                 name: 'Baumschule',
@@ -313,6 +322,41 @@ describe('SchulenEffects', () => {
             const emitted = await promise;
 
             expect(emitted).toEqual(wettbewerbsorganisationGestartet({ schulkuerzel: 'S1234567' }));
+        });
+
+        it('should not emitt an action when there is exactly one school but url is that of schule', async () => {
+            const schule: Schule = {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 3,
+                    land: {
+                        kuerzel: 'DE-TH',
+                        name: 'Thüringen',
+                        anzahlOrte: 354,
+                    },
+                },
+            };
+
+            routerMock.url = '/minikaenguru-anwendung/lehrperson';
+
+            routerMock.currentNavigation.mockReturnValue({
+                extractedUrl: urlSerializer.parse('/minikaenguru-anwendung/lehrperson/schule/S1234567'),
+            });
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulenGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.schulenGeladen({ schulen: [schule] }));
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
 
         it('should not emit an action when there are more than one schools', async () => {
@@ -410,8 +454,8 @@ describe('SchulenEffects', () => {
         });
     });
 
-    describe('prepareWettbewerbsorganisation$', () => {
-        it('should dispatch wettbewerbskontextLaden when wettbewerbsorganisationGestartet', async () => {
+    describe('ensureWettbewerbskontextGeladen$', () => {
+        it('should dispatch wettbewerbskontextLaden on ensureWettbewerbskontextGeladen', async () => {
             const schule: Schule = {
                 kuerzel: 'S1234567',
                 name: 'Baumschule',
@@ -427,9 +471,9 @@ describe('SchulenEffects', () => {
                 },
             };
 
-            const promise = firstValueFrom(effects.prepareWettbewerbsorganisation$);
+            const promise = firstValueFrom(effects.ensureWettbewerbskontextGeladen$);
 
-            action$.next(prepareWettbewerbsorganisation({ schulkuerzel: schule.kuerzel }));
+            action$.next(ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: schule.kuerzel }));
 
             const emitted = await promise;
 

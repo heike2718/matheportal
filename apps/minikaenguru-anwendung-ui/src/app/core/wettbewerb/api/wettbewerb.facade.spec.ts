@@ -1,30 +1,62 @@
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { WettbewerbFacade } from './wettbewerb.facade';
 import { TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
-import { fromWettbewerb } from '../data/+state/wettbewerb.selectors';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { firstValueFrom } from 'rxjs';
+import { WettbewerbFacade } from './wettbewerb.facade';
+import { WettbewerbActions } from '../data/+state/wettbewerb.actions';
+import { fromWettbewerb } from '../data/+state/wettbewerb.selectors';
 
-describe('Wettbewerbsfacade', () => {
+describe('WettbewerbFacade', () => {
     let facade: WettbewerbFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [WettbewerbFacade, provideMockStore({})],
+            providers: [
+                WettbewerbFacade,
+                provideMockStore({
+                    initialState: {},
+                    selectors: [
+                        {
+                            selector: fromWettbewerb.selectWettbewerbLoadState,
+                            value: 'not-loaded',
+                        },
+                    ],
+                }),
+            ],
         });
+
+        store = TestBed.inject(MockStore);
         facade = TestBed.inject(WettbewerbFacade);
-        store = TestBed.inject(Store) as MockStore;
 
         dispatchSpy = vi.spyOn(store, 'dispatch');
     });
 
-    it('should expose the wettbewerbLoadState', async () => {
-        store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'technical-error');
+    afterEach(() => {
+        store.resetSelectors();
+        vi.restoreAllMocks();
+    });
 
-        const emitted = await firstValueFrom(facade.wettbewerbLoadState$);
+    describe('observables', () => {
+        it.each(['not-loaded', 'loaded', 'technical-error', 'unauthorized'] as const)(
+            'should expose wettbewerbLoadState %s',
+            async loadState => {
+                store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, loadState);
+                store.refreshState();
 
-        expect(emitted).toBe('technical-error');
+                const emitted = await firstValueFrom(facade.wettbewerbLoadState$);
+
+                expect(emitted).toBe(loadState);
+            }
+        );
+    });
+
+    describe('methods', () => {
+        it('should dispatch the correct action on ensureWettbewerbGeladen', () => {
+            facade.ensureWettbewerbGeladen();
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(WettbewerbActions.ensureWettbewerbGeladen());
+        });
     });
 });

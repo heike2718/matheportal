@@ -7,10 +7,10 @@ import { mapErrorToMessage } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import {
     wettbewerbsorganisationGestartet,
-    prepareWettbewerbsorganisation,
+    ensureWettbewerbskontextSchuleGeladen,
     wettbewerbsorganisationVerlassen,
 } from '../../../lehrperson/api/lehrperson-store.events';
-import { Router } from '@angular/router';
+import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { LehrpersonActions } from '../../../lehrperson/data/+state/lehrperson.actions';
 import { Store } from '@ngrx/store';
@@ -49,6 +49,7 @@ export class SchulenEffects {
         this.#actions.pipe(
             ofType(SchuleActions.schulenGeladen),
             filter(({ schulen }) => schulen.length === 1),
+            filter(() => this.istAufEinstiegsseite()),
             map(({ schulen }) =>
                 LehrpersonActions.wettbewerbsorganisationGestartet({
                     schulkuerzel: schulen[0].kuerzel,
@@ -75,9 +76,9 @@ export class SchulenEffects {
         { dispatch: false }
     );
 
-    readonly prepareWettbewerbsorganisation$ = createEffect(() =>
+    readonly ensureWettbewerbskontextGeladen$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(prepareWettbewerbsorganisation),
+            ofType(ensureWettbewerbskontextSchuleGeladen),
             map(({ schulkuerzel }) => SchuleActions.wettbewerbskontextLaden({ schulkuerzel }))
         )
     );
@@ -140,4 +141,18 @@ export class SchulenEffects {
             ),
         { dispatch: false }
     );
+
+    private istAufEinstiegsseite(): boolean {
+        const navigation = this.#router.currentNavigation();
+        const url = navigation?.finalUrl ?? navigation?.extractedUrl ?? this.#router.parseUrl(this.#router.url);
+
+        const segments = url.root.children[PRIMARY_OUTLET]?.segments.map(segment => segment.path) ?? [];
+
+        const routes = portalRoutes.minikaenguruAnwendung;
+
+        return (
+            segments[0] === routes.root &&
+            (segments.length === 1 || (segments.length === 2 && segments[1] === routes.lehrperson))
+        );
+    }
 }

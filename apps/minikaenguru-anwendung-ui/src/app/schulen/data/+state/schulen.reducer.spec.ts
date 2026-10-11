@@ -5,10 +5,7 @@ import { SchuleActions } from './schulen.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
-import {
-    prepareWettbewerbsorganisation,
-    wettbewerbsorganisationVerlassen,
-} from '../../../lehrperson/api/lehrperson-store.events';
+import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrperson-store.events';
 
 describe('schulenReducer', () => {
     const orte: Ort[] = [
@@ -166,29 +163,58 @@ describe('schulenReducer', () => {
         });
     });
 
-    describe('prepareWettbewerbskontext tests', () => {
-        it('should reset the wettbewerbskontext, schulkollegium and the corresponding loadStates on prepareWettbewerbskontext', () => {
-            const previousState: SchulenState = {
-                schulen,
-                schulenLoadState: 'loaded',
-                wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
-                wettbewerbskontextLoadState: 'loaded',
-                schulkollegiumLoadState: 'loaded',
-            };
+    describe('wettbewerbskontextLaden', () => {
+        it.each(['loaded', 'technical-error', 'forbidden'] as const)(
+            'should reset wettbewerbskontext and schulkollegium when kontexts loadState is %s',
+            loadState => {
+                const previousState: SchulenState = {
+                    schulen,
+                    schulenLoadState: 'loaded',
+                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontextLoadState: loadState,
+                    schulkollegiumLoadState: 'loaded',
+                };
 
-            const state = schulenFeature.reducer(
-                previousState,
-                prepareWettbewerbsorganisation({ schulkuerzel: 'Z7654321' })
-            );
+                const state = schulenFeature.reducer(
+                    previousState,
+                    SchuleActions.wettbewerbskontextLaden({ schulkuerzel: 'Z7654321' })
+                );
 
-            expect(state).toEqual({
-                schulen,
-                schulenLoadState: 'loaded',
-                wettbewerbskontext: undefined,
-                wettbewerbskontextLoadState: 'not-loaded',
-                schulkollegiumLoadState: 'not-loaded',
-            });
-        });
+                expect(state).toEqual({
+                    schulen,
+                    schulenLoadState: 'loaded',
+                    wettbewerbskontext: undefined,
+                    wettbewerbskontextLoadState: 'not-loaded',
+                    schulkollegiumLoadState: 'not-loaded',
+                });
+            }
+        );
+
+        it.each(['not-loaded', 'unauthorized'] as const)(
+            'should return the prevous state when kontexts loadState is %s',
+            loadState => {
+                const previousState: SchulenState = {
+                    schulen,
+                    schulenLoadState: 'loaded',
+                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontextLoadState: loadState,
+                    schulkollegiumLoadState: 'loaded',
+                };
+
+                const state = schulenFeature.reducer(
+                    previousState,
+                    SchuleActions.wettbewerbskontextLaden({ schulkuerzel: 'Z7654321' })
+                );
+
+                expect(state).toEqual({
+                    schulen,
+                    schulenLoadState: 'loaded',
+                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontextLoadState: loadState,
+                    schulkollegiumLoadState: 'loaded',
+                });
+            }
+        );
     });
 
     describe('wettbewerbskontext tests', () => {

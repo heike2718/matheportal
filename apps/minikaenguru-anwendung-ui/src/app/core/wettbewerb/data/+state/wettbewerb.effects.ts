@@ -28,7 +28,7 @@ export class WettbewerbEffects {
         return this.#actions.pipe(
             ofType(WettbewerbActions.wettbewerbLaden),
             withLatestFrom(this.#store.select(fromWettbewerb.selectWettbewerbLoaded)),
-            filter(([_, loaded]) => !loaded),
+            filter(([, loaded]) => !loaded),
             exhaustMap(() =>
                 this.#httpService.loadWettbewerb().pipe(
                     map(wettbewerb => WettbewerbActions.wettbewerbGeladen({ wettbewerb })),

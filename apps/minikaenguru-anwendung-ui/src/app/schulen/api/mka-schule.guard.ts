@@ -17,7 +17,7 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
     }
 
     schuleFacade.dashboardVorbereiten(schulkuerzel);
-    wettbewerbFacade.ensureWettbewergGeladen();
+    wettbewerbFacade.ensureWettbewerbGeladen();
 
     return combineLatest([schuleFacade.wettbewerbskontextLoadState$, wettbewerbFacade.wettbewerbLoadState$]).pipe(
         filter(([kontextState, wettbewerbState]) => {

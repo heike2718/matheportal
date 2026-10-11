@@ -596,7 +596,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(httpServiceMock.loadWettbewerbsdurchfuehrenden).toHaveBeenCalledOnce();
         });
 
-        it('should keep the effect stream alive after an error occured', async => {
+        it('should keep the effect stream alive after an error occured', async () => {
             store.overrideSelector(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen, false);
             store.refreshState();
 

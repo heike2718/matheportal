@@ -8,12 +8,11 @@ import {
     selectWettbewerbskontextLoadState,
 } from '../data/+state/schulen.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
-import {
-    prepareWettbewerbsorganisation,
-    wettbewerbsorganisationVerlassen,
-} from '../../lehrperson/api/lehrperson-store.events';
+import { wettbewerbsorganisationVerlassen } from '../../lehrperson/api/lehrperson-store.events';
 import { Observable } from 'rxjs';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
+import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 @Injectable()
 export class SchuleFacade {
@@ -34,7 +33,12 @@ export class SchuleFacade {
     readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
 
     public dashboardVorbereiten(schulkuerzel: string): void {
-        this.#store.dispatch(prepareWettbewerbsorganisation({ schulkuerzel }));
+        this.#store.dispatch(
+            MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet({
+                durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                kontextkuerzel: schulkuerzel,
+            })
+        );
     }
 
     public schuleWechselnRequested(): void {

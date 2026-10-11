@@ -23,10 +23,10 @@ describe('LehrpersonActions', () => {
             schulkuerzel: 'S-1',
         });
     });
-    it('should create the prepareWettbewerbsorganisation action', () => {
-        const action = LehrpersonActions.prepareWettbewerbsorganisation({ schulkuerzel: schule.kuerzel });
+    it('should create the ensureWettbewerbskontextGeladen action', () => {
+        const action = LehrpersonActions.ensureWettbewerbskontextGeladen({ schulkuerzel: schule.kuerzel });
         expect(action).toEqual({
-            type: '[MKA Lehrperson] prepareWettbewerbsorganisation',
+            type: '[MKA Lehrperson] ensureWettbewerbskontextGeladen',
             schulkuerzel: 'S-1',
         });
     });

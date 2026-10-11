@@ -138,7 +138,7 @@ export class WettbewerbsdurchfuehrendeEffects {
         return this.#actions.pipe(
             ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenLaden),
             withLatestFrom(this.#store.select(fromWettbewerbsdurchfuehrender.selectDurchfuehrenderGeladen)),
-            filter(([_, loaded]) => !loaded),
+            filter(([, loaded]) => !loaded),
             exhaustMap(() =>
                 this.#httpService.loadWettbewerbsdurchfuehrenden().pipe(
                     map((responseDto: Wettbewerbsdurchfuehrender) =>

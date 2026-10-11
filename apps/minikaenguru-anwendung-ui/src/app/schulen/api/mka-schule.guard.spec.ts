@@ -10,7 +10,7 @@ import {
     UrlTree,
 } from '@angular/router';
 import { AUTHORIZED_RESOURCE_LOAD_STATE, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { BehaviorSubject, firstValueFrom, isObservable, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { SchuleFacade } from './schule.facade';
 import { mkaSchuleGuard } from './mka-schule.guard';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
@@ -34,7 +34,7 @@ describe('mkaSchuleGuard', () => {
 
     let wettbewerbFacadeMock: {
         wettbewerbLoadState$: Observable<RESOURCE_LOAD_STATE>;
-        ensureWettbewergGeladen: ReturnType<typeof vi.fn>;
+        ensureWettbewerbGeladen: ReturnType<typeof vi.fn>;
     };
 
     async function resolveGuardResult(result: MaybeAsync<GuardResult>): Promise<GuardResult> {
@@ -61,7 +61,7 @@ describe('mkaSchuleGuard', () => {
 
         wettbewerbFacadeMock = {
             wettbewerbLoadState$: wettbewerbLoadStateSubject.asObservable(),
-            ensureWettbewergGeladen: vi.fn(),
+            ensureWettbewerbGeladen: vi.fn(),
         };
 
         route = {
@@ -91,7 +91,7 @@ describe('mkaSchuleGuard', () => {
                 resolveGuardResult(mkaSchuleGuard()(route, state))
             );
 
-            expect(wettbewerbFacadeMock.ensureWettbewergGeladen).toHaveBeenCalledOnce();
+            expect(wettbewerbFacadeMock.ensureWettbewerbGeladen).toHaveBeenCalledOnce();
             expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
             expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
 

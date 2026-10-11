@@ -1,8 +1,7 @@
 import { User } from '@matheportal/auth-model';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { firstValueFrom, Subject } from 'rxjs';
 import { MinikaenguruEinstiegEffects } from './minikaenguru-einstieg.effects';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { mkaAuthorizationLoaded } from '../authorization/authorization-api/mka-authorization-store.events';
@@ -18,21 +17,22 @@ import {
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { ensureSchulenGeladen } from '../../schulen/api/schulen-store.events';
+import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
+import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
+import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';
 
 describe('MinikaenguruEinstiegEffects', () => {
     let action$: Subject<Action>;
     let effects: MinikaenguruEinstiegEffects;
-    let store: MockStore;
 
     beforeEach(() => {
         action$ = new Subject<Action>();
 
         TestBed.configureTestingModule({
-            providers: [MinikaenguruEinstiegEffects, provideMockStore(), provideMockActions(() => action$)],
+            providers: [MinikaenguruEinstiegEffects, provideMockActions(() => action$)],
         });
 
         effects = TestBed.inject(MinikaenguruEinstiegEffects);
-        store = TestBed.inject(Store) as MockStore;
     });
 
     describe('wettbewerbLadenOnAuthorizationLoaded$', () => {
@@ -144,6 +144,40 @@ describe('MinikaenguruEinstiegEffects', () => {
             const emitted = await promise;
 
             expect(emitted).toEqual(ensureSchulenGeladen);
+        });
+    });
+
+    describe('kontextLadenOnWettbewerbsorganisationGestartet$', () => {
+        const kontextkuerzel = 'X12345678';
+
+        it('should map to ensureWettbewerbskontextSchuleGeladen when durchfuehrungsart schule', async () => {
+            const promise = firstValueFrom(effects.kontextLadenOnWettbewerbsorganisationGestartet$);
+
+            action$.next(
+                MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet({
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kontextkuerzel,
+                })
+            );
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: 'X12345678' }));
+        });
+
+        it('should mapt to ensureWettbewerbskontextPrivatGeladen when durchfuehrungsart privat', async () => {
+            const promise = firstValueFrom(effects.kontextLadenOnWettbewerbsorganisationGestartet$);
+
+            action$.next(
+                MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet({
+                    durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                    kontextkuerzel,
+                })
+            );
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: 'X12345678' }));
         });
     });
 });

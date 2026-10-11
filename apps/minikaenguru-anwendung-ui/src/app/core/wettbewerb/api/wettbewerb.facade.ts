@@ -13,7 +13,7 @@ export class WettbewerbFacade {
         fromWettbewerb.selectWettbewerbLoadState
     );
 
-    public ensureWettbewergGeladen(): void {
+    public ensureWettbewerbGeladen(): void {
         this.#store.dispatch(WettbewerbActions.ensureWettbewerbGeladen());
     }
 }
