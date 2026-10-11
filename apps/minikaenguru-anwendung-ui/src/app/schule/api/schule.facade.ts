@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
-    selectSchulauswahlMoeglich,
     selectSchulkollegiumLoaded,
     selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
 } from '../data/+state/schule.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
-import { wettbewerbsorganisationVerlassen } from '../../lehrperson/api/lehrperson-store.events';
 import { Observable } from 'rxjs';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.selectors';
+import { SchuleActions } from '../data/+state/schule.actions';
 
 @Injectable()
 export class SchuleFacade {
@@ -22,7 +22,7 @@ export class SchuleFacade {
         selectWettbewerbskontextLoadState
     );
 
-    readonly schulauswahlMoeglich = this.#store.selectSignal(selectSchulauswahlMoeglich);
+    readonly schulauswahlMoeglich = this.#store.selectSignal(isSchulauswahlMoeglich);
 
     readonly wettbewerbskontextLoaded = this.#store.selectSignal(selectWettbewerbskontextLoaded);
 
@@ -42,6 +42,6 @@ export class SchuleFacade {
     }
 
     public schuleWechselnRequested(): void {
-        this.#store.dispatch(wettbewerbsorganisationVerlassen());
+        this.#store.dispatch(SchuleActions.wettbewerbsorganisationVerlassen());
     }
 }

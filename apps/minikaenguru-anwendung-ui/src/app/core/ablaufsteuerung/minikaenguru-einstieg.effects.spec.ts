@@ -16,10 +16,10 @@ import {
     Wettbewerbsdurchfuehrender,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { ensureSchulenGeladen } from '../../schule/api/schule-store.events';
 import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
-import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
+import { ensureSchulenGeladen } from '../../lehrperson/api/lehrperson-store.events';
 import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';
+import { ensureWettbewerbskontextSchuleGeladen } from '../../schule/api/schule-store.events';
 
 describe('MinikaenguruEinstiegEffects', () => {
     let action$: Subject<Action>;
@@ -165,7 +165,7 @@ describe('MinikaenguruEinstiegEffects', () => {
             expect(emitted).toEqual(ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: 'X12345678' }));
         });
 
-        it('should mapt to ensureWettbewerbskontextPrivatGeladen when durchfuehrungsart privat', async () => {
+        it('should map to ensureWettbewerbskontextPrivatGeladen when durchfuehrungsart privat', async () => {
             const promise = firstValueFrom(effects.kontextLadenOnWettbewerbsorganisationGestartet$);
 
             action$.next(

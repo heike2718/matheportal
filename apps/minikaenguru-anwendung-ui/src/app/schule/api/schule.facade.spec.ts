@@ -3,7 +3,6 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { firstValueFrom } from 'rxjs';
 import { SchuleFacade } from './schule.facade';
 import {
-    selectSchulauswahlMoeglich,
     selectSchulkollegiumLoaded,
     selectWettbewerbskontext,
     selectWettbewerbskontextLoaded,
@@ -14,7 +13,8 @@ import { Wettbewerb, WETTBEWERBSSTATUS } from '../../core/wettbewerb/model/wettb
 import { SchuleWettbewerbskontext } from '../../core/model/schule-wettbewerbskontext.model';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { wettbewerbsorganisationVerlassen } from '../../lehrperson/api/lehrperson-store.events';
+import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.selectors';
+import { SchuleActions } from '../data/+state/schule.actions';
 
 describe('SchuleFacade', () => {
     const wettbewerb: Wettbewerb = {
@@ -58,7 +58,7 @@ describe('SchuleFacade', () => {
                 provideMockStore({
                     initialState: {},
                     selectors: [
-                        { selector: selectSchulauswahlMoeglich, value: false },
+                        { selector: isSchulauswahlMoeglich, value: false },
                         { selector: selectSchulkollegiumLoaded, value: false },
                         { selector: selectWettbewerbskontextLoaded, value: false },
                         { selector: selectWettbewerbskontextLoadState, value: 'not-loaded' },
@@ -98,7 +98,7 @@ describe('SchuleFacade', () => {
         it('should update schulauswahlMoeglich when the selector result changes', () => {
             expect(facade.schulauswahlMoeglich()).toBe(false);
 
-            const selector = store.overrideSelector(selectSchulauswahlMoeglich, true);
+            const selector = store.overrideSelector(isSchulauswahlMoeglich, true);
             store.refreshState();
 
             expect(facade.schulauswahlMoeglich()).toBe(true);
@@ -206,7 +206,7 @@ describe('SchuleFacade', () => {
             facade.schuleWechselnRequested();
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(wettbewerbsorganisationVerlassen());
+            expect(dispatchSpy).toHaveBeenCalledWith(SchuleActions.wettbewerbsorganisationVerlassen());
         });
     });
 });

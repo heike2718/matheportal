@@ -5,15 +5,13 @@ import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/sc
 export const SchuleActions = createActionGroup({
     source: 'MKA Schule',
     events: {
-        ensureSchulenGeladen: emptyProps(),
-        schulenLaden: emptyProps(),
-        schulenGeladen: props<{ schulen: Schule[] }>(),
-        schulenLadenFailed: props<{ error: Error }>(),
+        ensureWettbewerbskontextGeladen: props<{ schulkuerzel: string }>(),
         wettbewerbskontextLaden: props<{ schulkuerzel: string }>(),
         wettbewerbskontextGeladen: props<{ wettbewerbskontext: SchuleWettbewerbskontext }>(),
         wettbewerbskontextLadenFailed: props<{ error: Error }>(),
         schulkollegiumLaden: props<{ schule: Schule }>(),
         schulkollegiumGeladen: props<{ schulkollegium: Schulkollegium }>(),
         schulkollegiumLadenFailed: props<{ error: Error }>(),
+        wettbewerbsorganisationVerlassen: emptyProps(),
     },
 });

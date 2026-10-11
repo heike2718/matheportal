@@ -2,8 +2,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Schule } from '../../core/model/schulkatalog.model';
 import { LehrpersonFacade } from './lehrperson.facade';
 import { TestBed } from '@angular/core/testing';
-import { selectSchulen, selectSchulenLoaded } from '../../schule/data/+state/schule.selectors';
 import { LehrpersonActions } from '../data/+state/lehrperson.actions';
+import { selectSchulen, selectSchulenLoaded } from '../data/+state/lehrperson.selectors';
 
 describe('LehrpersonFacade', () => {
     const schulen: Schule[] = [

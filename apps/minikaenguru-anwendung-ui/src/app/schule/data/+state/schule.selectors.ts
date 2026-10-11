@@ -1,23 +1,10 @@
 import { createSelector } from '@ngrx/store';
 import { schulenFeature } from './schule.reducer';
-import { Schule } from '../../../core/model/schulkatalog.model';
 
-const { selectMKASchulenState } = schulenFeature;
-
-export const selectSchulen = createSelector(selectMKASchulenState, state => state.schulen);
-
-export const selectSchulenLoadState = createSelector(selectMKASchulenState, state => state.schulenLoadState);
-
-export const selectSchulenLoaded = createSelector(selectMKASchulenState, state => state.schulenLoadState === 'loaded');
-
-export const selectSchulauswahlMoeglich = createSelector(
-    selectSchulenLoaded,
-    selectSchulen,
-    (loaded: boolean, schulen: Schule[]) => loaded && schulen.length > 1
-);
+const { selectMKASchuleState } = schulenFeature;
 
 export const selectWettbewerbskontextLoadState = createSelector(
-    selectMKASchulenState,
+    selectMKASchuleState,
     state => state.wettbewerbskontextLoadState
 );
 
@@ -27,11 +14,11 @@ export const selectWettbewerbskontextLoaded = createSelector(
 );
 
 export const selectSchulkollegiumLoaded = createSelector(
-    selectMKASchulenState,
+    selectMKASchuleState,
     state => state.schulkollegiumLoadState === 'loaded'
 );
 
-export const selectWettbewerbskontext = createSelector(selectMKASchulenState, state => state.wettbewerbskontext);
+export const selectWettbewerbskontext = createSelector(selectMKASchuleState, state => state.wettbewerbskontext);
 
 export const selectTeilnahmen = createSelector(selectWettbewerbskontext, kontext =>
     kontext === undefined ? [] : kontext.teilnahmerefs

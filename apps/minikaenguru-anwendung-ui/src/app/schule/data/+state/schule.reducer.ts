@@ -1,25 +1,19 @@
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { Schule } from '../../../core/model/schulkatalog.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { SchuleActions } from './schule.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
-import { wettbewerbsorganisationVerlassen } from '../../../lehrperson/api/lehrperson-store.events';
 
-export const SCHULEN_FEATURE_KEY = 'MKASchulen';
+export const SCHULEN_FEATURE_KEY = 'MKASchule';
 
 export interface SchulenState {
-    readonly schulenLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
-    readonly schulen: Schule[];
     readonly wettbewerbskontext: SchuleWettbewerbskontext | undefined;
     readonly wettbewerbskontextLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
     readonly schulkollegiumLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
 }
 
 export const initialSchulenState: SchulenState = {
-    schulenLoadState: 'not-loaded',
-    schulen: [],
     wettbewerbskontext: undefined,
     wettbewerbskontextLoadState: 'not-loaded',
     schulkollegiumLoadState: 'not-loaded',
@@ -29,29 +23,6 @@ export const schulenFeature = createFeature({
     name: SCHULEN_FEATURE_KEY,
     reducer: createReducer<SchulenState>(
         initialSchulenState,
-        on(SchuleActions.schulenGeladen, (state, { schulen }) => ({
-            ...state,
-            schulenLoadState: 'loaded',
-            schulen,
-        })),
-        on(SchuleActions.schulenLadenFailed, (state, { error }) => {
-            const newSchulenLoadState = mapErrorToAuthorizedResourceLoadState(error);
-            if (newSchulenLoadState === 'technical-error') {
-                return {
-                    ...state,
-                    schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
-                    schulen: [],
-                };
-            }
-            return {
-                ...state,
-                schulenLoadState: newSchulenLoadState,
-                schulen: [],
-                wettbewerbskontextLoadState: 'not-loaded',
-                wettbewerbskontext: undefined,
-                schulkollegiumLoadState: 'not-loaded',
-            };
-        }),
         on(SchuleActions.wettbewerbskontextLaden, state => {
             return state.wettbewerbskontextLoadState === 'loaded' ||
                 state.wettbewerbskontextLoadState === 'technical-error' ||
@@ -99,7 +70,7 @@ export const schulenFeature = createFeature({
             ...state,
             schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
         })),
-        on(wettbewerbsorganisationVerlassen, state => {
+        on(SchuleActions.wettbewerbsorganisationVerlassen, state => {
             return {
                 ...state,
                 wettbewerbskontext: undefined,

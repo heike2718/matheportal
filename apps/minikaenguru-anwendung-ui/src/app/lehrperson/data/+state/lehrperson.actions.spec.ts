@@ -23,17 +23,40 @@ describe('LehrpersonActions', () => {
             schulkuerzel: 'S-1',
         });
     });
-    it('should create the ensureWettbewerbskontextGeladen action', () => {
-        const action = LehrpersonActions.ensureWettbewerbskontextGeladen({ schulkuerzel: schule.kuerzel });
+
+    it('should create the ensureSchulenGeladen action', () => {
+        const action = LehrpersonActions.ensureSchulenGeladen();
+
         expect(action).toEqual({
-            type: '[MKA Lehrperson] ensureWettbewerbskontextGeladen',
-            schulkuerzel: 'S-1',
+            type: '[MKA Lehrperson] ensureSchulenGeladen',
         });
     });
-    it('should create the wettbewerbsorganisationVerlassen action', () => {
-        const action = LehrpersonActions.wettbewerbsorganisationVerlassen();
+
+    it('should create the schulenLaden action', () => {
+        const action = LehrpersonActions.schulenLaden();
+
         expect(action).toEqual({
-            type: '[MKA Lehrperson] wettbewerbsorganisationVerlassen',
+            type: '[MKA Lehrperson] schulenLaden',
+        });
+    });
+
+    it('should create the schulenGeladen action', () => {
+        const schulen: Schule[] = [schule];
+        const action = LehrpersonActions.schulenGeladen({ schulen });
+
+        expect(action).toEqual({
+            type: '[MKA Lehrperson] schulenGeladen',
+            schulen,
+        });
+    });
+
+    it('should create the schulenLadenFailed action', () => {
+        const error = new Error('uiuiui');
+        const action = LehrpersonActions.schulenLadenFailed({ error });
+
+        expect(action).toEqual({
+            type: '[MKA Lehrperson] schulenLadenFailed',
+            error,
         });
     });
 });

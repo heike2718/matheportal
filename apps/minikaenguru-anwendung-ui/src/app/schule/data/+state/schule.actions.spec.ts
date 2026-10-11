@@ -18,39 +18,11 @@ describe('SchuleActions', () => {
         },
     };
 
-    it('should create the ensureSchulenGeladen action', () => {
-        const action = SchuleActions.ensureSchulenGeladen();
-
+    it('should create the ensureWettbewerbskontextGeladen action', () => {
+        const action = SchuleActions.ensureWettbewerbskontextGeladen({ schulkuerzel: schule.kuerzel });
         expect(action).toEqual({
-            type: '[MKA Schule] ensureSchulenGeladen',
-        });
-    });
-
-    it('should create the schulenLaden action', () => {
-        const action = SchuleActions.schulenLaden();
-
-        expect(action).toEqual({
-            type: '[MKA Schule] schulenLaden',
-        });
-    });
-
-    it('should create the schulenGeladen action', () => {
-        const schulen: Schule[] = [schule];
-        const action = SchuleActions.schulenGeladen({ schulen });
-
-        expect(action).toEqual({
-            type: '[MKA Schule] schulenGeladen',
-            schulen,
-        });
-    });
-
-    it('should create the schulenLadenFailed action', () => {
-        const error = new Error('uiuiui');
-        const action = SchuleActions.schulenLadenFailed({ error });
-
-        expect(action).toEqual({
-            type: '[MKA Schule] schulenLadenFailed',
-            error,
+            type: '[MKA Schule] ensureWettbewerbskontextGeladen',
+            schulkuerzel: 'S1234567',
         });
     });
 
@@ -120,6 +92,13 @@ describe('SchuleActions', () => {
         expect(action).toEqual({
             type: '[MKA Schule] schulkollegiumLadenFailed',
             error,
+        });
+    });
+
+    it('should create the wettbewerbsorganisationVerlassen action', () => {
+        const action = SchuleActions.wettbewerbsorganisationVerlassen();
+        expect(action).toEqual({
+            type: '[MKA Schule] wettbewerbsorganisationVerlassen',
         });
     });
 });

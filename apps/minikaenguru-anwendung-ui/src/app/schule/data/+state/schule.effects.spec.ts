@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { SchulenEffects } from './schule.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -9,15 +9,8 @@ import { SchuleActions } from './schule.actions';
 import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import {
-    ensureWettbewerbskontextSchuleGeladen,
-    wettbewerbsorganisationGestartet,
-    wettbewerbsorganisationVerlassen,
-} from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectSchulenLoadState } from './schule.selectors';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -42,7 +35,6 @@ describe('SchulenEffects', () => {
 
     let action$: Subject<Action>;
     let effects: SchulenEffects;
-    let store: MockStore;
 
     let httpServiceMock: {
         loadLehrpersonSchulen: ReturnType<typeof vi.fn>;
@@ -74,7 +66,6 @@ describe('SchulenEffects', () => {
             providers: [
                 SchulenEffects,
                 provideMockActions(() => action$),
-                provideMockStore(),
                 { provide: Router, useValue: routerMock },
                 {
                     provide: ArbeitskontextHttpService,
@@ -88,370 +79,6 @@ describe('SchulenEffects', () => {
         });
 
         effects = TestBed.inject(SchulenEffects);
-        store = TestBed.inject(Store) as MockStore;
-    });
-
-    describe('ensureSchulenGeladen', () => {
-        it.each(['not-loaded', 'technical-error'] as const)(
-            'should map to wettbewerbLaden when loadState %s',
-            async loadState => {
-                store.overrideSelector(selectSchulenLoadState, loadState);
-                store.refreshState();
-
-                const emittedActions: Action[] = [];
-
-                const subscription = effects.ensureSchulenGeladen$.subscribe({
-                    next: action => emittedActions.push(action),
-                });
-
-                try {
-                    action$.next(SchuleActions.ensureSchulenGeladen());
-
-                    expect(emittedActions).toEqual([SchuleActions.schulenLaden()]);
-                } finally {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-
-        it.each(['loaded', 'unauthorized'] as const)(
-            'should not map to wettbewerbLaden when state is %s',
-            async loadState => {
-                store.overrideSelector(selectSchulenLoadState, loadState);
-                store.refreshState();
-
-                const emittedActions: Action[] = [];
-
-                const subscription = effects.ensureSchulenGeladen$.subscribe({
-                    next: action => emittedActions.push(action),
-                });
-
-                try {
-                    action$.next(SchuleActions.ensureSchulenGeladen());
-
-                    expect(emittedActions).toEqual([]);
-                } finally {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    });
-
-    describe('schulenLaden$', () => {
-        const schulen1: Schule[] = [
-            {
-                kuerzel: 'SCHULE-1',
-                name: 'Neuhofschule',
-                ort: {
-                    kuerzel: 'ORT-1',
-                    name: 'erster Ort',
-                    land: {
-                        kuerzel: 'DE-BY',
-                        name: 'Bayern',
-                        anzahlOrte: 19,
-                    },
-                    anzahlSchulen: 1,
-                },
-            },
-        ];
-
-        const schulen2: Schule[] = [
-            {
-                ...schulen1[0],
-                kuerzel: 'SCHULE-2',
-                name: 'Albert-Einstein-Schule',
-            },
-        ];
-
-        it('should call the httpService and map to schulenGeladen when successful', async () => {
-            httpServiceMock.loadLehrpersonSchulen.mockReturnValue(of(schulen1));
-
-            const promise = firstValueFrom(effects.schulenLaden$);
-
-            action$.next(SchuleActions.schulenLaden());
-            const emitted = await promise;
-
-            expect(emitted).toEqual(SchuleActions.schulenGeladen({ schulen: schulen1 }));
-            expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledOnce();
-        });
-
-        it('should switch to the latest action and cancel previous pending requests (switchMap)', () => {
-            const httpFirst$ = new Subject<Schule[]>();
-            const httpSecond$ = new Subject<Schule[]>();
-            const firstRequestFinalized = vi.fn();
-
-            httpServiceMock.loadLehrpersonSchulen
-                .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
-                .mockReturnValueOnce(httpSecond$);
-
-            const emittedActions: Action[] = [];
-            const subscription = effects.schulenLaden$.subscribe(action => {
-                emittedActions.push(action);
-            });
-
-            try {
-                // Erste Anfrage bleibt zunächst offen.
-                action$.next(SchuleActions.schulenLaden());
-
-                expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledTimes(1);
-                expect(firstRequestFinalized).not.toHaveBeenCalled();
-
-                // Eine weitere Action muss die erste Anfrage sofort abbestellen.
-                action$.next(SchuleActions.schulenLaden());
-
-                expect(firstRequestFinalized).toHaveBeenCalledOnce();
-                expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledTimes(2);
-
-                // Eine verspätete Antwort der ersten Anfrage wird ignoriert.
-                httpFirst$.next(schulen1);
-                httpFirst$.complete();
-
-                expect(emittedActions).toEqual([]);
-
-                // Nur die Antwort der aktuellen Anfrage erzeugt eine Folgeaction.
-                httpSecond$.next(schulen2);
-                httpSecond$.complete();
-
-                expect(emittedActions).toEqual([SchuleActions.schulenGeladen({ schulen: schulen2 })]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-
-        it('should map to schulenLadenFailed when the httpService returns an HttpErrorResponse', async () => {
-            httpServiceMock.loadLehrpersonSchulen.mockReturnValue(throwError(() => httpServerErrorResponse));
-
-            const promise = firstValueFrom(effects.schulenLaden$);
-
-            action$.next(SchuleActions.schulenLaden());
-            const emitted = await promise;
-
-            expect(emitted).toEqual(SchuleActions.schulenLadenFailed({ error: httpServerErrorResponse }));
-            expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledOnce();
-        });
-
-        it('should map to schulenLadenFailed when the httpService returns another Error', async () => {
-            const error = new Error('uiuiui!');
-
-            httpServiceMock.loadLehrpersonSchulen.mockReturnValue(throwError(() => error));
-
-            const promise = firstValueFrom(effects.schulenLaden$);
-
-            action$.next(SchuleActions.schulenLaden());
-            const emitted = await promise;
-
-            expect(emitted).toEqual(SchuleActions.schulenLadenFailed({ error }));
-            expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledOnce();
-        });
-
-        it('should keep the effect stream alive after an error occurred (catchError inside switchMap)', () => {
-            const httpFirst$ = new Subject<Schule[]>();
-            const httpSecond$ = new Subject<Schule[]>();
-
-            httpServiceMock.loadLehrpersonSchulen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
-
-            const emittedActions: Action[] = [];
-            const onError = vi.fn();
-            const onComplete = vi.fn();
-
-            const subscription = effects.schulenLaden$.subscribe({
-                next: action => emittedActions.push(action),
-                error: onError,
-                complete: onComplete,
-            });
-
-            try {
-                action$.next(SchuleActions.schulenLaden());
-                httpFirst$.error(httpServerErrorResponse);
-
-                expect(emittedActions).toEqual([
-                    SchuleActions.schulenLadenFailed({
-                        error: httpServerErrorResponse,
-                    }),
-                ]);
-                expect(onError).not.toHaveBeenCalled();
-                expect(onComplete).not.toHaveBeenCalled();
-                expect(subscription.closed).toBe(false);
-
-                // Dieselbe Subscription muss weitere Actions verarbeiten.
-                // Ein catchError außerhalb von switchMap würde bei Rückgabe
-                // von of(failedAction) den gesamten Effect-Stream beenden.
-                action$.next(SchuleActions.schulenLaden());
-
-                expect(httpServiceMock.loadLehrpersonSchulen).toHaveBeenCalledTimes(2);
-
-                httpSecond$.next(schulen2);
-                httpSecond$.complete();
-
-                expect(emittedActions).toEqual([
-                    SchuleActions.schulenLadenFailed({
-                        error: httpServerErrorResponse,
-                    }),
-                    SchuleActions.schulenGeladen({ schulen: schulen2 }),
-                ]);
-                expect(onError).not.toHaveBeenCalled();
-                expect(onComplete).not.toHaveBeenCalled();
-                expect(subscription.closed).toBe(false);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-    });
-
-    describe('schulenGeladen$', () => {
-        it('should map to wettbewerbsorganisationGestartet when exactly 1 school was loaded and einstiegsseite', async () => {
-            const schule: Schule = {
-                kuerzel: 'S1234567',
-                name: 'Baumschule',
-                ort: {
-                    kuerzel: 'O1234567',
-                    name: 'Waldeck',
-                    anzahlSchulen: 3,
-                    land: {
-                        kuerzel: 'DE-TH',
-                        name: 'Thüringen',
-                        anzahlOrte: 354,
-                    },
-                },
-            };
-
-            const promise = firstValueFrom(effects.schulenGeladen$);
-
-            action$.next(SchuleActions.schulenGeladen({ schulen: [schule] }));
-
-            const emitted = await promise;
-
-            expect(emitted).toEqual(wettbewerbsorganisationGestartet({ schulkuerzel: 'S1234567' }));
-        });
-
-        it('should not emitt an action when there is exactly one school but url is that of schule', async () => {
-            const schule: Schule = {
-                kuerzel: 'S1234567',
-                name: 'Baumschule',
-                ort: {
-                    kuerzel: 'O1234567',
-                    name: 'Waldeck',
-                    anzahlSchulen: 3,
-                    land: {
-                        kuerzel: 'DE-TH',
-                        name: 'Thüringen',
-                        anzahlOrte: 354,
-                    },
-                },
-            };
-
-            routerMock.url = '/minikaenguru-anwendung/lehrperson';
-
-            routerMock.currentNavigation.mockReturnValue({
-                extractedUrl: urlSerializer.parse('/minikaenguru-anwendung/lehrperson/schule/S1234567'),
-            });
-
-            const emittedActions: Action[] = [];
-            const subscription = effects.schulenGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
-
-            try {
-                action$.next(SchuleActions.schulenGeladen({ schulen: [schule] }));
-                expect(emittedActions).toEqual([]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-
-        it('should not emit an action when there are more than one schools', async () => {
-            const schule1: Schule = {
-                kuerzel: 'S1234567',
-                name: 'Baumschule',
-                ort: {
-                    kuerzel: 'O1234567',
-                    name: 'Waldeck',
-                    anzahlSchulen: 3,
-                    land: {
-                        kuerzel: 'DE-TH',
-                        name: 'Thüringen',
-                        anzahlOrte: 354,
-                    },
-                },
-            };
-
-            const schule2: Schule = {
-                kuerzel: 'S7654321',
-                name: 'Krautschule',
-                ort: {
-                    kuerzel: 'O1234567',
-                    name: 'Waldeck',
-                    anzahlSchulen: 3,
-                    land: {
-                        kuerzel: 'DE-TH',
-                        name: 'Thüringen',
-                        anzahlOrte: 354,
-                    },
-                },
-            };
-
-            const emittedActions: Action[] = [];
-            const subscription = effects.schulenGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
-
-            try {
-                action$.next(SchuleActions.schulenGeladen({ schulen: [schule1, schule2] }));
-
-                expect(emittedActions).toEqual([]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-
-        it('should not emit an action when there is no school', async () => {
-            const emittedActions: Action[] = [];
-            const subscription = effects.schulenGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
-
-            try {
-                action$.next(SchuleActions.schulenGeladen({ schulen: [] }));
-
-                expect(emittedActions).toEqual([]);
-            } finally {
-                subscription.unsubscribe();
-            }
-        });
-    });
-
-    describe('wettbewerbsorganisationGestartet$', () => {
-        it('should navigate to lehrperson/schule ', async () => {
-            const schule: Schule = {
-                kuerzel: 'S1234567',
-                name: 'Baumschule',
-                ort: {
-                    kuerzel: 'O1234567',
-                    name: 'Waldeck',
-                    anzahlSchulen: 3,
-                    land: {
-                        kuerzel: 'DE-TH',
-                        name: 'Thüringen',
-                        anzahlOrte: 354,
-                    },
-                },
-            };
-
-            const promise = firstValueFrom(effects.wettbewerbsorganisationGestartet$);
-
-            action$.next(wettbewerbsorganisationGestartet({ schulkuerzel: schule.kuerzel }));
-
-            await promise;
-
-            expect(routerMock.navigate).toHaveBeenCalledOnce();
-            expect(routerMock.navigate).toHaveBeenCalledWith([
-                '/',
-                'minikaenguru-anwendung',
-                'lehrperson',
-                'schule',
-                'S1234567',
-            ]);
-        });
     });
 
     describe('ensureWettbewerbskontextGeladen$', () => {
@@ -473,7 +100,7 @@ describe('SchulenEffects', () => {
 
             const promise = firstValueFrom(effects.ensureWettbewerbskontextGeladen$);
 
-            action$.next(ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: schule.kuerzel }));
+            action$.next(SchuleActions.ensureWettbewerbskontextGeladen({ schulkuerzel: schule.kuerzel }));
 
             const emitted = await promise;
 
@@ -857,11 +484,11 @@ describe('SchulenEffects', () => {
         });
     });
 
-    describe('loadActionFailed$', () => {
+    describe('wettbewerbskontextLadenFailed$', () => {
         it('should publish the technical error message for an HttpErrorResponse', async () => {
-            const promise = firstValueFrom(effects.loadActionFailed$);
+            const promise = firstValueFrom(effects.wettbewerbskontextLadenFailed$);
 
-            action$.next(SchuleActions.schulenLadenFailed({ error: httpServerErrorResponse }));
+            action$.next(SchuleActions.wettbewerbskontextLadenFailed({ error: httpServerErrorResponse }));
             await promise;
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
@@ -872,9 +499,9 @@ describe('SchulenEffects', () => {
 
         it('should publish the technical error message for another Error', async () => {
             const error = new Error('uiuiui!');
-            const promise = firstValueFrom(effects.loadActionFailed$);
+            const promise = firstValueFrom(effects.wettbewerbskontextLadenFailed$);
 
-            action$.next(SchuleActions.schulenLadenFailed({ error }));
+            action$.next(SchuleActions.wettbewerbskontextLadenFailed({ error }));
             await promise;
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
@@ -888,9 +515,9 @@ describe('SchulenEffects', () => {
                 status: 403,
                 statusText: 'Forbidden',
             });
-            const promise = firstValueFrom(effects.loadActionFailed$);
+            const promise = firstValueFrom(effects.wettbewerbskontextLadenFailed$);
 
-            action$.next(SchuleActions.schulenLadenFailed({ error }));
+            action$.next(SchuleActions.wettbewerbskontextLadenFailed({ error }));
             await promise;
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
@@ -902,17 +529,17 @@ describe('SchulenEffects', () => {
         it('should be configured not to dispatch any action', () => {
             const metadata = getEffectsMetadata(effects);
 
-            expect(metadata.loadActionFailed$?.dispatch).toBe(false);
+            expect(metadata.wettbewerbskontextLadenFailed$?.dispatch).toBe(false);
         });
 
         it('should ignore unrelated actions', () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.loadActionFailed$.subscribe(action => {
+            const subscription = effects.wettbewerbskontextLadenFailed$.subscribe(action => {
                 emittedActions.push(action);
             });
 
             try {
-                action$.next(SchuleActions.schulenLaden());
+                action$.next(SchuleActions.wettbewerbskontextLaden({ schulkuerzel: 'X1234567' }));
 
                 expect(emittedActions).toEqual([]);
                 expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
@@ -926,7 +553,7 @@ describe('SchulenEffects', () => {
         it('should navigate to lehrperson ', async () => {
             const promise = firstValueFrom(effects.wettbewerbsorganisationVerlassen$);
 
-            action$.next(wettbewerbsorganisationVerlassen());
+            action$.next(SchuleActions.wettbewerbsorganisationVerlassen());
 
             await promise;
 
