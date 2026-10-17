@@ -4,6 +4,7 @@ import { SchuleActions } from './schule.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
+import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchule';
 
@@ -66,10 +67,14 @@ export const schulenFeature = createFeature({
                 schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
             };
         }),
-        on(SchuleActions.schulkollegiumLadenFailed, (state, { error }) => ({
-            ...state,
-            schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
-        })),
+        on(lehrpersonBerechtigungVerweigert, state => {
+            return {
+                ...state,
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'forbidden',
+                schulkollegiumLoadState: 'not-loaded',
+            };
+        }),
         on(SchuleActions.wettbewerbsorganisationVerlassen, state => {
             return {
                 ...state,

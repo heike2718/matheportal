@@ -22,7 +22,7 @@ export class MinikaenguruEinstiegEffects {
     readonly wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
-            map(() => ensureWettbewerbGeladen)
+            map(() => ensureWettbewerbGeladen())
         );
     });
 
@@ -30,7 +30,7 @@ export class MinikaenguruEinstiegEffects {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
             filter(({ user }) => hasBerechtigungFuerMinikaenguru(user)),
-            map(() => ensureDurchfuehrenderGeladen)
+            map(() => ensureDurchfuehrenderGeladen())
         );
     });
 
@@ -41,7 +41,7 @@ export class MinikaenguruEinstiegEffects {
                 ({ wettbewerbsdurchfuehrender }) =>
                     wettbewerbsdurchfuehrender.durchfuehrungsart === DURCHFUEHRUNGSART.schule
             ),
-            map(() => ensureSchulenGeladen)
+            map(() => ensureSchulenGeladen())
         );
     });
 

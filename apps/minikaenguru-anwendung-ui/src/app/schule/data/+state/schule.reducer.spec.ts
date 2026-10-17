@@ -5,6 +5,7 @@ import { SchuleActions } from './schule.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
+import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
 describe('schulenReducer', () => {
     const orte: Ort[] = [
@@ -274,6 +275,23 @@ describe('schulenReducer', () => {
                 wettbewerbskontext: expectedWettbewerbskontext,
                 wettbewerbskontextLoadState: 'loaded',
                 schulkollegiumLoadState: 'forbidden',
+            });
+        });
+    });
+
+    describe('lehrpersonBerechtigungFailed', () => {
+        it('should reset the loadStates when lehrpersonBerechtigungFailed', () => {
+            const previousState: SchulenState = {
+                wettbewerbskontext,
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'loaded',
+            };
+            const state = schulenFeature.reducer(previousState, lehrpersonBerechtigungVerweigert);
+
+            expect(state).toEqual({
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'forbidden',
+                schulkollegiumLoadState: 'not-loaded',
             });
         });
     });
