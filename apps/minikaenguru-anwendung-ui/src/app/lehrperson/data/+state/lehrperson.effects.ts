@@ -7,7 +7,7 @@ import { LehrpersonActions } from './lehrperson.actions';
 import { selectSchulenLoadState } from './lehrperson.selectors';
 import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 
 @Injectable()
@@ -52,13 +52,29 @@ export class LehrpersonEffects {
         )
     );
 
-    readonly schulenLadenFailed$ = createEffect(
+    readonly schulenLadenFailed$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(LehrpersonActions.schulenLadenFailed),
+            map(({ error }) => {
+                const errorContext = mapToErrorContext(error);
+
+                if (errorContext.httpStatus === 403) {
+                    return LehrpersonActions.berechtigungVerweigert();
+                }
+
+                return LehrpersonActions.actionFailed({
+                    errorMessage: errorContext.message,
+                });
+            })
+        )
+    );
+
+    readonly actionFailed$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(LehrpersonActions.schulenLadenFailed),
+                ofType(LehrpersonActions.actionFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisher.publishError(errorMessage);
+                    this.#messagePublisher.publishError(action.errorMessage);
                 })
             ),
         { dispatch: false }

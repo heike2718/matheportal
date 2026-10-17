@@ -12,6 +12,7 @@ import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getEffectsMetadata } from '@ngrx/effects';
+import { ErrorResponse, TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 
 describe('LehrpersonEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -415,32 +416,39 @@ describe('LehrpersonEffects', () => {
     });
 
     describe('schulenLadenFailed$', () => {
-        it('should publish the technical error message for an HttpErrorResponse', async () => {
-            const promise = firstValueFrom(effects.schulenLadenFailed$);
+        it.each([400, 401, 404, 409, 412, 500] as const)(
+            'should map to actionFailed when HttpErrorResponse with httpStatus %i',
+            async httpStatus => {
+                const errorResponse: ErrorResponse = { message: 'eine Fehlermeldung', constraintViolations: [] };
+                const httpError = new HttpErrorResponse({ status: httpStatus, error: errorResponse });
+                const promise = firstValueFrom(effects.schulenLadenFailed$);
 
-            action$.next(LehrpersonActions.schulenLadenFailed({ error: httpServerErrorResponse }));
-            await promise;
+                action$.next(LehrpersonActions.schulenLadenFailed({ error: httpError }));
+                const emitted = await promise;
 
-            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
-            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedErrorMessage);
-            expect(httpServiceMock.loadLehrpersonSchulen).not.toHaveBeenCalled();
-            expect(httpServiceMock.loadSchulkollegium).not.toHaveBeenCalled();
-        });
+                expect(emitted).toEqual(LehrpersonActions.actionFailed({ errorMessage: expect.any(String) }));
+
+                expect(messagePublisherMock.publishError).not.toHaveBeenCalledOnce();
+                expect(httpServiceMock.loadLehrpersonSchulen).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadSchulkollegium).not.toHaveBeenCalled();
+            }
+        );
 
         it('should publish the technical error message for another Error', async () => {
             const error = new Error('uiuiui!');
             const promise = firstValueFrom(effects.schulenLadenFailed$);
 
             action$.next(LehrpersonActions.schulenLadenFailed({ error }));
-            await promise;
+            const emitted = await promise;
 
-            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
-            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(expectedErrorMessage);
+            expect(emitted).toEqual(LehrpersonActions.actionFailed({ errorMessage: TECHNISCHER_FEHLER_FEHLERMELDUNG }));
+
+            expect(messagePublisherMock.publishError).not.toHaveBeenCalledOnce();
             expect(httpServiceMock.loadLehrpersonSchulen).not.toHaveBeenCalled();
             expect(httpServiceMock.loadSchulkollegium).not.toHaveBeenCalled();
         });
 
-        it('should publish the mapped error message for a forbidden response', async () => {
+        it('should map to berechtigungVerweigert for a forbidden response', async () => {
             const error = new HttpErrorResponse({
                 status: 403,
                 statusText: 'Forbidden',
@@ -448,17 +456,27 @@ describe('LehrpersonEffects', () => {
             const promise = firstValueFrom(effects.schulenLadenFailed$);
 
             action$.next(LehrpersonActions.schulenLadenFailed({ error }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(LehrpersonActions.berechtigungVerweigert());
+            expect(messagePublisherMock.publishError).not.toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('actionFailed$', () => {
+        it('should publish the errorMessage', async () => {
+            const promise = firstValueFrom(effects.actionFailed$);
+            action$.next(LehrpersonActions.actionFailed({ errorMessage: 'eine Fehlermeldung' }));
+
             await promise;
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
-            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
-                'Sie haben leider keine Berechtigung für diese Aktion'
-            );
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith('eine Fehlermeldung');
         });
 
         it('should ignore unrelated actions', () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.schulenLadenFailed$.subscribe(action => {
+            const subscription = effects.actionFailed$.subscribe(action => {
                 emittedActions.push(action);
             });
 
@@ -475,7 +493,7 @@ describe('LehrpersonEffects', () => {
         it('should be configured not to dispatch any action', () => {
             const metadata = getEffectsMetadata(effects);
 
-            expect(metadata.schulenLadenFailed$?.dispatch).toBe(false);
+            expect(metadata.actionFailed$?.dispatch).toBe(false);
         });
     });
 

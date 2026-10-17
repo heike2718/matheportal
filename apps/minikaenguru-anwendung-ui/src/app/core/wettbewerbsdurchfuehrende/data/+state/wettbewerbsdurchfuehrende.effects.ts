@@ -9,7 +9,7 @@ import { DURCHFUEHRUNGSART, Wettbewerbsdurchfuehrender } from '../../model/wettb
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { fromWettbewerbsdurchfuehrender } from './wettbewerbsdurchfuehrende.selectors';
 
@@ -85,8 +85,8 @@ export class WettbewerbsdurchfuehrendeEffects {
             this.#actions.pipe(
                 ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisher.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisher.publishError(errorContext.message);
                 })
             ),
         { dispatch: false }

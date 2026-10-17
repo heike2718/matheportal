@@ -59,4 +59,12 @@ describe('LehrpersonActions', () => {
             error,
         });
     });
+
+    it('should create the berechtigungVerweigert action', () => {
+        const action = LehrpersonActions.berechtigungVerweigert();
+
+        expect(action).toEqual({
+            type: '[MKA Lehrperson] berechtigungVerweigert',
+        });
+    });
 });

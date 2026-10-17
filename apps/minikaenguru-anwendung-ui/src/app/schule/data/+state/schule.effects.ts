@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { SchuleActions } from './schule.actions';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
@@ -58,8 +58,8 @@ export class SchulenEffects {
             this.#actions.pipe(
                 ofType(SchuleActions.wettbewerbskontextLadenFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisher.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisher.publishError(errorContext.message);
                 })
             ),
         { dispatch: false }

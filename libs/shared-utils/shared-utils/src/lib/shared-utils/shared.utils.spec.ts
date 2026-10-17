@@ -1,18 +1,24 @@
-import { AUTHORIZED_RESOURCE_LOAD_STATE, ErrorResponse, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import {
+    AUTHORIZED_RESOURCE_LOAD_STATE,
+    BAD_REQUEST_FALLBACK_FEHLERMELDUNG,
+    CONFLICT_FALLBACK_FEHLERMELDUNG,
+    ErrorResponse,
+    NOT_FOUND_FEHLERMELDUNG,
+    PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
+    RESOURCE_LOAD_STATE,
+    TECHNISCHER_FEHLER_FEHLERMELDUNG,
+} from '@matheportal/shared-model';
 import {
     assertDefined,
     errorResponseToString,
     extractErrorResponse,
     mapErrorToResourceLoadState,
-    mapErrorToMessage,
+    mapToErrorContext,
     mapErrorToAuthorizedResourceLoadState,
 } from './shared.utils';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('shared utils tests', () => {
-    const expectedTechnischeFehlermeldung =
-        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
-
     const badRequestErrorResponse: ErrorResponse = {
         message: 'Die Eingaben enthalten ungültige Werte.',
         constraintViolations: [
@@ -265,19 +271,20 @@ describe('shared utils tests', () => {
         });
     });
 
-    describe('mapErrorToMessage test', () => {
-        const conflictErrorResponse: ErrorResponse = {
-            message: 'Die Aktion kann leider nicht durchgeführt werden (Konflikt)',
+    describe('mapToErrorContext test', () => {
+        const errorResponse: ErrorResponse = {
+            message: 'Diese Meldung kommt aus dem Backend.',
             constraintViolations: [],
         };
 
         const unauthorized = new HttpErrorResponse({ status: 401, statusText: 'unauthorized' });
         const forbidden = new HttpErrorResponse({ status: 403, statusText: 'unauthorized' });
+        const notFound = new HttpErrorResponse({ status: 404, statusText: 'not found' });
 
         const conflict = new HttpErrorResponse({
             status: 409,
             statusText: 'conflict',
-            error: conflictErrorResponse,
+            error: errorResponse,
         });
         const preconditionFailed = new HttpErrorResponse({
             status: 412,
@@ -287,34 +294,95 @@ describe('shared utils tests', () => {
                 constraintViolations: [],
             },
         });
-
-        it('maps unauthorized', () => {
-            expect(mapErrorToMessage(unauthorized)).toBe('Sie haben leider keine Berechtigung für diese Aktion');
-        });
-
-        it('maps forbidden', () => {
-            expect(mapErrorToMessage(forbidden)).toBe('Sie haben leider keine Berechtigung für diese Aktion');
+        const internalServerError = new HttpErrorResponse({
+            status: 500,
+            statusText: 'internal server error',
+            error: errorResponse,
         });
 
         it('maps bad request when it contains an ErrorResponse', () => {
-            const result = mapErrorToMessage(badRequest);
-            expect(result).toBe(
-                'Die Eingaben enthalten ungültige Werte. (vorname: enthält ungültige Zeichen, klassenstufe: muss 1 oder 2 sein)'
-            );
+            expect(mapToErrorContext(badRequest)).toEqual({
+                httpStatus: 400,
+                message:
+                    'Die Eingaben enthalten ungültige Werte. (vorname: enthält ungültige Zeichen, klassenstufe: muss 1 oder 2 sein)',
+            });
         });
+
         it('maps bad request when it does not contain an ErrorResponse', () => {
-            expect(mapErrorToMessage(new HttpErrorResponse({ status: 400 }))).toBe(expectedTechnischeFehlermeldung);
+            expect(mapToErrorContext(new HttpErrorResponse({ status: 400 }))).toEqual({
+                httpStatus: 400,
+                message: BAD_REQUEST_FALLBACK_FEHLERMELDUNG,
+            });
         });
+
+        it('maps unauthorized', () => {
+            expect(mapToErrorContext(unauthorized)).toEqual({
+                httpStatus: 401,
+                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+            });
+        });
+
+        it('maps forbidden', () => {
+            expect(mapToErrorContext(forbidden)).toEqual({
+                httpStatus: 403,
+                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+            });
+        });
+
+        it('maps not found', () => {
+            expect(mapToErrorContext(notFound)).toEqual({
+                httpStatus: 404,
+                message: NOT_FOUND_FEHLERMELDUNG,
+            });
+        });
+
         it('maps conflict when it contains an ErrorResponse', () => {
-            expect(mapErrorToMessage(conflict)).toBe('Die Aktion kann leider nicht durchgeführt werden (Konflikt)');
+            expect(mapToErrorContext(conflict)).toEqual({
+                httpStatus: 409,
+                message: 'Diese Meldung kommt aus dem Backend.',
+            });
         });
-        it('maps preconditionFailed when it contains an ErrorResponse', () => {
-            expect(mapErrorToMessage(preconditionFailed)).toBe(
-                'Die Aktion kann leider nicht durchgeführt werden (Vorbedingung nicht erfüllt)'
-            );
-        });
+
         it('maps conflict request when it does not contain an ErrorResponse', () => {
-            expect(mapErrorToMessage(new HttpErrorResponse({ status: 409 }))).toBe(expectedTechnischeFehlermeldung);
+            expect(mapToErrorContext(new HttpErrorResponse({ status: 409 }))).toEqual({
+                httpStatus: 409,
+                message: CONFLICT_FALLBACK_FEHLERMELDUNG,
+            });
+        });
+
+        it('maps preconditionFailed when it contains an ErrorResponse', () => {
+            expect(mapToErrorContext(preconditionFailed)).toEqual({
+                httpStatus: 412,
+                message: 'Die Aktion kann leider nicht durchgeführt werden (Vorbedingung nicht erfüllt)',
+            });
+        });
+
+        it('maps preconditionFailed when it does not contain an ErrorResponse', () => {
+            expect(mapToErrorContext(new HttpErrorResponse({ status: 412 }))).toEqual({
+                httpStatus: 412,
+                message: PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
+            });
+        });
+
+        it('maps internalServerError when it contains an ErrorResponse', () => {
+            expect(mapToErrorContext(internalServerError)).toEqual({
+                httpStatus: 500,
+                message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
+            });
+        });
+
+        it('maps internalServerError when it does not contain an ErrorResponse', () => {
+            expect(mapToErrorContext(new HttpErrorResponse({ status: 500 }))).toEqual({
+                httpStatus: 500,
+                message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
+            });
+        });
+
+        it('maps other error than HttpErrorResponse', () => {
+            expect(mapToErrorContext(new Error('damit hat nun keiner gerechnet'))).toEqual({
+                httpStatus: undefined,
+                message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
+            });
         });
     });
 
@@ -325,12 +393,12 @@ describe('shared utils tests', () => {
         });
         it('returns a fallback object when no error exists', () => {
             const result = extractErrorResponse(new HttpErrorResponse({ status: 400 }));
-            expect(result.message).toBe(expectedTechnischeFehlermeldung);
+            expect(result.message).toBe(BAD_REQUEST_FALLBACK_FEHLERMELDUNG);
             expect(result.constraintViolations).toEqual([]);
         });
-        it('returns the message of the Error when error not an ErrorResponse', () => {
-            const result = extractErrorResponse(new HttpErrorResponse({ status: 400, error: new Error('buuuu') }));
-            expect(result.message).toBe(expectedTechnischeFehlermeldung);
+        it('returns a general Error when error not an ErrorResponse', () => {
+            const result = extractErrorResponse(new HttpErrorResponse({ status: 500, error: new Error('buuuu') }));
+            expect(result.message).toBe(TECHNISCHER_FEHLER_FEHLERMELDUNG);
             expect(result.constraintViolations).toEqual([]);
         });
     });

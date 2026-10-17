@@ -9,6 +9,7 @@ export const LehrpersonActions = createActionGroup({
         schulenLaden: emptyProps(),
         schulenGeladen: props<{ schulen: Schule[] }>(),
         schulenLadenFailed: props<{ error: Error }>(),
-        // wettbewerbsorganisationVerlassen: emptyProps(),
+        berechtigungVerweigert: emptyProps(),
+        actionFailed: props<{ errorMessage: string }>(),
     },
 });

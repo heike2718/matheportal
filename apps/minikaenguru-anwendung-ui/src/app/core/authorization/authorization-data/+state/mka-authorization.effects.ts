@@ -5,7 +5,7 @@ import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { catchError, exhaustMap, filter, map, of, take, tap, withLatestFrom } from 'rxjs';
 import { User } from '@matheportal/auth-model';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
 import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
@@ -62,7 +62,7 @@ export class MkaAuthorizationEffects {
             this.#actions.pipe(
                 ofType(MkaAuthorizationActions.loadMkaAuthorizationFailed),
                 tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                 })
             ),
         { dispatch: false }
