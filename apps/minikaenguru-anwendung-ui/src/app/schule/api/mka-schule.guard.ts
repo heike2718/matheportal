@@ -4,15 +4,20 @@ import { SchuleFacade } from './schule.facade';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { combineLatest, filter, map, take } from 'rxjs';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
+import { Store } from '@ngrx/store';
+import { schulenLadenVerweigert } from '../../lehrperson/api/public-lehrperson.selectors';
 
 export const mkaSchuleGuard = (): CanActivateFn => route => {
     const router = inject(Router);
     const schuleFacade = inject(SchuleFacade);
     const wettbewerbFacade = inject(WettbewerbFacade);
+    const store = inject(Store);
+
+    const schulenLadenVerweigertSignal = store.selectSignal(schulenLadenVerweigert);
 
     const schulkuerzel = route.paramMap.get('schulkuerzel');
 
-    if (!schulkuerzel) {
+    if (!schulkuerzel || schulenLadenVerweigertSignal()) {
         return router.createUrlTree(['/', portalRoutes.home]);
     }
 

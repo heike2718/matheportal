@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { SchulenEffects } from './schule.effects';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -11,6 +11,8 @@ import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -33,6 +35,7 @@ describe('SchulenEffects', () => {
         url: '/minikaenguru-anwendung',
     };
 
+    let store: MockStore;
     let action$: Subject<Action>;
     let effects: SchulenEffects;
 
@@ -66,6 +69,7 @@ describe('SchulenEffects', () => {
             providers: [
                 SchulenEffects,
                 provideMockActions(() => action$),
+                provideMockStore(),
                 { provide: Router, useValue: routerMock },
                 {
                     provide: ArbeitskontextHttpService,
@@ -79,6 +83,7 @@ describe('SchulenEffects', () => {
         });
 
         effects = TestBed.inject(SchulenEffects);
+        store = TestBed.inject(Store) as MockStore;
     });
 
     describe('ensureWettbewerbskontextGeladen$', () => {
@@ -153,8 +158,29 @@ describe('SchulenEffects', () => {
             kollegen: [],
             vertragDSGVOVorhanden: true,
         };
+        it('should not trigger the backend call when schulenLadenVerweigert', async () => {
+            store.overrideSelector(schulenLadenVerweigert, true);
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.wettbewerbskontextLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.wettbewerbskontextLaden({ schulkuerzel: 'A1234567' }));
+
+                expect(emittedActions).toEqual([]);
+                expect(httpServiceMock.loadSchuleWettbewerbskontext).not.toHaveBeenCalled();
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
 
         it('should call the httpService and map to schulkollegiumGeladen when successful', async () => {
+            store.overrideSelector(schulenLadenVerweigert, false);
+            store.refreshState();
+
             httpServiceMock.loadSchuleWettbewerbskontext.mockReturnValue(of(wettbewerbskontext));
 
             const promise = firstValueFrom(effects.wettbewerbskontextLaden$);
@@ -168,6 +194,8 @@ describe('SchulenEffects', () => {
         });
 
         it('should switch to the latest action and cancel previous pending requests (switchMap)', () => {
+            store.overrideSelector(schulenLadenVerweigert, false);
+            store.refreshState();
             const httpFirst$ = new Subject<SchuleWettbewerbskontext>();
             const httpSecond$ = new Subject<SchuleWettbewerbskontext>();
             const firstRequestFinalized = vi.fn();
@@ -213,6 +241,8 @@ describe('SchulenEffects', () => {
         });
 
         it('should map to wettbewerbskontextLadenFailed when the httpService returns another Error', async () => {
+            store.overrideSelector(schulenLadenVerweigert, false);
+            store.refreshState();
             const error = new Error('uiuiui!');
 
             httpServiceMock.loadSchuleWettbewerbskontext.mockReturnValue(throwError(() => error));
@@ -227,6 +257,8 @@ describe('SchulenEffects', () => {
         });
 
         it('should keep the effect stream alive after an error occurred (catchError inside switchMap)', () => {
+            store.overrideSelector(schulenLadenVerweigert, false);
+            store.refreshState();
             const httpFirst$ = new Subject<SchuleWettbewerbskontext>();
             const httpSecond$ = new Subject<SchuleWettbewerbskontext>();
 

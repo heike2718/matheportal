@@ -59,6 +59,7 @@ export class LehrpersonEffects {
                 const errorContext = mapToErrorContext(error);
 
                 if (errorContext.httpStatus === 403) {
+                    this.#messagePublisher.publishError(errorContext.message);
                     return LehrpersonActions.berechtigungVerweigert();
                 }
 

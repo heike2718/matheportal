@@ -459,7 +459,10 @@ describe('LehrpersonEffects', () => {
             const emitted = await promise;
 
             expect(emitted).toEqual(LehrpersonActions.berechtigungVerweigert());
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
+                'Sie haben leider keine Berechtigung für diese Aktion'
+            );
         });
     });
 

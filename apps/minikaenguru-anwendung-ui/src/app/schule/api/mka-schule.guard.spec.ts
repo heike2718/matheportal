@@ -14,6 +14,9 @@ import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } fr
 import { SchuleFacade } from './schule.facade';
 import { mkaSchuleGuard } from './mka-schule.guard';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { Store } from '@ngrx/store';
+import { schulenLadenVerweigert } from '../../lehrperson/api/public-lehrperson.selectors';
 
 // Fehlende Tests: schulkuerzel undefined
 // AUTHORIZED_RESOURCE_LOAD_STATE technical-error' und 'unauthorized
@@ -23,6 +26,8 @@ describe('mkaSchuleGuard', () => {
     const state = {} as RouterStateSnapshot;
 
     let route: ActivatedRouteSnapshot;
+
+    let store: MockStore;
 
     let wettbewerbskontextLoadStateSubject: Subject<AUTHORIZED_RESOURCE_LOAD_STATE>;
     let wettbewerbLoadStateSubject: Subject<RESOURCE_LOAD_STATE>;
@@ -48,7 +53,8 @@ describe('mkaSchuleGuard', () => {
     function setup(
         wettbewerbskontextLoadState: AUTHORIZED_RESOURCE_LOAD_STATE,
         wettbwerbLoadState: RESOURCE_LOAD_STATE,
-        schulkuerzel: string | undefined
+        schulkuerzel: string | undefined,
+        forbidden: boolean
     ) {
         wettbewerbskontextLoadStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(
             wettbewerbskontextLoadState
@@ -71,12 +77,17 @@ describe('mkaSchuleGuard', () => {
         TestBed.configureTestingModule({
             providers: [
                 provideRouter([]),
+                provideMockStore(),
                 { provide: SchuleFacade, useValue: schuleFacadeMock },
                 { provide: WettbewerbFacade, useValue: wettbewerbFacadeMock },
             ],
         });
 
         const router = TestBed.inject(Router);
+        store = TestBed.inject(Store) as MockStore;
+
+        store.overrideSelector(schulenLadenVerweigert, forbidden);
+        store.refreshState();
 
         vi.resetAllMocks();
 
@@ -85,7 +96,7 @@ describe('mkaSchuleGuard', () => {
 
     describe('tests with wettbwerbskontext load state', () => {
         it('should allow access when wettbewerbskontext arrives later', async () => {
-            setup('not-loaded', 'loaded', schulkuerzel);
+            setup('not-loaded', 'loaded', schulkuerzel, false);
 
             const resultPromise = TestBed.runInInjectionContext(() =>
                 resolveGuardResult(mkaSchuleGuard()(route, state))
@@ -106,7 +117,7 @@ describe('mkaSchuleGuard', () => {
         it.each(['loaded', 'not-loaded', 'unauthorized', 'forbidden', 'technical-error'] as const)(
             'should not allow when schulkuerzel undefined and load state %s',
             async loadState => {
-                const { router } = setup(loadState, 'loaded', undefined);
+                const { router } = setup(loadState, 'loaded', undefined, false);
 
                 const resultPromise = TestBed.runInInjectionContext(() =>
                     resolveGuardResult(mkaSchuleGuard()(route, state))
@@ -124,7 +135,7 @@ describe('mkaSchuleGuard', () => {
         it.each(['unauthorized', 'forbidden', 'technical-error'] as const)(
             'should redirect to lehrperson when load state becomes %s',
             async loadState => {
-                const { router } = setup('not-loaded', 'loaded', schulkuerzel);
+                const { router } = setup('not-loaded', 'loaded', schulkuerzel, false);
 
                 const resultPromise = TestBed.runInInjectionContext(() =>
                     resolveGuardResult(mkaSchuleGuard()(route, state))
@@ -143,7 +154,7 @@ describe('mkaSchuleGuard', () => {
         );
 
         it('should wait while wettbewerbskontext is not-loaded', () => {
-            setup('not-loaded', 'loaded', schulkuerzel);
+            setup('not-loaded', 'loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 
@@ -168,7 +179,7 @@ describe('mkaSchuleGuard', () => {
 
     describe('tests with wettbwerb load state', () => {
         it('should allow access when wettbwerb arrives later', async () => {
-            setup('loaded', 'not-loaded', schulkuerzel);
+            setup('loaded', 'not-loaded', schulkuerzel, false);
 
             const resultPromise = TestBed.runInInjectionContext(() =>
                 resolveGuardResult(mkaSchuleGuard()(route, state))
@@ -188,13 +199,33 @@ describe('mkaSchuleGuard', () => {
         it.each(['loaded', 'not-loaded', 'unauthorized', 'technical-error'] as const)(
             'should not allow when schulkuerzel undefined and load state %s',
             async loadState => {
-                const { router } = setup('loaded', loadState, undefined);
+                const { router } = setup('loaded', loadState, undefined, false);
 
                 const resultPromise = TestBed.runInInjectionContext(() =>
                     resolveGuardResult(mkaSchuleGuard()(route, state))
                 );
 
                 expect(schuleFacadeMock.dashboardVorbereiten).not.toHaveBeenCalled();
+                expect(wettbewerbFacadeMock.ensureWettbewerbGeladen).not.toHaveBeenCalled();
+
+                const result = await resultPromise;
+
+                expect(result).toBeInstanceOf(UrlTree);
+                expect(router.serializeUrl(result as UrlTree)).toBe('/home');
+            }
+        );
+
+        it.each(['loaded', 'not-loaded', 'unauthorized', 'technical-error'] as const)(
+            'should not allow when schulkuerzel defined but schulenLadenVerweigert and load state %s',
+            async loadState => {
+                const { router } = setup('loaded', loadState, schulkuerzel, true);
+
+                const resultPromise = TestBed.runInInjectionContext(() =>
+                    resolveGuardResult(mkaSchuleGuard()(route, state))
+                );
+
+                expect(schuleFacadeMock.dashboardVorbereiten).not.toHaveBeenCalled();
+                expect(wettbewerbFacadeMock.ensureWettbewerbGeladen).not.toHaveBeenCalled();
 
                 const result = await resultPromise;
 
@@ -206,7 +237,7 @@ describe('mkaSchuleGuard', () => {
         it.each(['unauthorized', 'technical-error'] as const)(
             'should redirect to lehrperson when load state becomes %s',
             async loadState => {
-                const { router } = setup('loaded', 'not-loaded', schulkuerzel);
+                const { router } = setup('loaded', 'not-loaded', schulkuerzel, false);
 
                 const resultPromise = TestBed.runInInjectionContext(() =>
                     resolveGuardResult(mkaSchuleGuard()(route, state))
@@ -225,7 +256,7 @@ describe('mkaSchuleGuard', () => {
         );
 
         it('should wait while wettbewerb is not-loaded', () => {
-            setup('loaded', 'not-loaded', schulkuerzel);
+            setup('loaded', 'not-loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 
@@ -250,7 +281,7 @@ describe('mkaSchuleGuard', () => {
 
     describe('warten bis zweites loaded', () => {
         it('should wait - first wettbewerbskontext', () => {
-            setup('not-loaded', 'not-loaded', schulkuerzel);
+            setup('not-loaded', 'not-loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 
@@ -281,7 +312,7 @@ describe('mkaSchuleGuard', () => {
         });
 
         it('should wait - first wettbwerb', () => {
-            setup('not-loaded', 'not-loaded', schulkuerzel);
+            setup('not-loaded', 'not-loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 
@@ -314,7 +345,7 @@ describe('mkaSchuleGuard', () => {
 
     describe('redirect bei erstem fehlerstatus', () => {
         it('should redirect immediately when wettbewerbskontext with failure state', () => {
-            const { router } = setup('not-loaded', 'not-loaded', schulkuerzel);
+            const { router } = setup('not-loaded', 'not-loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 
@@ -345,7 +376,7 @@ describe('mkaSchuleGuard', () => {
         });
 
         it('should redirect immediately when wettbewerb with failure state', () => {
-            const { router } = setup('not-loaded', 'not-loaded', schulkuerzel);
+            const { router } = setup('not-loaded', 'not-loaded', schulkuerzel, false);
 
             const result = TestBed.runInInjectionContext(() => mkaSchuleGuard()(route, state));
 

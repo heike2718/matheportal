@@ -1,12 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { SchuleActions } from './schule.actions';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 
 @Injectable()
 export class SchulenEffects {
@@ -14,6 +16,7 @@ export class SchulenEffects {
     #httpService = inject(ArbeitskontextHttpService);
     #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
+    #store = inject(Store);
 
     readonly ensureWettbewerbskontextGeladen$ = createEffect(() =>
         this.#actions.pipe(
@@ -25,7 +28,9 @@ export class SchulenEffects {
     readonly wettbewerbskontextLaden$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(SchuleActions.wettbewerbskontextLaden),
-            switchMap(({ schulkuerzel }) =>
+            withLatestFrom(this.#store.select(schulenLadenVerweigert)),
+            filter(([, verweigert]) => !verweigert),
+            switchMap(([{ schulkuerzel }]) =>
                 this.#httpService.loadSchuleWettbewerbskontext(schulkuerzel).pipe(
                     map(wettbewerbskontext => SchuleActions.wettbewerbskontextGeladen({ wettbewerbskontext })),
                     catchError((error: Error) => of(SchuleActions.wettbewerbskontextLadenFailed({ error })))

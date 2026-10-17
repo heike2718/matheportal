@@ -8,6 +8,8 @@ export const selectSchulen = createSelector(selectMKALehrpersonState, state => s
 
 export const selectSchulenLoadState = createSelector(selectMKALehrpersonState, state => state.schulenLoadState);
 
+export const berechtigungVerweigert = createSelector(selectSchulenLoadState, loadState => loadState === 'forbidden');
+
 export const selectSchulenLoaded = createSelector(
     selectMKALehrpersonState,
     state => state.schulenLoadState === 'loaded'
