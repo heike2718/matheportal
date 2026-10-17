@@ -2,14 +2,6 @@ import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
 import { PrivatpersonActions } from './privatperson.actions';
 
 describe('PrivatpersonActions', () => {
-    it('should create the wettbewerbsorganisationGestartet action', () => {
-        const action = PrivatpersonActions.wettbewerbsorganisationGestartet();
-
-        expect(action).toEqual({
-            type: '[MKA Privatperson] wettbewerbsorganisationGestartet',
-        });
-    });
-
     it('should create the ensureWettbewerbskontextGeladen action', () => {
         const action = PrivatpersonActions.ensureWettbewerbskontextGeladen();
 
