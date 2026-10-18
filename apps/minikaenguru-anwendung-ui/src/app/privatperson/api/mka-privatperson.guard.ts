@@ -34,7 +34,7 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
                 filter(([authState, wettbewerbState, kontextState]) => {
                     const alleGeladen =
                         authState === 'loaded' && wettbewerbState === 'loaded' && kontextState === 'loaded';
-                    const authFehlgeschlagen = authState !== 'not-loaded' && authState !== 'loaded';
+                    const authFehlgeschlagen = authState === 'failed';
                     const wettbewerbFehlgeschlagen = wettbewerbState !== 'not-loaded' && wettbewerbState !== 'loaded';
                     const kontextFehlgeschlagen = kontextState !== 'not-loaded' && kontextState !== 'loaded';
                     return alleGeladen || authFehlgeschlagen || wettbewerbFehlgeschlagen || kontextFehlgeschlagen;
@@ -45,7 +45,7 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
                         ? true
                         : router.createUrlTree([
                               '/',
-                              portalRoutes.minikaenguruAnwendung,
+                              portalRoutes.minikaenguruAnwendung.root,
                               portalRoutes.minikaenguruAnwendung.guests,
                           ])
                 )
