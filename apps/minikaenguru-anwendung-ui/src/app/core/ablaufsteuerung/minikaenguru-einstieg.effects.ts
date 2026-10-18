@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { mkaAuthorizationLoaded } from '../authorization/authorization-api/mka-authorization-store.events';
-import { filter, map, tap } from 'rxjs';
+import { filter, map, take, tap, withLatestFrom } from 'rxjs';
 import { ensureWettbewerbGeladen } from '../wettbewerb/api/wettbewerb-store.events';
 import { hasBerechtigungFuerMinikaenguru } from '../utils/minikaenguru.utils';
 import {

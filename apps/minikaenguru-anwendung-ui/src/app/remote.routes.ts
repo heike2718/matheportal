@@ -35,10 +35,6 @@ export const remoteRoutes: Routes = [
                 component: StartComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.guests,
-                component: GuestInfoComponent,
-            },
-            {
                 path: portalRoutes.minikaenguruAnwendung.durchfuehrungsart,
                 component: DurchfuehrungsartWaehlenComponent,
             },
