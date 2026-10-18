@@ -8,7 +8,11 @@ import { User } from '@matheportal/auth-model';
 import { TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
-import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
+import { AuthSessionFacade, sessionState, userAugmented } from '@matheportal/auth-api';
+import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../../authorization-model';
+import { resolveBerechtigungstyp } from '../mka-authorization.utils';
+import { Router } from '@angular/router';
+import { portalRoutes } from '@matheportal/portal-navigation';
 
 @Injectable()
 export class MkaAuthorizationEffects {
@@ -17,6 +21,7 @@ export class MkaAuthorizationEffects {
     #httpService = inject(MkaAuthorizationHttpService);
     #store = inject(Store);
     #authSessionFacade = inject(AuthSessionFacade);
+    #router = inject(Router);
 
     readonly ensureMkaAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
@@ -32,7 +37,7 @@ export class MkaAuthorizationEffects {
         );
     });
 
-    loadMkaAuthorization$ = createEffect(() => {
+    readonly loadMkaAuthorization$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(MkaAuthorizationActions.loadMkaAuthorization),
             withLatestFrom(this.#store.select(fromMkaAuthorization.authorizationLoadState)),
@@ -46,18 +51,55 @@ export class MkaAuthorizationEffects {
         );
     });
 
-    mkaAuthorizationLoaded$ = createEffect(
+    readonly mkaAuthorizationLoaded$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(MkaAuthorizationActions.mkaAuthorizationLoaded),
-                tap(action => {
-                    this.#authSessionFacade.synchronizeUser(action.user);
+                tap(({ user }) => {
+                    this.#authSessionFacade.synchronizeUser(user);
                 })
             ),
         { dispatch: false }
     );
 
-    loadMkaAuthorizationFailed$ = createEffect(
+    readonly userAugmented$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(userAugmented),
+                tap(({ user }) => {
+                    const berechrigungstyp: MINIKAENGURU_BERECHTIGUNGSTYP = resolveBerechtigungstyp(user);
+                    switch (berechrigungstyp) {
+                        case MINIKAENGURU_BERECHTIGUNGSTYP.none: {
+                            this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.durchfuehrungsart,
+                            ]);
+                            break;
+                        }
+                        case MINIKAENGURU_BERECHTIGUNGSTYP.privat: {
+                            this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.privatperson,
+                            ]);
+                            break;
+                        }
+                        case MINIKAENGURU_BERECHTIGUNGSTYP.schule: {
+                            this.#router.navigate([
+                                '/',
+                                portalRoutes.minikaenguruAnwendung.root,
+                                portalRoutes.minikaenguruAnwendung.lehrperson,
+                            ]);
+                            break;
+                        }
+                    }
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly loadMkaAuthorizationFailed$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(MkaAuthorizationActions.loadMkaAuthorizationFailed),

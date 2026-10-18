@@ -16,9 +16,11 @@ export class MkaAuthorizationFacade {
         fromMkaAuthorization.authorizationLoadState
     );
 
-    readonly #berechtigungstyp = this.#store.selectSignal(fromMkaAuthorization.berechtigungstyp);
+    // readonly berechtigungstyp$: Observable<MINIKAENGURU_BERECHTIGUNGSTYP> = this.#store.select(
+    //     fromMkaAuthorization.berechtigungstyp
+    // );
 
-    readonly #authorizationLoadState = toSignal(this.authorizationLoadState$, { initialValue: 'not-loaded' });
+    readonly #berechtigungstyp = this.#store.selectSignal(fromMkaAuthorization.berechtigungstyp);
 
     readonly isLehrperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
@@ -30,31 +32,11 @@ export class MkaAuthorizationFacade {
         switch (sessionState) {
             case 'not-loaded':
                 return 'loading';
-            case 'unauthorized':
-                return 'guest';
             case 'technical-error':
                 return 'failed';
         }
 
-        const authorizationState = this.#authorizationLoadState();
-
-        if (authorizationState === 'not-loaded') {
-            return 'loading';
-        }
-
-        if (authorizationState === 'failed') {
-            return 'failed';
-        }
-
-        if (this.isPrivatperson()) {
-            return 'dashboard-privatperson';
-        }
-
-        if (this.isLehrperson()) {
-            return 'dashboard-lehrperson';
-        }
-
-        return 'needs-wettbewerbsdurchfuehrenden';
+        return 'guest';
     });
 
     ensureAuthorizationLoaded(): void {

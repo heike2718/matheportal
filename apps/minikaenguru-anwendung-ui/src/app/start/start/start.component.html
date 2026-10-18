@@ -5,16 +5,6 @@
                 <p>Bitte warten...</p>
             </div>
         }
-        @case ('dashboard-privatperson') {
-            <mka-dashboard-privatperson></mka-dashboard-privatperson>
-        }
-        @case ('dashboard-lehrperson') {
-            <mka-dashboard-lehrperson></mka-dashboard-lehrperson>
-        }
-        @case ('needs-wettbewerbsdurchfuehrenden') {
-            <mka-durchfuehrungsart-waehlen
-                (durchfuehrungsartGewaehlt)="handleDurchfuehrungsartGewaehlt($event)"></mka-durchfuehrungsart-waehlen>
-        }
         @case ('guest') {
             <mka-guest-info></mka-guest-info>
         }

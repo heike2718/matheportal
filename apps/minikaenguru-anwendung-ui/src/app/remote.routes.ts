@@ -22,6 +22,8 @@ import { mkaSchuleGuard } from './schule/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
 import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
+import { privatpersonDataProvider } from './privatperson/api/privatperson-data.provider';
+import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -35,6 +37,10 @@ export const remoteRoutes: Routes = [
             {
                 path: portalRoutes.minikaenguruAnwendung.guests,
                 component: GuestInfoComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.durchfuehrungsart,
+                component: DurchfuehrungsartWaehlenComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.privatperson,
@@ -83,6 +89,7 @@ export const remoteRoutes: Routes = [
             ...schulkatalogantragDataProvider,
             ...schuleDataProvider,
             ...lehrpersonDataProvider,
+            ...privatpersonDataProvider,
             ArbeitskontextHttpService,
         ],
     },

@@ -1,14 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DurchfuehrungsartWaehlenComponent } from './durchfuehrungsart-waehlen.component';
 import { By } from '@angular/platform-browser';
+import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 
 describe('DurchfuehrungsartWaehlenComponent', () => {
     let component: DurchfuehrungsartWaehlenComponent;
     let fixture: ComponentFixture<DurchfuehrungsartWaehlenComponent>;
 
+    const wettbewerbsdurchfuehrendeFacadeMock = {
+        durchfuehrungsartPrivatGewaehlt: vi.fn(),
+        durchfuehrungsartSchuleGewaehlt: vi.fn(),
+    };
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [DurchfuehrungsartWaehlenComponent],
+            providers: [{ provide: WettbewerbsdurchfuehrendeFacade, useValue: wettbewerbsdurchfuehrendeFacadeMock }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(DurchfuehrungsartWaehlenComponent);
@@ -44,14 +51,10 @@ describe('DurchfuehrungsartWaehlenComponent', () => {
             'Ich möchte mit einer oder mehreren Klassen einer Schule am Wettbewerb teilnehmen.'
         );
 
-        const emitted = vi.fn();
-        component.durchfuehrungsartGewaehlt.subscribe(emitted);
-
         optionDe.triggerEventHandler('click');
         fixture.detectChanges();
 
-        expect(emitted).toHaveBeenCalledOnce();
-        expect(emitted).toHaveBeenCalledWith('schule');
+        expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartSchuleGewaehlt).toHaveBeenCalledOnce();
     });
 
     it('should show the option privat and call selectPrivat when clicked', () => {
@@ -67,13 +70,9 @@ describe('DurchfuehrungsartWaehlenComponent', () => {
             'Ich möchte ein oder mehrere Kinder privat am Wettbewerb teilnehmen lassen.'
         );
 
-        const emitted = vi.fn();
-        component.durchfuehrungsartGewaehlt.subscribe(emitted);
-
         optionDe.triggerEventHandler('click');
         fixture.detectChanges();
 
-        expect(emitted).toHaveBeenCalledOnce();
-        expect(emitted).toHaveBeenCalledWith('privat');
+        expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartPrivatGewaehlt).toHaveBeenCalledOnce();
     });
 });

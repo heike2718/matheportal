@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { sessionValidationFailed, userLoggedOut } from '@matheportal/auth-api';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { SESSION_EXPIRED_MESSAGE, TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { SESSION_EXPIRED_MESSAGE, TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class PortalNavigationEffects {
                 tap(action => {
                     switch (action.reason) {
                         case 'technical':
-                            this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                            this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                             break;
                         case 'missing':
                             break;

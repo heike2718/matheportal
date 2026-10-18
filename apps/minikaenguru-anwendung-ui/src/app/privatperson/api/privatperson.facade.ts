@@ -17,7 +17,7 @@ export class PrivatpersonFacade {
     public dashboardVorbereiten(): void {
         this.#store.dispatch(
             MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet({
-                durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 kontextkuerzel: undefined,
             })
         );

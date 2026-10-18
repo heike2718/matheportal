@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { mkaAuthorizationLoaded } from '../authorization/authorization-api/mka-authorization-store.events';
-import { filter, map } from 'rxjs';
+import { filter, map, tap } from 'rxjs';
 import { ensureWettbewerbGeladen } from '../wettbewerb/api/wettbewerb-store.events';
 import { hasBerechtigungFuerMinikaenguru } from '../utils/minikaenguru.utils';
 import {
@@ -48,6 +48,7 @@ export class MinikaenguruEinstiegEffects {
     readonly kontextLadenOnWettbewerbsorganisationGestartet$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet),
+            tap(({ durchfuehrungsart }) => console.log('effect mit durchfuehrungsart=' + durchfuehrungsart)),
             map(({ durchfuehrungsart, kontextkuerzel }) =>
                 durchfuehrungsart === DURCHFUEHRUNGSART.schule
                     ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel ?? '' })

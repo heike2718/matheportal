@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, output } from '@angular/core';
-import { GewaehlteDurchfuehrungsart } from './durchfuehrungsart-waehlen.model';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
 
 @Component({
     selector: 'mka-durchfuehrungsart-waehlen',
@@ -9,13 +9,13 @@ import { GewaehlteDurchfuehrungsart } from './durchfuehrungsart-waehlen.model';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurchfuehrungsartWaehlenComponent {
-    readonly durchfuehrungsartGewaehlt = output<GewaehlteDurchfuehrungsart>();
+    #wettbewerbsdurchfuehrendeFacade = inject(WettbewerbsdurchfuehrendeFacade);
 
     selectSchule(): void {
-        this.durchfuehrungsartGewaehlt.emit('schule');
+        this.#wettbewerbsdurchfuehrendeFacade.durchfuehrungsartSchuleGewaehlt();
     }
 
     selectPrivat(): void {
-        this.durchfuehrungsartGewaehlt.emit('privat');
+        this.#wettbewerbsdurchfuehrendeFacade.durchfuehrungsartPrivatGewaehlt();
     }
 }
