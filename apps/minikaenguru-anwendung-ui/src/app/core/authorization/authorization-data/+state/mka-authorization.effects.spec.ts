@@ -1,4 +1,4 @@
-import { Subject, firstValueFrom, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, finalize, firstValueFrom, of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MkaAuthorizationEffects } from './mka-authorization.effects';
@@ -7,16 +7,27 @@ import { Action, Store } from '@ngrx/store';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { User } from '@matheportal/auth-model';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
-import { AuthorizationLoadState } from '../../authorization-model';
+import { AuthorizationLoadState, MINIKAENGURU_BERECHTIGUNGSTYP } from '../../authorization-model';
 import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
+import { MkaAuthorizationFacade } from '../../authorization-api/mka-authorization.facade';
+import { MinikaenguruEinstiegActions } from '../../../ablaufsteuerung/minikaenguru-einstieg.actions';
+import { ensureWettbewerbGeladen } from '../../../wettbewerb/api/wettbewerb-store.events';
+import { Router } from '@angular/router';
 
 describe('MkaAuthorizationEffects tests', () => {
     let action$: Subject<Action>;
     let effects: MkaAuthorizationEffects;
     let store: MockStore;
+
+    let authLoadStateSubject: Subject<AuthorizationLoadState>;
+    let berechtigungstypSubject: Subject<MINIKAENGURU_BERECHTIGUNGSTYP>;
+
+    const onFinalize = vi.fn();
+
+    let routerMock: { navigate: ReturnType<typeof vi.fn> };
 
     const httpServiceMock = {
         loadMkaAuthorization: vi.fn(),
@@ -31,15 +42,35 @@ describe('MkaAuthorizationEffects tests', () => {
         synchronizeUser: vi.fn(),
     };
 
+    let mkaAuthFacadeMock: {
+        authorizationLoadState$: Observable<AuthorizationLoadState>;
+        berechtigungstyp$: Observable<MINIKAENGURU_BERECHTIGUNGSTYP>;
+    };
+
     beforeEach(() => {
         vi.resetAllMocks();
         action$ = new Subject<Action>();
+
+        authLoadStateSubject = new BehaviorSubject<AuthorizationLoadState>('not-loaded');
+        berechtigungstypSubject = new BehaviorSubject<MINIKAENGURU_BERECHTIGUNGSTYP>(
+            MINIKAENGURU_BERECHTIGUNGSTYP.none
+        );
+
+        routerMock = {
+            navigate: vi.fn(),
+        };
+
+        mkaAuthFacadeMock = {
+            authorizationLoadState$: authLoadStateSubject.asObservable().pipe(finalize(onFinalize)),
+            berechtigungstyp$: berechtigungstypSubject.asObservable(),
+        };
 
         TestBed.configureTestingModule({
             providers: [
                 provideMockStore(),
                 MkaAuthorizationEffects,
                 provideMockActions(() => action$),
+                { provide: Router, useValue: routerMock },
                 {
                     provide: MESSAGE_PUBLISHER,
                     useValue: messagePublisherMock,
@@ -52,11 +83,131 @@ describe('MkaAuthorizationEffects tests', () => {
                     provide: MkaAuthorizationHttpService,
                     useValue: httpServiceMock,
                 },
+                {
+                    provide: MkaAuthorizationFacade,
+                    useValue: mkaAuthFacadeMock,
+                },
             ],
         });
 
         effects = TestBed.inject(MkaAuthorizationEffects);
         store = TestBed.inject(Store) as MockStore;
+    });
+
+    describe('navigateOnRootEinstiegRequested$', () => {
+        it('should navigate to durchfuehrungsart when MINIKAENGURU_BERECHTIGUNGSTYP.none', async () => {
+            const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
+
+            action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+            authLoadStateSubject.next('loaded');
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'durchfuehrungsart']);
+        });
+
+        it('should navigate to lehrperson when MINIKAENGURU_BERECHTIGUNGSTYP.schule', async () => {
+            const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
+
+            action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+            berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
+            authLoadStateSubject.next('loaded');
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
+        });
+
+        it('should navigate to privatperson when MINIKAENGURU_BERECHTIGUNGSTYP.privat', async () => {
+            const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
+
+            action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+            berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+            authLoadStateSubject.next('loaded');
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
+        });
+        it('does not navigate again when berechtigungstyp changes but keep the effect listening', async () => {
+            const subscription = effects.navigateOnRootEinstiegRequested$.subscribe();
+
+            try {
+                action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+                berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
+                authLoadStateSubject.next('loaded');
+
+                berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+                authLoadStateSubject.next('loaded');
+
+                expect(routerMock.navigate).toHaveBeenCalledTimes(1);
+                expect(routerMock.navigate).toHaveBeenLastCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
+
+                action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+                expect(routerMock.navigate).toHaveBeenCalledTimes(2);
+                expect(routerMock.navigate).toHaveBeenLastCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+        it('should cancel the pending root entry when a new root entry is requested (switchMap)', async () => {
+            const subscription = effects.navigateOnRootEinstiegRequested$.subscribe();
+
+            try {
+                // switchMap erstellt eine innere subscription A
+                action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+                berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
+
+                // switchMap wartet auf den authLoadState, onFinalize wurde noch nicht aufgerufen
+                expect(onFinalize).not.toHaveBeenCalled();
+
+                // neue action: switchMap beendet A und erstellt eine neue innere subscription B
+                action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+                // subscription A wurde beendet
+                expect(onFinalize).toHaveBeenCalledTimes(1);
+
+                berechtigungstypSubject.next(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+
+                // B verarbeitet loaded mit take(1) und navigiert
+                authLoadStateSubject.next('loaded');
+
+                expect(routerMock.navigate).toHaveBeenCalledTimes(1);
+                expect(routerMock.navigate).toHaveBeenLastCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
+                expect(onFinalize).toHaveBeenCalledTimes(2);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+    });
+
+    describe('ensureWettbewerbLoadedOnRootEinstiegRequested$', () => {
+        it('should map to ensureWettbewerbGeladen', async () => {
+            const promise = firstValueFrom(effects.ensureWettbewerbLoadedOnRootEinstiegRequested$);
+
+            action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(ensureWettbewerbGeladen());
+        });
+    });
+
+    describe('ensureAuthorizationOnRootEinstiegRequested$', () => {
+        it('should map to ensureMkaAuthorizationLoaded', async () => {
+            const promise = firstValueFrom(effects.ensureAuthorizationOnRootEinstiegRequested$);
+
+            action$.next(MinikaenguruEinstiegActions.rootEinstiegRequested());
+
+            const emitted = await promise;
+
+            expect(emitted).toEqual(MkaAuthorizationActions.ensureMkaAuthorizationLoaded());
+        });
     });
 
     describe('ensureMkaAuthorizationLoaded$', () => {

@@ -9,6 +9,7 @@ export const portalRoutes = {
         privatperson: 'privatperson',
         lehrperson: 'lehrperson',
         schule: 'schule/:schulkuerzel',
+        ladefehler: 'ladefehler',
         unknown: '**',
     },
 

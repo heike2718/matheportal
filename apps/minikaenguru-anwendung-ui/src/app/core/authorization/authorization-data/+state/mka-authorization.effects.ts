@@ -14,6 +14,7 @@ import { MkaAuthorizationFacade } from '../../authorization-api/mka-authorizatio
 import { Router } from '@angular/router';
 import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../../authorization-model';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { ensureWettbewerbGeladen } from '../../../wettbewerb/api/wettbewerb-store.events';
 
 @Injectable()
 export class MkaAuthorizationEffects {
@@ -25,7 +26,7 @@ export class MkaAuthorizationEffects {
     #mkaAuthorizationFacade = inject(MkaAuthorizationFacade);
     #router = inject(Router);
 
-    readonly rootEinstiegRequested$ = createEffect(
+    readonly navigateOnRootEinstiegRequested$ = createEffect(
         () => {
             return this.#actions.pipe(
                 ofType(MinikaenguruEinstiegActions.rootEinstiegRequested),
@@ -68,6 +69,13 @@ export class MkaAuthorizationEffects {
             );
         },
         { dispatch: false }
+    );
+
+    readonly ensureWettbewerbLoadedOnRootEinstiegRequested$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(MinikaenguruEinstiegActions.rootEinstiegRequested),
+            map(() => ensureWettbewerbGeladen())
+        )
     );
 
     readonly ensureAuthorizationOnRootEinstiegRequested$ = createEffect(() =>
