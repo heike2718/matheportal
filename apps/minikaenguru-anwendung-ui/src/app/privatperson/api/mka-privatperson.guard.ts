@@ -43,7 +43,11 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
                 map(([authState, wettbewerbState, kontextState]) =>
                     authState === 'loaded' && wettbewerbState === 'loaded' && kontextState === 'loaded'
                         ? true
-                        : router.createUrlTree(['/', portalRoutes.minikaenguruAnwendung.root])
+                        : router.createUrlTree([
+                              '/',
+                              portalRoutes.minikaenguruAnwendung.root,
+                              portalRoutes.minikaenguruAnwendung.guests,
+                          ])
                 )
             );
         })
