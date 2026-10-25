@@ -16,10 +16,10 @@ import {
     Wettbewerbsdurchfuehrender,
     ZUGANGSBERECHTIGUNG_UNTERLAGEN,
 } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { ensureSchulenGeladen } from '../../schulen/api/schulen-store.events';
 import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
-import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
+import { ensureSchulenGeladen } from '../../lehrperson/api/lehrperson-store.events';
 import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';
+import { ensureWettbewerbskontextSchuleGeladen } from '../../schule/api/schule-store.events';
 
 describe('MinikaenguruEinstiegEffects', () => {
     let action$: Subject<Action>;
@@ -36,7 +36,7 @@ describe('MinikaenguruEinstiegEffects', () => {
     });
 
     describe('wettbewerbLadenOnAuthorizationLoaded$', () => {
-        it('should dispatch loadWettbewerb', async () => {
+        it('should map to ensureWettbewerbGeladen', async () => {
             const user: User = {
                 anonym: false,
                 berechtigungen: ['SCHULE', 'STANDARD'],
@@ -49,12 +49,12 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureWettbewerbGeladen);
+            expect(emitted).toEqual(ensureWettbewerbGeladen());
         });
     });
 
     describe('durchfuehrendenLadenOnAuthorizationLoaded$', () => {
-        it.each(['SCHULE', 'PRIVAT'])('should dispatch ensureDurchfuehrenderGeladen when rolle %s', async rolle => {
+        it.each(['SCHULE', 'PRIVAT'])('should map to ensureDurchfuehrenderGeladen when rolle %s', async rolle => {
             const user: User = {
                 anonym: false,
                 berechtigungen: [rolle, 'STANDARD'],
@@ -67,10 +67,10 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureDurchfuehrenderGeladen);
+            expect(emitted).toEqual(ensureDurchfuehrenderGeladen());
         });
 
-        it('should not dispatch durchfuehrendenLaden when keine Minikänguru-Rolle', async () => {
+        it('should not mapTo ensureDurchfuehrenderGeladen when keine Minikänguru-Rolle', async () => {
             const user: User = {
                 anonym: false,
                 berechtigungen: ['STANDARD'],
@@ -89,14 +89,14 @@ describe('MinikaenguruEinstiegEffects', () => {
         });
     });
 
-    describe('schulenLadenOnDurchfuehrenderAngelegtOrGeladen', () => {
+    describe('ensureSchulenGeladenOnDurchfuehrenderAngelegtOrGeladen', () => {
         let wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.privat,
             newsletter: false,
             zugangsberechtigungUnterlagen: ZUGANGSBERECHTIGUNG_UNTERLAGEN.standard,
         };
 
-        it('should not dispatch any action when durchfuehrenderAngelegt DURCHFUEHRUNGSART.privat', async () => {
+        it('should not map to any action when durchfuehrenderAngelegt DURCHFUEHRUNGSART.privat', async () => {
             const emittedActions: Action[] = [];
             const subscription = effects.schulenLadenOnDurchfuehrenderAngelegtOrGeladen$.subscribe(action => {
                 emittedActions.push(action);
@@ -109,7 +109,7 @@ describe('MinikaenguruEinstiegEffects', () => {
             subscription.unsubscribe();
         });
 
-        it('should not dispatch any action when durchfuehrenderGeladen DURCHFUEHRUNGSART.privat', async () => {
+        it('should not map to any action when durchfuehrenderGeladen DURCHFUEHRUNGSART.privat', async () => {
             const emittedActions: Action[] = [];
             const subscription = effects.schulenLadenOnDurchfuehrenderAngelegtOrGeladen$.subscribe(action => {
                 emittedActions.push(action);
@@ -122,7 +122,7 @@ describe('MinikaenguruEinstiegEffects', () => {
             subscription.unsubscribe();
         });
 
-        it('should dispatch schulenLaden when durchfuehrenderAngelegt DURCHFUEHRUNGSART.schule', async () => {
+        it('should map to ensureSchulenGeladen when durchfuehrenderAngelegt DURCHFUEHRUNGSART.schule', async () => {
             wettbewerbsdurchfuehrender = { ...wettbewerbsdurchfuehrender, durchfuehrungsart: DURCHFUEHRUNGSART.schule };
 
             const promise = firstValueFrom(effects.schulenLadenOnDurchfuehrenderAngelegtOrGeladen$);
@@ -131,10 +131,10 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureSchulenGeladen);
+            expect(emitted).toEqual(ensureSchulenGeladen());
         });
 
-        it('should dispatch schulenLaden when durchfuehrenderGeladen DURCHFUEHRUNGSART.schule', async () => {
+        it('should map to ensureSchulenGeladen when durchfuehrenderGeladen DURCHFUEHRUNGSART.schule', async () => {
             wettbewerbsdurchfuehrender = { ...wettbewerbsdurchfuehrender, durchfuehrungsart: DURCHFUEHRUNGSART.schule };
 
             const promise = firstValueFrom(effects.schulenLadenOnDurchfuehrenderAngelegtOrGeladen$);
@@ -143,7 +143,7 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureSchulenGeladen);
+            expect(emitted).toEqual(ensureSchulenGeladen());
         });
     });
 
@@ -165,7 +165,7 @@ describe('MinikaenguruEinstiegEffects', () => {
             expect(emitted).toEqual(ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: 'X12345678' }));
         });
 
-        it('should mapt to ensureWettbewerbskontextPrivatGeladen when durchfuehrungsart privat', async () => {
+        it('should map to ensureWettbewerbskontextPrivatGeladen when durchfuehrungsart privat', async () => {
             const promise = firstValueFrom(effects.kontextLadenOnWettbewerbsorganisationGestartet$);
 
             action$.next(
@@ -177,7 +177,7 @@ describe('MinikaenguruEinstiegEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: 'X12345678' }));
+            expect(emitted).toEqual(ensureWettbewerbskontextPrivatGeladen());
         });
     });
 });

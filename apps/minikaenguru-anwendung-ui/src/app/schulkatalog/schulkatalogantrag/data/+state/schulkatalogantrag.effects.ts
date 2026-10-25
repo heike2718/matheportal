@@ -4,7 +4,7 @@ import { SchulkatalogantragHttpService } from '../schulkatalogantrag-http.servic
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { SchulkatalogantragActions } from './schulkatalogantrag.actions';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 
 @Injectable()
 export class SchulkatalogantragEffects {
@@ -46,8 +46,8 @@ export class SchulkatalogantragEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogantragActions.submitSchulkatalogantragFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisherService.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisherService.publishError(errorContext.message);
                 })
             );
         },

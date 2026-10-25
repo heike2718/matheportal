@@ -15,11 +15,17 @@ import de.mathejungalt.minikaenguru.anwendung.domain.auditevents.AuditEventType;
 import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruConflictException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruRuntimeException;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.PrivatpersonWettbewerbskontext;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrender;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.WettbewerbsdurchfuehrenderRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.schulkatalog.SchulkatalogService;
+import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmeUtils;
+import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbService;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.TeilnahmeDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
@@ -42,6 +48,12 @@ public class WettbewerbsdurchfuehrendeService {
 
     @Inject
     WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
+
+    @Inject
+    WettbewerbService wettbewerbService;
+
+    @Inject
+    TeilnahmeDao teilnahmeDao;
 
     @Inject
     AuditEventService auditEventService;
@@ -132,5 +144,36 @@ public class WettbewerbsdurchfuehrendeService {
         final String[] kuerzels = StringUtils.split(entity.getSchulkuerzel(), ',');
 
         return schulkatalogService.loadSchulenByKuerzel(kuerzels);
+    }
+
+    /**
+     * Läd den Wettbewerbskontext einer Privatperson.
+     *
+     * @return PrivatpersonWettbewerbskontext
+     */
+    public PrivatpersonWettbewerbskontext loadMyWettbewerbskontext() {
+
+        final Optional<WettbewerbsdurchfuehrenderEntity> opt = wettbewerbsdurchfuehrenderDao
+                .findByUserUuid(securityIdentity.getPrincipal().getName());
+
+        if (opt.isEmpty()) {
+            final String message = "Benutzer mit dieser uuid ist kein Wettbewerbsdurchführender. Laden des Wettbewerbskontexts nicht erlaubt";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException(message);
+        }
+
+        final WettbewerbsdurchfuehrenderEntity entity = opt.get();
+        if (Wettbewerbsdurchfuehrungsart.SCHULE == entity.getArt()) {
+            final String message = "Benutzer mit dieser uuid ist Lehrperson. Laden eines Wettbewerbskontexts nicht möglich.";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException(message);
+        }
+
+        final List<TeilnahmeReferenz> teilnahmerefs = teilnahmeDao.loadTeilnahmereferenzen(entity.getPrivatkuerzel());
+        final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
+
+        return new PrivatpersonWettbewerbskontext()
+                .teilnahmerefs(teilnahmerefs)
+                .anmeldungMoeglich(TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs));
     }
 }

@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { Ort, Schule } from '../../../../core/model/schulkatalog.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { isTermSearchable, normalizeSearchTerm } from '../schulkatalogsuche-data.utils';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden.
 export class SchulkatalogsucheEffects {
@@ -35,8 +35,8 @@ export class SchulkatalogsucheEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogsucheActions.findOrteFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisherService.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisherService.publishError(errorContext.message);
                 })
             );
         },
@@ -69,8 +69,8 @@ export class SchulkatalogsucheEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogsucheActions.loadSchulenFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisherService.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisherService.publishError(errorContext.message);
                 })
             );
         },

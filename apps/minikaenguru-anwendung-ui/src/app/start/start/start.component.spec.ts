@@ -1,193 +1,125 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StartComponent } from './start.component';
+import { signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { Component, computed, signal, Signal, WritableSignal } from '@angular/core';
-import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
-import { StartViewState } from '../../core/authorization/authorization-model';
-import { provideRouter } from '@angular/router';
-import { anonymousUser } from '@matheportal/auth-model';
+import { BehaviorSubject } from 'rxjs';
+import { MockComponent } from 'ng-mocks';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { WettbewerbsdurchfuehrendeFacade } from '../../core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende.facade';
-import { DurchfuehrungsartWaehlenComponent } from '../durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
-import { MockComponent, ngMocks } from 'ng-mocks';
-import { LehrpersonFacade } from '../../lehrperson/api/lehrperson.facade';
-import { Schule } from '../../core/model/schulkatalog.model';
+import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { StartComponent } from './start.component';
+import { GuestInfoComponent } from '../guest-info/guest-info.component';
+import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
+import { AuthorizationLoadState } from '../../core/authorization/authorization-model';
 
 describe('StartComponent tests', () => {
     let fixture: ComponentFixture<StartComponent>;
+    let authorizationLoadState$: BehaviorSubject<AuthorizationLoadState>;
 
     const mkaAuthorizationFacadeMock = {
-        startViewState: computed(() => 'guest'),
-        ensureAuthorizationLoaded: vi.fn(),
-    };
-
-    const wettbewerbsdurchfuehrendeFacadeMock = {
-        durchfuehrungsartPrivatGewaehlt: vi.fn(),
-        durchfuehrungsartSchuleGewaehlt: vi.fn(),
+        minikaenguruAufgerufen: vi.fn(),
     };
 
     const authSessionFacadeMock = {
-        user: computed(() => anonymousUser),
-        isLoggedIn: computed(() => false),
+        sessionLoadState: signal<RESOURCE_LOAD_STATE>('not-loaded'),
     };
 
-    let lehrpersonFacadeMock: {
-        isSchulenLoaded: Signal<boolean>;
-        schulen: Signal<Schule[]>;
-        schuleAusgewaehlt: ReturnType<typeof vi.fn>;
-    };
-
-    let schulenSignal: WritableSignal<Schule[]>;
-    let isSchulenLoadedSignal: WritableSignal<boolean>;
-
-    async function setup(startViewState: StartViewState) {
-        mkaAuthorizationFacadeMock.startViewState = computed(() => startViewState);
-
-        schulenSignal = signal([]);
-        isSchulenLoadedSignal = signal(false);
-
-        lehrpersonFacadeMock = {
-            schulen: schulenSignal,
-            isSchulenLoaded: isSchulenLoadedSignal,
-            schuleAusgewaehlt: vi.fn(),
-        };
+    async function setup(
+        sessionLoadState: RESOURCE_LOAD_STATE,
+        authorizationLoadState: AuthorizationLoadState = 'not-loaded'
+    ) {
+        mkaAuthorizationFacadeMock.minikaenguruAufgerufen.mockClear();
+        authSessionFacadeMock.sessionLoadState.set(sessionLoadState);
+        authorizationLoadState$ = new BehaviorSubject<AuthorizationLoadState>(authorizationLoadState);
 
         await TestBed.configureTestingModule({
             imports: [StartComponent],
             providers: [
                 { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
-                { provide: MkaAuthorizationFacade, useValue: mkaAuthorizationFacadeMock },
-                { provide: WettbewerbsdurchfuehrendeFacade, useValue: wettbewerbsdurchfuehrendeFacadeMock },
-                { provide: LehrpersonFacade, useValue: lehrpersonFacadeMock },
-                provideRouter([{ path: 'minikaenguru-anwendung/guest', component: DummyRouteComponent }]),
+                {
+                    provide: MkaAuthorizationFacade,
+                    useValue: {
+                        ...mkaAuthorizationFacadeMock,
+                        authorizationLoadState$: authorizationLoadState$.asObservable(),
+                    },
+                },
             ],
         })
-            .overrideComponent(DurchfuehrungsartWaehlenComponent, {
-                remove: { imports: [DurchfuehrungsartWaehlenComponent] },
-                add: { imports: [MockComponent(DurchfuehrungsartWaehlenComponent)] },
+            .overrideComponent(StartComponent, {
+                remove: { imports: [GuestInfoComponent] },
+                add: { imports: [MockComponent(GuestInfoComponent)] },
             })
             .compileComponents();
 
         fixture = TestBed.createComponent(StartComponent);
     }
 
-    describe('logged out tests', () => {
-        beforeEach(async () => await setup('guest'));
+    it('should request root entry once on initialization', async () => {
+        await setup('loaded');
 
-        it('shows guest-info when guest', () => {
-            fixture.detectChanges();
+        fixture.detectChanges();
+        fixture.detectChanges();
 
-            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
-        });
+        expect(mkaAuthorizationFacadeMock.minikaenguruAufgerufen).toHaveBeenCalledTimes(1);
     });
 
-    describe('loading tests', () => {
-        beforeEach(async () => await setup('loading'));
-        it('shows loading when loading', () => {
+    it('should show guest-info when session is unauthorized', async () => {
+        await setup('unauthorized');
+
+        fixture.detectChanges();
+
+        expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeTruthy();
+        expect(fixture.debugElement.query(By.css('.mka-start > p'))).toBeFalsy();
+    });
+
+    it.each(['not-loaded', 'loaded', 'technical-error'] as const)(
+        'should not show guest-info when session is %s',
+        async sessionLoadState => {
+            await setup(sessionLoadState);
+
             fixture.detectChanges();
 
             expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
-        });
+        }
+    );
+
+    it.each(['not-loaded', 'loaded'] as const)(
+        'should not show authorization error when authorization is %s',
+        async authorizationLoadState => {
+            await setup('loaded', authorizationLoadState);
+
+            fixture.detectChanges();
+
+            expect(fixture.debugElement.query(By.css('.mka-start > p'))).toBeFalsy();
+        }
+    );
+
+    it('should show authorization error when authorization is already failed', async () => {
+        await setup('loaded', 'failed');
+
+        fixture.detectChanges();
+
+        const message = fixture.debugElement.query(By.css('.mka-start > p'));
+
+        expect(message).toBeTruthy();
+        expect(message.nativeElement.textContent).toContain(
+            'Ihre Minikänguru-Berechtigung konnte nicht geladen werden.'
+        );
+        expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
     });
 
-    describe('augmentation failed tests', () => {
-        beforeEach(async () => setup('failed'));
-        it('shows failed when failed', () => {
-            fixture.detectChanges();
+    it('should show authorization error when loading fails after initialization', async () => {
+        await setup('loaded');
+        fixture.detectChanges();
 
-            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeTruthy();
-        });
-    });
+        expect(fixture.debugElement.query(By.css('.mka-start > p'))).toBeFalsy();
 
-    describe('needs-wettbewerbdurchfuehrenden tests', () => {
-        beforeEach(async () => setup('needs-wettbewerbsdurchfuehrenden'));
-        it('shows mka-durchfuehrungsart-waehlen when standarduser', () => {
-            fixture.detectChanges();
+        authorizationLoadState$.next('failed');
+        fixture.detectChanges();
 
-            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
-        });
+        const message = fixture.debugElement.query(By.css('.mka-start > p'));
 
-        it('should trigger facade.durchfuehrungsartPrivatGewaehlt immediately when mock emits durchfuehrungsart gewaehlt', () => {
-            // arrange
-            fixture.detectChanges();
-
-            const durchfuehrungsartWaehlenComponent = fixture.debugElement.query(
-                By.directive(DurchfuehrungsartWaehlenComponent)
-            );
-
-            // act
-            ngMocks.output(durchfuehrungsartWaehlenComponent, 'durchfuehrungsartGewaehlt').emit('privat');
-
-            // assert
-            expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartPrivatGewaehlt).toHaveBeenCalledOnce();
-        });
-        it('should trigger facade.durchfuehrungsartSchuleGewaehlt immediately when mock emits durchfuehrungsart gewaehlt', () => {
-            // arrange
-            fixture.detectChanges();
-
-            const durchfuehrungsartWaehlenComponent = fixture.debugElement.query(
-                By.directive(DurchfuehrungsartWaehlenComponent)
-            );
-
-            // act
-            ngMocks.output(durchfuehrungsartWaehlenComponent, 'durchfuehrungsartGewaehlt').emit('schule');
-
-            // assert
-            expect(wettbewerbsdurchfuehrendeFacadeMock.durchfuehrungsartSchuleGewaehlt).toHaveBeenCalledOnce();
-        });
-    });
-
-    describe('lehrer tests', () => {
-        beforeEach(async () => setup('dashboard-lehrperson'));
-        it('shows dashboard-lehrperson when dashboard-lehrperson', () => {
-            fixture.detectChanges();
-
-            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
-        });
-    });
-
-    describe('privatveranstalter tests', () => {
-        beforeEach(async () => setup('dashboard-privatperson'));
-        it('shows dashboard-privatperson when dashboard-privatperson', () => {
-            fixture.detectChanges();
-
-            expect(fixture.debugElement.query(By.css('mka-guest-info'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-lehrperson'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-dashboard-privatperson'))).toBeTruthy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-loading"]'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('mka-durchfuehrungsart-waehlen'))).toBeFalsy();
-            expect(fixture.debugElement.query(By.css('[data-testid="mka-authorization-failed"]'))).toBeFalsy();
-        });
+        expect(message).toBeTruthy();
+        expect(message.nativeElement.textContent).toContain(
+            'Ihre Minikänguru-Berechtigung konnte nicht geladen werden.'
+        );
     });
 });
-
-@Component({
-    standalone: true,
-    template: '',
-})
-class DummyRouteComponent {}

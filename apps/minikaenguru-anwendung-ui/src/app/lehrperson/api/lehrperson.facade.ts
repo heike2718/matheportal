@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectSchulen, selectSchulenLoaded } from '../../schulen/data/+state/schulen.selectors';
 import { Schule } from '../../core/model/schulkatalog.model';
 import { LehrpersonActions } from '../data/+state/lehrperson.actions';
+import { selectSchulen, selectSchulenLoaded } from '../data/+state/lehrperson.selectors';
 
 @Injectable()
 export class LehrpersonFacade {

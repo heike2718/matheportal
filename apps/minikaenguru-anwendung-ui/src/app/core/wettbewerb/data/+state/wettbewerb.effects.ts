@@ -4,7 +4,7 @@ import { WettbewerbHttpService } from '../wettbewerb-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { WettbewerbActions } from './wettbewerb.actions';
 import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { fromWettbewerb } from './wettbewerb.selectors';
 
@@ -43,8 +43,8 @@ export class WettbewerbEffects {
             this.#actions.pipe(
                 ofType(WettbewerbActions.wettbewerbLadenFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisher.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisher.publishError(errorContext.message);
                 })
             ),
         { dispatch: false }

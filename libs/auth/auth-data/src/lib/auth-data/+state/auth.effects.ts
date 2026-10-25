@@ -8,7 +8,7 @@ import { AuthUrlResponse, User } from '@matheportal/auth-model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { BrowserNavigationService } from '../browser-navigation.service';
 import { mapHttpErrorToSessionValidationFailedReason } from '../session-validation-error.mapper';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { SESSION_VALIDATION_FAILED_REASON } from '../auth-data.utils';
 import { LOCATION_HASH_SERVICE } from '../location-hash.service';
 
@@ -39,7 +39,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(AuthActions.requestLoginUrlFailed),
                 tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                 })
             ),
         { dispatch: false }
@@ -62,7 +62,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(AuthActions.requestSignupUrlFailed),
                 tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                 })
             ),
         { dispatch: false }
@@ -125,7 +125,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(AuthActions.createSessionFailed),
                 tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                 })
             ),
         { dispatch: false }
@@ -136,7 +136,7 @@ export class AuthEffects {
             this.#actions.pipe(
                 ofType(AuthActions.invalidOAuthFlowHash),
                 tap(() => {
-                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                    this.#messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
                 })
             ),
         { dispatch: false }

@@ -1,10 +1,15 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import {
     AUTHORIZED_RESOURCE_LOAD_STATE,
+    BAD_REQUEST_FALLBACK_FEHLERMELDUNG,
+    CONFLICT_FALLBACK_FEHLERMELDUNG,
     ConstraintViolation,
+    ErrorContext,
     ErrorResponse,
+    NOT_FOUND_FEHLERMELDUNG,
+    PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
     RESOURCE_LOAD_STATE,
-    TECHNISCHER_FEHLER_MESSAGE,
+    TECHNISCHER_FEHLER_FEHLERMELDUNG,
 } from '@matheportal/shared-model';
 
 export function mapErrorToResourceLoadState(error: Error): RESOURCE_LOAD_STATE {
@@ -70,20 +75,26 @@ export function errorResponseToString(errorResponse: ErrorResponse): string {
     return result;
 }
 
-export function mapErrorToMessage(error: Error): string {
+export function mapToErrorContext(error: Error): ErrorContext {
     let errorResponse: ErrorResponse = {
-        message: TECHNISCHER_FEHLER_MESSAGE,
+        message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
         constraintViolations: [],
     };
 
+    let httpStatus: number | undefined = undefined;
+
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
+        httpStatus = httpError.status;
 
         switch (httpError.status) {
             case HttpStatusCode.BadRequest:
             case HttpStatusCode.Conflict:
             case HttpStatusCode.PreconditionFailed:
                 errorResponse = extractErrorResponse(httpError);
+                break;
+            case HttpStatusCode.NotFound:
+                errorResponse = { message: NOT_FOUND_FEHLERMELDUNG, constraintViolations: [] };
                 break;
             case HttpStatusCode.Unauthorized:
             case HttpStatusCode.Forbidden:
@@ -94,19 +105,28 @@ export function mapErrorToMessage(error: Error): string {
                 break;
             default:
                 errorResponse = {
-                    message: TECHNISCHER_FEHLER_MESSAGE,
+                    message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
                     constraintViolations: [],
                 };
         }
     }
-    return errorResponseToString(errorResponse);
+    const message = errorResponseToString(errorResponse);
+    return { httpStatus, message };
 }
 
 export function extractErrorResponse(error: HttpErrorResponse): ErrorResponse {
+    const httpStatus = error.status;
     const theError = error.error;
     if (!theError || !theError['constraintViolations'] || !theError['message']) {
-        // das ist ein technischer Fehler, weil bei diesen Statuscodes die API ein ErrorResponse verspricht.
-        return { message: TECHNISCHER_FEHLER_MESSAGE, constraintViolations: [] };
+        switch (httpStatus) {
+            case 400:
+                return { message: BAD_REQUEST_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
+            case 409:
+                return { message: CONFLICT_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
+            case 412:
+                return { message: PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
+        }
+        return { message: TECHNISCHER_FEHLER_FEHLERMELDUNG, constraintViolations: [] };
     }
 
     return { message: theError['message'], constraintViolations: theError['constraintViolations'] };

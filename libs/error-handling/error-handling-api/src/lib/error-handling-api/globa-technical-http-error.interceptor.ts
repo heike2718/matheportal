@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { MESSAGE_PUBLISHER } from './error.publisher';
-import { TECHNISCHER_FEHLER_MESSAGE } from '@matheportal/shared-model';
+import { TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
@@ -17,7 +17,7 @@ export const globalTechnicalHttpErrorInterceptor: HttpInterceptorFn = (req, next
                 (error.status === 0 || error.status >= 500) &&
                 !req.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)
             ) {
-                messagePublisher.publishError(TECHNISCHER_FEHLER_MESSAGE);
+                messagePublisher.publishError(TECHNISCHER_FEHLER_FEHLERMELDUNG);
             }
 
             // Fehler anderen Typs werden vom GlobalErrorHandler übernommen.

@@ -72,6 +72,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/api/wettbewerbsdurchfuehrende/me/wettbewerbskontext': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /**
+         * Wettbewerbskontext einer Privatperson
+         * @description läd den Wettbewerbskontext einer Privatperson
+         */
+        readonly get: operations['loadMyWettbewerbskontext'];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/api/schulkatalog/orte': {
         readonly parameters: {
             readonly query?: never;
@@ -338,6 +358,10 @@ export interface components {
             readonly kuerzel: string;
             readonly kollegium: readonly string[];
         };
+        readonly PrivatpersonWettbewerbskontext: {
+            readonly teilnahmerefs: readonly components['schemas']['TeilnahmeReferenz'][];
+            readonly anmeldungMoeglich: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -574,6 +598,51 @@ export interface operations {
                 };
             };
             /** @description angemeldeter User ist keine Lehrperson. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Serverfehler */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
+    readonly loadMyWettbewerbskontext: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description OK */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['PrivatpersonWettbewerbskontext'];
+                };
+            };
+            /** @description keine Session oder Session abgelaufen */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly 'application/json': components['schemas']['ErrorResponse'];
+                };
+            };
+            /** @description angemeldeter User ist kein Wettbewerbsdurchführender. */
             readonly 403: {
                 headers: {
                     readonly [name: string]: unknown;

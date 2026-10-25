@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { mkaAuthorizationLoaded } from '../authorization/authorization-api/mka-authorization-store.events';
-import { filter, map } from 'rxjs';
+import { filter, map, take, tap, withLatestFrom } from 'rxjs';
 import { ensureWettbewerbGeladen } from '../wettbewerb/api/wettbewerb-store.events';
 import { hasBerechtigungFuerMinikaenguru } from '../utils/minikaenguru.utils';
 import {
@@ -10,10 +10,10 @@ import {
     durchfuehrenderGeladen,
 } from '../wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-store.events';
 import { DURCHFUEHRUNGSART } from '../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { ensureSchulenGeladen } from '../../schulen/api/schulen-store.events';
 import { MinikaenguruEinstiegActions } from './minikaenguru-einstieg.actions';
-import { ensureWettbewerbskontextSchuleGeladen } from '../../lehrperson/api/lehrperson-store.events';
+import { ensureSchulenGeladen } from '../../lehrperson/api/lehrperson-store.events';
 import { ensureWettbewerbskontextPrivatGeladen } from '../../privatperson/api/privatperson-store.events';
+import { ensureWettbewerbskontextSchuleGeladen } from '../../schule/api/schule-store.events';
 
 @Injectable()
 export class MinikaenguruEinstiegEffects {
@@ -22,7 +22,7 @@ export class MinikaenguruEinstiegEffects {
     readonly wettbewerbLadenOnAuthorizationLoaded$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
-            map(() => ensureWettbewerbGeladen)
+            map(() => ensureWettbewerbGeladen())
         );
     });
 
@@ -30,7 +30,7 @@ export class MinikaenguruEinstiegEffects {
         return this.#actions.pipe(
             ofType(mkaAuthorizationLoaded),
             filter(({ user }) => hasBerechtigungFuerMinikaenguru(user)),
-            map(() => ensureDurchfuehrenderGeladen)
+            map(() => ensureDurchfuehrenderGeladen())
         );
     });
 
@@ -41,7 +41,7 @@ export class MinikaenguruEinstiegEffects {
                 ({ wettbewerbsdurchfuehrender }) =>
                     wettbewerbsdurchfuehrender.durchfuehrungsart === DURCHFUEHRUNGSART.schule
             ),
-            map(() => ensureSchulenGeladen)
+            map(() => ensureSchulenGeladen())
         );
     });
 
@@ -50,8 +50,8 @@ export class MinikaenguruEinstiegEffects {
             ofType(MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet),
             map(({ durchfuehrungsart, kontextkuerzel }) =>
                 durchfuehrungsart === DURCHFUEHRUNGSART.schule
-                    ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel })
-                    : ensureWettbewerbskontextPrivatGeladen({ privatkuerzel: kontextkuerzel })
+                    ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel ?? '' })
+                    : ensureWettbewerbskontextPrivatGeladen()
             )
         );
     });

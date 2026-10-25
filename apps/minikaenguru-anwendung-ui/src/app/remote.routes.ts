@@ -4,24 +4,26 @@ import { StartComponent } from './start/start/start.component';
 import { mkaAuthorizationDataProvider } from './core/authorization/authorization-api/mka-authorization-data.provider';
 import { minikaenguruAnwendungConfiguration } from './config/configuration';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from './config/minikaenguru-anwendung.configuration';
-import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
-import { DashboardPrivatpersonComponent } from './privatperson/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { mkaPrivatpersonGuard } from './core/authorization/authorization-api/mka-privatperson.guard';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
-import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
 import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
-import { schulenDataProvider } from './schulen/api/schulen-data.provider';
+import { schuleDataProvider } from './schule/api/schule-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
 import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
-import { SchuleDashboardComponent } from './schulen/features/schule-dashboard/schule-dashboard.component';
-import { mkaSchuleGuard } from './schulen/api/mka-schule.guard';
+import { SchuleDashboardComponent } from './schule/features/schule-dashboard/schule-dashboard.component';
+import { mkaSchuleGuard } from './schule/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
+import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
+import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
+import { privatpersonDataProvider } from './privatperson/api/privatperson-data.provider';
+import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
+import { LadefehlerComponent } from './start/ladefehler/ladefehler.component';
+import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -33,8 +35,12 @@ export const remoteRoutes: Routes = [
                 component: StartComponent,
             },
             {
-                path: portalRoutes.minikaenguruAnwendung.guests,
-                component: GuestInfoComponent,
+                path: portalRoutes.minikaenguruAnwendung.ladefehler,
+                component: LadefehlerComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.durchfuehrungsart,
+                component: DurchfuehrungsartWaehlenComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.privatperson,
@@ -81,8 +87,9 @@ export const remoteRoutes: Routes = [
             ...wettbewerbsdurchfuehrendeDataProvider,
             ...mkaSchulkatalogsucheDataProvider,
             ...schulkatalogantragDataProvider,
-            ...schulenDataProvider,
+            ...schuleDataProvider,
             ...lehrpersonDataProvider,
+            ...privatpersonDataProvider,
             ArbeitskontextHttpService,
         ],
     },

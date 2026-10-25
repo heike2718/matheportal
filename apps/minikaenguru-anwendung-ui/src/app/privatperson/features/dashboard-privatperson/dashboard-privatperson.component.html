@@ -1,0 +1,119 @@
+<div class="privatperson-dashboard">
+    @if (wettbewerbskontextLoaded()) {
+        <header class="privatperson-dashboard__header">
+            <p data-testid="privatperson-dashboard-general-hint">
+                Hier organisieren Sie die private Teilnahme Ihrer Kinder am Minikänguru-Wettbewerb.
+            </p>
+        </header>
+
+        <main class="privatperson-dashboard__content">
+            <!-- Aktueller Wettbewerb -->
+            <mat-card appearance="outlined" class="privatperson-dashboard__card">
+                <mat-card-header>
+                    <mat-card-title data-testid="aktueller-wettbewerb-title"> Aktueller Wettbewerb </mat-card-title>
+
+                    <mat-card-subtitle data-testid="aktueller-wettbewerb-subtitle">
+                        Minikänguru {{ aktuellerWettbewerb().jahr }}
+                    </mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content>
+                    @if (!anmeldungMoeglich()) {
+                        @if (wettbewerbBeendet()) {
+                            <div class="privatperson-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Anmeldung nicht mehr möglich</h2>
+
+                                    <p data-testid="anmeldung-description">
+                                        Der Wettbewerb {{ aktuellerWettbewerb().jahr }} ist beendet.
+                                    </p>
+                                </div>
+                            </div>
+                        } @else {
+                            <div class="privatperson-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Anmeldung noch nicht möglich</h2>
+
+                                    <p data-testid="anmeldung-description">
+                                        Die Anmeldung ist ab
+                                        {{ aktuellerWettbewerb().beginn }}
+                                        möglich.
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    } @else {
+                        @if (aktuelleTeilnahme()) {
+                            <div>
+                                <h2 data-testid="anmeldung-header">
+                                    PENDING!!! Hier jetzt die teilnahme-component einhängen
+                                </h2>
+                            </div>
+                        } @else {
+                            <div class="privatperson-dashboard__current-state">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">noch nicht angemeldet</h2>
+
+                                    <p data-testid="anmeldung-description">
+                                        Sie können sich jetzt zum Wettbewerb
+                                        {{ aktuellerWettbewerb().jahr }} anmelden.
+                                    </p>
+                                </div>
+
+                                <button
+                                    mat-flat-button
+                                    type="button"
+                                    data-testid="privatteilnahme-anmelden-btn"
+                                    (click)="privatteilnahmeAnmelden()">
+                                    Privatteilnahme anmelden
+                                </button>
+                            </div>
+                        }
+                    }
+                </mat-card-content>
+            </mat-card>
+
+            <div class="privatperson-dashboard__secondary">
+                <!-- Frühere Teilnahmen -->
+                <mat-card appearance="outlined" class="privatperson-dashboard__card">
+                    <mat-card-header>
+                        <mat-card-title data-testid="teilnahmen-title"> Frühere Teilnahmen </mat-card-title>
+                    </mat-card-header>
+
+                    <mat-card-content>
+                        @if (fruehereTeilnahmen().length > 0) {
+                            <div class="privatperson-dashboard__participations">
+                                @for (teilnahme of fruehereTeilnahmen(); track teilnahme.jahr) {
+                                    <div class="privatperson-dashboard__participation">
+                                        <span class="privatperson-dashboard__year">
+                                            {{ teilnahme.jahr }}
+                                        </span>
+
+                                        <button
+                                            mat-stroked-button
+                                            type="button"
+                                            data-testid="download-teilnahme-btn"
+                                            (click)="statistikHerunterladen(teilnahme)">
+                                            <mat-icon>download</mat-icon>
+                                            Statistik
+                                        </button>
+                                    </div>
+
+                                    @if (!$last) {
+                                        <mat-divider />
+                                    }
+                                }
+                            </div>
+                        } @else {
+                            <p class="privatperson-dashboard__secondary-text" data-testid="teilnahmen-description">
+                                Es liegen noch keine früheren Teilnahmen vor.
+                            </p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </main>
+    } @else {
+        <p>Daten werden geladen...</p>
+    }
+</div>

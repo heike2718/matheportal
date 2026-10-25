@@ -1,0 +1,56 @@
+@use '@angular/material' as mat;
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+}
+
+.ladefehler {
+    max-width: mp-theme.$mp-content-max-width-narrow;
+
+    color: mp-theme.$mp-color-text-default;
+    font-family: mp-theme.$mp-font-family;
+    font-size: mp-theme.$mp-font-size-m;
+    line-height: mp-theme.$mp-line-height-normal;
+
+    border-left: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
+
+    @include mat.card-overrides(
+        (
+            outlined-container-color: mp-theme.$mp-color-surface,
+            outlined-container-shape: mp-theme.$mp-radius-m,
+            outlined-outline-color: mp-theme.$mp-border-color-subtle,
+            outlined-outline-width: mp-theme.$mp-border-width,
+        )
+    );
+
+    mat-card-content {
+        padding: mp-theme.$mp-space-5;
+    }
+
+    &__message {
+        display: flex;
+        align-items: flex-start;
+        gap: mp-theme.$mp-space-3;
+    }
+
+    &__icon {
+        flex: 0 0 auto;
+        width: mp-theme.$mp-font-size-xl;
+        height: mp-theme.$mp-font-size-xl;
+        font-size: mp-theme.$mp-font-size-xl;
+        color: mp-theme.mp-brand(minikaenguru);
+    }
+
+    &__text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    &__title {
+        @include mp-theme.mp-headline-medium;
+
+        color: mp-theme.mp-brand(minikaenguru);
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+}

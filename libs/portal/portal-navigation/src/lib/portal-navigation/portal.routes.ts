@@ -4,10 +4,12 @@ export const portalRoutes = {
     minikaenguruAnwendung: {
         root: 'minikaenguru-anwendung',
         guests: 'guests',
+        durchfuehrungsart: 'durchfuehrungsart',
         schulkatalogsuche: 'schulkatalogsuche',
         privatperson: 'privatperson',
         lehrperson: 'lehrperson',
         schule: 'schule/:schulkuerzel',
+        ladefehler: 'ladefehler',
         unknown: '**',
     },
 

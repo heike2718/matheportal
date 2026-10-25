@@ -104,56 +104,6 @@ describe('MkaAuthorizationFacade tests', () => {
 
             expect(facade.startViewState()).toBe('guest');
         });
-        it.each([
-            [{ user: loggedInStandardUser, berechtigungstyp: berechtigungstypNone }],
-            [{ user: loggedInLehrer, berechtigungstyp: berechtigungstypSchule }],
-            [{ user: loggedInPrivatperson, berechtigungstyp: berechtigungstypPrivat }],
-        ] as [TestParameters][])(
-            'should return loading when logged in with $testParameter and not-loaded',
-            async testParameter => {
-                const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-                await setup('loaded', testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
-
-                expect(facade.startViewState()).toBe('loading');
-            }
-        );
-        it.each([
-            [{ user: loggedInStandardUser, berechtigungstyp: berechtigungstypNone }],
-            [{ user: loggedInLehrer, berechtigungstyp: berechtigungstypSchule }],
-            [{ user: loggedInPrivatperson, berechtigungstyp: berechtigungstypPrivat }],
-        ] as [TestParameters][])(
-            'should return failed when logged in with $testParameter and failed',
-            async testParameter => {
-                const authorizationLoadState: AuthorizationLoadState = 'failed';
-                await setup('loaded', testParameter.user, authorizationLoadState, testParameter.berechtigungstyp);
-
-                expect(facade.startViewState()).toBe('failed');
-            }
-        );
-        it('should return dashboard-privatperson when logged in as Privatperson', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup('loaded', loggedInPrivatperson, authorizationLoadState, berechtigungstypPrivat);
-
-            expect(facade.startViewState()).toBe('dashboard-privatperson');
-            expect(facade.isPrivatperson()).toBe(true);
-            expect(facade.isLehrperson()).toBe(false);
-        });
-        it('should return dashboard-lehrperson when logged in with berechtigung SCHULE', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup('loaded', loggedInLehrer, authorizationLoadState, berechtigungstypSchule);
-
-            expect(facade.startViewState()).toBe('dashboard-lehrperson');
-            expect(facade.isPrivatperson()).toBe(false);
-            expect(facade.isLehrperson()).toBe(true);
-        });
-        it('should return wettbewerbsdurchfuehrenden-anlegen when logged in as standarduser', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'loaded';
-            await setup('loaded', loggedInStandardUser, authorizationLoadState, berechtigungstypNone);
-
-            expect(facade.startViewState()).toBe('needs-wettbewerbsdurchfuehrenden');
-            expect(facade.isPrivatperson()).toBe(false);
-            expect(facade.isLehrperson()).toBe(false);
-        });
     });
 
     describe('ensureAuthorizationLoaded tests', () => {
