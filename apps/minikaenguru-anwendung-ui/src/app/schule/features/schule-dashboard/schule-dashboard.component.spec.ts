@@ -325,7 +325,6 @@ describe('SchuleDashboardComponent', () => {
 
     describe('fruehere Teilnahmen', () => {
         beforeEach(() => {
-            schulkollegiumLoadedSignal.set(true);
             wettbewerbskontextLoadedSignal.set(true);
             wettbewerbskontextSignal.set(wettbewerbskontext);
             fixture.detectChanges();
@@ -351,7 +350,7 @@ describe('SchuleDashboardComponent', () => {
                 ...teilnahmen,
                 {
                     jahr: 2026,
-                    teilnahmenummer: 'S1234567',
+                    teilnahmenummer: 'P1234567',
                 },
                 {
                     jahr: 2019,

@@ -53,6 +53,28 @@
     },
     "java.debug.settings.onBuildFailureProceed": true,
     "java.cleanup.actions": ["addFinalModifier"],
+    "java.test.config": [
+        {
+            "name": "matheportal-shell",
+            "envFile": "${workspaceFolder}/apps/matheportal-shell/.config/.env.test"
+        },
+        {
+            "name": "minikaenguru-admin",
+            "envFile": "${workspaceFolder}/apps/minikaenguru-admin/.config/.env.test"
+        },
+        {
+            "name": "minikaenguru-anwendung",
+            "envFile": "${workspaceFolder}/apps/minikaenguru-anwendung/.config/.env.test"
+        },
+        {
+            "name": "minikaenguru-statistik",
+            "envFile": "${workspaceFolder}/apps/minikaenguru-statistik/.config/.env.test"
+        },
+        {
+            "name": "raetselbaukasten",
+            "envFile": "${workspaceFolder}/apps/raetselbaukasten/.config/.env.test"
+        }
+    ],
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "eslint.workingDirectories": [{ "mode": "auto" }],
     "eslint.run": "onSave",
