@@ -32,14 +32,22 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
             return beideGeladen || kontextFehlgeschlagen || wettbewerbFehlgeschlagen;
         }),
         take(1),
-        map(([wettbewerbskontextLoadState, wettbewerbLoadState]) =>
-            wettbewerbskontextLoadState === 'loaded' && wettbewerbLoadState === 'loaded'
-                ? true
-                : router.createUrlTree([
-                      '/',
-                      portalRoutes.minikaenguruAnwendung.root,
-                      portalRoutes.minikaenguruAnwendung.lehrperson,
-                  ])
-        )
+        map(([wettbewerbskontextLoadState, wettbewerbLoadState]) => {
+            if (wettbewerbLoadState === 'loaded' && wettbewerbskontextLoadState === 'loaded') {
+                return true;
+            }
+            if (wettbewerbLoadState === 'technical-error' || wettbewerbskontextLoadState === 'technical-error') {
+                return router.createUrlTree([
+                    '/',
+                    portalRoutes.minikaenguruAnwendung.root,
+                    portalRoutes.minikaenguruAnwendung.ladefehler,
+                ]);
+            }
+            return router.createUrlTree([
+                '/',
+                portalRoutes.minikaenguruAnwendung.root,
+                portalRoutes.minikaenguruAnwendung.lehrperson,
+            ]);
+        })
     );
 };

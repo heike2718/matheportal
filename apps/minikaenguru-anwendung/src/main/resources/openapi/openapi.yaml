@@ -351,8 +351,6 @@ paths:
             summary: 'aktueller Wettbewerb'
             description: 'läd den aktuellen Wettbewerb'
             operationId: 'loadAktuellenWettbewerb'
-            security:
-                - mpSession: []
             responses:
                 '200':
                     description: OK

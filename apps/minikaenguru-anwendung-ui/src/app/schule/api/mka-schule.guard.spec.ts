@@ -94,7 +94,7 @@ describe('mkaSchuleGuard', () => {
         return { router };
     }
 
-    describe('tests with wettbwerbskontext load state', () => {
+    describe('tests with wettbwerbskontextLoadState', () => {
         it('should allow access when wettbewerbskontext arrives later', async () => {
             setup('not-loaded', 'loaded', schulkuerzel, false);
 
@@ -132,7 +132,7 @@ describe('mkaSchuleGuard', () => {
             }
         );
 
-        it.each(['unauthorized', 'forbidden', 'technical-error'] as const)(
+        it.each(['unauthorized', 'forbidden'] as const)(
             'should redirect to lehrperson when load state becomes %s',
             async loadState => {
                 const { router } = setup('not-loaded', 'loaded', schulkuerzel, false);
@@ -152,6 +152,24 @@ describe('mkaSchuleGuard', () => {
                 expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/lehrperson');
             }
         );
+
+        it('should redirect to ladefehler when load state becomes technical-error', async () => {
+            const { router } = setup('not-loaded', 'loaded', schulkuerzel, false);
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaSchuleGuard()(route, state))
+            );
+
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
+
+            wettbewerbskontextLoadStateSubject.next('technical-error');
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
 
         it('should wait while wettbewerbskontext is not-loaded', () => {
             setup('not-loaded', 'loaded', schulkuerzel, false);
@@ -177,7 +195,7 @@ describe('mkaSchuleGuard', () => {
         });
     });
 
-    describe('tests with wettbwerb load state', () => {
+    describe('tests with wettbwerbLoadState', () => {
         it('should allow access when wettbwerb arrives later', async () => {
             setup('loaded', 'not-loaded', schulkuerzel, false);
 
@@ -234,26 +252,41 @@ describe('mkaSchuleGuard', () => {
             }
         );
 
-        it.each(['unauthorized', 'technical-error'] as const)(
-            'should redirect to lehrperson when load state becomes %s',
-            async loadState => {
-                const { router } = setup('loaded', 'not-loaded', schulkuerzel, false);
+        it('should redirect to lehrperson when load state becomes unauthorized', async () => {
+            const { router } = setup('loaded', 'not-loaded', schulkuerzel, false);
 
-                const resultPromise = TestBed.runInInjectionContext(() =>
-                    resolveGuardResult(mkaSchuleGuard()(route, state))
-                );
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaSchuleGuard()(route, state))
+            );
 
-                expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
-                expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
 
-                wettbewerbLoadStateSubject.next(loadState);
+            wettbewerbLoadStateSubject.next('unauthorized');
 
-                const result = await resultPromise;
+            const result = await resultPromise;
 
-                expect(result).toBeInstanceOf(UrlTree);
-                expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/lehrperson');
-            }
-        );
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/lehrperson');
+        });
+
+        it('should redirect to ladefehler when load state becomes technical-error', async () => {
+            const { router } = setup('loaded', 'not-loaded', schulkuerzel, false);
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaSchuleGuard()(route, state))
+            );
+
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
+            expect(schuleFacadeMock.dashboardVorbereiten).toHaveBeenCalledWith(schulkuerzel);
+
+            wettbewerbLoadStateSubject.next('technical-error');
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
 
         it('should wait while wettbewerb is not-loaded', () => {
             setup('loaded', 'not-loaded', schulkuerzel, false);
@@ -366,7 +399,7 @@ describe('mkaSchuleGuard', () => {
 
                 const emittedResult = next.mock.calls[0][0];
                 expect(emittedResult).toBeInstanceOf(UrlTree);
-                expect(router.serializeUrl(emittedResult as UrlTree)).toBe('/minikaenguru-anwendung/lehrperson');
+                expect(router.serializeUrl(emittedResult as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
 
                 expect(complete).toHaveBeenCalledOnce();
                 expect(subscription.closed).toBe(true);

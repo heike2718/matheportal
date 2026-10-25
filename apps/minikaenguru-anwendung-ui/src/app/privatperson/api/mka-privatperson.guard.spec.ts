@@ -147,21 +147,30 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(result).toBe(true);
         });
 
-        it.each(['unauthorized', 'technical-error'] as const)(
-            'should redirect to guests when wettbewerbLoadState is %s',
-            async wettbewerbLoadState => {
-                const { router } = setup('loaded', 'loaded', wettbewerbLoadState, 'loaded');
+        it('should redirect to guests when wettbewerbLoadState is unauthorized', async () => {
+            const { router } = setup('loaded', 'loaded', 'unauthorized', 'loaded');
 
-                const resultPromise = TestBed.runInInjectionContext(() =>
-                    resolveGuardResult(mkaPrivatpersonGuard()(route, state))
-                );
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
 
-                const result = await resultPromise;
+            const result = await resultPromise;
 
-                expect(result).toBeInstanceOf(UrlTree);
-                expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
-            }
-        );
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
+        });
+        it('should redirect to ladefehler when wettbwerbLoadState is technical-error', async () => {
+            const { router } = setup('loaded', 'loaded', 'technical-error', 'loaded');
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
     });
 
     describe('tests with wettbewerbskontextLoadState', () => {
@@ -179,7 +188,7 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(result).toBe(true);
         });
 
-        it.each(['unauthorized', 'forbidden', 'technical-error'] as const)(
+        it.each(['unauthorized', 'forbidden'] as const)(
             'should redirect to guests when wettbewerbskontextLoadState is %s',
             async kontextLoadState => {
                 const { router } = setup('loaded', 'loaded', 'loaded', kontextLoadState);
@@ -194,6 +203,18 @@ describe('mkaPrivatpersonGuard tests', () => {
                 expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
             }
         );
+
+        it('should redirect to ladefehler when wettbewerbLoadState is technical-error', async () => {
+            const { router } = setup('loaded', 'loaded', 'loaded', 'technical-error');
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
     });
 
     describe('tests with sessionLoadState', () => {

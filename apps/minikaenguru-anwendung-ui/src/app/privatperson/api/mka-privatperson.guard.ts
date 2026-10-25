@@ -40,15 +40,23 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
                     return alleGeladen || authFehlgeschlagen || wettbewerbFehlgeschlagen || kontextFehlgeschlagen;
                 }),
                 take(1),
-                map(([authState, wettbewerbState, kontextState]) =>
-                    authState === 'loaded' && wettbewerbState === 'loaded' && kontextState === 'loaded'
-                        ? true
-                        : router.createUrlTree([
-                              '/',
-                              portalRoutes.minikaenguruAnwendung.root,
-                              portalRoutes.minikaenguruAnwendung.guests,
-                          ])
-                )
+                map(([authState, wettbewerbState, kontextState]) => {
+                    if (authState === 'loaded' && wettbewerbState === 'loaded' && kontextState === 'loaded') {
+                        return true;
+                    }
+                    if (wettbewerbState === 'technical-error' || kontextState === 'technical-error') {
+                        return router.createUrlTree([
+                            '/',
+                            portalRoutes.minikaenguruAnwendung.root,
+                            portalRoutes.minikaenguruAnwendung.ladefehler,
+                        ]);
+                    }
+                    return router.createUrlTree([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.guests,
+                    ]);
+                })
             );
         })
     );

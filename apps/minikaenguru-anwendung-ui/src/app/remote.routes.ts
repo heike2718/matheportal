@@ -4,7 +4,6 @@ import { StartComponent } from './start/start/start.component';
 import { mkaAuthorizationDataProvider } from './core/authorization/authorization-api/mka-authorization-data.provider';
 import { minikaenguruAnwendungConfiguration } from './config/configuration';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from './config/minikaenguru-anwendung.configuration';
-import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 import { wettbewerbsdurchfuehrendeDataProvider } from './core/wettbewerbsdurchfuehrende/api/wettbewerbsdurchfuehrende-data.provider';
 import { mkaSchulkatalogsucheDataProvider } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche-data.provider';
 import { SchulkatalogsucheComponent } from './schulkatalog/schulkatalogsuche/features/schulkatalogsuche-component/schulkatalogsuche.component';
@@ -12,7 +11,6 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
-import { mkaLehrpersonGuard } from './core/authorization/authorization-api/mka-lehrperson.guard';
 import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 import { schuleDataProvider } from './schule/api/schule-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
@@ -24,6 +22,8 @@ import { DashboardPrivatpersonComponent } from './privatperson/features/dashboar
 import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
 import { privatpersonDataProvider } from './privatperson/api/privatperson-data.provider';
 import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
+import { LadefehlerComponent } from './start/ladefehler/ladefehler.component';
+import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -33,6 +33,10 @@ export const remoteRoutes: Routes = [
             {
                 path: '',
                 component: StartComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.ladefehler,
+                component: LadefehlerComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.durchfuehrungsart,
