@@ -95,7 +95,7 @@ describe('wettebwerbFeature', () => {
             );
 
             expect(state).toEqual({
-                wettbewerbLoadState: 'unauthorized',
+                wettbewerbLoadState: 'technical-error',
                 wettbewerb: undefined,
             });
         });

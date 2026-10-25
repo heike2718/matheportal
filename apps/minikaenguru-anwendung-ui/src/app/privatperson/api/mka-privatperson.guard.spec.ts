@@ -10,7 +10,7 @@ import {
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { mkaPrivatpersonGuard } from './mka-privatperson.guard';
-import { AUTHORIZED_RESOURCE_LOAD_STATE, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE, RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { AuthSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState } from '../../core/authorization/authorization-model';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
@@ -26,11 +26,11 @@ describe('mkaPrivatpersonGuard tests', () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
-    let sessionLoadStateSubject: Subject<RESOURCE_LOAD_STATE>;
+    let sessionLoadStateSubject: Subject<RESTRICTED_RESOURCE_LOAD_STATE>;
     let authLoadStateSubject: Subject<AuthorizationLoadState>;
 
     let wettbewerbskontextLoadStateSubject: Subject<AUTHORIZED_RESOURCE_LOAD_STATE>;
-    let wettbewerbLoadStateSubject: Subject<RESOURCE_LOAD_STATE>;
+    let wettbewerbLoadStateSubject: Subject<RESTRICTED_RESOURCE_LOAD_STATE>;
 
     let mkaAuthFacadeMock: {
         authorizationLoadState$: Observable<AuthorizationLoadState>;
@@ -38,7 +38,7 @@ describe('mkaPrivatpersonGuard tests', () => {
     };
 
     let wettbewerbFacadeMock: {
-        wettbewerbLoadState$: Observable<RESOURCE_LOAD_STATE>;
+        wettbewerbLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE>;
         ensureWettbewerbGeladen: ReturnType<typeof vi.fn>;
     };
 
@@ -56,14 +56,14 @@ describe('mkaPrivatpersonGuard tests', () => {
     }
 
     function setup(
-        sessionLoadState: RESOURCE_LOAD_STATE,
+        sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE,
         authLoadState: AuthorizationLoadState,
-        wettbewerbLoadState: RESOURCE_LOAD_STATE,
+        wettbewerbLoadState: RESTRICTED_RESOURCE_LOAD_STATE,
         wettbewerbskontextLoadState: AUTHORIZED_RESOURCE_LOAD_STATE
     ) {
-        sessionLoadStateSubject = new BehaviorSubject<RESOURCE_LOAD_STATE>(sessionLoadState);
+        sessionLoadStateSubject = new BehaviorSubject<RESTRICTED_RESOURCE_LOAD_STATE>(sessionLoadState);
         authLoadStateSubject = new BehaviorSubject<AuthorizationLoadState>(authLoadState);
-        wettbewerbLoadStateSubject = new BehaviorSubject<RESOURCE_LOAD_STATE>(wettbewerbLoadState);
+        wettbewerbLoadStateSubject = new BehaviorSubject<RESTRICTED_RESOURCE_LOAD_STATE>(wettbewerbLoadState);
         wettbewerbskontextLoadStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(
             wettbewerbskontextLoadState
         );

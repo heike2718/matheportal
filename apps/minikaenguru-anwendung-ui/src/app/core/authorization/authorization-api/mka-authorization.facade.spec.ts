@@ -12,7 +12,7 @@ import {
 import { fromMkaAuthorization, MkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 interface TestParameters {
     readonly user: User;
@@ -52,7 +52,7 @@ describe('MkaAuthorizationFacade tests', () => {
     };
 
     async function setup(
-        sessionLoadState: RESOURCE_LOAD_STATE,
+        sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE,
         user: User,
         authorizationLoadState: AuthorizationLoadState,
         berechtigungstyp: MinikaenguruBerechtigungstyp

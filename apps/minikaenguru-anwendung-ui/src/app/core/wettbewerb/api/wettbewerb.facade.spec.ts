@@ -38,7 +38,7 @@ describe('WettbewerbFacade', () => {
     });
 
     describe('observables', () => {
-        it.each(['not-loaded', 'loaded', 'technical-error', 'unauthorized'] as const)(
+        it.each(['not-loaded', 'loaded', 'technical-error'] as const)(
             'should expose wettbewerbLoadState %s',
             async loadState => {
                 store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, loadState);

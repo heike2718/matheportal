@@ -1,12 +1,12 @@
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { on, createFeature, createReducer } from '@ngrx/store';
 import { AuthActions } from './auth.actions';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 const AUTH_FEATURE_KEY = 'MPAuth';
 
 export interface AuthState {
-    readonly sessionLoadState: RESOURCE_LOAD_STATE;
+    readonly sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
     readonly user: User;
 }
 
@@ -35,7 +35,8 @@ export const authFeature = createFeature({
             return { ...state, user: action.user, sessionLoadState: 'loaded' };
         }),
         on(AuthActions.sessionValidationFailed, (state, { reason }) => {
-            const LoadState: RESOURCE_LOAD_STATE = reason === 'technical' ? 'technical-error' : 'unauthorized';
+            const LoadState: RESTRICTED_RESOURCE_LOAD_STATE =
+                reason === 'technical' ? 'technical-error' : 'unauthorized';
             return { ...state, user: anonymousUser, sessionLoadState: LoadState };
         }),
         on(AuthActions.userAugmented, (state, action) => {

@@ -18,9 +18,11 @@ export const BAD_REQUEST_FALLBACK_FEHLERMELDUNG =
 
 export const SESSION_EXPIRED_MESSAGE = 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.';
 
-export type RESOURCE_LOAD_STATE = 'not-loaded' | 'loaded' | 'unauthorized' | 'technical-error';
+export type PUBLIC_RESOURCE_LOAD_STATE = 'not-loaded' | 'loaded' | 'technical-error';
 
-export type AUTHORIZED_RESOURCE_LOAD_STATE = RESOURCE_LOAD_STATE | 'forbidden';
+export type RESTRICTED_RESOURCE_LOAD_STATE = PUBLIC_RESOURCE_LOAD_STATE | 'unauthorized';
+
+export type AUTHORIZED_RESOURCE_LOAD_STATE = RESTRICTED_RESOURCE_LOAD_STATE | 'forbidden';
 
 export interface ErrorContext {
     httpStatus: number | undefined;

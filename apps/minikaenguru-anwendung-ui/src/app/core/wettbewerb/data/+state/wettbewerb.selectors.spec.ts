@@ -47,19 +47,16 @@ describe('fromWettbewerb', () => {
     });
 
     describe('wettbwerbLoaded', () => {
-        it.each(['not-loaded', 'unauthorized', 'technical-error'] as const)(
-            'should return false when loadState %s',
-            loadState => {
-                const state: WettbewerbState = {
-                    wettbewerbLoadState: loadState,
-                    wettbewerb: undefined,
-                };
+        it.each(['not-loaded', 'technical-error'] as const)('should return false when loadState %s', loadState => {
+            const state: WettbewerbState = {
+                wettbewerbLoadState: loadState,
+                wettbewerb: undefined,
+            };
 
-                const result = fromWettbewerb.selectWettbewerbLoaded.projector(state.wettbewerbLoadState);
+            const result = fromWettbewerb.selectWettbewerbLoaded.projector(state.wettbewerbLoadState);
 
-                expect(result).toBe(false);
-            }
-        );
+            expect(result).toBe(false);
+        });
 
         it('should return true when loaded', () => {
             const state: WettbewerbState = {

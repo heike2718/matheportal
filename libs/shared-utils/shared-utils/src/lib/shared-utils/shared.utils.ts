@@ -8,11 +8,22 @@ import {
     ErrorResponse,
     NOT_FOUND_FEHLERMELDUNG,
     PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
-    RESOURCE_LOAD_STATE,
+    PUBLIC_RESOURCE_LOAD_STATE,
+    RESTRICTED_RESOURCE_LOAD_STATE,
     TECHNISCHER_FEHLER_FEHLERMELDUNG,
 } from '@matheportal/shared-model';
 
-export function mapErrorToResourceLoadState(error: Error): RESOURCE_LOAD_STATE {
+export function mapErrorToPublicResourceLoadState(error: Error): PUBLIC_RESOURCE_LOAD_STATE {
+    if (error.name === 'HttpErrorResponse') {
+        const httpError = error as HttpErrorResponse;
+        if (httpError.status === 404) {
+            return 'loaded';
+        }
+    }
+    return 'technical-error';
+}
+
+export function mapErrorToRestrictedResourceLoadState(error: Error): RESTRICTED_RESOURCE_LOAD_STATE {
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
