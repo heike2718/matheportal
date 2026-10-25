@@ -4,7 +4,7 @@ import { SchulkatalogHttpService } from '../schulkatalog-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { SchulkatalogActions } from './schulkatalog.actions';
 import { catchError, exhaustMap, map, of, switchMap, tap } from 'rxjs';
-import { mapErrorToMessage } from '@matheportal/shared-utils';
+import { mapToErrorContext } from '@matheportal/shared-utils';
 import { SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 
 @Injectable() // services in den remotes dürfen nicht in root provided werden.
@@ -164,8 +164,8 @@ export class SchulkatalogEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogActions.loadActionFailed, SchulkatalogActions.changeActionFailed),
                 tap(action => {
-                    const errorMessage = mapErrorToMessage(action.error);
-                    this.#messagePublisherService.publishError(errorMessage);
+                    const errorContext = mapToErrorContext(action.error);
+                    this.#messagePublisherService.publishError(errorContext.message);
                 })
             );
         },
