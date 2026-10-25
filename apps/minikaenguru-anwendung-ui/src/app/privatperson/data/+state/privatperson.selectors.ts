@@ -8,6 +8,11 @@ export const selectWettbewerbskontextLoadState = createSelector(
     state => state.wettbewerbskontextLoadState
 );
 
+export const selectWettbewerbskontextLoaded = createSelector(
+    selectWettbewerbskontextLoadState,
+    LoadState => LoadState === 'loaded'
+);
+
 export const selectWettbewerbskontextLadenVerweigert = createSelector(
     selectWettbewerbskontextLoadState,
     loadState => loadState === 'forbidden' || loadState === 'unauthorized'

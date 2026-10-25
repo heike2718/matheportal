@@ -48,7 +48,6 @@ export class MinikaenguruEinstiegEffects {
     readonly kontextLadenOnWettbewerbsorganisationGestartet$ = createEffect(() => {
         return this.#actions.pipe(
             ofType(MinikaenguruEinstiegActions.kontextLadenOnWettbewerbsorganisationGestartet),
-            tap(({ durchfuehrungsart }) => console.log('effect mit durchfuehrungsart=' + durchfuehrungsart)),
             map(({ durchfuehrungsart, kontextkuerzel }) =>
                 durchfuehrungsart === DURCHFUEHRUNGSART.schule
                     ? ensureWettbewerbskontextSchuleGeladen({ schulkuerzel: kontextkuerzel ?? '' })

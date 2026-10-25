@@ -4,7 +4,12 @@ import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaen
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { Observable } from 'rxjs';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { selectWettbewerbskontextLoadState } from '../data/+state/privatperson.selectors';
+import {
+    selectWettbewerbskontext,
+    selectWettbewerbskontextLoaded,
+    selectWettbewerbskontextLoadState,
+} from '../data/+state/privatperson.selectors';
+import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 
 @Injectable()
 export class PrivatpersonFacade {
@@ -13,6 +18,12 @@ export class PrivatpersonFacade {
     readonly wettbewerbskontextLoadState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE> = this.#store.select(
         selectWettbewerbskontextLoadState
     );
+
+    readonly wettbewerbskontextLoaded = this.#store.selectSignal(selectWettbewerbskontextLoaded);
+
+    readonly wettbewerbskontext = this.#store.selectSignal(selectWettbewerbskontext);
+
+    readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
 
     public dashboardVorbereiten(): void {
         this.#store.dispatch(
