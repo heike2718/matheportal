@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
+import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
     selector: 'mka-dashboard-privatperson',
@@ -16,9 +17,10 @@ import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext
 })
 export class DashboardPrivatpersonComponent {
     #privatpersonFacade = inject(PrivatpersonFacade);
+    #wettbewerbFacade = inject(WettbewerbFacade);
 
     readonly aktuellerWettbewerb = computed(() => {
-        const wettbewerb = this.#privatpersonFacade.aktuellerWettbewerb();
+        const wettbewerb = this.#wettbewerbFacade.aktuellerWettbewerb();
 
         if (!wettbewerb) {
             throw new Error('Aktueller Wettbewerb ist nicht geladen');

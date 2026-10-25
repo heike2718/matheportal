@@ -6,6 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
 import { WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
+import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
     selector: 'mka-schule-dashboard',
@@ -15,10 +16,11 @@ import { WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.mod
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SchuleDashboardComponent {
+    readonly #wettbewerbFacade = inject(WettbewerbFacade);
     readonly #schuleFacade = inject(SchuleFacade);
 
     readonly aktuellerWettbewerb = computed(() => {
-        const wettbewerb = this.#schuleFacade.aktuellerWettbewerb();
+        const wettbewerb = this.#wettbewerbFacade.aktuellerWettbewerb();
 
         if (!wettbewerb) {
             throw new Error('Aktueller Wettbewerb ist nicht geladen');

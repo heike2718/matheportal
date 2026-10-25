@@ -13,6 +13,10 @@ export class WettbewerbFacade {
         fromWettbewerb.selectWettbewerbLoadState
     );
 
+    readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
+
+    readonly wettbewerbLoaded = this.#store.selectSignal(fromWettbewerb.selectWettbewerbLoaded);
+
     public ensureWettbewerbGeladen(): void {
         this.#store.dispatch(WettbewerbActions.ensureWettbewerbGeladen());
     }

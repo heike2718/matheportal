@@ -6,6 +6,7 @@ import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
 import { signal, Signal, WritableSignal } from '@angular/core';
 import { PrivatpersonFacade } from '../../api/privatperson.facade';
 import { By } from '@angular/platform-browser';
+import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 describe('DashboardPrivatComponent', () => {
     const wettbewerb: Wettbewerb = {
@@ -36,8 +37,11 @@ describe('DashboardPrivatComponent', () => {
     let wettbewerbskontextLoadedSignal: WritableSignal<boolean>;
     let wettbewerbskontextSignal: WritableSignal<PrivatpersonWettbewerbskontext | undefined>;
 
-    let facadeMock: {
+    let wettbewerbFacadeMock: {
         aktuellerWettbewerb: Signal<Wettbewerb>;
+    };
+
+    let facadeMock: {
         wettbewerbskontextLoaded: Signal<boolean>;
         wettbewerbskontext: Signal<PrivatpersonWettbewerbskontext | undefined>;
     };
@@ -47,8 +51,11 @@ describe('DashboardPrivatComponent', () => {
         wettbewerbskontextLoadedSignal = signal(false);
         wettbewerbskontextSignal = signal(undefined);
 
-        facadeMock = {
+        wettbewerbFacadeMock = {
             aktuellerWettbewerb: aktuellerWettbewerbSignal,
+        };
+
+        facadeMock = {
             wettbewerbskontextLoaded: wettbewerbskontextLoadedSignal,
             wettbewerbskontext: wettbewerbskontextSignal,
         };
@@ -56,6 +63,10 @@ describe('DashboardPrivatComponent', () => {
         await TestBed.configureTestingModule({
             imports: [DashboardPrivatpersonComponent],
             providers: [
+                {
+                    provide: WettbewerbFacade,
+                    useValue: wettbewerbFacadeMock,
+                },
                 {
                     provide: PrivatpersonFacade,
                     useValue: facadeMock,

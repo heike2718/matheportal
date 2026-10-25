@@ -6,7 +6,6 @@ import {
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
 } from '../data/+state/schule.selectors';
-import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 import { Observable } from 'rxjs';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
@@ -29,8 +28,6 @@ export class SchuleFacade {
     readonly schulkollegiumLoaded = this.#store.selectSignal(selectSchulkollegiumLoaded);
 
     readonly wettbewerbskontext = this.#store.selectSignal(selectWettbewerbskontext);
-
-    readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
 
     public dashboardVorbereiten(schulkuerzel: string): void {
         this.#store.dispatch(
