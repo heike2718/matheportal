@@ -49,7 +49,7 @@ public class AuthproviderUrlService {
     }
 
     /**
-     * Gibt die redirect url zum Signup zurück
+     * Gibt die redirect url zum Signup zurück.
      *
      * @return AuthUrlResponse
      */
