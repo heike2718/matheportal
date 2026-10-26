@@ -25,25 +25,11 @@ import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLogging
  */
 @RegisterRestClient(configKey = "authprovider")
 @RegisterProvider(RestClientLoggingFilter.class)
+@RegisterProvider(AuthproviderRestClientResponseExceptionMapper.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AuthproviderRestClient {
-
-    /**
-     * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
-     */
-    int MAX_RETRIES = 2;
-
-    /**
-     * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
-     */
-    int DELAY_SECONDS = 300;
-
-    /**
-     * Timeout.
-     */
-    int TIMEOUT_SECONDS = 10;
 
     /**
      * accesstoken-API des IAM.
@@ -53,8 +39,8 @@ public interface AuthproviderRestClient {
      */
     @POST
     @Path("clients/client/accesstoken")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS, retryOn = TimeoutException.class)
-    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
+    @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
     Response authenticateClient(OAuthClientCredentials clientSecrets);
 
     /**
@@ -66,8 +52,8 @@ public interface AuthproviderRestClient {
      */
     @PUT
     @Path("token/exchange/{oneTimeToken}")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
-    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
+    @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
     Response exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
             OAuthClientCredentials clientCredentials);
 
