@@ -60,13 +60,13 @@ public class InitAccessTokenDelegate {
         } catch (final TimeoutException e) {
             log.error("Timeout beim Authentifizieren des Clients {}: {}", credentials.getClientId(), e.getMessage(), e);
             throw new AuthproviderHttpException(Status.GATEWAY_TIMEOUT.getStatusCode(),
-                    "Timeout beim Authentifizieren des Clients");
+                    "Timeout beim Authentifizieren des Clients", e);
         } catch (ClientWebApplicationException | ProcessingException e) {
             log
                     .error("{} beim Authentifizieren des Clients {}: {}", e.getClass(), credentials.getClientId(),
                             e.getMessage(), e);
             throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
-                    "IAM antwortet mit unerwarteter response payload beim Authentifizieren des Clients");
+                    "IAM antwortet mit unerwarteter response payload beim Authentifizieren des Clients", e);
         }
     }
 }

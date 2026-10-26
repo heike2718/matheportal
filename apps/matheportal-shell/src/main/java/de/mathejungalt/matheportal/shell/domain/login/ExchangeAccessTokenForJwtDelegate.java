@@ -74,13 +74,13 @@ public class ExchangeAccessTokenForJwtDelegate {
                     .error("Timeout beim Tausch des Tokens - clientId={}: {}", clientCredentials.getClientId(),
                             e.getMessage(), e);
             throw new AuthproviderHttpException(Status.GATEWAY_TIMEOUT.getStatusCode(),
-                    "Timeout beim Tausch des Tokens");
+                    "Timeout beim Tausch des Tokens", e);
         } catch (ClientWebApplicationException | ProcessingException e) {
             log
                     .error("{} beim beim Tausch des Tokens - clientId={}: {}", e.getClass(),
                             clientCredentials.getClientId(), e.getMessage(), e);
             throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
-                    "IAM antwortet mit unerwarteter response payload beim Tausch des Tokens");
+                    "IAM antwortet mit unerwarteter response payload beim Tausch des Tokens", e);
         }
     }
 }
