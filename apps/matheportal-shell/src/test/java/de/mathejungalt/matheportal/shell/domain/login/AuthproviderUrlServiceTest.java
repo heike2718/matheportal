@@ -8,10 +8,8 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.ClientAccessTokenService;
-import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
-import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
-import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
 import de.mathejungalt.matheportal.shell.domain.generated.AuthUrlResponse;
+import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderHttpException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,28 +46,14 @@ public class AuthproviderUrlServiceTest {
     }
 
     @Test
-    void should_getLoginUrl_propagateIamClientException() {
+    void should_getLoginUrl_propagateAuthproviderHttpException() {
 
         // arrange
         when(clientAccessTokenService.orderAccessToken(anyString()))
-                .thenThrow(new IamClientException(("IAM antwortet mit Fehlercode"), null,
-                        IamClientErrorType.IAM_CONTRACT_VIOLATION));
+                .thenThrow(new AuthproviderHttpException(400, "IAM antwortet mit Fehlercode"));
 
         // act + assert
-        assertAll(() -> assertThrows(IamClientException.class, () -> service.getLoginUrl()),
-                () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
-
-    }
-
-    @Test
-    void should_getLoginUrl_propagateIamUnreachableException() {
-
-        // arrange
-        when(clientAccessTokenService.orderAccessToken(anyString()))
-                .thenThrow(new IamUnreachableException(("IAM antwortet mit Fehlercode"), null));
-
-        // act + assert
-        assertAll(() -> assertThrows(IamUnreachableException.class, () -> service.getLoginUrl()),
+        assertAll(() -> assertThrows(AuthproviderHttpException.class, () -> service.getLoginUrl()),
                 () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
 
     }
@@ -92,28 +76,14 @@ public class AuthproviderUrlServiceTest {
     }
 
     @Test
-    void should_getsignupUrl_propagateIamClientException() {
+    void should_getsignupUrl_propagateAuthproviderHttpException() {
 
         // arrange
         when(clientAccessTokenService.orderAccessToken(anyString()))
-                .thenThrow(new IamClientException(("IAM antwortet mit Fehlercode"), null,
-                        IamClientErrorType.IAM_CONTRACT_VIOLATION));
+                .thenThrow(new AuthproviderHttpException(400, "IAM antwortet mit Fehlercode"));
 
         // act + assert
-        assertAll(() -> assertThrows(IamClientException.class, () -> service.getSignupUrl()),
-                () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
-
-    }
-
-    @Test
-    void should_getSignupUrl_propagateIamUnreachableException() {
-
-        // arrange
-        when(clientAccessTokenService.orderAccessToken(anyString()))
-                .thenThrow(new IamUnreachableException(("IAM antwortet mit Fehlercode"), null));
-
-        // act + assert
-        assertAll(() -> assertThrows(IamUnreachableException.class, () -> service.getSignupUrl()),
+        assertAll(() -> assertThrows(AuthproviderHttpException.class, () -> service.getSignupUrl()),
                 () -> verify(clientAccessTokenService).orderAccessToken(anyString()));
 
     }

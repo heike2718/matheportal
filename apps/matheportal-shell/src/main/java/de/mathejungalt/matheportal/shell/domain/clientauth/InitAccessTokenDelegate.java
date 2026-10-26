@@ -3,22 +3,23 @@ package de.mathejungalt.matheportal.shell.domain.clientauth;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
-import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
-import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
-import de.mathejungalt.matheportal.shell.domain.restclientutils.RestClientUtils;
+import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderHttpException;
 import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderRestClient;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * InitAccessTokenDelegate.
  */
 @ApplicationScoped
+@Slf4j
 public class InitAccessTokenDelegate {
 
     @Inject
@@ -32,40 +33,40 @@ public class InitAccessTokenDelegate {
      * @return OauthClientAccessToken
      * @throws IamClientException wenn irgendetwas schief lief.
      */
-    // CPD-OFF
     public OauthClientAccessToken authenticateClient(final OAuthClientCredentials credentials)
-            throws IamClientException {
+            throws AuthproviderHttpException {
 
-        try (Response authResponse = authproviderRestClient.authenticateClient(credentials)) {
-            final OauthClientAccessToken token = OauthClientAccessToken
-                    .from(authResponse.readEntity(ResponsePayload.class));
-            if (token.getNonce() == null || token.getAccessToken() == null) {
-                throw new IamClientException(
-                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder accessToken fehlen",
-                        IamClientErrorType.IAM_CONTRACT_VIOLATION);
+        try {
+
+            final OauthClientAccessToken token = authproviderRestClient.authenticateClient(credentials);
+
+            if (token == null) {
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM antwortet mit unerwarteter response payload 'null' beim Authentifizieren des Clients");
+            }
+
+            if (token.getNonce() == null || !credentials.getNonce().equals(token.getNonce())) {
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM-Antwort hat das nonce geaendert: erwartetes nonce=" + credentials.getNonce() + ", aktuell="
+                                + token.getNonce());
+            }
+
+            if (token.getAccessToken() == null) {
+                log.error("es wurde kein access token generiert");
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM-Antwort enthält nicht die erwarteten Felder: accessToken fehlt");
             }
             return token;
-        } catch (final WebApplicationException e) {
-
-            if (e.getCause() instanceof JsonParseException) {
-                final String msg = "IAM-Antwort ist invalides json";
-                throw new IamClientException(msg, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
-            }
-
-            throw RestClientUtils.mapToIamClientException(e);
-
-        } catch (final ProcessingException e) {
-
-            final Throwable cause = e.getCause();
-
-            if (cause == null) {
-                final String message = "IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)";
-                throw new IamClientException(message, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
-            }
-
-            final String msg = "Kommunikationsfehler beim Anfordern eines client-accessTokens";
-            throw new IamUnreachableException(msg, e);
+        } catch (final TimeoutException e) {
+            log.error("Timeout beim Authentifizieren des Clients {}: {}", credentials.getClientId(), e.getMessage(), e);
+            throw new AuthproviderHttpException(Status.GATEWAY_TIMEOUT.getStatusCode(),
+                    "Timeout beim Authentifizieren des Clients");
+        } catch (ClientWebApplicationException | ProcessingException e) {
+            log
+                    .error("{} beim Authentifizieren des Clients {}: {}", e.getClass(), credentials.getClientId(),
+                            e.getMessage(), e);
+            throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                    "IAM antwortet mit unerwarteter response payload beim Authentifizieren des Clients");
         }
     }
-    // CPD-ON
 }

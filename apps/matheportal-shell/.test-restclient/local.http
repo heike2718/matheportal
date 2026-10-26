@@ -1,11 +1,11 @@
 ### authenticate client
-POST http://localhost:9000/api/clients/client/accesstoken
+POST http://localhost:9000/api/clients/client/accesstoken/v2
 Content-Type: application/json
 Accept: application/json
 
 {
     "clientId": "matheportalShellClient",
-    "clientSecret": "start123",
+    "clientSecret": "start",
     "nonce": "test-nonce"
 }
 

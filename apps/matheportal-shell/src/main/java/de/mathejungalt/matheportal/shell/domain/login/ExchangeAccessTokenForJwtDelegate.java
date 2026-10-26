@@ -3,19 +3,15 @@ package de.mathejungalt.matheportal.shell.domain.login;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
-import de.mathejungalt.matheportal.shell.domain.clientauth.IamClientErrorType;
 import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
-import de.mathejungalt.matheportal.shell.domain.clientauth.ResponsePayload;
-import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
-import de.mathejungalt.matheportal.shell.domain.exception.IamUnreachableException;
-import de.mathejungalt.matheportal.shell.domain.restclientutils.RestClientUtils;
+import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderHttpException;
 import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderRestClient;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,45 +42,45 @@ public class ExchangeAccessTokenForJwtDelegate {
      * @param accessToken       String
      * @return ExchangeTokenResponse
      */
-    // CPD-OFF
     public ExchangeTokenResponse exchangeTheAccessToken(final OAuthClientCredentials clientCredentials,
             final String accessToken) {
 
-        try (Response authResponse = authproviderRestClient
-                .exchangeOneTimeTokenWithJwt(accessToken, clientCredentials)) {
+        try {
+            final ExchangeTokenResponse exchangeTokenResponse = authproviderRestClient
+                    .exchangeOneTimeTokenWithJwt(accessToken, clientCredentials);
 
-            final ExchangeTokenResponse responsePayload = ExchangeTokenResponse
-                    .from(authResponse.readEntity(ResponsePayload.class));
-
-            if (responsePayload.getNonce() == null || responsePayload.getJwt() == null) {
-                throw new IamClientException(
-                        "IAM-Antwort enthält nicht die erwarteten Felder: nonce und/oder jwt fehlen",
-                        IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            if (exchangeTokenResponse == null) {
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM antwortet mit unerwarteter response payload 'null' beim Tausch des Tokens");
             }
 
-            return responsePayload;
-
-        } catch (final WebApplicationException e) {
-
-            if (e.getCause() instanceof JsonParseException) {
-                final String msg = "IAM-Antwort ist invalides json";
-                throw new IamClientException(msg, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            if (exchangeTokenResponse.getNonce() == null
+                    || !clientCredentials.getNonce().equals(exchangeTokenResponse.getNonce())) {
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM-Antwort hat das nonce geaendert: erwartetes nonce=" + clientCredentials.getNonce()
+                                + ", aktuell=" + exchangeTokenResponse.getNonce());
             }
 
-            throw RestClientUtils.mapToIamClientException(e);
-        } catch (final ProcessingException e) {
-
-            final Throwable cause = e.getCause();
-
-            if (cause == null) {
-                final String message = "IAM-Antwort kann nicht deserialisiert werden - wahrscheinlich falscher MIME-Type)";
-                throw new IamClientException(message, e, IamClientErrorType.IAM_CONTRACT_VIOLATION);
+            if (exchangeTokenResponse.getJwt() == null) {
+                log.error("es wurde kein jwt zurueckgegeben");
+                throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                        "IAM-Antwort enthält nicht die erwarteten Felder: jwt fehlt");
             }
 
-            final String msg = "Kommunikationsfehler beim Tauschen des accessTokens gegen JWT";
-            throw new IamUnreachableException(msg, e);
+            return exchangeTokenResponse;
+
+        } catch (final TimeoutException e) {
+            log
+                    .error("Timeout beim Tausch des Tokens - clientId={}: {}", clientCredentials.getClientId(),
+                            e.getMessage(), e);
+            throw new AuthproviderHttpException(Status.GATEWAY_TIMEOUT.getStatusCode(),
+                    "Timeout beim Tausch des Tokens");
+        } catch (ClientWebApplicationException | ProcessingException e) {
+            log
+                    .error("{} beim beim Tausch des Tokens - clientId={}: {}", e.getClass(),
+                            clientCredentials.getClientId(), e.getMessage(), e);
+            throw new AuthproviderHttpException(Status.BAD_GATEWAY.getStatusCode(),
+                    "IAM antwortet mit unerwarteter response payload beim Tausch des Tokens");
         }
-        // CPD-ON
     }
-
 }

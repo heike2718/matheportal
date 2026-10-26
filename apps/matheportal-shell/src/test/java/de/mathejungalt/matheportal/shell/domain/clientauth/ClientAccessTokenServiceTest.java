@@ -1,22 +1,16 @@
 package de.mathejungalt.matheportal.shell.domain.clientauth;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
-import de.mathejungalt.matheportal.shell.domain.exception.IamClientException;
+import de.mathejungalt.matheportal.shell.infrastructure.restclient.AuthproviderHttpException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +50,7 @@ public class ClientAccessTokenServiceTest {
     }
 
     @Test
-    void shouldThrowSECURITY_VIOLATION_whenNonceMismatch() {
+    void should_throwAuthproviderHttpException_whenNonceMismatch() {
 
         // arrange
         when(clientCredentialsProvider.getClientCredentials("test-nonce"))
@@ -65,44 +59,32 @@ public class ClientAccessTokenServiceTest {
                 .thenReturn(new OauthClientAccessToken("anderes-nonce", "test-access-token"));
 
         // act + assert
-        final IamClientException exeption = assertThrows(IamClientException.class,
+        final AuthproviderHttpException exeption = assertThrows(AuthproviderHttpException.class,
                 () -> clientAccessTokenService.orderAccessToken("test-nonce"));
 
-        assertAll(() -> assertEquals(IamClientErrorType.SECURITY_VIOLATION, exeption.getErrorType()),
+        assertAll(() -> assertEquals(502, exeption.getStatus()),
                 () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
     }
 
-    @ParameterizedTest
-    @MethodSource("getIamErrorTypes")
-    void shouldPropagateIamClientException(final IamClientErrorType errorType) {
+    @Test
+    void shouldPropagateAuthproviderHttpException() {
 
         // arrange
-        final IamClientException iamClientException = new IamClientException("message", new RuntimeException(),
-                errorType);
+        final AuthproviderHttpException iamClientException = new AuthproviderHttpException(502, "eine Fehlermeldung");
         when(clientCredentialsProvider.getClientCredentials("test-nonce"))
                 .thenReturn(OAuthClientCredentials.builder().build());
         when(initAccessTokenDelegate.authenticateClient(any(OAuthClientCredentials.class)))
                 .thenThrow(iamClientException);
 
         // act + assert
-        final IamClientException exeption = assertThrows(IamClientException.class,
+        final AuthproviderHttpException exeption = assertThrows(AuthproviderHttpException.class,
                 () -> clientAccessTokenService.orderAccessToken("test-nonce"));
 
-        assertAll(() -> assertEquals(errorType, exeption.getErrorType()),
-                () -> assertEquals("message", exeption.getMessage()),
-                () -> assertInstanceOf(RuntimeException.class, exeption.getCause()),
+        assertAll(() -> assertEquals(502, exeption.getStatus()),
+                () -> assertEquals("eine Fehlermeldung", exeption.getMessage()),
                 () -> verify(clientCredentialsProvider).getClientCredentials(anyString()),
                 () -> verify(initAccessTokenDelegate).authenticateClient(any(OAuthClientCredentials.class)));
-
-    }
-
-    private static Stream<IamClientErrorType> getIamErrorTypes() {
-
-        return Arrays
-                .stream(IamClientErrorType.values())
-                .filter(t -> IamClientErrorType.IAM_CONTRACT_VIOLATION == t
-                        || IamClientErrorType.IAM_ERROR_RESPONSE == t);
 
     }
 

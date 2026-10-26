@@ -9,7 +9,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -18,6 +17,8 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
+import de.mathejungalt.matheportal.shell.domain.clientauth.OauthClientAccessToken;
+import de.mathejungalt.matheportal.shell.domain.login.ExchangeTokenResponse;
 import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLoggingFilter;
 
 /**
@@ -38,10 +39,10 @@ public interface AuthproviderRestClient {
      * @return Response
      */
     @POST
-    @Path("clients/client/accesstoken")
+    @Path("clients/client/accesstoken/v2")
     @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
     @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
-    Response authenticateClient(OAuthClientCredentials clientSecrets);
+    OauthClientAccessToken authenticateClient(OAuthClientCredentials clientSecrets);
 
     /**
      * Tauscht das oneTimeToken gegen ein JWT für den sich authentifizierenden Benutzer.
@@ -51,10 +52,10 @@ public interface AuthproviderRestClient {
      * @return Response
      */
     @PUT
-    @Path("token/exchange/{oneTimeToken}")
+    @Path("token/exchange/{oneTimeToken}/v2")
     @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
     @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
-    Response exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
+    ExchangeTokenResponse exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
             OAuthClientCredentials clientCredentials);
 
 }
