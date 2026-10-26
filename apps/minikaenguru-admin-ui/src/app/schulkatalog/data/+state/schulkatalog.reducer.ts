@@ -1,21 +1,21 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { Land, Ort, Schule, SCHULKATALOG_ADMIN_KONTEXT } from '../../model/schulkatalog.model';
 import { SchulkatalogActions } from './schulkatalog.actions';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { mapErrorToRestrictedResourceLoadState } from '@matheportal/shared-utils';
 import { userLoggedOut } from '@matheportal/auth-api';
 
 const SCHULKATALOG_FEATURE_KEY = 'MKAdminSchulkatalog';
 
 export interface SchulkatalogState {
     readonly laender: Land[];
-    readonly laenderLoadState: RESOURCE_LOAD_STATE;
+    readonly laenderLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
     readonly selectedLand: Land | undefined;
     readonly orte: Ort[];
-    readonly orteLoadState: RESOURCE_LOAD_STATE;
+    readonly orteLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
     readonly selectedOrt: Ort | undefined;
     readonly schulen: Schule[];
-    readonly schulenLoadState: RESOURCE_LOAD_STATE;
+    readonly schulenLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
     readonly selectedSchule: Schule | undefined;
 }
 
@@ -100,7 +100,7 @@ export const schulkatalogFeature = createFeature({
             schulenLoadState: 'loaded',
         })),
         on(SchulkatalogActions.loadActionFailed, (state, action) => {
-            const LoadState = mapErrorToResourceLoadState(action.error);
+            const LoadState = mapErrorToRestrictedResourceLoadState(action.error);
             switch (action.kontext) {
                 case SCHULKATALOG_ADMIN_KONTEXT.laender:
                     return {

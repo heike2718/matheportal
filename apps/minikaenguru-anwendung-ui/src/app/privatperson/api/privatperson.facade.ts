@@ -9,7 +9,6 @@ import {
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
 } from '../data/+state/privatperson.selectors';
-import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
 
 @Injectable()
 export class PrivatpersonFacade {
@@ -22,8 +21,6 @@ export class PrivatpersonFacade {
     readonly wettbewerbskontextLoaded = this.#store.selectSignal(selectWettbewerbskontextLoaded);
 
     readonly wettbewerbskontext = this.#store.selectSignal(selectWettbewerbskontext);
-
-    readonly aktuellerWettbewerb = this.#store.selectSignal(fromWettbewerb.selectWettbewerb);
 
     public dashboardVorbereiten(): void {
         this.#store.dispatch(

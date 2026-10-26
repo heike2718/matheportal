@@ -9,7 +9,6 @@ import {
     selectWettbewerbskontextLoadState,
 } from '../data/+state/schule.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
-import { Wettbewerb, WETTBEWERBSSTATUS } from '../../core/wettbewerb/model/wettbewerb.model';
 import { SchuleWettbewerbskontext } from '../../core/model/schule-wettbewerbskontext.model';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
@@ -17,15 +16,6 @@ import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.s
 import { SchuleActions } from '../data/+state/schule.actions';
 
 describe('SchuleFacade', () => {
-    const wettbewerb: Wettbewerb = {
-        beginn: '01.01.2029',
-        ende: '31.07.2029',
-        freischaltungPrivat: '15.06.2029',
-        freischaltungSchulen: '14.03.2029',
-        jahr: 2029,
-        status: WETTBEWERBSSTATUS.anmeldung,
-    };
-
     const wettbewerbskontext: SchuleWettbewerbskontext = {
         schule: {
             kuerzel: 'SCHULE-1',
@@ -159,30 +149,6 @@ describe('SchuleFacade', () => {
             store.refreshState();
 
             expect(facade.wettbewerbskontext()).toBeUndefined();
-        });
-
-        it('should expose and update aktuellerWettbewerb', () => {
-            expect(facade.aktuellerWettbewerb()).toBeUndefined();
-
-            store.overrideSelector(fromWettbewerb.selectWettbewerb, wettbewerb);
-            store.refreshState();
-
-            expect(facade.aktuellerWettbewerb()).toEqual(wettbewerb);
-
-            const updatedWettbewerb: Wettbewerb = {
-                ...wettbewerb,
-                status: WETTBEWERBSSTATUS.beendet,
-            };
-
-            store.overrideSelector(fromWettbewerb.selectWettbewerb, updatedWettbewerb);
-            store.refreshState();
-
-            expect(facade.aktuellerWettbewerb()).toEqual(updatedWettbewerb);
-
-            store.overrideSelector(fromWettbewerb.selectWettbewerb, undefined);
-            store.refreshState();
-
-            expect(facade.aktuellerWettbewerb()).toBeUndefined();
         });
     });
 

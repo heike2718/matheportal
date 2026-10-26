@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthSessionFacade } from '@matheportal/auth-api';
+import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
     selector: 'mka-guest-info',
@@ -10,5 +11,6 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuestInfoComponent {
+    wettbewerbFacade = inject(WettbewerbFacade);
     authSessionFacade = inject(AuthSessionFacade);
 }

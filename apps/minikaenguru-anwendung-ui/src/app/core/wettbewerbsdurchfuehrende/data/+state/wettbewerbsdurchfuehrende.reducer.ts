@@ -2,13 +2,13 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { mapErrorToRestrictedResourceLoadState } from '@matheportal/shared-utils';
 
 const WETTBEWERBSDURCHFUEHRENDE_FEATURE_KEY = 'MKAWettbewerbsdurchfuehrende';
 
 export interface WettbewerbsdurchfuehrendeState {
-    readonly durchfuehrenderLoadState: RESOURCE_LOAD_STATE;
+    readonly durchfuehrenderLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
     readonly durchfuehrender: Wettbewerbsdurchfuehrender | undefined;
 }
 
@@ -41,7 +41,7 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
             return {
                 ...state,
                 durchfuehrender: undefined,
-                durchfuehrenderLoadState: mapErrorToResourceLoadState(error),
+                durchfuehrenderLoadState: mapErrorToRestrictedResourceLoadState(error),
             };
         }),
         on(userLoggedOut, () => initialWettbewerbsdurchfuehrendeState)

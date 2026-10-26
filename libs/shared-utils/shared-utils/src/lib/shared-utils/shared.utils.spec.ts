@@ -5,16 +5,18 @@ import {
     ErrorResponse,
     NOT_FOUND_FEHLERMELDUNG,
     PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
-    RESOURCE_LOAD_STATE,
+    PUBLIC_RESOURCE_LOAD_STATE,
+    RESTRICTED_RESOURCE_LOAD_STATE,
     TECHNISCHER_FEHLER_FEHLERMELDUNG,
 } from '@matheportal/shared-model';
 import {
     assertDefined,
     errorResponseToString,
     extractErrorResponse,
-    mapErrorToResourceLoadState,
+    mapErrorToRestrictedResourceLoadState,
     mapToErrorContext,
     mapErrorToAuthorizedResourceLoadState,
+    mapErrorToPublicResourceLoadState,
 } from './shared.utils';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -48,9 +50,66 @@ describe('shared utils tests', () => {
         });
     });
 
-    describe('mapErrorToResourceLoadState', () => {
+    describe('mapErrorToPublicResourceLoadState', () => {
+        it('should return loaded when 404', () => {
+            const result: PUBLIC_RESOURCE_LOAD_STATE = mapErrorToPublicResourceLoadState(
+                new HttpErrorResponse({
+                    status: 404,
+                    statusText: 'not-found',
+                    error: 'boom',
+                    url: '/public-resource/',
+                })
+            );
+
+            expect(result).toBe('loaded');
+        });
+        it('should return technical when 400', () => {
+            const result: PUBLIC_RESOURCE_LOAD_STATE = mapErrorToPublicResourceLoadState(
+                new HttpErrorResponse({
+                    status: 400,
+                    statusText: 'bad request',
+                    error: 'boom',
+                    url: '/public-resource/',
+                })
+            );
+
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when minimum 500', () => {
+            const httpStatusCode = Math.floor(Math.random() * 100) + 500;
+            const result: PUBLIC_RESOURCE_LOAD_STATE = mapErrorToPublicResourceLoadState(
+                new HttpErrorResponse({
+                    status: httpStatusCode,
+                    statusText: 'random error',
+                    error: 'boom',
+                    url: '/public-resource/',
+                })
+            );
+
+            expect(result).toBe('technical-error');
+        });
+        it.each([401, 403])('should return technical when httpStatusCode %i', httpStatusCode => {
+            const result: PUBLIC_RESOURCE_LOAD_STATE = mapErrorToPublicResourceLoadState(
+                new HttpErrorResponse({
+                    status: httpStatusCode,
+                    statusText: 'random error',
+                    error: 'boom',
+                    url: '/public-resource/',
+                })
+            );
+            expect(result).toBe('technical-error');
+        });
+        it('should return technical when other Error', () => {
+            const error = new Error('uiuiui');
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToPublicResourceLoadState(error);
+
+            expect(result).toBe('technical-error');
+        });
+    });
+
+    describe('mapErrorToRestrictedResourceLoadState', () => {
         it('should return unauthorized when 401', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: 401,
                     statusText: 'unauthorized',
@@ -62,7 +121,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('unauthorized');
         });
         it('should return unauthorized when 403', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: 403,
                     statusText: 'forbidden',
@@ -74,7 +133,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('unauthorized');
         });
         it('should return loaded when 404', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: 404,
                     statusText: 'not-found',
@@ -86,7 +145,7 @@ describe('shared utils tests', () => {
             expect(result).toBe('loaded');
         });
         it('should return technical when 400', () => {
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: 400,
                     statusText: 'bad request',
@@ -99,7 +158,7 @@ describe('shared utils tests', () => {
         });
         it('should return technical when minimum 500', () => {
             const httpStatusCode = Math.floor(Math.random() * 100) + 500;
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: httpStatusCode,
                     statusText: 'random error',
@@ -112,7 +171,7 @@ describe('shared utils tests', () => {
         });
         it('should return technical when not 401, 403, 404', () => {
             const httpStatusCode = Math.floor(Math.random() * 100) + 404;
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(
                 new HttpErrorResponse({
                     status: httpStatusCode,
                     statusText: 'random error',
@@ -124,7 +183,7 @@ describe('shared utils tests', () => {
         });
         it('should return technical when other Error', () => {
             const error = new Error('uiuiui');
-            const result: RESOURCE_LOAD_STATE = mapErrorToResourceLoadState(error);
+            const result: RESTRICTED_RESOURCE_LOAD_STATE = mapErrorToRestrictedResourceLoadState(error);
 
             expect(result).toBe('technical-error');
         });

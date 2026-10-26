@@ -86,27 +86,24 @@ describe('WettbewerbEffects', () => {
             }
         );
 
-        it.each(['loaded', 'unauthorized'] as const)(
-            'should not map to wettbewerbLaden when state is %s',
-            async loadState => {
-                store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, loadState);
-                store.refreshState();
+        it('should not map to wettbewerbLaden when state is loaded', async () => {
+            store.overrideSelector(fromWettbewerb.selectWettbewerbLoadState, 'loaded');
+            store.refreshState();
 
-                const emittedActions: Action[] = [];
+            const emittedActions: Action[] = [];
 
-                const subscription = effects.ensureWettbewerbGeladen$.subscribe({
-                    next: action => emittedActions.push(action),
-                });
+            const subscription = effects.ensureWettbewerbGeladen$.subscribe({
+                next: action => emittedActions.push(action),
+            });
 
-                try {
-                    action$.next(WettbewerbActions.ensureWettbewerbGeladen());
+            try {
+                action$.next(WettbewerbActions.ensureWettbewerbGeladen());
 
-                    expect(emittedActions).toEqual([]);
-                } finally {
-                    subscription.unsubscribe();
-                }
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
             }
-        );
+        });
     });
 
     describe('wettbewerbLaden$', () => {

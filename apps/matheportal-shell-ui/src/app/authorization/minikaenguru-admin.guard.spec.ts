@@ -12,17 +12,17 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { minikaenguruAdminGuard } from './minikaenguru-admin.guard';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 describe('matheportalShellAdminAuthGuard tests', () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
-    let sessionLoadStateSubject: Subject<RESOURCE_LOAD_STATE>;
+    let sessionLoadStateSubject: Subject<RESTRICTED_RESOURCE_LOAD_STATE>;
     let userSubject: Subject<User>;
 
     let authSessionFacadeMock: {
-        sessionLoadState$: Observable<RESOURCE_LOAD_STATE>;
+        sessionLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE>;
         user$: Observable<User>;
     };
 
@@ -34,8 +34,8 @@ describe('matheportalShellAdminAuthGuard tests', () => {
         return Promise.resolve(result as GuardResult);
     }
 
-    function setup(sessionLoadState: RESOURCE_LOAD_STATE, user: User) {
-        sessionLoadStateSubject = new BehaviorSubject<RESOURCE_LOAD_STATE>(sessionLoadState);
+    function setup(sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE, user: User) {
+        sessionLoadStateSubject = new BehaviorSubject<RESTRICTED_RESOURCE_LOAD_STATE>(sessionLoadState);
         userSubject = new BehaviorSubject<User>(user);
 
         authSessionFacadeMock = {

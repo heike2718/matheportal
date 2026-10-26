@@ -9,7 +9,7 @@ import {
     convertToParamMap,
     UrlTree,
 } from '@angular/router';
-import { AUTHORIZED_RESOURCE_LOAD_STATE, RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE, RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { SchuleFacade } from './schule.facade';
 import { mkaSchuleGuard } from './mka-schule.guard';
@@ -30,7 +30,7 @@ describe('mkaSchuleGuard', () => {
     let store: MockStore;
 
     let wettbewerbskontextLoadStateSubject: Subject<AUTHORIZED_RESOURCE_LOAD_STATE>;
-    let wettbewerbLoadStateSubject: Subject<RESOURCE_LOAD_STATE>;
+    let wettbewerbLoadStateSubject: Subject<RESTRICTED_RESOURCE_LOAD_STATE>;
 
     let schuleFacadeMock: {
         wettbewerbskontextLoadState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE>;
@@ -38,7 +38,7 @@ describe('mkaSchuleGuard', () => {
     };
 
     let wettbewerbFacadeMock: {
-        wettbewerbLoadState$: Observable<RESOURCE_LOAD_STATE>;
+        wettbewerbLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE>;
         ensureWettbewerbGeladen: ReturnType<typeof vi.fn>;
     };
 
@@ -52,14 +52,14 @@ describe('mkaSchuleGuard', () => {
 
     function setup(
         wettbewerbskontextLoadState: AUTHORIZED_RESOURCE_LOAD_STATE,
-        wettbwerbLoadState: RESOURCE_LOAD_STATE,
+        wettbwerbLoadState: RESTRICTED_RESOURCE_LOAD_STATE,
         schulkuerzel: string | undefined,
         forbidden: boolean
     ) {
         wettbewerbskontextLoadStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(
             wettbewerbskontextLoadState
         );
-        wettbewerbLoadStateSubject = new BehaviorSubject<RESOURCE_LOAD_STATE>(wettbwerbLoadState);
+        wettbewerbLoadStateSubject = new BehaviorSubject<RESTRICTED_RESOURCE_LOAD_STATE>(wettbwerbLoadState);
         schuleFacadeMock = {
             wettbewerbskontextLoadState$: wettbewerbskontextLoadStateSubject.asObservable(),
             dashboardVorbereiten: vi.fn(),

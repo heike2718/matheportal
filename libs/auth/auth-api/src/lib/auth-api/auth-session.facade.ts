@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +12,9 @@ import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 export class AuthSessionFacade {
     #store = inject(Store);
 
-    readonly sessionLoadState$: Observable<RESOURCE_LOAD_STATE> = this.#store.select(fromAuth.sessionLoadState);
+    readonly sessionLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE> = this.#store.select(
+        fromAuth.sessionLoadState
+    );
     readonly user$: Observable<User> = this.#store.select(fromAuth.user);
 
     readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });

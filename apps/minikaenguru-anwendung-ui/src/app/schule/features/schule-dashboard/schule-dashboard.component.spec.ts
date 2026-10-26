@@ -10,6 +10,7 @@ import { SchuleFacade } from '../../api/schule.facade';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
 import { By } from '@angular/platform-browser';
+import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 describe('SchuleDashboardComponent', () => {
     const wettbewerb: Wettbewerb = {
@@ -65,8 +66,11 @@ describe('SchuleDashboardComponent', () => {
     let schulkollegiumLoadedSignal: WritableSignal<boolean>;
     let wettbewerbskontextSignal: WritableSignal<SchuleWettbewerbskontext | undefined>;
 
-    let facadeMock: {
+    let wettbewerbFacadeMock: {
         aktuellerWettbewerb: Signal<Wettbewerb>;
+    };
+
+    let facadeMock: {
         schulauswahlMoeglich: Signal<boolean>;
         wettbewerbskontextLoaded: Signal<boolean>;
         schulkollegiumLoaded: Signal<boolean>;
@@ -81,8 +85,11 @@ describe('SchuleDashboardComponent', () => {
         schulkollegiumLoadedSignal = signal(false);
         wettbewerbskontextSignal = signal(undefined);
 
-        facadeMock = {
+        wettbewerbFacadeMock = {
             aktuellerWettbewerb: aktuellerWettbewerbSignal,
+        };
+
+        facadeMock = {
             schulauswahlMoeglich: schulauswahlMoeglichSignal,
             wettbewerbskontextLoaded: wettbewerbskontextLoadedSignal,
             schulkollegiumLoaded: schulkollegiumLoadedSignal,
@@ -93,6 +100,10 @@ describe('SchuleDashboardComponent', () => {
         await TestBed.configureTestingModule({
             imports: [SchuleDashboardComponent],
             providers: [
+                {
+                    provide: WettbewerbFacade,
+                    useValue: wettbewerbFacadeMock,
+                },
                 {
                     provide: SchuleFacade,
                     useValue: facadeMock,

@@ -2,13 +2,13 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { Wettbewerb } from '../../model/wettbewerb.model';
 import { WettbewerbActions } from './wettbewerb.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { mapErrorToResourceLoadState } from '@matheportal/shared-utils';
+import { PUBLIC_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { mapErrorToPublicResourceLoadState } from '@matheportal/shared-utils';
 
 const WETTBEWERB_FEATURE_KEY = 'MKAWettbewerb';
 
 export interface WettbewerbState {
-    readonly wettbewerbLoadState: RESOURCE_LOAD_STATE;
+    readonly wettbewerbLoadState: PUBLIC_RESOURCE_LOAD_STATE;
     readonly wettbewerb: Wettbewerb | undefined;
 }
 
@@ -28,7 +28,11 @@ export const wettbewerbFeature = createFeature({
             return { ...state, wettbewerb, wettbewerbLoadState: 'loaded' };
         }),
         on(WettbewerbActions.wettbewerbLadenFailed, (state, { error }) => {
-            return { ...state, wettbewerb: undefined, wettbewerbLoadState: mapErrorToResourceLoadState(error) };
+            return {
+                ...state,
+                wettbewerb: undefined,
+                wettbewerbLoadState: mapErrorToPublicResourceLoadState(error),
+            };
         }),
         on(userLoggedOut, () => initialWettbewerbState)
     ),

@@ -1,7 +1,7 @@
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { AuthState } from './auth.reducer';
 import { fromAuth } from './auth.selectors';
-import { RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 describe('fromAuth tests', () => {
     const standardUser: User = {
@@ -27,7 +27,7 @@ describe('fromAuth tests', () => {
         expect(result).toEqual(state.user);
     });
 
-    it.each([])('should select the sessionLoadState with %s', (LoadState: RESOURCE_LOAD_STATE) => {
+    it.each([])('should select the sessionLoadState with %s', (LoadState: RESTRICTED_RESOURCE_LOAD_STATE) => {
         const state: AuthState = {
             user: standardUser,
             sessionLoadState: LoadState,
