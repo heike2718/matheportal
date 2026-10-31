@@ -33,19 +33,19 @@ public class AuthproviderRestClientResponseExceptionMapper implements ResponseEx
         case 401:
         case 403:
             return new AuthproviderHttpException(status,
-                    "Konfiguration des AuthproviderRestClient-Aufrufs ist falsch - client.id und client.secret prüfen");
+                    "Konfiguration des AuthproviderRestClient-Aufrufs ist falsch - client.id und client.secret prüfen.");
         case 404:
-            return new AuthproviderHttpException(status, "Diese Resource gibt es nicht");
+            return new AuthproviderHttpException(status, "Diese Resource gibt es nicht.");
         case 503:
         case 504:
-            return new AuthproviderHttpException(status, "Authprovider kann nicht erreicht werden");
+            return new AuthproviderHttpException(status, "Authprovider kann nicht erreicht werden.");
         default:
             return new AuthproviderHttpException(status,
                     "authprovider antwortet mit unerwartetem http-Status " + status);
         }
     }
 
-    AuthproviderHttpException mapToExceptionWithMessagePayload(final Response response) {
+    private AuthproviderHttpException mapToExceptionWithMessagePayload(final Response response) {
 
         final int status = response.getStatus();
 

@@ -9,7 +9,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -18,6 +17,8 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import de.mathejungalt.matheportal.shell.domain.clientauth.OAuthClientCredentials;
+import de.mathejungalt.matheportal.shell.domain.clientauth.OauthClientAccessToken;
+import de.mathejungalt.matheportal.shell.domain.login.ExchangeTokenResponse;
 import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLoggingFilter;
 
 /**
@@ -25,25 +26,11 @@ import de.mathejungalt.matheportal.shell.infrastructure.filter.RestClientLogging
  */
 @RegisterRestClient(configKey = "authprovider")
 @RegisterProvider(RestClientLoggingFilter.class)
+@RegisterProvider(AuthproviderRestClientResponseExceptionMapper.class)
 @Path("api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AuthproviderRestClient {
-
-    /**
-     * Anzahl erneuter Versuche, wenn IAM zu lange braucht.
-     */
-    int MAX_RETRIES = 2;
-
-    /**
-     * Wartezeit zwischen 2 REST-Requests im Fehlerfall.
-     */
-    int DELAY_SECONDS = 300;
-
-    /**
-     * Timeout.
-     */
-    int TIMEOUT_SECONDS = 10;
 
     /**
      * accesstoken-API des IAM.
@@ -52,10 +39,10 @@ public interface AuthproviderRestClient {
      * @return Response
      */
     @POST
-    @Path("clients/client/accesstoken")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS, retryOn = TimeoutException.class)
-    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
-    Response authenticateClient(OAuthClientCredentials clientSecrets);
+    @Path("clients/client/accesstoken/v2")
+    @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
+    OauthClientAccessToken authenticateClient(OAuthClientCredentials clientSecrets);
 
     /**
      * Tauscht das oneTimeToken gegen ein JWT für den sich authentifizierenden Benutzer.
@@ -65,10 +52,10 @@ public interface AuthproviderRestClient {
      * @return Response
      */
     @PUT
-    @Path("token/exchange/{oneTimeToken}")
-    @Retry(maxRetries = MAX_RETRIES, delay = DELAY_SECONDS)
-    @Timeout(value = TIMEOUT_SECONDS, unit = ChronoUnit.SECONDS)
-    Response exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
+    @Path("token/exchange/{oneTimeToken}/v2")
+    @Retry(maxRetries = 0, delay = 200, delayUnit = ChronoUnit.MILLIS, retryOn = TimeoutException.class)
+    @Timeout(value = 10000, unit = ChronoUnit.MILLIS) // NOPMD
+    ExchangeTokenResponse exchangeOneTimeTokenWithJwt(@PathParam("oneTimeToken") String oneTimeToken,
             OAuthClientCredentials clientCredentials);
 
 }
