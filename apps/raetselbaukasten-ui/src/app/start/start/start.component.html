@@ -1,0 +1,11 @@
+<div class="rbk-start">
+    @if (authSessionFacade.sessionLoadState() === 'unauthorized') {
+        <rbk-guest-info></rbk-guest-info>
+    }
+    @if (authSessionFacade.sessionLoadState() === 'technical-error') {
+        <p>
+            Ihre Berechtigung konnte nicht geladen werden. Bitte laden Sie die Seite erneut. Sollte der Fehler weiterhin
+            auftreten, versuchen Sie es später noch einmal.
+        </p>
+    }
+</div>

@@ -84,28 +84,6 @@ describe('MkaAuthorizationFacade tests', () => {
         dispatchSpy = vi.spyOn(store, 'dispatch');
     }
 
-    describe('startViewState tests', () => {
-        it('should return loading when the session is not-loaded', async () => {
-            await setup('not-loaded', anonymousUser, 'not-loaded', berechtigungstypNone);
-
-            expect(facade.startViewState()).toBe('loading');
-        });
-
-        it('should return failed when session initialization has a technical error', async () => {
-            await setup('technical-error', anonymousUser, 'not-loaded', berechtigungstypNone);
-
-            expect(facade.startViewState()).toBe('failed');
-        });
-
-        it('should return guest when not logged in', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-            const berechtigungstyp: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
-            await setup('unauthorized', anonymousUser, authorizationLoadState, berechtigungstyp);
-
-            expect(facade.startViewState()).toBe('guest');
-        });
-    });
-
     describe('ensureAuthorizationLoaded tests', () => {
         it.each(['not-loaded', 'loaded', 'unauthorized', 'technical-error'] as const)(
             'dispatches the ensure action when sessionLoadState is %s',

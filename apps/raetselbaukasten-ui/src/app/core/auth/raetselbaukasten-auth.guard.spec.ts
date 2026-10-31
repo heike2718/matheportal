@@ -9,10 +9,10 @@ import {
     UrlTree,
 } from '@angular/router';
 import { AuthSessionFacade } from '@matheportal/auth-api';
-import { BehaviorSubject, firstValueFrom, isObservable, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, isObservable, Observable } from 'rxjs';
 import { describe, expect, it } from 'vitest';
-import { raetselbaukastenAutorGuard } from './raetselbaukasten-autor.guard';
 import { User } from '@matheportal/auth-model';
+import { raetselbaukastenAuthGuard } from './raetselbaukasten-auth.guard';
 
 describe('raetselbaukastenAuthGuard', () => {
     const route = {} as ActivatedRouteSnapshot;
@@ -55,7 +55,7 @@ describe('raetselbaukastenAuthGuard', () => {
         const { router } = setup([], true, 'Gast');
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
+            resolveGuardResult(raetselbaukastenAuthGuard()(route, state))
         );
 
         expect(result).toBeInstanceOf(UrlTree);
@@ -66,7 +66,7 @@ describe('raetselbaukastenAuthGuard', () => {
         setup(['KL_ADMIN', 'AUTOR'], false, 'Frodo');
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
+            resolveGuardResult(raetselbaukastenAuthGuard()(route, state))
         );
 
         expect(result).toBeTruthy();
@@ -76,7 +76,7 @@ describe('raetselbaukastenAuthGuard', () => {
         setup(['ADMIN', 'KL_ADMIN'], false, 'Checki');
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
+            resolveGuardResult(raetselbaukastenAuthGuard()(route, state))
         );
 
         expect(result).toBeTruthy();
@@ -86,7 +86,7 @@ describe('raetselbaukastenAuthGuard', () => {
         setup([], false, 'Ada');
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
+            resolveGuardResult(raetselbaukastenAuthGuard()(route, state))
         );
 
         expect(result).toBeTruthy();
@@ -96,7 +96,7 @@ describe('raetselbaukastenAuthGuard', () => {
         setup(['STANDARD'], false, 'Bilbo');
 
         const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
+            resolveGuardResult(raetselbaukastenAuthGuard()(route, state))
         );
 
         expect(result).toBeTruthy();
