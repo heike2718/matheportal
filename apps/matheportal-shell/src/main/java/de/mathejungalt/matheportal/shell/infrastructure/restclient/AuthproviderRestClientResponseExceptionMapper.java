@@ -22,22 +22,22 @@ public class AuthproviderRestClientResponseExceptionMapper implements ResponseEx
 
         final int status = response.getStatus();
 
-        if (status >= 300 && status < 400) { // NOPMD
+        if (status >= 300 && status < 400) {
             return new AuthproviderHttpException(status, "autprovider sendet redirect mit status " + status);
         }
 
         switch (status) {
-        case 400: // NOPMD
-        case 500: // NOPMD
+        case 400:
+        case 500:
             return mapToExceptionWithMessagePayload(response);
-        case 401: // NOPMD
-        case 403: // NOPMD
+        case 401:
+        case 403:
             return new AuthproviderHttpException(status,
                     "Konfiguration des AuthproviderRestClient-Aufrufs ist falsch - client.id und client.secret prüfen.");
-        case 404: // NOPMD
+        case 404:
             return new AuthproviderHttpException(status, "Diese Resource gibt es nicht.");
-        case 503: // NOPMD
-        case 504: // NOPMD
+        case 503:
+        case 504:
             return new AuthproviderHttpException(status, "Authprovider kann nicht erreicht werden.");
         default:
             return new AuthproviderHttpException(status,
