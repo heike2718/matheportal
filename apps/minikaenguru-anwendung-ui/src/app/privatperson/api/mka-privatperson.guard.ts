@@ -2,13 +2,13 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { combineLatest, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 import { PrivatpersonFacade } from './privatperson.facade';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 
 export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
-    const portalSessionFacade = inject(AuthSessionFacade);
+    const portalSessionFacade = inject(PortalSessionFacade);
     const mkaAuthFacade = inject(MkaAuthorizationFacade);
     const router = inject(Router);
     const privatpersonFacade = inject(PrivatpersonFacade);

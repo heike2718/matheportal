@@ -4,7 +4,7 @@ import { SidenavComponent } from './sidenav.component';
 import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { HomeComponent } from '../../home/home.component';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, PortalSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { Component, computed } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -12,7 +12,7 @@ import { By } from '@angular/platform-browser';
 describe('SidenavComponent', () => {
     let fixture: ComponentFixture<SidenavComponent>;
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         validateSession: vi.fn(),
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
@@ -35,9 +35,9 @@ describe('SidenavComponent', () => {
     } as User;
 
     async function setup(user: User) {
-        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
-        authSessionFacadeMock.user = computed(() => user);
-        authSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
+        portalSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        portalSessionFacadeMock.user = computed(() => user);
+        portalSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
 
         await TestBed.configureTestingModule({
             imports: [SidenavComponent],
@@ -46,7 +46,7 @@ describe('SidenavComponent', () => {
                     provide: MATHEPORTAL_SHELL_CONFIGURATION,
                     useValue: { ...mockRuntimeConfig, apiUrl: '' },
                 },
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
                 { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideRouter([
                     { path: 'home', component: HomeComponent },

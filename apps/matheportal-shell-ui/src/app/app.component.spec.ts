@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { ActivatedRoute } from '@angular/router';
 import { mockRuntimeConfig } from '@matheportal/shared-testing';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from './config/matheportal-shell.configuration';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, PortalSessionFacade } from '@matheportal/auth-api';
 import { provideMockStore } from '@ngrx/store/testing';
 import { computed } from '@angular/core';
 import { anonymousUser } from '@matheportal/auth-model';
@@ -13,7 +13,7 @@ describe('AppComponent', () => {
     const authFlowFacadeMock = {
         initClearOrRestoreSession: vi.fn(),
     };
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
         isAdmin: computed(() => false),
@@ -30,7 +30,7 @@ describe('AppComponent', () => {
                 },
                 { provide: ActivatedRoute, useFactory: () => activatedRouteStub },
                 { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
             ],
         }).compileComponents();
     });

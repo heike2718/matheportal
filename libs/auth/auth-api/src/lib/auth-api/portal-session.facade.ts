@@ -9,13 +9,20 @@ import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 @Injectable({
     providedIn: 'root',
 })
-export class AuthSessionFacade {
+export class PortalSessionFacade {
     #store = inject(Store);
 
     readonly sessionLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE> = this.#store.select(
         fromAuth.sessionLoadState
     );
     readonly user$: Observable<User> = this.#store.select(fromAuth.user);
+
+    readonly portalSession$: Observable<{ user: User; sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE }> =
+        this.#store.select(fromAuth.portalSession);
+
+    readonly portalSession = toSignal(this.portalSession$, {
+        initialValue: { user: anonymousUser, sessionLoadState: 'not-loaded' },
+    });
 
     readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });
 

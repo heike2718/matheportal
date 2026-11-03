@@ -1,9 +1,7 @@
-import { UserWithBerechtigungen } from '@matheportal/auth-model';
+import { User } from '@matheportal/auth-model';
 import { RAETSELBAUKASTEN_BERECHTIGUNG, RaetselbaukastenUserBerechtigung } from './raetselbaukasten-berechtigung.model';
 
-export function resolveRaetselbaukastenBerechtigung(
-    user: UserWithBerechtigungen | null
-): RaetselbaukastenUserBerechtigung {
+export function resolveRaetselbaukastenBerechtigung(user: User | null): RaetselbaukastenUserBerechtigung {
     if (user === null || user.berechtigungen.length === 0) {
         return RAETSELBAUKASTEN_BERECHTIGUNG.none;
     }
@@ -22,7 +20,7 @@ export function resolveRaetselbaukastenBerechtigung(
     return RAETSELBAUKASTEN_BERECHTIGUNG.standard;
 }
 
-export function isAdminOrAutor(user: UserWithBerechtigungen): boolean {
+export function isAdminOrAutor(user: User): boolean {
     const raetselbaukastenBerechtigung = resolveRaetselbaukastenBerechtigung(user);
 
     if (

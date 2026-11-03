@@ -1,0 +1,10 @@
+<div class="rbk-start">
+    @if (portalSessionFacade.sessionLoadState() === 'technical-error') {
+        <p data-testid="technical-error-text">
+            Ihre Berechtigung konnte nicht geladen werden. Bitte laden Sie die Seite erneut. Sollte der Fehler weiterhin
+            auftreten, versuchen Sie es später noch einmal.
+        </p>
+    } @else {
+        <p data-testid="bitte-warten-text">Kleinen Moment...</p>
+    }
+</div>

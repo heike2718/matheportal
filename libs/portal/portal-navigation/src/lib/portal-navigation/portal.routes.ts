@@ -15,6 +15,12 @@ export const portalRoutes = {
 
     raetselbaukasten: {
         root: 'raetselbaukasten',
+        guests: 'guests',
+        dashboard: 'dashboard',
+        raetsel: 'raetsel',
+        aufgabensammlungen: 'aufgabensammlungen',
+        medien: 'medien',
+        ladefehler: 'ladefehler',
         unknown: '**',
     },
 

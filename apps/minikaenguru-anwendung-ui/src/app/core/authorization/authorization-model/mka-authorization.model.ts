@@ -9,12 +9,3 @@ export type MinikaenguruBerechtigungstypKeys = keyof typeof MINIKAENGURU_BERECHT
 export type MinikaenguruBerechtigungstyp = (typeof MINIKAENGURU_BERECHTIGUNGSTYP)[MinikaenguruBerechtigungstypKeys];
 
 export type AuthorizationLoadState = 'not-loaded' | 'loaded' | 'failed';
-
-export type StartViewState =
-    | 'not-loaded'
-    | 'loading'
-    | 'failed'
-    | 'guest'
-    | 'dashboard-privatperson'
-    | 'dashboard-lehrperson'
-    | 'needs-wettbewerbsdurchfuehrenden';

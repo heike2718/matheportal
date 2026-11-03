@@ -5,6 +5,6 @@ export interface RaetselbaukastenConfiguration extends MatheportalRuntimeConfigu
     readonly apiUrl: string;
 }
 
-export const MATHEPORTAL_SHELL_CONFIGURATION = new InjectionToken<RaetselbaukastenConfiguration>(
-    'minikaenguru-anwendung-configuration'
+export const RAETSELBAUKASTEN_CONFIGURATION = new InjectionToken<RaetselbaukastenConfiguration>(
+    'raetselbaukasten-configuration'
 );

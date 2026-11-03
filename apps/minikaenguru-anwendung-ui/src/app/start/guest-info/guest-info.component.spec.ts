@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GuestInfoComponent } from './guest-info.component';
-import { computed, signal, Signal, WritableSignal } from '@angular/core';
-import { anonymousUser } from '@matheportal/auth-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { signal, Signal, WritableSignal } from '@angular/core';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../core/wettbewerb/model/wettbewerb.model';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 import { By } from '@angular/platform-browser';
@@ -27,7 +26,7 @@ describe('GuestInfoComponent', () => {
         aktuellerWettbewerb: Signal<Wettbewerb>;
     };
 
-    let authSessionFacadeMock: {
+    let portalSessionFacadeMock: {
         isLoggedIn: Signal<boolean>;
     };
 
@@ -39,7 +38,7 @@ describe('GuestInfoComponent', () => {
             aktuellerWettbewerb: aktuellerWettbewerbSignal,
         };
 
-        authSessionFacadeMock = {
+        portalSessionFacadeMock = {
             isLoggedIn: loggedInSignal,
         };
 
@@ -47,8 +46,8 @@ describe('GuestInfoComponent', () => {
             imports: [GuestInfoComponent],
             providers: [
                 {
-                    provide: AuthSessionFacade,
-                    useValue: authSessionFacadeMock,
+                    provide: PortalSessionFacade,
+                    useValue: portalSessionFacadeMock,
                 },
                 {
                     provide: WettbewerbFacade,

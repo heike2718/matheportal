@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 
 @Component({
     selector: 'portal-home',
@@ -11,5 +11,5 @@ import { AuthSessionFacade } from '@matheportal/auth-api';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-    authSessionFacade = inject(AuthSessionFacade);
+    portalSessionFacade = inject(PortalSessionFacade);
 }

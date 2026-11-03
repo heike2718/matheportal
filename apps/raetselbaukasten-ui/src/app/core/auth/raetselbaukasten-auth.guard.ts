@@ -1,18 +1,32 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
-import { map, take } from 'rxjs';
+import { PortalSessionFacade } from '@matheportal/auth-api';
+import { portalRoutes } from '@matheportal/portal-navigation';
+import { filter, map, take } from 'rxjs';
 
 /**
  *
  * @returns true or a navigation
  */
 export const raetselbaukastenAuthGuard = (): CanActivateFn => () => {
-    const auth = inject(AuthSessionFacade);
+    const portalSessionFacade = inject(PortalSessionFacade);
     const router = inject(Router);
 
-    return auth.user$.pipe(
+    return portalSessionFacade.portalSession$.pipe(
+        filter(session => session.sessionLoadState !== 'not-loaded'),
         take(1),
-        map(user => (!user.anonym ? true : router.createUrlTree(['/', 'raetselbaukasten'])))
+        map(({ user, sessionLoadState }) => {
+            if (sessionLoadState === 'technical-error') {
+                return router.createUrlTree([
+                    '/',
+                    portalRoutes.raetselbaukasten.root,
+                    portalRoutes.raetselbaukasten.ladefehler,
+                ]);
+            }
+
+            return user.anonym
+                ? router.createUrlTree(['/', portalRoutes.raetselbaukasten.root, portalRoutes.raetselbaukasten.guests])
+                : true;
+        })
     );
 };

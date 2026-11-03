@@ -9,8 +9,13 @@ const sessionLoadState = createSelector(selectMPAuthState, state => state.sessio
 
 const isAdmin = createSelector(user, user => user.berechtigungen.indexOf('ADMIN') >= 0);
 
+const portalSession = createSelector(user, sessionLoadState, (user, sessionLoadState) => {
+    return { user, sessionLoadState };
+});
+
 export const fromAuth = {
     user,
     sessionLoadState,
     isAdmin,
+    portalSession,
 };

@@ -13,7 +13,7 @@ import {
 import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { Schule } from '../../../../core/model/schulkatalog.model';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { Action, Store } from '@ngrx/store';
@@ -43,7 +43,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
 
     let routerMock: { navigate: ReturnType<typeof vi.fn> };
 
-    let authSesisonFacadeMock: { validateSession: ReturnType<typeof vi.fn> };
+    let portalSesisonFacadeMock: { validateSession: ReturnType<typeof vi.fn> };
 
     const conflictErrorResponse = new HttpErrorResponse({
         status: 409,
@@ -74,7 +74,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             navigate: vi.fn(),
         };
 
-        authSesisonFacadeMock = {
+        portalSesisonFacadeMock = {
             validateSession: vi.fn(),
         };
 
@@ -93,8 +93,8 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                     useValue: httpServiceMock,
                 },
                 {
-                    provide: AuthSessionFacade,
-                    useValue: authSesisonFacadeMock,
+                    provide: PortalSessionFacade,
+                    useValue: portalSesisonFacadeMock,
                 },
             ],
         });
@@ -407,7 +407,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'privatperson']);
-            expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
+            expect(portalSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
 
         it('should route to lehrperson when durchfuerender mit Durchführungsart schule angelegt', async () => {
@@ -429,7 +429,7 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
             expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
-            expect(authSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
+            expect(portalSesisonFacadeMock.validateSession).toHaveBeenCalledOnce();
         });
     });
 

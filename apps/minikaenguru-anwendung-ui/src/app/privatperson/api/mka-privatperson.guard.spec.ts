@@ -11,7 +11,7 @@ import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } fr
 import { TestBed } from '@angular/core/testing';
 import { mkaPrivatpersonGuard } from './mka-privatperson.guard';
 import { AUTHORIZED_RESOURCE_LOAD_STATE, RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState } from '../../core/authorization/authorization-model';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
@@ -87,7 +87,7 @@ describe('mkaPrivatpersonGuard tests', () => {
             providers: [
                 provideRouter([]),
                 {
-                    provide: AuthSessionFacade,
+                    provide: PortalSessionFacade,
                     useValue: {
                         sessionLoadState$: sessionLoadStateSubject.asObservable(),
                     },

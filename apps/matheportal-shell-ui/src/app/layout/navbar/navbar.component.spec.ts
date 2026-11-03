@@ -7,14 +7,14 @@ import { NavbarComponent } from './navbar.component';
 import { HomeComponent } from '../../home/home.component';
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
 import { Component, computed } from '@angular/core';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, PortalSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
 describe('NavbarComponent', () => {
     let fixture: ComponentFixture<NavbarComponent>;
     let component: NavbarComponent;
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         validateSession: vi.fn(),
         isLoggedIn: computed(() => false),
         user: computed(() => anonymousUser),
@@ -37,9 +37,9 @@ describe('NavbarComponent', () => {
     } as User;
 
     async function setup(isHandset: boolean, user: User) {
-        authSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
-        authSessionFacadeMock.user = computed(() => user);
-        authSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
+        portalSessionFacadeMock.isLoggedIn = computed(() => !user.anonym);
+        portalSessionFacadeMock.user = computed(() => user);
+        portalSessionFacadeMock.isAdmin = computed(() => user.berechtigungen.indexOf('ADMIN') >= 0);
 
         await TestBed.configureTestingModule({
             imports: [NavbarComponent],
@@ -48,7 +48,7 @@ describe('NavbarComponent', () => {
                     provide: MATHEPORTAL_SHELL_CONFIGURATION,
                     useValue: { ...mockRuntimeConfig, apiUrl: '' },
                 },
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
                 { provide: AuthFlowFacade, useValue: authFlowFacadeMock },
                 provideRouter([
                     { path: 'home', component: HomeComponent },

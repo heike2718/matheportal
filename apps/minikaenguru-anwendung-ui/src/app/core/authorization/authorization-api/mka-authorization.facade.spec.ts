@@ -11,13 +11,8 @@ import {
 } from '../authorization-model';
 import { fromMkaAuthorization, MkaAuthorizationActions } from '../authorization-data';
 import { computed } from '@angular/core';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-
-interface TestParameters {
-    readonly user: User;
-    readonly berechtigungstyp: MinikaenguruBerechtigungstyp;
-}
 
 describe('MkaAuthorizationFacade tests', () => {
     let facade: MkaAuthorizationFacade;
@@ -30,23 +25,9 @@ describe('MkaAuthorizationFacade tests', () => {
         berechtigungen: ['STANDARD'],
     };
 
-    const loggedInLehrer: User = {
-        anonym: false,
-        fullName: 'Frodo',
-        berechtigungen: ['STANDARD', 'SCHULE'],
-    };
-
-    const loggedInPrivatperson: User = {
-        anonym: false,
-        fullName: 'Bilbo',
-        berechtigungen: ['STANDARD', 'PRIVAT'],
-    };
-
     const berechtigungstypNone: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
-    const berechtigungstypSchule: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.schule;
-    const berechtigungstypPrivat: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.privat;
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         user: computed(() => anonymousUser),
         sessionLoadState: computed(() => 'not-loaded'),
     };
@@ -57,13 +38,13 @@ describe('MkaAuthorizationFacade tests', () => {
         authorizationLoadState: AuthorizationLoadState,
         berechtigungstyp: MinikaenguruBerechtigungstyp
     ) {
-        authSessionFacadeMock.user = computed(() => user);
-        authSessionFacadeMock.sessionLoadState = computed(() => sessionLoadState);
+        portalSessionFacadeMock.user = computed(() => user);
+        portalSessionFacadeMock.sessionLoadState = computed(() => sessionLoadState);
 
         TestBed.configureTestingModule({
             providers: [
                 MkaAuthorizationFacade,
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
                 provideMockStore({
                     selectors: [
                         {
@@ -83,28 +64,6 @@ describe('MkaAuthorizationFacade tests', () => {
 
         dispatchSpy = vi.spyOn(store, 'dispatch');
     }
-
-    describe('startViewState tests', () => {
-        it('should return loading when the session is not-loaded', async () => {
-            await setup('not-loaded', anonymousUser, 'not-loaded', berechtigungstypNone);
-
-            expect(facade.startViewState()).toBe('loading');
-        });
-
-        it('should return failed when session initialization has a technical error', async () => {
-            await setup('technical-error', anonymousUser, 'not-loaded', berechtigungstypNone);
-
-            expect(facade.startViewState()).toBe('failed');
-        });
-
-        it('should return guest when not logged in', async () => {
-            const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
-            const berechtigungstyp: MinikaenguruBerechtigungstyp = MINIKAENGURU_BERECHTIGUNGSTYP.none;
-            await setup('unauthorized', anonymousUser, authorizationLoadState, berechtigungstyp);
-
-            expect(facade.startViewState()).toBe('guest');
-        });
-    });
 
     describe('ensureAuthorizationLoaded tests', () => {
         it.each(['not-loaded', 'loaded', 'unauthorized', 'technical-error'] as const)(

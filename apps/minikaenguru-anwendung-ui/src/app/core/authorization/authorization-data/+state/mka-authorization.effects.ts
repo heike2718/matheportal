@@ -8,7 +8,7 @@ import { User } from '@matheportal/auth-model';
 import { TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { fromMkaAuthorization } from './mka-authorization.selectors';
-import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
+import { PortalSessionFacade, sessionState } from '@matheportal/auth-api';
 import { MinikaenguruEinstiegActions } from '../../../ablaufsteuerung/minikaenguru-einstieg.actions';
 import { MkaAuthorizationFacade } from '../../authorization-api/mka-authorization.facade';
 import { Router } from '@angular/router';
@@ -22,7 +22,7 @@ export class MkaAuthorizationEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(MkaAuthorizationHttpService);
     #store = inject(Store);
-    #authSessionFacade = inject(AuthSessionFacade);
+    #portalSessionFacade = inject(PortalSessionFacade);
     #mkaAuthorizationFacade = inject(MkaAuthorizationFacade);
     #router = inject(Router);
 
@@ -118,7 +118,7 @@ export class MkaAuthorizationEffects {
             this.#actions.pipe(
                 ofType(MkaAuthorizationActions.mkaAuthorizationLoaded),
                 tap(({ user }) => {
-                    this.#authSessionFacade.synchronizeUser(user);
+                    this.#portalSessionFacade.synchronizeUser(user);
                 })
             ),
         { dispatch: false }

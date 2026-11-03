@@ -32,8 +32,4 @@ export const anonymousUser: User = {
     anonym: true,
 };
 
-export type UserWithBerechtigungen = {
-    readonly berechtigungen: readonly string[];
-};
-
 export type AuthUrlResponse = components['schemas']['AuthUrlResponse'];

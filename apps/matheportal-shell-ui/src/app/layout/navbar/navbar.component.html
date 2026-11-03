@@ -42,7 +42,7 @@
                     <span class="nav__caption">Statistik</span>
                 </a>
 
-                @if (authSessionFacade.isAdmin()) {
+                @if (portalSessionFacade.isAdmin()) {
                     <a
                         mat-button
                         class="nav__link nav__link--minikaenguru-admin"
@@ -59,11 +59,11 @@
 
         <div class="nav__section nav__section--right">
             <div class="nav__user">
-                @if (authSessionFacade.user(); as user) {
+                @if (portalSessionFacade.user(); as user) {
                     <span class="nav__greeting">Hallo, {{ user.fullName }}</span>
                 }
 
-                @if (authSessionFacade.isLoggedIn()) {
+                @if (portalSessionFacade.isLoggedIn()) {
                     <button mat-stroked-button type="button" class="nav__auth-btn" (click)="onLogout()">
                         <mat-icon class="nav__icon nav__icon--button" aria-hidden="true">logout</mat-icon>
                         <span data-testid="navbar-auth-btn-label">abmelden</span>

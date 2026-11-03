@@ -3,12 +3,11 @@ import { DashboardComponent } from './dashboard.component';
 import { Component, computed } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { By } from '@angular/platform-browser';
 import { normalizeText } from '@matheportal/shared-testing';
 
 describe('DashboardComponent', () => {
-    let component: DashboardComponent;
     let fixture: ComponentFixture<DashboardComponent>;
 
     const standardUser: User = {
@@ -31,18 +30,18 @@ describe('DashboardComponent', () => {
 
     const activatedRouteMock = {};
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         user: computed(() => anonymousUser),
     };
 
     async function setup(user: User) {
-        authSessionFacadeMock.user = computed(() => user);
+        portalSessionFacadeMock.user = computed(() => user);
 
         await TestBed.configureTestingModule({
             imports: [DashboardComponent],
             providers: [
                 { provide: ActivatedRoute, useValue: activatedRouteMock },
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
                 provideRouter([
                     { path: 'raetsel', component: DummyRouteComponent },
                     { path: 'aufgabensammlungen', component: DummyRouteComponent },
@@ -52,7 +51,6 @@ describe('DashboardComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(DashboardComponent);
-        component = fixture.componentInstance;
         await fixture.whenStable();
     }
 

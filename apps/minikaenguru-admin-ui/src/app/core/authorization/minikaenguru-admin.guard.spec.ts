@@ -8,7 +8,7 @@ import {
     RouterStateSnapshot,
     UrlTree,
 } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable } from 'rxjs';
 import { minikaenguruAdminGuard } from './minikaenguru-admin.guard';
@@ -19,7 +19,7 @@ describe('minikaenguruAdminGuard tests', () => {
 
     let userSubject: BehaviorSubject<User>;
 
-    let authSessionFacadeMock: {
+    let portalSessionFacadeMock: {
         user$: Observable<User>;
     };
 
@@ -34,12 +34,12 @@ describe('minikaenguruAdminGuard tests', () => {
     function setup(user: User) {
         userSubject = new BehaviorSubject<User>(user);
 
-        authSessionFacadeMock = {
+        portalSessionFacadeMock = {
             user$: userSubject.asObservable(),
         };
 
         TestBed.configureTestingModule({
-            providers: [provideRouter([]), { provide: AuthSessionFacade, useValue: authSessionFacadeMock }],
+            providers: [provideRouter([]), { provide: PortalSessionFacade, useValue: portalSessionFacadeMock }],
         });
 
         const router = TestBed.inject(Router);

@@ -1,12 +1,12 @@
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { AuthSessionFacade } from './auth-session.facade';
+import { PortalSessionFacade } from './portal-session.facade';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { anonymousUser, User } from '@matheportal/auth-model';
 
-describe('AuthSessionFacade', () => {
-    let facade: AuthSessionFacade;
+describe('PortalSessionFacade tests', () => {
+    let facade: PortalSessionFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
 
@@ -21,10 +21,10 @@ describe('AuthSessionFacade', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [AuthSessionFacade, provideMockStore()],
+            providers: [PortalSessionFacade, provideMockStore()],
         });
 
-        facade = TestBed.inject(AuthSessionFacade);
+        facade = TestBed.inject(PortalSessionFacade);
         store = TestBed.inject(Store) as MockStore;
 
         dispatchSpy = vi.spyOn(store, 'dispatch');

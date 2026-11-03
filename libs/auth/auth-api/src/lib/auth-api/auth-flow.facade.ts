@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AuthSessionFacade } from './auth-session.facade';
+import { PortalSessionFacade } from './portal-session.facade';
 import { AuthActions } from '@matheportal/auth-data';
 import { LOCATION_HASH_SERVICE } from '@matheportal/auth-data';
 import { mapHashToAuthResult } from './utils/auth-api.utils';
@@ -9,7 +9,7 @@ import { mapHashToAuthResult } from './utils/auth-api.utils';
 })
 export class AuthFlowFacade {
     #store = inject(Store);
-    #authSessionFacade = inject(AuthSessionFacade);
+    #portalSessionFacade = inject(PortalSessionFacade);
     #locationHashService = inject(LOCATION_HASH_SERVICE);
 
     login(): void {
@@ -29,7 +29,7 @@ export class AuthFlowFacade {
         const authResult = mapHashToAuthResult(hash);
 
         if (authResult === null) {
-            this.#authSessionFacade.validateSession();
+            this.#portalSessionFacade.validateSession();
             return;
         }
 

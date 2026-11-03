@@ -1,3 +1,4 @@
+import { User } from '@matheportal/auth-model';
 import {
     DURCHFUEHRUNGSART,
     Wettbewerbsdurchfuehrender,
@@ -7,6 +8,12 @@ import { MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model/mka-author
 import { mapDtoToBerechtigungstyp, resolveBerechtigungstyp } from './mka-authorization.utils';
 
 describe('mka-authorization utils tests', () => {
+    const user: User = {
+        anonym: false,
+        berechtigungen: [],
+        fullName: 'Hallodri',
+    };
+
     describe('resolveVeranstaltertyp', () => {
         it('should return none when null', () => {
             const result = resolveBerechtigungstyp(null);
@@ -14,22 +21,22 @@ describe('mka-authorization utils tests', () => {
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.none);
         });
         it('should return none when berechtigungen empty', () => {
-            const result = resolveBerechtigungstyp({ berechtigungen: [] });
+            const result = resolveBerechtigungstyp(user);
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.none);
         });
         it('should return none when standard', () => {
-            const result = resolveBerechtigungstyp({ berechtigungen: ['STANDARD', 'AUTOR'] });
+            const result = resolveBerechtigungstyp({ ...user, berechtigungen: ['STANDARD', 'AUTOR'] });
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.none);
         });
         it('should return privat when Privatveranstalter', () => {
-            const result = resolveBerechtigungstyp({ berechtigungen: ['STANDARD', 'PRIVAT'] });
+            const result = resolveBerechtigungstyp({ ...user, berechtigungen: ['STANDARD', 'PRIVAT'] });
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.privat);
         });
         it('should return schule when Schule', () => {
-            const result = resolveBerechtigungstyp({ berechtigungen: ['STANDARD', 'SCHULE'] });
+            const result = resolveBerechtigungstyp({ ...user, berechtigungen: ['STANDARD', 'SCHULE'] });
 
             expect(result).toBe(MINIKAENGURU_BERECHTIGUNGSTYP.schule);
         });
