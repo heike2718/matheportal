@@ -15,6 +15,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schulkollegium;
@@ -110,16 +111,16 @@ public class SchuleService {
                 .filter(k -> !k.getUserUuid().equals(ownUuid))
                 .toList();
 
-        final List<String> namen = new ArrayList<>();
+        final List<Person> personen = new ArrayList<>();
 
         for (final SchulkollegiumsmitgliedEntity kollege : kollegen) {
             final String name = loadKollege(kollege.getUserUuid());
             if (name != null) {
-                namen.add(name);
+                personen.add(new Person().schulkuerzel(schuleId).fullName(name));
             }
         }
 
-        return new Schulkollegium().kuerzel(schuleId).kollegium(namen);
+        return new Schulkollegium().schulkuerzel(schuleId).kollegium(personen);
 
     }
 

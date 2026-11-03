@@ -17,7 +17,7 @@ export class ArbeitskontextHttpService {
      * @returns Observable<Schule[]>
      */
     public loadLehrpersonSchulen(): Observable<Schule[]> {
-        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/me/schulen', {
+        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + '/api/lehrperson/me/schulen', {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
@@ -29,19 +29,22 @@ export class ArbeitskontextHttpService {
      * @returns Observable<SchuleWettbewerbskontext>
      */
     public loadSchuleWettbewerbskontext(schuleId: string): Observable<SchuleWettbewerbskontext> {
-        return this.#httpClient.get<SchuleWettbewerbskontext>(this.#config.apiUrl + '/api/schulen/' + schuleId, {
-            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
-            withCredentials: true,
-        });
+        return this.#httpClient.get<SchuleWettbewerbskontext>(
+            this.#config.apiUrl + '/api/schulen/' + schuleId + '/wettbewerbskontext',
+            {
+                context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+                withCredentials: true,
+            }
+        );
     }
 
     /**
      *
-     * @param schuleId Läd das Schulkolegium.
+     * @param schuleId Läd das Schulkollegium.
      * @returns Observable<Schulkollegium>
      */
     public loadSchulkollegium(schuleId: string): Observable<Schulkollegium> {
-        return this.#httpClient.get<Schulkollegium>(this.#config.apiUrl + '/api/schulen/' + schuleId + '/kollegen', {
+        return this.#httpClient.get<Schulkollegium>(this.#config.apiUrl + '/api/schulen/' + schuleId + '/kollegium', {
             context: new HttpContext().set(SILENT_LOAD_CONTEXT, true).set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
@@ -53,7 +56,7 @@ export class ArbeitskontextHttpService {
      */
     public loadPrivatpersonWettbewerbskontext(): Observable<PrivatpersonWettbewerbskontext> {
         return this.#httpClient.get<PrivatpersonWettbewerbskontext>(
-            this.#config.apiUrl + '/api/wettbewerbsdurchfuehrende/me/wettbewerbskontext',
+            this.#config.apiUrl + '/api/privatperson/me/wettbewerbskontext',
             {
                 context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
                 withCredentials: true,

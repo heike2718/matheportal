@@ -38,22 +38,4 @@ public class WettbewerbsdurchfuehrendeResource implements Wettbewerbsdurchfuehre
                 .wettbewerbsdurchfuehrendenAnlegen(wettbewerbsdurchfuehrenderRequest);
         return Response.status(Status.CREATED).entity(responsePayload).build();
     }
-
-    @Override
-    public Response updateWettbewerbsdurchfuehrenden(
-            @Valid @NotNull final WettbewerbsdurchfuehrenderRequest wettbewerbsdurchfuehrenderRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateWettbewerbsdurchfuehrenden'");
-    }
-
-    @Override
-    public Response loadMySchools() {
-        return Response.ok(wettbewerbsdurchfuehrendeService.loadMySchools()).build();
-    }
-
-    @Override
-    public Response loadMyWettbewerbskontext() {
-        return Response.ok(wettbewerbsdurchfuehrendeService.loadMyWettbewerbskontext()).build();
-    }
-
 }

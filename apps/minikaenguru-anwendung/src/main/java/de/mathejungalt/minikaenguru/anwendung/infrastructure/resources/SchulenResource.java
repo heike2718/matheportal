@@ -20,13 +20,31 @@ public class SchulenResource implements SchulenApi {
     SchuleService schuleService;
 
     @Override
-    public Response getWettbewerbskontext(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+    public Response getWettbewerbskontextSchule(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
         return Response.ok(schuleService.loadWettbewerbskontext(schuleId)).build();
     }
 
     @Override
-    public Response getKollegen(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+    public Response loadAktuelleSchulteilnahme(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'loadAktuelleSchulteilnahme'");
+    }
+
+    @Override
+    public Response loadAnmeldendePerson(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'loadAnmeldendePerson'");
+    }
+
+    @Override
+    public Response loadSchulkollegium(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
         return Response.ok(schuleService.getKollegium(schuleId)).build();
+    }
+
+    @Override
+    public Response schuleAnmelden(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'schuleAnmelden'");
     }
 
 }

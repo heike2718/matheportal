@@ -48,7 +48,7 @@ public class SchulenResourceTest {
         final SchuleWettbewerbskontext result = given()
                 .accept(ContentType.JSON)
                 .pathParam("schuleId", schuleId)
-                .get()
+                .get("wettbewerbskontext")
                 .then()
                 .statusCode(200)
                 .and()
@@ -74,7 +74,12 @@ public class SchulenResourceTest {
 
         final String schuleId = "G6307A5U";
 
-        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get().then().statusCode(401);
+        given()
+                .accept(ContentType.JSON)
+                .pathParam("schuleId", schuleId)
+                .get("wettbewerbskontext")
+                .then()
+                .statusCode(401);
 
     }
 
@@ -84,7 +89,12 @@ public class SchulenResourceTest {
 
         final String schuleId = "2EX6DENW";
 
-        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get().then().statusCode(403);
+        given()
+                .accept(ContentType.JSON)
+                .pathParam("schuleId", schuleId)
+                .get("wettbewerbskontext")
+                .then()
+                .statusCode(403);
 
     }
 
@@ -102,7 +112,7 @@ public class SchulenResourceTest {
         final Schulkollegium result = given()
                 .accept(ContentType.JSON)
                 .pathParam("schuleId", schuleId)
-                .get("kollegen")
+                .get("kollegium")
                 .then()
                 .statusCode(200)
                 .and()
@@ -112,9 +122,10 @@ public class SchulenResourceTest {
                 .extract()
                 .as(Schulkollegium.class);
 
-        assertEquals(schuleId, result.getKuerzel());
+        assertEquals(schuleId, result.getSchulkuerzel());
         assertEquals(1, result.getKollegium().size());
-        assertEquals("Anna Johanna", result.getKollegium().getFirst());
+        assertEquals("Anna Johanna", result.getKollegium().getFirst().getFullName());
+        assertEquals("F7WAWNTW", result.getKollegium().getFirst().getSchulkuerzel());
         verify(authproviderRestClient).getUserDetails(anyString(), anyString(), anyString(), anyString());
 
     }
@@ -123,7 +134,7 @@ public class SchulenResourceTest {
     void should_getKollegen_return_401() {
         final String schuleId = "F7WAWNTW";
 
-        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get("kollegen").then().statusCode(401);
+        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get("kollegium").then().statusCode(401);
 
         verify(authproviderRestClient, never()).getUserDetails(anyString(), anyString(), anyString(), anyString());
 
@@ -133,7 +144,7 @@ public class SchulenResourceTest {
     void should_getKollegen_return_403() {
         final String schuleId = "2EX6DENW";
 
-        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get("kollegen").then().statusCode(401);
+        given().accept(ContentType.JSON).pathParam("schuleId", schuleId).get("kollegium").then().statusCode(401);
 
         verify(authproviderRestClient, never()).getUserDetails(anyString(), anyString(), anyString(), anyString());
     }

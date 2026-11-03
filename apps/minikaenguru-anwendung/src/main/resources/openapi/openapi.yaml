@@ -4,215 +4,6 @@ info:
     version: 1.0.0
     description: API der minikaenguru-anwendung.
 paths:
-    /api/berechtigungen:
-        get:
-            tags:
-                - Berechtigungen
-            summary: Läd die Minkänguru- Berechtigung eines eingeloggten Users
-            description: >
-                Holt die UUID aus der Session selektiert mit dieser den Wettbewerbsdurchführenden.
-                Falls es einen gibt, wird die Session um eine Berechtigung erweitert und der
-                zugehörige User wird zurückgegeben
-            operationId: loadBerechtigung
-            security:
-                - mpSession: []
-            responses:
-                '200':
-                    description: Zuordnung gefunden
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                '401':
-                    description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
-                '404':
-                    description: keine Zuordnung gefunden
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-    /api/wettbewerbsdurchfuehrende/konto:
-        get:
-            tags:
-                - Wettbewerbsdurchfuehrende
-            summary: 'Lesen eines Wettbewerbsdurchführenden'
-            description: 'Ein Wettbewerbsdurchführender mit der uuid aus der session wird gelesen'
-            operationId: loadWettbewerbsdurchfuehrenden
-            security:
-                - mpSession: []
-            responses:
-                '200':
-                    description: Wettbewerbsdurchführender erfolgreich geladen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-                '404':
-                    description: not found
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-        post:
-            tags:
-                - Wettbewerbsdurchfuehrende
-            summary: 'Anlegen eines Wettbewerbsdurchführenden'
-            description: 'Ein neuer Wettbewerbsdurchführender mit der uuid aus der session wird angelegt'
-            operationId: createWettbewerbsdurchfuehrenden
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/WettbewerbsdurchfuehrenderRequest'
-            security:
-                - mpSession: []
-            responses:
-                '201':
-                    description: Wettbewerbsdurchführender erfolgreich angelegt
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
-                '400':
-                    description: Request ist ungültig
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '409':
-                    description: conflict - Es gibt bereits einen Eintrag mit der gegebenen userUuid
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-        put:
-            tags:
-                - Wettbewerbsdurchfuehrende
-            summary: 'Ändern eines Wettbewerbsdurchführenden'
-            description: 'Der Wettbewerbsdurchführende mit der uuid aus der session wird geändert'
-            operationId: updateWettbewerbsdurchfuehrenden
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/WettbewerbsdurchfuehrenderRequest'
-            security:
-                - mpSession: []
-            responses:
-                '201':
-                    description: Wettbewerbsdurchführender erfolgreich angelegt
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
-                '400':
-                    description: Request ist ungültig
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-    /api/wettbewerbsdurchfuehrende/me/schulen:
-        get:
-            tags:
-                - Wettbewerbsdurchfuehrende
-            summary: Schulen laden
-            description: läd die Schulen eines Wettbewerbsdurchfuehrenden
-            operationId: loadMySchools
-            security:
-                - mpSession: []
-            responses:
-                '200':
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Schule'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '403':
-                    description: angemeldeter User ist keine Lehrperson.
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-    /api/wettbewerbsdurchfuehrende/me/wettbewerbskontext:
-        get:
-            tags:
-                - Wettbewerbsdurchfuehrende
-            summary: Wettbewerbskontext einer Privatperson
-            description: läd den Wettbewerbskontext einer Privatperson
-            operationId: loadMyWettbewerbskontext
-            security:
-                - mpSession: []
-            responses:
-                '200':
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                $ref: '#/components/schemas/PrivatpersonWettbewerbskontext'
-                '401':
-                    description: keine Session oder Session abgelaufen
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
-                '403':
-                    description: angemeldeter User ist kein Wettbewerbsdurchführender.
-                '500':
-                    description: Serverfehler
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
     /api/schulkatalog/orte:
         get:
             tags:
@@ -371,32 +162,160 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
-    /api/teilnahmen/schule/{schuleId}:
+    /api/berechtigungen:
         get:
             tags:
-                - Teilnahmen
-            summary: alle Teilnahmen einer Schule
-            description: läd alle Teilnahmen der Schule mit der gegebenen ID
-            operationId: getSchulteilnahmen
+                - Berechtigungen
+            summary: Läd die Minkänguru- Berechtigung eines eingeloggten Users
+            description: >
+                Holt die UUID aus der Session selektiert mit dieser den Wettbewerbsdurchführenden.
+                Falls es einen gibt, wird die Session um eine Berechtigung erweitert und der
+                zugehörige User wird zurückgegeben
+            operationId: loadBerechtigung
             security:
                 - mpSession: []
-            parameters:
-                - in: path
-                  name: schuleId
-                  schema:
-                      type: string
-                      pattern: '^[A-Z0-9]*$'
-                  required: true
-                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: Zuordnung gefunden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '401':
+                    description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
+                '404':
+                    description: keine Zuordnung gefunden
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/wettbewerbsdurchfuehrende/konto:
+        get:
+            tags:
+                - Wettbewerbsdurchfuehrende
+            summary: 'Lesen eines Wettbewerbsdurchführenden'
+            description: 'Ein Wettbewerbsdurchführender mit der uuid aus der session wird gelesen'
+            operationId: loadWettbewerbsdurchfuehrenden
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: Wettbewerbsdurchführender erfolgreich geladen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '404':
+                    description: not found
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags:
+                - Wettbewerbsdurchfuehrende
+            summary: 'Anlegen eines Wettbewerbsdurchführenden'
+            description: 'Ein neuer Wettbewerbsdurchführender mit der uuid aus der session wird angelegt'
+            operationId: createWettbewerbsdurchfuehrenden
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/WettbewerbsdurchfuehrenderRequest'
+            security:
+                - mpSession: []
+            responses:
+                '201':
+                    description: Wettbewerbsdurchführender erfolgreich angelegt
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Wettbewerbsdurchfuehrender'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: conflict - Es gibt bereits einen Eintrag mit der gegebenen userUuid
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/lehrperson/me/schulen:
+        get:
+            tags:
+                - Lehrperson
+            summary: Schulen laden
+            description: läd die Schulen einer Lehrperson
+            operationId: loadMySchools
+            security:
+                - mpSession: []
             responses:
                 '200':
                     description: OK
                     content:
                         application/json:
                             schema:
-                                type: object
+                                type: array
                                 items:
-                                    $ref: '#/components/schemas/Teilnahme'
+                                    $ref: '#/components/schemas/Schule'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User ist keine Lehrperson.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/privatperson/me/aktuelle-teilnahme:
+        get:
+            tags:
+                - Privatperson
+            summary: aktuelle Teilnahme einer Privatperson
+            description: läd die aktuelle Teilnahme der eingeloggten Privatperson
+            operationId: loadMyAktuelleTeilnahme
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Teilnahme'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -421,13 +340,90 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
-    /api/schulen/{schuleId}:
+        post:
+            tags:
+                - Privatperson
+            summary: private Teilnahme zum aktuellen Wettbewerb anlegen
+            description: trägt eine Privatteilnahme zum aktuellen Wettbewerb an
+            operationId: privatpersonAnmelden
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                items:
+                                    $ref: '#/components/schemas/Teilnahme'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf keine Privatteilnahme anlegen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerb beendet)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/privatperson/me/wettbewerbskontext:
+        get:
+            tags:
+                - Privatperson
+            summary: Wettbewerbskontext einer Privatperson
+            description: läd den Wettbewerbskontext einer Privatperson
+            operationId: loadMyWettbewerbskontext
+            security:
+                - mpSession: []
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PrivatpersonWettbewerbskontext'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User ist kein Wettbewerbsdurchführender.
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/wettbewerbskontext:
         get:
             tags:
                 - Schulen
             summary: 'Wettbewerbskontext einer Schule'
             description: 'stellt den Wettbewerbskontext einer bestimmten Schule zur Verfügung'
-            operationId: getWettbewerbskontext
+            operationId: getWettbewerbskontextSchule
             security:
                 - mpSession: []
             parameters:
@@ -445,9 +441,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/SchuleWettbewerbskontext'
+                                $ref: '#/components/schemas/SchuleWettbewerbskontext'
                 '400':
                     description: Request ist ungültig
                     content:
@@ -470,13 +464,13 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
-    /api/schulen/{schuleId}/kollegen:
+    /api/schulen/{schuleId}/kollegium:
         get:
             tags:
                 - Schulen
             summary: 'Kollegen einer Lehrperson'
             description: 'liest die Kollegen der eingeloggten Lehrperson'
-            operationId: getKollegen
+            operationId: loadSchulkollegium
             security:
                 - mpSession: []
             parameters:
@@ -518,6 +512,158 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/aktuelle-teilnahme:
+        get:
+            tags:
+                - Schulen
+            summary: aktuelle Teilnahme der gegebenen Schule
+            description: läd die aktuelle Teilnahme der Schule mit der gegebenen ID
+            operationId: loadAktuelleSchulteilnahme
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Teilnahme'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Teilnahme nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags:
+                - Schulen
+            summary: Schule zum aktuellen Wettbewerb anmelden
+            description: meldet die Schule mit der gegebenen ID zum aktuellen Wettbewerb an
+            operationId: schuleAnmelden
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Teilnahme'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf für diese Schule keine Teilnahme anlegen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerb beendet)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/aktuelle-teilnahme/anmeldende-person:
+        get:
+            tags:
+                - Schulen
+            summary: die Person, die diese Schule zum aktuellen Wettbewerb angemeldet hat
+            description: läd anmeldende Person dieser, die die Schule mit der gegebenen ID angemeldet hat
+            operationId: loadAnmeldendePerson
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Person'
+                '400':
+                    description: Request ist ungültig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf diese Person nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:
@@ -526,100 +672,12 @@ components:
             name: MPSESSIONID
             description: Session-Cookie der Matheportal-Sitzung
     schemas:
-        Wettbewerbsdurchfuehrungsart:
-            type: string
-            enum:
-                - SCHULE
-                - PRIVAT
-            description: die Art, wie der Wettbewerb durchgeführt wird (als Schule oder privat)
-            example:
-                - SCHULE
-                - PRIVAT
-        ZugangsberechtigungUnterlagen:
-            type: string
-            enum:
-                - STANDARD
-                - ERTEILT
-                - ENTZOGEN
-            description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
-            example:
-                - STANDARD
-                - ERTEILT
-                - ENTZOGEN
-        Wettbewerbsstatus:
-            type: string
-            enum:
-                - ERFASST
-                - ANMELDUNG
-                - DOWNLOAD_LEHRER
-                - DOWNLOAD_PRIVAT
-                - BEENDET
         Auswertungsart:
             type: string
             enum:
                 - ONLINE
                 - OFFLINE
             description: Die Art, wie der Wettbewerb ausgewertet wird.
-        WettbewerbsdurchfuehrenderRequest:
-            type: object
-            x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
-            required:
-                - durchfuehrungsart
-            description: Requestobjekt für das Anlegen oder Ändern eines Wettbewerbsdurchführenden.
-            properties:
-                durchfuehrungsart:
-                    type: object
-                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                schulkuerzel:
-                    type: string
-                    pattern: '^[A-Z0-9]*$'
-                    maxLength: 8
-                    description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
-        Wettbewerbsdurchfuehrender:
-            type: object
-            required:
-                - durchfuehrungsart
-                - teilnahmenummern
-                - newsletter
-                - zugangsberechtigungUnterlagen
-            description: Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden.
-            properties:
-                durchfuehrungsart:
-                    type: object
-                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                newsletter:
-                    type: boolean
-                    description: Flag, ob der Durchführende Newsletter erhalten möchte
-                zugangsberechtigungUnterlagen:
-                    type: object
-                    $ref: '#/components/schemas/ZugangsberechtigungUnterlagen'
-        User:
-            type: object
-            required:
-                - fullName
-                - berechtigungen
-            properties:
-                fullName:
-                    type: string
-                    minLength: 1
-                    maxLength: 201
-                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
-                    description: vollständiger Anzeigename
-                    example: María del Carmen 2
-                berechtigungen:
-                    type: array
-                    uniqueItems: true
-                    description: Berechtigungen des Benutzers. Diese werden im gegebenen Kontext aus IAM und den 2 Berechtigungstypen Minikänguru gemerged
-                    items:
-                        type: string
-                        pattern: '^[A-Z]+(_[A-Z]+)*$'
-                        maxLength: 150
-                    example:
-                        - STANDARD
-                        - ADMIN
-                        - SCHULE
-                        - PRIVAT
-                        - AUTOR
         ErrorResponse:
             type: object
             required:
@@ -665,6 +723,33 @@ components:
                     maxLength: 100
                 anzahlSchulen:
                     type: integer
+        Person:
+            type: object
+            required:
+                - schulkuerzel
+                - fullName
+            properties:
+                schulkuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
+                    description: 'das Kürzel der Schule'
+                fullName:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 201
+        PrivatpersonWettbewerbskontext:
+            type: object
+            required:
+                - teilnahmerefs
+                - anmeldungMoeglich
+            properties:
+                teilnahmerefs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TeilnahmeReferenz'
+                anmeldungMoeglich:
+                    type: boolean
         Schule:
             type: object
             required:
@@ -682,6 +767,29 @@ components:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
                     maxLength: 100
+        SchuleWettbewerbskontext:
+            type: object
+            required:
+                - schule
+                - kollegen
+                - teilnahmerefs
+                - vertragDSGVOVorhanden
+                - anmeldungMoeglich
+            properties:
+                schule:
+                    $ref: '#/components/schemas/Schule'
+                kollegen:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Person'
+                teilnahmerefs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TeilnahmeReferenz'
+                vertragDSGVOVorhanden:
+                    type: boolean
+                anmeldungMoeglich:
+                    type: boolean
         Schulkatalogantrag:
             type: object
             required:
@@ -721,6 +829,100 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
+        Schulkollegium:
+            type: object
+            required:
+                - schulkuerzel
+                - kollegium
+            properties:
+                schulkuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
+                    description: 'das Kürzel der Schule'
+                kollegium:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Person'
+        Teilnahme:
+            type: object
+            required:
+                - jahr
+                - kuerzel
+                - durchfuehrungsart
+                - auswertungsart
+                - angemeldetAm
+                - anzahlKinder
+                - anzahlKlassen
+                - anzahlLoesungszettel
+            properties:
+                jahr:
+                    type: integer
+                kuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 10
+                    description: 'das Kürzel einer Schule oder eines privat Durchführenden'
+                durchfuehrungsart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
+                auswertungsart:
+                    type: object
+                    $ref: '#/components/schemas/Auswertungsart'
+                angemeldetAm:
+                    type: string
+                    description: 'Datum und Uhrzeit der Anmeldung'
+                angemeldetDurch:
+                    $ref: '#/components/schemas/Person'
+                anzahlKlassen:
+                    type: number
+                    description: 'Anzahl der Klassen, die teilnehmen (nur für durchführungsart SCHULE und Auswertungsart ONLINE relevant)'
+                anzahlKinder:
+                    type: number
+                    description: 'Anzahl der bereits eingetragenen Kinder (nur für Auswertungsart ONLINE relevant)'
+                anzahlLoesungszettel:
+                    type: number
+                    description: 'Anzahl der bereits erfassten Lösungszettel (nur für Auswertungsart ONLINE relevant)'
+        TeilnahmeReferenz:
+            type: object
+            required:
+                - jahr
+                - teilnahmenummer
+            properties:
+                jahr:
+                    type: integer
+                teilnahmenummer:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    minLength: 8
+                    maxLength: 10
+        User:
+            type: object
+            required:
+                - fullName
+                - berechtigungen
+            properties:
+                fullName:
+                    type: string
+                    minLength: 1
+                    maxLength: 201
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    description: vollständiger Anzeigename
+                    example: María del Carmen 2
+                berechtigungen:
+                    type: array
+                    uniqueItems: true
+                    description: Berechtigungen des Benutzers. Diese werden im gegebenen Kontext aus IAM und den 2 Berechtigungstypen Minikänguru gemerged
+                    items:
+                        type: string
+                        pattern: '^[A-Z]+(_[A-Z]+)*$'
+                        maxLength: 150
+                    example:
+                        - STANDARD
+                        - ADMIN
+                        - SCHULE
+                        - PRIVAT
+                        - AUTOR
         Wettbewerb:
             type: object
             required:
@@ -748,87 +950,64 @@ components:
                 ende:
                     type: string
                     example: 31.07.2029
-        Teilnahme:
+        Wettbewerbsdurchfuehrender:
             type: object
+            required:
+                - durchfuehrungsart
+                - teilnahmenummern
+                - newsletter
+                - zugangsberechtigungUnterlagen
+            description: Responsobjekt für das Anlegen, Ändern und Laden eines bestimmten Wettbewerbsdurchführenden.
             properties:
-                jahr:
-                    type: integer
-                kuerzel:
-                    type: string
-                    pattern: '^[A-Z0-9]*$'
-                    maxLength: 10
-                    description: 'das Kürzel einer Schule oder eines privat Durchführenden'
-                teilnahmeart:
+                durchfuehrungsart:
                     type: object
                     $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
-                auswertungsart:
+                newsletter:
+                    type: boolean
+                    description: Flag, ob der Durchführende Newsletter erhalten möchte
+                zugangsberechtigungUnterlagen:
                     type: object
-                    $ref: '#/components/schemas/Auswertungsart'
-                angemeldetDurch:
-                    type: string
-                    description: 'uuid des Benutzers, der die Teilnahme eingetragen hat'
-        TeilnahmeReferenz:
+                    $ref: '#/components/schemas/ZugangsberechtigungUnterlagen'
+        WettbewerbsdurchfuehrenderRequest:
             type: object
+            x-class-extra-annotation: '@de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.ValidWettbewerbsdurchfuehrenderRequest'
             required:
-                - jahr
-                - teilnahmenummer
+                - durchfuehrungsart
+            description: Requestobjekt für das Anlegen eines Wettbewerbsdurchführenden.
             properties:
-                jahr:
-                    type: integer
-                teilnahmenummer:
-                    type: string
-                    pattern: '^[A-Z0-9]*$'
-                    minLength: 8
-                    maxLength: 10
-        SchuleWettbewerbskontext:
-            type: object
-            required:
-                - schule
-                - kollegen
-                - teilnahmerefs
-                - vertragDSGVOVorhanden
-                - anmeldungMoeglich
-            properties:
-                schule:
-                    $ref: '#/components/schemas/Schule'
-                kollegen:
-                    type: array
-                    items:
-                        type: string
-                        pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
-                        maxLength: 201
-                teilnahmerefs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/TeilnahmeReferenz'
-                vertragDSGVOVorhanden:
-                    type: boolean
-                anmeldungMoeglich:
-                    type: boolean
-        Schulkollegium:
-            type: object
-            required:
-                - kuerzel
-                - kollegium
-            properties:
-                kuerzel:
+                durchfuehrungsart:
+                    type: object
+                    $ref: '#/components/schemas/Wettbewerbsdurchfuehrungsart'
+                schulkuerzel:
                     type: string
                     pattern: '^[A-Z0-9]*$'
-                    maxLength: 10
-                    description: 'das Kürzel der Schule'
-                kollegium:
-                    type: array
-                    items:
-                        type: string
-        PrivatpersonWettbewerbskontext:
-            type: object
-            required:
-                - teilnahmerefs
-                - anmeldungMoeglich
-            properties:
-                teilnahmerefs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/TeilnahmeReferenz'
-                anmeldungMoeglich:
-                    type: boolean
+                    maxLength: 8
+                    description: Kürzel der Schule. Für die Durchführungsart SCHULE erforderlich.
+        Wettbewerbsdurchfuehrungsart:
+            type: string
+            enum:
+                - SCHULE
+                - PRIVAT
+            description: die Art, wie der Wettbewerb durchgeführt wird (als Schule oder privat)
+            example:
+                - SCHULE
+                - PRIVAT
+        Wettbewerbsstatus:
+            type: string
+            enum:
+                - ERFASST
+                - ANMELDUNG
+                - DOWNLOAD_LEHRER
+                - DOWNLOAD_PRIVAT
+                - BEENDET
+        ZugangsberechtigungUnterlagen:
+            type: string
+            enum:
+                - STANDARD
+                - ERTEILT
+                - ENTZOGEN
+            description: Das Herunterladen von Unterlagen kann außerhalb des Zeitfensters freigegeben oder innerhalb des Zeitfensters entzogen werden.
+            example:
+                - STANDARD
+                - ERTEILT
+                - ENTZOGEN

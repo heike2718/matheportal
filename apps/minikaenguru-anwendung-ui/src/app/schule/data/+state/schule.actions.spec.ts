@@ -73,8 +73,11 @@ describe('SchuleActions', () => {
 
     it('should create the schulkollegiumGeladen action', () => {
         const schulkollegium: Schulkollegium = {
-            kuerzel: schule.kuerzel,
-            kollegium: ['Anna Johanna', 'Hermann Mann'],
+            schulkuerzel: 'S1234567',
+            kollegium: [
+                { schulkuerzel: 'S1234567', fullName: 'Anna Johanna' },
+                { schulkuerzel: 'S1234567', fullName: 'Hermann Mann' },
+            ],
         };
 
         const action = SchuleActions.schulkollegiumGeladen({ schulkollegium });
