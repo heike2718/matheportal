@@ -20,20 +20,28 @@ export class RaetselbaukastenEinstiegEffects {
                     this.#portalSessionFacade.portalSession$.pipe(
                         filter(portalSession => portalSession.sessionLoadState !== 'not-loaded'),
                         take(1),
-                        filter(portalSession => portalSession.sessionLoadState === 'loaded'),
                         tap(portalSession => {
-                            if (portalSession.user.anonym) {
-                                this.#router.navigate([
-                                    '/',
-                                    portalRoutes.raetselbaukasten.root,
-                                    portalRoutes.raetselbaukasten.guests,
-                                ]);
-                            } else {
-                                this.#router.navigate([
-                                    '/',
-                                    portalRoutes.raetselbaukasten.root,
-                                    portalRoutes.raetselbaukasten.dashboard,
-                                ]);
+                            switch (portalSession.sessionLoadState) {
+                                case 'technical-error':
+                                    this.#router.navigate([
+                                        '/',
+                                        portalRoutes.raetselbaukasten.root,
+                                        portalRoutes.raetselbaukasten.ladefehler,
+                                    ]);
+                                    break;
+                                case 'loaded':
+                                    this.#router.navigate([
+                                        '/',
+                                        portalRoutes.raetselbaukasten.root,
+                                        portalRoutes.raetselbaukasten.dashboard,
+                                    ]);
+                                    break;
+                                default:
+                                    this.#router.navigate([
+                                        '/',
+                                        portalRoutes.raetselbaukasten.root,
+                                        portalRoutes.raetselbaukasten.guests,
+                                    ]);
                             }
                         })
                     )

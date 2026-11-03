@@ -10,6 +10,12 @@ import { PortalSessionFacade } from '@matheportal/auth-api';
 import { RaetselbaukastenEinstiegActions } from './raetselbaukasten-einstieg.actions';
 
 describe('RaetselbaukastenEinstiegEffects', () => {
+    const user: User = {
+        anonym: false,
+        berechtigungen: ['STANDARD'],
+        fullName: 'Bilbo',
+    };
+
     let action$: Subject<Action>;
     let effects: RaetselbaukastenEinstiegEffects;
 
@@ -54,16 +60,38 @@ describe('RaetselbaukastenEinstiegEffects', () => {
     });
 
     describe('navigateOnRootEinstiegRequested$', async () => {
-        it('should navigate to guests when Guest', async () => {
+        it('should navigate to dashboard when authenticated', async () => {
             const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
 
             action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
 
-            portalSessionSubject.next({ user: anonymousUser, sessionLoadState: 'loaded' });
+            portalSessionSubject.next({ user, sessionLoadState: 'loaded' });
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'raetselbaukasten', 'dashboard']);
+        });
+        it('should navigate to guests when not authorized', async () => {
+            const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
+
+            action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
+
+            portalSessionSubject.next({ user: anonymousUser, sessionLoadState: 'unauthorized' });
 
             await promise;
 
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'raetselbaukasten', 'guests']);
+        });
+        it('should navigate to ladefehler when technical-error', async () => {
+            const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
+
+            action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
+
+            portalSessionSubject.next({ user: anonymousUser, sessionLoadState: 'technical-error' });
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'raetselbaukasten', 'ladefehler']);
         });
         it('should navigate to dashboard for authenticated user', async () => {
             const promise = firstValueFrom(effects.navigateOnRootEinstiegRequested$);
@@ -71,7 +99,7 @@ describe('RaetselbaukastenEinstiegEffects', () => {
             action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
 
             portalSessionSubject.next({
-                user: { anonym: false, berechtigungen: ['STANDARD'], fullName: 'Bilbo' },
+                user,
                 sessionLoadState: 'loaded',
             });
 
@@ -85,7 +113,7 @@ describe('RaetselbaukastenEinstiegEffects', () => {
             try {
                 action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
 
-                portalSessionSubject.next({ user: anonymousUser, sessionLoadState: 'loaded' });
+                portalSessionSubject.next({ user: anonymousUser, sessionLoadState: 'technical-error' });
 
                 portalSessionSubject.next({
                     user: { anonym: false, berechtigungen: ['STANDARD'], fullName: 'Bilbo' },
@@ -93,7 +121,7 @@ describe('RaetselbaukastenEinstiegEffects', () => {
                 });
 
                 expect(routerMock.navigate).toHaveBeenCalledTimes(1);
-                expect(routerMock.navigate).toHaveBeenLastCalledWith(['/', 'raetselbaukasten', 'guests']);
+                expect(routerMock.navigate).toHaveBeenLastCalledWith(['/', 'raetselbaukasten', 'ladefehler']);
 
                 action$.next(RaetselbaukastenEinstiegActions.rootEinstiegRequested());
 

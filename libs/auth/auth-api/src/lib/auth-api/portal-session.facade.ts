@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -27,6 +27,7 @@ export class PortalSessionFacade {
     readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
+    readonly isLoggedIn = computed(() => this.sessionLoadState() === 'loaded');
     readonly isAdmin = this.#store.selectSignal(fromAuth.isAdmin);
 
     /**
