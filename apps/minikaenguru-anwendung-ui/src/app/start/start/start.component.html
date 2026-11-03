@@ -1,5 +1,5 @@
 <div class="mka-start">
-    @if (authSessionFacade.sessionLoadState() === 'unauthorized') {
+    @if (portalSessionFacade.sessionLoadState() === 'unauthorized') {
         <mka-guest-info></mka-guest-info>
     }
     @if (authorizationFailed()) {

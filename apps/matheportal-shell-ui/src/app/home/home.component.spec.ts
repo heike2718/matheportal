@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AppComponent } from '../app.component';
 import { signal, WritableSignal } from '@angular/core';
 import { anonymousUser, User } from '@matheportal/auth-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { By } from '@angular/platform-browser';
 import { Mock } from 'vitest';
 
@@ -12,7 +12,7 @@ describe('HomeComponent', () => {
     let fixture: ComponentFixture<HomeComponent>;
     const activatedRouteStub: Partial<ActivatedRoute> = {};
 
-    let authSessionFacadeMock: {
+    let portalSessionFacadeMock: {
         validateSession: Mock<() => void>;
         isLoggedIn: WritableSignal<boolean>;
         user: WritableSignal<User>;
@@ -20,7 +20,7 @@ describe('HomeComponent', () => {
     };
 
     async function setup(user: User) {
-        authSessionFacadeMock = {
+        portalSessionFacadeMock = {
             validateSession: vi.fn(),
             isAdmin: signal(user.berechtigungen.indexOf('ADMIN') > -1),
             isLoggedIn: signal(!user.anonym),
@@ -31,7 +31,7 @@ describe('HomeComponent', () => {
             imports: [HomeComponent, RouterModule.forRoot([{ path: '', component: AppComponent }])],
             providers: [
                 { provide: ActivatedRoute, useFactory: () => activatedRouteStub },
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
             ],
         }).compileComponents();
 

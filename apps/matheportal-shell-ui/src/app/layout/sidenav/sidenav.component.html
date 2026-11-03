@@ -45,7 +45,7 @@
                 <span class="sidenav__label">Statistik</span>
             </a>
 
-            @if (authSessionFacade.isAdmin()) {
+            @if (portalSessionFacade.isAdmin()) {
                 <a
                     mat-list-item
                     class="sidenav__link sidenav__link--minikaenguru-admin"
@@ -62,7 +62,7 @@
     </nav>
 
     <div class="sidenav__auth-actions" data-testid="sidenav-auth-actions">
-        @if (authSessionFacade.isLoggedIn()) {
+        @if (portalSessionFacade.isLoggedIn()) {
             <button mat-stroked-button type="button" class="sidenav__auth-btn" (click)="onLogout()">
                 <mat-icon class="sidenav__icon sidenav__icon--button" aria-hidden="true">logout</mat-icon>
                 <span data-testid="sidenav-auth-btn-label">abmelden</span>

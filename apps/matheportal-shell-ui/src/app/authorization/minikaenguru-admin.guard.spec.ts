@@ -8,7 +8,7 @@ import {
     RouterStateSnapshot,
     UrlTree,
 } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { anonymousUser, User } from '@matheportal/auth-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { minikaenguruAdminGuard } from './minikaenguru-admin.guard';
@@ -21,7 +21,7 @@ describe('matheportalShellAdminAuthGuard tests', () => {
     let sessionLoadStateSubject: Subject<RESTRICTED_RESOURCE_LOAD_STATE>;
     let userSubject: Subject<User>;
 
-    let authSessionFacadeMock: {
+    let portalSessionFacadeMock: {
         sessionLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE>;
         user$: Observable<User>;
     };
@@ -38,13 +38,13 @@ describe('matheportalShellAdminAuthGuard tests', () => {
         sessionLoadStateSubject = new BehaviorSubject<RESTRICTED_RESOURCE_LOAD_STATE>(sessionLoadState);
         userSubject = new BehaviorSubject<User>(user);
 
-        authSessionFacadeMock = {
+        portalSessionFacadeMock = {
             sessionLoadState$: sessionLoadStateSubject.asObservable(),
             user$: userSubject.asObservable(),
         };
 
         TestBed.configureTestingModule({
-            providers: [provideRouter([]), { provide: AuthSessionFacade, useValue: authSessionFacadeMock }],
+            providers: [provideRouter([]), { provide: PortalSessionFacade, useValue: portalSessionFacadeMock }],
         });
 
         const router = TestBed.inject(Router);

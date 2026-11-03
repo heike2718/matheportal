@@ -8,20 +8,24 @@ import {
     RouterStateSnapshot,
     UrlTree,
 } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
-import { BehaviorSubject, firstValueFrom, isObservable, Observable, of } from 'rxjs';
+import { PortalSessionFacade } from '@matheportal/auth-api';
+import { BehaviorSubject, firstValueFrom, isObservable, Observable, of, Subject } from 'rxjs';
 import { describe, expect, it } from 'vitest';
 import { raetselbaukastenAutorGuard } from './raetselbaukasten-autor.guard';
-import { User } from '@matheportal/auth-model';
+import { anonymousUser, User } from '@matheportal/auth-model';
+import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 
 describe('raetselbaukastenAutorGuard', () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
-    let userSubject: BehaviorSubject<User>;
+    let portalSessionSubject: Subject<{ user: User; sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE }>;
 
-    const authSessionFacadeMock = {
-        user$: undefined as unknown as Observable<User>,
+    const portalSessionFacadeMock = {
+        portalSession$: undefined as unknown as Observable<{
+            user: User;
+            sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE;
+        }>,
     };
 
     async function resolveGuardResult(result: MaybeAsync<GuardResult>): Promise<GuardResult> {
@@ -32,18 +36,14 @@ describe('raetselbaukastenAutorGuard', () => {
         return Promise.resolve(result as GuardResult);
     }
 
-    function setup(rollen: string[], isAnonym: boolean, fullName: string) {
-        const user: User = {
-            anonym: isAnonym,
-            fullName: fullName,
-            berechtigungen: rollen,
-        };
-
-        userSubject = new BehaviorSubject<User>(user);
-        authSessionFacadeMock.user$ = userSubject.asObservable();
+    function setup(portalSession: { user: User; sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE }) {
+        portalSessionSubject = new BehaviorSubject<{ user: User; sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE }>(
+            portalSession
+        );
+        portalSessionFacadeMock.portalSession$ = portalSessionSubject.asObservable();
 
         TestBed.configureTestingModule({
-            providers: [provideRouter([]), { provide: AuthSessionFacade, useValue: authSessionFacadeMock }],
+            providers: [provideRouter([]), { provide: PortalSessionFacade, useValue: portalSessionFacadeMock }],
         });
 
         const router = TestBed.inject(Router);
@@ -51,45 +51,75 @@ describe('raetselbaukastenAutorGuard', () => {
         return { router };
     }
 
-    it('should redirect standard users to raetselbaukasten start page', async () => {
-        const { router } = setup(['STANDARD'], false, 'Bilbo');
+    it('should wait for portalSession before allowing access', async () => {
+        const authorizedUser: User = {
+            anonym: false,
+            berechtigungen: ['AUTOR', 'STANDARD'],
+            fullName: 'Frodo',
+        };
+        setup({ user: anonymousUser, sessionLoadState: 'not-loaded' });
 
-        const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
-        );
+        const guardResult = TestBed.runInInjectionContext(() => raetselbaukastenAutorGuard()(route, state));
 
+        if (!isObservable(guardResult)) {
+            throw new Error('Expected guard to return an Observable');
+        }
+
+        const emittedResults: GuardResult[] = [];
+        const onComplete = vi.fn();
+
+        const subscription = guardResult.subscribe({
+            next: result => emittedResults.push(result),
+            complete: onComplete,
+        });
+
+        try {
+            expect(emittedResults).toEqual([]);
+            expect(onComplete).not.toHaveBeenCalled();
+
+            // Session kommt an, user bekannt
+            portalSessionSubject.next({ user: authorizedUser, sessionLoadState: 'loaded' });
+            expect(emittedResults).toEqual([true]);
+            expect(onComplete).toHaveBeenCalledOnce();
+            expect(subscription.closed).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
+
+    it('should redirect to ladefehler on technical error', async () => {
+        const { router } = setup({ user: anonymousUser, sessionLoadState: 'technical-error' });
+
+        const guardResult = TestBed.runInInjectionContext(() => raetselbaukastenAutorGuard()(route, state));
+
+        const result = await resolveGuardResult(guardResult);
         expect(result).toBeInstanceOf(UrlTree);
-        expect(router.serializeUrl(result as UrlTree)).toBe('/raetselbaukasten');
+        expect(router.serializeUrl(result as UrlTree)).toBe('/raetselbaukasten/ladefehler');
     });
 
-    it('should redirect anonymous user to raetselbaukasten start page', async () => {
-        const { router } = setup([], true, 'Gast');
+    it('should redirect guests to guests', async () => {
+        const { router } = setup({ user: anonymousUser, sessionLoadState: 'unauthorized' });
 
-        const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
-        );
+        const guardResult = TestBed.runInInjectionContext(() => raetselbaukastenAutorGuard()(route, state));
 
+        const result = await resolveGuardResult(guardResult);
         expect(result).toBeInstanceOf(UrlTree);
-        expect(router.serializeUrl(result as UrlTree)).toBe('/raetselbaukasten');
+        expect(router.serializeUrl(result as UrlTree)).toBe('/raetselbaukasten/guests');
     });
 
-    it('should allow access for AUTOR', async () => {
-        setup(['KL_ADMIN', 'AUTOR'], false, 'Frodo');
+    it('should redirect STANDARD users to dashboard', async () => {
+        const user: User = {
+            anonym: false,
+            berechtigungen: ['STANDARD'],
+            fullName: 'Bilbo',
+        };
 
-        const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
-        );
+        const { router } = setup({ user, sessionLoadState: 'loaded' });
 
-        expect(result).toBeTruthy();
-    });
+        const guardResult = TestBed.runInInjectionContext(() => raetselbaukastenAutorGuard()(route, state));
 
-    it('should allow access for ADMIN', async () => {
-        setup(['ADMIN', 'KL_ADMIN'], false, 'Checki');
-
-        const result = await TestBed.runInInjectionContext(async () =>
-            resolveGuardResult(raetselbaukastenAutorGuard()(route, state))
-        );
-
-        expect(result).toBeTruthy();
+        const result = await resolveGuardResult(guardResult);
+        expect(result).toBeInstanceOf(UrlTree);
+        expect(router.serializeUrl(result as UrlTree)).toBe('/raetselbaukasten/dashboard');
     });
 });

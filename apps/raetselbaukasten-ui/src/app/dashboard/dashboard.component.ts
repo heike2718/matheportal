@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { resolveRaetselbaukastenBerechtigung } from '../core/auth/raetselbaukasten-berechtigung.utils';
 import { RAETSELBAUKASTEN_BERECHTIGUNG } from '../core/auth/raetselbaukasten-berechtigung.model';
 
@@ -13,9 +13,9 @@ import { RAETSELBAUKASTEN_BERECHTIGUNG } from '../core/auth/raetselbaukasten-ber
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-    #authSessionFacade = inject(AuthSessionFacade);
+    #portalSessionFacade = inject(PortalSessionFacade);
 
-    readonly #berechtigung = computed(() => resolveRaetselbaukastenBerechtigung(this.#authSessionFacade.user()));
+    readonly #berechtigung = computed(() => resolveRaetselbaukastenBerechtigung(this.#portalSessionFacade.user()));
 
     readonly isAuthorized = computed(() => this.#berechtigung() !== RAETSELBAUKASTEN_BERECHTIGUNG.none);
     readonly isStandardUser = computed(() => this.#berechtigung() === RAETSELBAUKASTEN_BERECHTIGUNG.standard);

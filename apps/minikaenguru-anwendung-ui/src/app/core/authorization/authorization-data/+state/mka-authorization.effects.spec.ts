@@ -11,7 +11,7 @@ import { AuthorizationLoadState, MINIKAENGURU_BERECHTIGUNGSTYP } from '../../aut
 import { MkaAuthorizationActions } from './mka-authorization.actions';
 import { MkaAuthorizationHttpService } from '../mka-authorization-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthSessionFacade, sessionState } from '@matheportal/auth-api';
+import { PortalSessionFacade, sessionState } from '@matheportal/auth-api';
 import { MkaAuthorizationFacade } from '../../authorization-api/mka-authorization.facade';
 import { MinikaenguruEinstiegActions } from '../../../ablaufsteuerung/minikaenguru-einstieg.actions';
 import { ensureWettbewerbGeladen } from '../../../wettbewerb/api/wettbewerb-store.events';
@@ -38,7 +38,7 @@ describe('MkaAuthorizationEffects tests', () => {
         publishError: vi.fn(),
     };
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         synchronizeUser: vi.fn(),
     };
 
@@ -76,8 +76,8 @@ describe('MkaAuthorizationEffects tests', () => {
                     useValue: messagePublisherMock,
                 },
                 {
-                    provide: AuthSessionFacade,
-                    useValue: authSessionFacadeMock,
+                    provide: PortalSessionFacade,
+                    useValue: portalSessionFacadeMock,
                 },
                 {
                     provide: MkaAuthorizationHttpService,
@@ -552,8 +552,8 @@ describe('MkaAuthorizationEffects tests', () => {
             action$.next(MkaAuthorizationActions.mkaAuthorizationLoaded({ user: user }));
             await promise;
 
-            expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
-            expect(authSessionFacadeMock.synchronizeUser).toHaveBeenCalledWith(user);
+            expect(portalSessionFacadeMock.synchronizeUser).toHaveBeenCalledTimes(1);
+            expect(portalSessionFacadeMock.synchronizeUser).toHaveBeenCalledWith(user);
         });
     });
 

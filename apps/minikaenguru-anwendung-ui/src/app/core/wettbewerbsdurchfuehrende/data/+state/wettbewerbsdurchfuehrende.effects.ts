@@ -7,7 +7,7 @@ import { WettbewerbsdurchfuehrendeActions } from './wettbewerbsdurchfuehrende.ac
 import { catchError, exhaustMap, filter, map, of, tap, withLatestFrom } from 'rxjs';
 import { DURCHFUEHRUNGSART, Wettbewerbsdurchfuehrender } from '../../model/wettbewerbsdurchfuehrende.model';
 import { portalRoutes } from '@matheportal/portal-navigation';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { schuleSelected } from '../../../../schulkatalog/schulkatalogsuche/api/schulkatalogsuche.events';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
@@ -19,7 +19,7 @@ export class WettbewerbsdurchfuehrendeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #httpService = inject(WettbewerbsdurchfuehrendeHttpService);
     #router = inject(Router);
-    #authSessionFacade = inject(AuthSessionFacade);
+    #portalSessionFacade = inject(PortalSessionFacade);
     #store = inject(Store);
 
     readonly durchfuehrungsartPrivatGewaehlt$ = createEffect(() =>
@@ -104,7 +104,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                                 portalRoutes.minikaenguruAnwendung.root,
                                 portalRoutes.minikaenguruAnwendung.privatperson,
                             ]);
-                            this.#authSessionFacade.validateSession();
+                            this.#portalSessionFacade.validateSession();
                             break;
                         case 'SCHULE':
                             void this.#router.navigate([
@@ -112,7 +112,7 @@ export class WettbewerbsdurchfuehrendeEffects {
                                 portalRoutes.minikaenguruAnwendung.root,
                                 portalRoutes.minikaenguruAnwendung.lehrperson,
                             ]);
-                            this.#authSessionFacade.validateSession();
+                            this.#portalSessionFacade.validateSession();
                             break;
                         default:
                             // dieser Fall ist nur möglich, wenn eine weitere DURCHFUEHRUNGSART hinzugefügt wird.

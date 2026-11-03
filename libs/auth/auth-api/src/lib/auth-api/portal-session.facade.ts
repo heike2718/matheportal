@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AuthActions, fromAuth } from '@matheportal/auth-data';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 @Injectable({
     providedIn: 'root',
 })
-export class AuthSessionFacade {
+export class PortalSessionFacade {
     #store = inject(Store);
 
     readonly sessionLoadState$: Observable<RESTRICTED_RESOURCE_LOAD_STATE> = this.#store.select(
@@ -17,10 +17,16 @@ export class AuthSessionFacade {
     );
     readonly user$: Observable<User> = this.#store.select(fromAuth.user);
 
+    readonly portalSession$: Observable<{ user: User; sessionLoadState: RESTRICTED_RESOURCE_LOAD_STATE }> =
+        this.#store.select(fromAuth.portalSession);
+
+    readonly portalSession = toSignal(this.portalSession$, {
+        initialValue: { user: anonymousUser, sessionLoadState: 'not-loaded' },
+    });
+
     readonly sessionLoadState = toSignal(this.sessionLoadState$, { initialValue: 'not-loaded' });
 
     readonly user = toSignal(this.user$, { initialValue: anonymousUser });
-    readonly isLoggedIn = computed(() => this.sessionLoadState() === 'loaded');
     readonly isAdmin = this.#store.selectSignal(fromAuth.isAdmin);
 
     /**

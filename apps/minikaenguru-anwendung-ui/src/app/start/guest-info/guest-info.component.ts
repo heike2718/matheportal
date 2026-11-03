@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
@@ -12,5 +12,5 @@ import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 })
 export class GuestInfoComponent {
     wettbewerbFacade = inject(WettbewerbFacade);
-    authSessionFacade = inject(AuthSessionFacade);
+    portalSessionFacade = inject(PortalSessionFacade);
 }

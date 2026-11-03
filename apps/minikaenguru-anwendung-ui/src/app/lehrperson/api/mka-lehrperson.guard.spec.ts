@@ -12,7 +12,7 @@ import { TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { mkaLehrpersonGuard } from './mka-lehrperson.guard';
 import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { AuthorizationLoadState } from '../../core/authorization/authorization-model';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 
@@ -60,7 +60,7 @@ describe('mkaLehrpersonGuard tests', () => {
             providers: [
                 provideRouter([]),
                 {
-                    provide: AuthSessionFacade,
+                    provide: PortalSessionFacade,
                     useValue: {
                         sessionLoadState$: sessionLoadStateSubject.asObservable(),
                     },

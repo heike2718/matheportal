@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { MockComponent } from 'ng-mocks';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { RESTRICTED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { StartComponent } from './start.component';
 import { GuestInfoComponent } from '../guest-info/guest-info.component';
@@ -18,7 +18,7 @@ describe('StartComponent tests', () => {
         minikaenguruAufgerufen: vi.fn(),
     };
 
-    const authSessionFacadeMock = {
+    const portalSessionFacadeMock = {
         sessionLoadState: signal<RESTRICTED_RESOURCE_LOAD_STATE>('not-loaded'),
     };
 
@@ -27,13 +27,13 @@ describe('StartComponent tests', () => {
         authorizationLoadState: AuthorizationLoadState = 'not-loaded'
     ) {
         mkaAuthorizationFacadeMock.minikaenguruAufgerufen.mockClear();
-        authSessionFacadeMock.sessionLoadState.set(sessionLoadState);
+        portalSessionFacadeMock.sessionLoadState.set(sessionLoadState);
         authorizationLoadState$ = new BehaviorSubject<AuthorizationLoadState>(authorizationLoadState);
 
         await TestBed.configureTestingModule({
             imports: [StartComponent],
             providers: [
-                { provide: AuthSessionFacade, useValue: authSessionFacadeMock },
+                { provide: PortalSessionFacade, useValue: portalSessionFacadeMock },
                 {
                     provide: MkaAuthorizationFacade,
                     useValue: {
@@ -55,7 +55,6 @@ describe('StartComponent tests', () => {
     it('should request root entry once on initialization', async () => {
         await setup('loaded');
 
-        fixture.detectChanges();
         fixture.detectChanges();
 
         expect(mkaAuthorizationFacadeMock.minikaenguruAufgerufen).toHaveBeenCalledTimes(1);

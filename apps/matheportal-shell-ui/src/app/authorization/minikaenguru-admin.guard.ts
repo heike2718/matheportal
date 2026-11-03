@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthSessionFacade } from '@matheportal/auth-api';
+import { PortalSessionFacade } from '@matheportal/auth-api';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { filter, map, of, switchMap, take } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { filter, map, of, switchMap, take } from 'rxjs';
  * @returns true or a navigation
  */
 export const minikaenguruAdminGuard = (): CanActivateFn => () => {
-    const portalSessionFacade = inject(AuthSessionFacade);
+    const portalSessionFacade = inject(PortalSessionFacade);
     const router = inject(Router);
 
     return portalSessionFacade.sessionLoadState$.pipe(

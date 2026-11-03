@@ -1,11 +1,11 @@
-import { UserWithBerechtigungen } from '@matheportal/auth-model';
+import { User } from '@matheportal/auth-model';
 import { MinikaenguruBerechtigungstyp, MINIKAENGURU_BERECHTIGUNGSTYP } from '../authorization-model';
 import {
     DURCHFUEHRUNGSART,
     Wettbewerbsdurchfuehrender,
 } from '../../wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
-export function resolveBerechtigungstyp(user: UserWithBerechtigungen | null): MinikaenguruBerechtigungstyp {
+export function resolveBerechtigungstyp(user: User | null): MinikaenguruBerechtigungstyp {
     if (user === null || user.berechtigungen.length === 0) {
         return MINIKAENGURU_BERECHTIGUNGSTYP.none;
     }

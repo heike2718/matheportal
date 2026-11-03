@@ -7,7 +7,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
 
 import { MATHEPORTAL_SHELL_CONFIGURATION } from '../../config/matheportal-shell.configuration';
-import { AuthFlowFacade, AuthSessionFacade } from '@matheportal/auth-api';
+import { AuthFlowFacade, PortalSessionFacade } from '@matheportal/auth-api';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -26,7 +26,7 @@ export class NavbarComponent {
 
     readonly version = this.#config.version;
 
-    authSessionFacade = inject(AuthSessionFacade);
+    portalSessionFacade = inject(PortalSessionFacade);
 
     #authFlowFacade = inject(AuthFlowFacade);
 
