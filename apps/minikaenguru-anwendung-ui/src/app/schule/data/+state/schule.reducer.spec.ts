@@ -47,7 +47,7 @@ describe('schulenReducer', () => {
     const wettbewerbskontext: SchuleWettbewerbskontext = {
         schule: schulen[0],
         anmeldungMoeglich: true,
-        kollegen: ['Anna Johanna'],
+        kollegen: [{ schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' }],
         teilnahmerefs: [],
         vertragDSGVOVorhanden: true,
     };
@@ -96,7 +96,10 @@ describe('schulenReducer', () => {
             'should reset wettbewerbskontext and schulkollegium when kontexts loadState is %s',
             loadState => {
                 const previousState: SchulenState = {
-                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontext: {
+                        ...wettbewerbskontext,
+                        kollegen: [{ schulkuerzel: 'Z7654321', fullName: 'Lisa Müller' }],
+                    },
                     wettbewerbskontextLoadState: loadState,
                     schulkollegiumLoadState: 'loaded',
                 };
@@ -118,7 +121,10 @@ describe('schulenReducer', () => {
             'should return the prevous state when kontexts loadState is %s',
             loadState => {
                 const previousState: SchulenState = {
-                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontext: {
+                        ...wettbewerbskontext,
+                        kollegen: [{ schulkuerzel: 'Z7654321', fullName: 'Lisa Müller' }],
+                    },
                     wettbewerbskontextLoadState: loadState,
                     schulkollegiumLoadState: 'loaded',
                 };
@@ -129,7 +135,10 @@ describe('schulenReducer', () => {
                 );
 
                 expect(state).toEqual({
-                    wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Lias Müller'] },
+                    wettbewerbskontext: {
+                        ...wettbewerbskontext,
+                        kollegen: [{ schulkuerzel: 'Z7654321', fullName: 'Lisa Müller' }],
+                    },
                     wettbewerbskontextLoadState: loadState,
                     schulkollegiumLoadState: 'loaded',
                 });
@@ -201,8 +210,11 @@ describe('schulenReducer', () => {
 
         it('should set the kollegium and the loading state when loaded and same schule', () => {
             const schulkollegium: Schulkollegium = {
-                kuerzel: 'SCHULE-1',
-                kollegium: ['Leo Lemma', 'Rita Reihe'],
+                schulkuerzel: 'SCHULE-1',
+                kollegium: [
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Leo Lemma' },
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Rita Reihe' },
+                ],
             };
 
             const state = schulenFeature.reducer(
@@ -210,7 +222,13 @@ describe('schulenReducer', () => {
                 SchuleActions.schulkollegiumGeladen({ schulkollegium })
             );
 
-            const expectedWettbewerbskontext = { ...wettbewerbskontext, kollegen: ['Leo Lemma', 'Rita Reihe'] };
+            const expectedWettbewerbskontext = {
+                ...wettbewerbskontext,
+                kollegen: [
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Leo Lemma' },
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Rita Reihe' },
+                ],
+            };
 
             expect(state).toEqual({
                 wettbewerbskontext: expectedWettbewerbskontext,
@@ -220,8 +238,11 @@ describe('schulenReducer', () => {
         });
         it('should not change the kollegium but set the loading state when loaded and other schule', () => {
             const schulkollegium: Schulkollegium = {
-                kuerzel: 'SCHULE-2',
-                kollegium: ['Leo Lemma', 'Rita Reihe'],
+                schulkuerzel: 'SCHULE-2',
+                kollegium: [
+                    { schulkuerzel: 'SCHULE-2', fullName: 'Leo Lemma' },
+                    { schulkuerzel: 'SCHULE-2', fullName: 'Rita Reihe' },
+                ],
             };
 
             const state = schulenFeature.reducer(
@@ -299,7 +320,13 @@ describe('schulenReducer', () => {
     describe('wettbewerbsorganisationVerlassen', () => {
         it('should reset wettbewerbskontext and loading states', () => {
             const previousState: SchulenState = {
-                wettbewerbskontext: { ...wettbewerbskontext, kollegen: ['Leo Lemma', 'Rita Reihe'] },
+                wettbewerbskontext: {
+                    ...wettbewerbskontext,
+                    kollegen: [
+                        { schulkuerzel: 'SCHULE-1', fullName: 'Leo Lemma' },
+                        { schulkuerzel: 'SCHULE-1', fullName: 'Rita Reihe' },
+                    ],
+                },
                 wettbewerbskontextLoadState: 'loaded',
                 schulkollegiumLoadState: 'loaded',
             };

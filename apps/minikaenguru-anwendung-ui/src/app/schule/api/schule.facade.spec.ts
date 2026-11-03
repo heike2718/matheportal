@@ -32,7 +32,7 @@ describe('SchuleFacade', () => {
             },
         },
         anmeldungMoeglich: true,
-        kollegen: ['Anna Johanna'],
+        kollegen: [{ schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' }],
         teilnahmerefs: [],
         vertragDSGVOVorhanden: true,
     };
@@ -137,7 +137,10 @@ describe('SchuleFacade', () => {
 
             const updatedKontext: SchuleWettbewerbskontext = {
                 ...wettbewerbskontext,
-                kollegen: ['Anna Johanna', 'Max Mustermann'],
+                kollegen: [
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' },
+                    { schulkuerzel: 'SCHULE-1', fullName: 'Max Mustermann' },
+                ],
             };
 
             store.overrideSelector(selectWettbewerbskontext, updatedKontext);

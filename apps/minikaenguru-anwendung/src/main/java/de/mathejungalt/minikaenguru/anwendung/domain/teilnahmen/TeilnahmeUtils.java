@@ -17,7 +17,7 @@ public final class TeilnahmeUtils {
      *
      * @param aktuellerWettbewerb Wettbewerb
      * @param teilnahmereferenzen List
-     * @return
+     * @return boolean
      */
     public static boolean isAnmeldungMoeglich(final Wettbewerb aktuellerWettbewerb,
             final List<TeilnahmeReferenz> teilnahmereferenzen) {

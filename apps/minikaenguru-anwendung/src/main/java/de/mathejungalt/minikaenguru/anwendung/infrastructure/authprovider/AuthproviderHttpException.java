@@ -9,11 +9,24 @@ public class AuthproviderHttpException extends RuntimeException {
 
     private final int status;
 
+    /**
+     * AuthproviderHttpException.
+     *
+     * @param status  int - der http-statuscode
+     * @param message String
+     */
     public AuthproviderHttpException(final int status, final String message) {
         super(message);
         this.status = status;
     }
 
+    /**
+     * AuthproviderHttpException.
+     *
+     * @param status  int - der http-statuscode
+     * @param message String
+     * @param cause   Throwable
+     */
     public AuthproviderHttpException(final int status, final String message, final Throwable cause) {
         super(message, cause);
         this.status = status;

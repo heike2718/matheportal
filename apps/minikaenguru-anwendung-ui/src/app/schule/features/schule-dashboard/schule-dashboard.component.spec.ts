@@ -38,8 +38,11 @@ describe('SchuleDashboardComponent', () => {
     };
 
     const kollegium: Schulkollegium = {
-        kuerzel: 'S1234567',
-        kollegium: ['Anna Johanna', 'Hermann Mann'],
+        schulkuerzel: 'S1234567',
+        kollegium: [
+            { schulkuerzel: 'S1234567', fullName: 'Anna Johanna' },
+            { schulkuerzel: 'S1234567', fullName: 'Hermann Mann' },
+        ],
     };
 
     const teilnahmen: TeilnahmeReferenz[] = [

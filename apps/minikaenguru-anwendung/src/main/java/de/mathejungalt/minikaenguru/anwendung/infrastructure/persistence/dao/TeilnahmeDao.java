@@ -22,7 +22,7 @@ public class TeilnahmeDao {
     EntityManager entityManager;
 
     /**
-     * TeilnahmeDao
+     * TeilnahmeDao.
      */
     public TeilnahmeDao() {
         super();

@@ -10,7 +10,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entitie
 /**
  * WettbewerbsdurchfuehrendeMappingDelegate.
  */
-public class WettbewerbsdurchfuehrendeMappingDelegate {
+public final class WettbewerbsdurchfuehrendeMappingDelegate {
 
     WettbewerbsdurchfuehrenderEntity createWettbewerbsdurchfuehrendeEntity(final String userUuid, final String kuerzel,
             final Wettbewerbsdurchfuehrungsart wettbewerbsdurchfuehrungsart, final LocalDateTime now) {

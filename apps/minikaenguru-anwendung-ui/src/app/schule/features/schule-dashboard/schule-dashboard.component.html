@@ -138,7 +138,7 @@
 
                                 <ul class="schule-dashboard__colleagues">
                                     @for (kollege of kollegen(); track kollege) {
-                                        <li data-testid="kollege">{{ kollege }}</li>
+                                        <li data-testid="kollege">{{ kollege.fullName }}</li>
                                     }
                                 </ul>
                             </section>

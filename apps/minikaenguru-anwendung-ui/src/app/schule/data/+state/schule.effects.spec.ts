@@ -380,13 +380,19 @@ describe('SchulenEffects', () => {
         };
 
         const schulkollegium: Schulkollegium = {
-            kuerzel: 'S1234567',
-            kollegium: ['Anna Johanna', 'Leo Lemma'],
+            schulkuerzel: 'S1234567',
+            kollegium: [
+                { schulkuerzel: 'S1234567', fullName: 'Anna Johanna' },
+                { schulkuerzel: 'S1234567', fullName: 'Hermann Mann' },
+            ],
         };
 
         const anderesSchulkollegium: Schulkollegium = {
-            kuerzel: 'S7654321',
-            kollegium: ['Fräulein Förster', 'Herr Greif'],
+            schulkuerzel: 'S7654321',
+            kollegium: [
+                { schulkuerzel: 'S7654321', fullName: 'Fräulein Förster' },
+                { schulkuerzel: 'S7654321', fullName: 'Herr Greif' },
+            ],
         };
 
         it('should call the httpService and map to schulkollegiumGeladen when successful', async () => {

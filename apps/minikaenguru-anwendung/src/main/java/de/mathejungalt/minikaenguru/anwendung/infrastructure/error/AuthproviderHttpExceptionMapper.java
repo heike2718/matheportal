@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Provider
 @Priority(ExceptionMapperPriorities.APPLICATION)
 @Slf4j
-public class AuthproviderHttpExceptionMapper implements ExceptionMapper<AuthproviderHttpException> {
+public final class AuthproviderHttpExceptionMapper implements ExceptionMapper<AuthproviderHttpException> {
 
     private static final String GENERAL_SERVER_ERROR_MESSAGE = "Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.";
 
@@ -31,16 +31,22 @@ public class AuthproviderHttpExceptionMapper implements ExceptionMapper<Authprov
             log
                     .error("Status {} bei der Kommunikation mit authprovider sollte im SchuleService gefangen und nicht als Exception propagiert werden",
                             exception.getStatus());
-            return Response.status(500).entity(new ErrorResponse(GENERAL_SERVER_ERROR_MESSAGE)).build();
+            return Response
+                    .status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .entity(new ErrorResponse(GENERAL_SERVER_ERROR_MESSAGE))
+                    .build();
         }
 
         log
                 .error("Kommunikation mit authprovider ging schief: http-status={}, message={}", exception.getStatus(),
                         exception.getMessage(), exception);
-        return Response.status(500).entity(new ErrorResponse(GENERAL_SERVER_ERROR_MESSAGE)).build();
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                .entity(new ErrorResponse(GENERAL_SERVER_ERROR_MESSAGE))
+                .build();
     }
 
-    boolean isUnexpectedStatuscode(final int status) {
+    private boolean isUnexpectedStatuscode(final int status) {
 
         if (status >= Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
             return true;

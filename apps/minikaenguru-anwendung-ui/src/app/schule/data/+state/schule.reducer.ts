@@ -48,7 +48,7 @@ export const schulenFeature = createFeature({
             schulkollegiumLoadState: 'not-loaded',
         })),
         on(SchuleActions.schulkollegiumGeladen, (state, { schulkollegium }) => {
-            if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel === schulkollegium.kuerzel) {
+            if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel === schulkollegium.schulkuerzel) {
                 return {
                     ...state,
                     wettbewerbskontext: { ...state.wettbewerbskontext, kollegen: schulkollegium.kollegium },

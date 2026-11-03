@@ -1,7 +1,7 @@
 package de.mathejungalt.minikaenguru.anwendung.domain.authorization;
 
 /**
- * MinikaenguruAuthorizationException
+ * MinikaenguruAuthorizationException.
  */
 public class MinikaenguruAuthorizationException extends RuntimeException {
 

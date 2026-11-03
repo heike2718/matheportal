@@ -16,17 +16,44 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.SchulenAp
 @Authenticated
 public class SchulenResource implements SchulenApi {
 
+    private static final String REGEXP_KUERZEL = "^[A-Z0-9]*$";
+
+    private static final int MAX_SIZE_KUERZEL = 8;
+
     @Inject
     SchuleService schuleService;
 
     @Override
-    public Response getWettbewerbskontext(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+    public Response getWettbewerbskontextSchule(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
         return Response.ok(schuleService.loadWettbewerbskontext(schuleId)).build();
     }
 
     @Override
-    public Response getKollegen(@Pattern(regexp = "^[A-Z0-9]*$") @Size(max = 8) final String schuleId) {
+    public Response loadAktuelleSchulteilnahme(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'loadAktuelleSchulteilnahme'");
+    }
+
+    @Override
+    public Response loadAnmeldendePerson(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'loadAnmeldendePerson'");
+    }
+
+    @Override
+    public Response loadSchulkollegium(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
         return Response.ok(schuleService.getKollegium(schuleId)).build();
+    }
+
+    @Override
+    public Response schuleAnmelden(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'schuleAnmelden'");
     }
 
 }

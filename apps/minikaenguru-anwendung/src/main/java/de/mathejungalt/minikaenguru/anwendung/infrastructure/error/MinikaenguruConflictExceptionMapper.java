@@ -12,7 +12,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * MinikaenguruConflictExceptionMapper
+ * MinikaenguruConflictExceptionMapper.
  */
 @Slf4j
 @Provider
