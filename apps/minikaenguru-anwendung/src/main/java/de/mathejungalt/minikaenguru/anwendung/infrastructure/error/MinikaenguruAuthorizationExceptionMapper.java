@@ -9,7 +9,7 @@ import jakarta.ws.rs.ext.Provider;
 import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 
 /**
- * MinikaenguruAuthorizationExceptionMapper
+ * MinikaenguruAuthorizationExceptionMapper.
  */
 @Provider
 @Priority(ExceptionMapperPriorities.APPLICATION)

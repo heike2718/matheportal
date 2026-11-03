@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * AuthproviderResponseExceptionMapper.
  */
 @Slf4j
-public class AuthproviderRestClientResponseExceptionMapper implements ResponseExceptionMapper<Throwable> {
+public final class AuthproviderRestClientResponseExceptionMapper implements ResponseExceptionMapper<Throwable> {
 
     private static final String MESSAGE_FORMAT_PROCESSING_EXCEPTION = """
             authprovider hat bei http-Status {0} keine vertragsgemaesse Fehlerantwort geliefert. \
@@ -47,7 +47,7 @@ public class AuthproviderRestClientResponseExceptionMapper implements ResponseEx
         }
     }
 
-    AuthproviderHttpException mapToExceptionWithMessagePayload(final Response response) {
+    private AuthproviderHttpException mapToExceptionWithMessagePayload(final Response response) {
 
         final int status = response.getStatus();
 

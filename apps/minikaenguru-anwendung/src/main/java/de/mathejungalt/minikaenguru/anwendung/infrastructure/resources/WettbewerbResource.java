@@ -7,7 +7,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbServic
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.WettbewerbApi;
 
 /**
- * WettbewerbResource
+ * WettbewerbResource.
  */
 public class WettbewerbResource implements WettbewerbApi {
 

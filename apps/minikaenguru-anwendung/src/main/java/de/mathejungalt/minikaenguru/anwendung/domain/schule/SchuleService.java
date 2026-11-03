@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @ApplicationScoped
 @Slf4j
-public class SchuleService {
+public final class SchuleService {
 
     @ConfigProperty(name = "client.id")
     String clientId;

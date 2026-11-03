@@ -19,11 +19,18 @@ import de.mathejungalt.minikaenguru.anwendung.domain.authorization.Authorization
 @KuerzelZugriff
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-public class KuerzelZugriffInterceptor {
+public final class KuerzelZugriffInterceptor {
 
     @Inject
     AuthorizationService authorizationService;
 
+    /**
+     * Autorisiert den Zugriff anhand des contexts.
+     *
+     * @param context InvocationContext
+     * @return Object
+     * @throws Exception bei validierungsfehlern oder wenn die Autorisierung fehlschlägt.
+     */
     @AroundInvoke
     public Object authorize(final InvocationContext context) throws Exception {
 

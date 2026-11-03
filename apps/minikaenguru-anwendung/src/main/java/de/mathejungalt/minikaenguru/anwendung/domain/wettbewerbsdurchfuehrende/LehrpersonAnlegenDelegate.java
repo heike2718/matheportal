@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ApplicationScoped
-public class LehrpersonAnlegenDelegate {
+public final class LehrpersonAnlegenDelegate {
 
     private final WettbewerbsdurchfuehrendeMappingDelegate mappingDelegate = new WettbewerbsdurchfuehrendeMappingDelegate();
 

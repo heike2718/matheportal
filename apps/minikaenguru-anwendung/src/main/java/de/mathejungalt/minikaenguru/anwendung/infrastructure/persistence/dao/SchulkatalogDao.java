@@ -72,7 +72,7 @@ public class SchulkatalogDao {
     }
 
     /**
-     * Läd die Schule mit dem gegebenen kuerzel
+     * Läd die Schule mit dem gegebenen kuerzel.
      *
      * @param kuerzel String
      * @return Optional

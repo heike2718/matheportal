@@ -38,7 +38,7 @@ public class SchulkollegiumDao {
     /**
      * Gibt eine Liste von SchulkollegiumsmitgliedEntity mit der gegebenen userUuid zurück.
      *
-     * @param userUuid
+     * @param schulkuerzel String
      * @return List
      */
     public List<SchulkollegiumsmitgliedEntity> findAllForSchule(final String schulkuerzel) {
@@ -81,7 +81,7 @@ public class SchulkollegiumDao {
     }
 
     /**
-     * Erzeugt einen neuen Eintrag in schulkollegien
+     * Erzeugt einen neuen Eintrag in schulkollegien.
      *
      * @param entity SchulkollegiumsmitgliedEntity
      * @return Long die technische Id

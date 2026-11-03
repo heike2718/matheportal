@@ -19,7 +19,7 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.Wet
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
 /**
- * AuthorizationService
+ * AuthorizationService.
  */
 @ApplicationScoped
 public class AuthorizationService {

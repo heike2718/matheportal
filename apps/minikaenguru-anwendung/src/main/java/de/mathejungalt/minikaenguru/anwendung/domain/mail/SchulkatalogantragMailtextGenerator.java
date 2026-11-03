@@ -20,7 +20,7 @@ public class SchulkatalogantragMailtextGenerator {
     private String text;
 
     /**
-     * Ersetzt die Platzhalter im schulkatalogantrag-Template
+     * Ersetzt die Platzhalter im schulkatalogantrag-Template.
      *
      * @param antrag Schulkatalogantrag
      * @return String

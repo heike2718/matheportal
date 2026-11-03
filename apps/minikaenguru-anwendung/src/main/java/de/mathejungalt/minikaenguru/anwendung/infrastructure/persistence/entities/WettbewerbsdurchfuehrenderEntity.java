@@ -44,7 +44,7 @@ public class WettbewerbsdurchfuehrenderEntity {
     public static final String FIND_BY_USER_UUID = "WettbewerbsdurchfuehrenderEntity.FIND_BY_USER_UUID";
 
     /**
-     * Name des uk für die Spalte privatkuerzel
+     * Name des uk für die Spalte privatkuerzel.
      */
     public static final String UK_NAME_PRIVATKUERZEL = "uk_wettbewerbsdurchfuehrende_privatkuerzel";
 
