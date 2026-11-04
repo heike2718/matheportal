@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * WettbewerbsdurchfuehrenderEntity.
@@ -54,6 +55,7 @@ public class WettbewerbsdurchfuehrenderEntity {
     private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "user_uuid", nullable = false, length = 36)
+    @ToString.Exclude
     private String userUuid;
 
     @Column(name = "typ", nullable = false, updatable = false)
@@ -80,14 +82,17 @@ public class WettbewerbsdurchfuehrenderEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private int version;
 
     @Override

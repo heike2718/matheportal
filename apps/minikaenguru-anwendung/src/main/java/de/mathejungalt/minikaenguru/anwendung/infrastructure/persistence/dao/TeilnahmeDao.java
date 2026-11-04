@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
 
@@ -41,6 +42,16 @@ public class TeilnahmeDao {
                 .setParameter("teilnahmekuerzel", teilnahmekuerzel)
                 .getResultList();
 
+    }
+
+    /**
+     * Speichert eine neue Teilnahme.
+     *
+     * @param entity TeilnahmeEntity
+     */
+    @Transactional
+    public void insertTeilnahme(final TeilnahmeEntity entity) {
+        this.entityManager.persist(entity);
     }
 
 }

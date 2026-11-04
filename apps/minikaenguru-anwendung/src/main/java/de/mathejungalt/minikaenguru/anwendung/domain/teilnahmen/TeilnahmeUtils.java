@@ -13,6 +13,17 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsstatus
 public final class TeilnahmeUtils {
 
     /**
+     * Ermittelt, ob der status des aktuellen Wettbewerbs eine Anmeldung zulässt.
+     *
+     * @param aktuellerWettbewerb Wettbewerb
+     * @return boolean
+     */
+    public static boolean laesstWettbewerbsstatusAnmeldungZu(final Wettbewerb aktuellerWettbewerb) {
+        return aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.ERFASST
+                && aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.BEENDET;
+    }
+
+    /**
      * Ermittelt aus den gegebenen parametern, ob eine Anmeldung zum Wettbewerb möglich ist.
      *
      * @param aktuellerWettbewerb Wettbewerb
@@ -31,8 +42,7 @@ public final class TeilnahmeUtils {
             return false;
         }
 
-        return aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.ERFASST
-                && aktuellerWettbewerb.getStatus() != Wettbewerbsstatus.BEENDET;
+        return laesstWettbewerbsstatusAnmeldungZu(aktuellerWettbewerb);
     }
 
 }

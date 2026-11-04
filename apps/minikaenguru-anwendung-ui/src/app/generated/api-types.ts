@@ -827,15 +827,6 @@ export interface operations {
                     readonly 'application/json': components['schemas']['Teilnahme'];
                 };
             };
-            /** @description Request ist ungültig */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
             /** @description keine Session oder Session abgelaufen */
             readonly 401: {
                 headers: {
@@ -875,21 +866,12 @@ export interface operations {
         readonly requestBody?: never;
         readonly responses: {
             /** @description OK */
-            readonly 200: {
+            readonly 201: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
                     readonly 'application/json': Record<string, never>;
-                };
-            };
-            /** @description Request ist ungültig */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
             };
             /** @description keine Session oder Session abgelaufen */
@@ -910,7 +892,7 @@ export interface operations {
                     readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
             };
-            /** @description Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerb beendet) */
+            /** @description Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerbsstatus lässt keine Anmeldung zu) */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1175,7 +1157,7 @@ export interface operations {
         readonly requestBody?: never;
         readonly responses: {
             /** @description OK */
-            readonly 200: {
+            readonly 201: {
                 headers: {
                     readonly [name: string]: unknown;
                 };

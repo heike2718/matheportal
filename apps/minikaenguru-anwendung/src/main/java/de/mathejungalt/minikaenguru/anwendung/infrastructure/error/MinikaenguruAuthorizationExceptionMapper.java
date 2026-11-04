@@ -8,15 +8,21 @@ import jakarta.ws.rs.ext.Provider;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * MinikaenguruAuthorizationExceptionMapper.
  */
 @Provider
 @Priority(ExceptionMapperPriorities.APPLICATION)
+@Slf4j
 public class MinikaenguruAuthorizationExceptionMapper implements ExceptionMapper<MinikaenguruAuthorizationException> {
 
     @Override
     public Response toResponse(final MinikaenguruAuthorizationException exception) {
+
+        log.error(exception.getMessage(), exception);
+
         return Response.status(Status.FORBIDDEN).build();
     }
 

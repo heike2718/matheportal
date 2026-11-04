@@ -17,10 +17,13 @@ import jakarta.persistence.Version;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@Builder
 @EqualsAndHashCode
 @Entity
 @Table(name = "teilnahmen", schema = "minikaenguru")
@@ -39,38 +42,42 @@ public class TeilnahmeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Exclude
-    private Long id; // NOPMD id ist nun mal richtig hier.
+    private final Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "jahr", nullable = false)
-    private Integer jahr;
+    private final Integer jahr;
 
     @Column(name = "teilnahmekuerzel", nullable = false)
-    private String teilnahmekuerzel;
+    private final String teilnahmekuerzel;
 
     @Column(name = "teilnahmeart", nullable = false)
     @Enumerated(EnumType.STRING)
     @EqualsAndHashCode.Exclude
-    private Wettbewerbsdurchfuehrungsart teilnahmeart;
+    private final Wettbewerbsdurchfuehrungsart teilnahmeart;
 
     @Column(name = "auswertungsart")
     @Enumerated(EnumType.STRING)
     @EqualsAndHashCode.Exclude
-    private Auswertungsart auswertungsart;
+    private final Auswertungsart auswertungsart;
 
     @Column(name = "angemeldet_durch")
     @EqualsAndHashCode.Exclude
-    private String angemeldetDurch;
+    @ToString.Exclude
+    private final String angemeldetDurch;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private LocalDateTime createdAt;
+    @ToString.Exclude
+    private final LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
-    private LocalDateTime updatedAt;
+    @ToString.Exclude
+    private final LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
-    private int version;
+    @ToString.Exclude
+    private final int version;
 
 }

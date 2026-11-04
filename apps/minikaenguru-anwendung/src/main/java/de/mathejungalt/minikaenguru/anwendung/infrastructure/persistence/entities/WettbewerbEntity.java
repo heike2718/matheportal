@@ -16,6 +16,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsstatus
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * WettbewerbEntity.
@@ -40,15 +41,19 @@ public class WettbewerbEntity {
     private Wettbewerbsstatus status;
 
     @Column(name = "beginn")
+    @ToString.Exclude
     private LocalDate beginn;
 
     @Column(name = "freischaltung_schulen")
+    @ToString.Exclude
     private LocalDate freischaltungSchulen;
 
     @Column(name = "freischaltung_privat")
+    @ToString.Exclude
     private LocalDate freischaltungPrivat;
 
     @Column(name = "ende")
+    @ToString.Exclude
     private LocalDate ende;
 
 }

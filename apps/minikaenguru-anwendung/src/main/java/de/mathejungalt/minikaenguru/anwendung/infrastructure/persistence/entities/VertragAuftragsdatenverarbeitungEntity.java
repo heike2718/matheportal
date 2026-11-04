@@ -12,6 +12,7 @@ import jakarta.persistence.Version;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * VertragAuftragsdatenverarbeitungEntity.
@@ -63,12 +64,15 @@ public class VertragAuftragsdatenverarbeitungEntity {
     private String uuidVertragstext;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ToString.Exclude
     private LocalDateTime updatedAt;
 
     @Version
+    @ToString.Exclude
     private int version;
 
 }

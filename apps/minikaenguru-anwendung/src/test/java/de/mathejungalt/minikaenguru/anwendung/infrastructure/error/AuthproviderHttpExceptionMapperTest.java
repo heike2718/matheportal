@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderHttpException;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -26,12 +27,13 @@ public class AuthproviderHttpExceptionMapperTest {
         final AuthproviderHttpException exception = new AuthproviderHttpException(status, "andere Fehlermeldung");
 
         // act
-        final Response response = exceptionMapper.toResponse(exception);
+        try (final Response response = exceptionMapper.toResponse(exception)) {
 
-        final ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            final ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
 
-        assertEquals(500, response.getStatus());
-        assertEquals(expectedMessage, errorResponse.getMessage());
+            assertAll(() -> assertEquals(500, response.getStatus()),
+                    () -> assertEquals(expectedMessage, errorResponse.getMessage()));
+        }
 
     }
 }

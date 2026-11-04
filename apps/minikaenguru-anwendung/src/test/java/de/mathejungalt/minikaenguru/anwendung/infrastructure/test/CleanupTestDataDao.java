@@ -40,4 +40,15 @@ public class CleanupTestDataDao {
                 .setParameter("userUuid", userUuid)
                 .executeUpdate();
     }
+
+    @Transactional
+    public void deleteTeilnahme(final String teilnahmekuerzel, final Integer jahr) {
+
+        entityManager
+                .createNativeQuery("delete from teilnahmen where teilnahmekuerzel = :teilnahmekuerzel and jahr = :jahr")
+                .setParameter("teilnahmekuerzel", teilnahmekuerzel)
+                .setParameter("jahr", jahr)
+                .executeUpdate();
+
+    }
 }

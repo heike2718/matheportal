@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -54,10 +55,12 @@ public class SchulkollegiumsmitgliedEntity {
     private String schulkuerzel;
 
     @Column(name = "user_uuid", nullable = false, length = 36)
+    @ToString.Exclude
     private String userUuid;
 
     @Column(name = "created_at", updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
 }
