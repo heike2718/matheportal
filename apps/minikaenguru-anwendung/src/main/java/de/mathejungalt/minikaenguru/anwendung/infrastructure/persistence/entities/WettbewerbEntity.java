@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "wettbewerbe", schema = "minikaenguru")
 @NamedQueries({
         @NamedQuery(name = WettbewerbEntity.LOAD_ALL, query = "select w from WettbewerbEntity w order by w.id desc") })
+@SuppressWarnings("CPD-START")
 public class WettbewerbEntity {
 
     public static final String LOAD_ALL = "WettbewerbEntity.LOAD_ALL";

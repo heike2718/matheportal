@@ -35,6 +35,7 @@ import lombok.ToString;
         @NamedQuery(
                 name = SchulkollegiumsmitgliedEntity.FIND_BY_UNIQUE_KEY,
                 query = "select k from SchulkollegiumsmitgliedEntity k where k.userUuid = :userUuid and k.schulkuerzel = :schulkuerzel") })
+@SuppressWarnings("CPD-START")
 public class SchulkollegiumsmitgliedEntity {
 
     /** Name der named query. */

@@ -35,11 +35,11 @@ import lombok.ToString;
 @NamedQueries({ @NamedQuery(
         name = LoesungszettelEntity.COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR,
         query = "select count(l) from LoesungszettelEntity l where l.teilnahmekuerzel = :teilnahmekuerzel and l.jahr = :jahr") })
+@SuppressWarnings("CPD-START")
 public class LoesungszettelEntity {
 
     public static final String COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR = "LoesungszettelEntity.COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR";
 
-    // cpd:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // NOPMD id ist nun mal richtig hier.
@@ -129,5 +129,4 @@ public class LoesungszettelEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private int version;
-    // cpd:on
 }

@@ -23,6 +23,7 @@ import lombok.Getter;
 @Builder
 @Entity
 @Table(name = "audit_events", schema = "minikaenguru")
+@SuppressWarnings("CPD-START")
 public class AuditEventEntity {
 
     @Id

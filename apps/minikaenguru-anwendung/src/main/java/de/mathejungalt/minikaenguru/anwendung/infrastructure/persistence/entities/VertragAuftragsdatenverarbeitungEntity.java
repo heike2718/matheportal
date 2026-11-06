@@ -26,6 +26,7 @@ import lombok.ToString;
         select new java.lang.String(v.uuid) from VertragAuftragsdatenverarbeitungEntity v
         where v.schulkuerzel = :schulkuerzel
         """) })
+@SuppressWarnings("CPD-START")
 public class VertragAuftragsdatenverarbeitungEntity {
 
     public static final String FIND_ID_BY_SCHULKUERZEL = "VertragAuftragsdatenverarbeitungEntity.FIND_ID_BY_SCHULKUERZEL";

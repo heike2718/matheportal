@@ -36,6 +36,7 @@ import lombok.ToString;
         """), @NamedQuery(
         name = TeilnahmeEntity.FIND_BY_UNIQUE_KEY,
         query = "select t from TeilnahmeEntity t where t.teilnahmekuerzel = :teilnahmekuerzel and t.jahr = :jahr") })
+@SuppressWarnings("CPD-START")
 public class TeilnahmeEntity {
 
     /** Name dieser NamedQuery. */

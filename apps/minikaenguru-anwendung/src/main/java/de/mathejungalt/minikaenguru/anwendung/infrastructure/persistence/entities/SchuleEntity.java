@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
         @NamedQuery(
                 name = SchuleEntity.FIND_BY_KUERZEL_LIST,
                 query = "select s from SchuleEntity s where s.kuerzel in :kuerzels") })
+@SuppressWarnings("CPD-START")
 public class SchuleEntity {
 
     /** Name der named query. */

@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NamedQueries({ @NamedQuery(
         name = OrtEntity.FIND_BY_NAME,
         query = "select o from OrtEntity o where o.name like :name order by o.name") })
+@SuppressWarnings("CPD-START")
 public class OrtEntity {
 
     public static final String FIND_BY_NAME = "OrtEntity.FIND_BY_NAME";
