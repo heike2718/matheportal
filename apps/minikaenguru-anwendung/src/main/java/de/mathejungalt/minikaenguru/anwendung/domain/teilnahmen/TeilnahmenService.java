@@ -155,16 +155,13 @@ public class TeilnahmenService {
             teilnahme.setAnzahlKlassen(0);
         }
 
-        teilnahme
-                .setAnzahlKinder(
-                        Integer.valueOf(countDao.getAnzahlKinderByTeilnahmekuerzel(entity.getTeilnahmekuerzel())));
+        teilnahme.setAnzahlKinder(countDao.getAnzahlKinderByTeilnahmekuerzel(entity.getTeilnahmekuerzel()));
         teilnahme
                 .setAnzahlLoesungszettel(countDao
                         .getAnzahlLoesungszettelByTeilnahmekuerzelAndJahr(entity.getTeilnahmekuerzel(),
                                 entity.getJahr()));
 
         return teilnahme;
-
     }
 
 }
