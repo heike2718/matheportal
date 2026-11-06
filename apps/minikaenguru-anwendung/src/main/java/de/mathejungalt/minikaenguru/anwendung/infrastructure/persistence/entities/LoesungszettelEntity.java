@@ -39,6 +39,7 @@ public class LoesungszettelEntity {
 
     public static final String COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR = "LoesungszettelEntity.COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR";
 
+    // cpd:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // NOPMD id ist nun mal richtig hier.
@@ -128,5 +129,5 @@ public class LoesungszettelEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private int version;
-
+    // cpd:on
 }

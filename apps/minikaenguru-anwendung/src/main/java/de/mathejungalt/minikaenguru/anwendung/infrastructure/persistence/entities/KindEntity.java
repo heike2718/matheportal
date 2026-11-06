@@ -39,6 +39,7 @@ public class KindEntity {
 
     public static final String COUNT_BY_TEILNAHMEKUERZEL = "KindEntity.COUNT_BY_TEILNAHMEKUERZEL";
 
+    // cpd:off
     @Id
     @Column(name = "uuid", nullable = false, length = 36)
     private String uuid;
@@ -122,5 +123,6 @@ public class KindEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private int version;
+    // cpd:on
 
 }

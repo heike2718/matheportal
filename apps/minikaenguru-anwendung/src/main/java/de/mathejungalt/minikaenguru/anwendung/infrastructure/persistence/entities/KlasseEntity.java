@@ -33,6 +33,7 @@ public class KlasseEntity {
 
     public static final String COUNT_BY_KUERZEL_SCHULE = "KlasseEntity.COUNT_BY_KUERZEL_SCHULE";
 
+    // cpd:off
     @Id
     @Column(name = "uuid", nullable = false, length = 36)
     private String uuid;
@@ -69,5 +70,6 @@ public class KlasseEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private int version;
+    // cpd:on
 
 }
