@@ -115,6 +115,25 @@ public class PrivatpersonResourceTest {
                     () -> assertEquals(0, teilnahme.getAnzahlLoesungszettel()),
                     () -> assertNotNull(teilnahme.getAngemeldetAm()));
 
+            final Teilnahme aktuelleTeilnahme = given()
+                    .get("/aktuelle-teilnahme")
+                    .then()
+                    .statusCode(200)
+                    .and()
+                    .extract()
+                    .as(Teilnahme.class);
+
+            assertAll(() -> assertNotNull(aktuelleTeilnahme),
+                    () -> assertEquals(KUERZEL_LEO_LEMMA, aktuelleTeilnahme.getKuerzel()),
+                    () -> assertEquals(aktuellerWettbewerb.getJahr(), aktuelleTeilnahme.getJahr()),
+                    () -> assertEquals(Auswertungsart.ONLINE, aktuelleTeilnahme.getAuswertungsart()),
+                    () -> assertEquals(Wettbewerbsdurchfuehrungsart.PRIVAT, aktuelleTeilnahme.getDurchfuehrungsart()),
+                    () -> assertNull(aktuelleTeilnahme.getAngemeldetDurch()),
+                    () -> assertEquals(0, aktuelleTeilnahme.getAnzahlKinder()),
+                    () -> assertEquals(0, aktuelleTeilnahme.getAnzahlKlassen()),
+                    () -> assertEquals(0, aktuelleTeilnahme.getAnzahlLoesungszettel()),
+                    () -> assertNotNull(aktuelleTeilnahme.getAngemeldetAm()));
+
             final ErrorResponse errorResponse = given()
                     .post("/aktuelle-teilnahme")
                     .then()
@@ -143,6 +162,23 @@ public class PrivatpersonResourceTest {
     @Test
     void should_anmelden_return_401_when_not_loggedIn() {
         given().post("/aktuelle-teilnahme").then().statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_LEHRPERSON_READ)
+    void should_loadAktuellePrivatteilnahme_return_403_when_lehrperson() {
+        given().get("/aktuelle-teilnahme").then().statusCode(403);
+    }
+
+    @Test
+    void should_loadAktuellePrivatteilnahme_return_401_when_not_loggedIn() {
+        given().get("/aktuelle-teilnahme").then().statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = "13ec6172-c4db-4e03-9198-d80a1281fb05")
+    void should_loadAktuellePrivatteilnahme_return_404_when_not_exists() {
+        given().get("/aktuelle-teilnahme").then().statusCode(404);
     }
 
 }

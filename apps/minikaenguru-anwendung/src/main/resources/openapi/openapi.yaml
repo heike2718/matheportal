@@ -674,6 +674,17 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
+        Klassenstufe:
+            type: string
+            enum:
+                - IKID
+                - EINS
+                - ZWEI
+            description: die Klassenstufe
+            example:
+                - IKID
+                - EINS
+                - ZWEI
         Land:
             type: object
             required:
@@ -738,6 +749,15 @@ components:
                         $ref: '#/components/schemas/TeilnahmeReferenz'
                 anmeldungMoeglich:
                     type: boolean
+        QuelleLoesungszettel:
+            type: string
+            enum:
+                - ONLINE
+                - UPLOAD
+            description: die Quelle des Lösungszettels (online erfasst oder hochgeladen)
+            example:
+                - ONLINE
+                - UPLOAD
         Schule:
             type: object
             required:
@@ -817,6 +837,15 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
+        Sprache:
+            type: string
+            enum:
+                - DE
+                - EN
+            description: die Wettbewerbssprache (deutsch oder englisch)
+            example:
+                - DE
+                - EN
         Schulkollegium:
             type: object
             required:

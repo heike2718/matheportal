@@ -125,18 +125,10 @@ public class WettbewerbsdurchfuehrendeService {
      */
     public List<Schule> loadMySchools() {
 
-        final Optional<WettbewerbsdurchfuehrenderEntity> opt = wettbewerbsdurchfuehrenderDao
-                .findByUserUuid(securityIdentity.getPrincipal().getName());
+        final WettbewerbsdurchfuehrenderEntity entity = loadWettbewerbsdurchfuehrendenAndAuditMissing("Schulen laden");
 
-        if (opt.isEmpty()) {
-            final String message = "Benutzer mit dieser uuid ist kein Wettbewerbsdurchführender. Laden von Schulen nicht erlaubt";
-            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
-            throw new MinikaenguruAuthorizationException(message);
-        }
-
-        final WettbewerbsdurchfuehrenderEntity entity = opt.get();
         if (Wettbewerbsdurchfuehrungsart.PRIVAT == entity.getArt()) {
-            final String message = "Benutzer mit dieser uuid ist Privatperson. Laden von Schulen nicht erlaubt";
+            final String message = "Schulen laden: Benutzer ist Privatperson";
             auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
             throw new MinikaenguruAuthorizationException(message);
         }
@@ -153,18 +145,11 @@ public class WettbewerbsdurchfuehrendeService {
      */
     public PrivatpersonWettbewerbskontext loadMyWettbewerbskontext() {
 
-        final Optional<WettbewerbsdurchfuehrenderEntity> opt = wettbewerbsdurchfuehrenderDao
-                .findByUserUuid(securityIdentity.getPrincipal().getName());
+        final WettbewerbsdurchfuehrenderEntity entity = loadWettbewerbsdurchfuehrendenAndAuditMissing(
+                "Wettbewerbskontext laden");
 
-        if (opt.isEmpty()) {
-            final String message = "Benutzer mit dieser uuid ist kein Wettbewerbsdurchführender. Laden des Wettbewerbskontexts nicht erlaubt";
-            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
-            throw new MinikaenguruAuthorizationException(message);
-        }
-
-        final WettbewerbsdurchfuehrenderEntity entity = opt.get();
         if (Wettbewerbsdurchfuehrungsart.SCHULE == entity.getArt()) {
-            final String message = "Benutzer mit dieser uuid ist Lehrperson. Laden eines Wettbewerbskontexts nicht möglich.";
+            final String message = "Wettbewerbskontext laden: Benutzer ist Lehrperson.";
             auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
             throw new MinikaenguruAuthorizationException(message);
         }
@@ -175,5 +160,28 @@ public class WettbewerbsdurchfuehrendeService {
         return new PrivatpersonWettbewerbskontext()
                 .teilnahmerefs(teilnahmerefs)
                 .anmeldungMoeglich(TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs));
+    }
+
+    /**
+     * Läd die Entity mit der gegebenen userUuid und protokolliert Zugriff, wenn es sie nicht gibt.
+     *
+     * @param userUuid String
+     * @param context  String
+     * @return WettbewerbsdurchfuehrenderEntity - nie null
+     * @throws MinikaenguruAuthorizationException wenn es die Entity nicht gibt.
+     */
+    public WettbewerbsdurchfuehrenderEntity loadWettbewerbsdurchfuehrendenAndAuditMissing(final String context)
+            throws MinikaenguruAuthorizationException {
+        final Optional<WettbewerbsdurchfuehrenderEntity> optDurchfuehrender = wettbewerbsdurchfuehrenderDao
+                .findByUserUuid(securityIdentity.getPrincipal().getName());
+
+        if (optDurchfuehrender.isEmpty()) {
+            final String message = context + ": Wettbewerbsdurchführender existiert nicht";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException(
+                    "Sie haben keine Berechtigung für den Minikänguru-Wettbewerb.");
+        }
+
+        return optDurchfuehrender.get();
     }
 }

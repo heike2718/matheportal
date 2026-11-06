@@ -54,4 +54,22 @@ public class TeilnahmeDao {
         this.entityManager.persist(entity);
     }
 
+    /**
+     * Läd die Entity anhand ihres eindeutigen fachlichen Schlüssels.
+     *
+     * @param teilnahmekuerzel String
+     * @param jahr             Interger
+     * @return TeilnahmeEntity oder null
+     */
+    public TeilnahmeEntity findTeilnahmeByUniqueKey(final String teilnahmekuerzel, final Integer jahr) {
+
+        final List<TeilnahmeEntity> resultList = entityManager
+                .createNamedQuery(TeilnahmeEntity.FIND_BY_UNIQUE_KEY, TeilnahmeEntity.class)
+                .setParameter("teilnahmekuerzel", teilnahmekuerzel)
+                .setParameter("jahr", jahr)
+                .getResultList();
+
+        return resultList.isEmpty() ? null : resultList.getFirst();
+    }
+
 }

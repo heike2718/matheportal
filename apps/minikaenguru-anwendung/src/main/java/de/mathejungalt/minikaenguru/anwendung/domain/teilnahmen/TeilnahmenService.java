@@ -3,15 +3,17 @@ package de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.auditevents.AuditEventService;
+import de.mathejungalt.minikaenguru.anwendung.domain.auditevents.AuditEventType;
 import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruConflictException;
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Teilnahme;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
@@ -19,8 +21,9 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.utils.MappingUtils;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbService;
+import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.WettbewerbsdurchfuehrendeService;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.CountDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.TeilnahmeDao;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.WettbewerbsdurchfuehrenderDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.TeilnahmeEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.WettbewerbsdurchfuehrenderEntity;
 
@@ -37,10 +40,16 @@ public class TeilnahmenService {
     WettbewerbService wettbewerbService;
 
     @Inject
-    WettbewerbsdurchfuehrenderDao wettbewerbsdurchfuehrenderDao;
+    WettbewerbsdurchfuehrendeService wettbewerbsdurchfuehrendeService;
+
+    @Inject
+    AuditEventService auditEventService;
 
     @Inject
     TeilnahmeDao teilnahmeDao;
+
+    @Inject
+    CountDao countDao;
 
     @Inject
     Clock clock;
@@ -49,23 +58,21 @@ public class TeilnahmenService {
      * Legt eine Privatteilnahme zum aktuellen Wettbewerb an.
      *
      * @return Teilnahme
+     * @throws MinikaenguruAuthorizationException wenn keine Berechtigung
+     * @throws MinikaenguruConflictException      wenn Anlegen nicht möglich
      */
-    public Teilnahme privatteilnahmeAnlegen() {
+    public Teilnahme privatteilnahmeAnlegen() throws MinikaenguruAuthorizationException, MinikaenguruConflictException {
 
         final String userUuid = securityIdentity.getPrincipal().getName();
 
-        final Optional<WettbewerbsdurchfuehrenderEntity> optDurchfuehrender = wettbewerbsdurchfuehrenderDao
-                .findByUserUuid(userUuid);
-
-        if (optDurchfuehrender.isEmpty()) {
-            throw new MinikaenguruAuthorizationException(
-                    "Sie haben keine Berechtigung für den Minikänguru-Wettbewerb.");
-        }
-
-        final WettbewerbsdurchfuehrenderEntity durchfuehrender = optDurchfuehrender.get();
+        final WettbewerbsdurchfuehrenderEntity durchfuehrender = wettbewerbsdurchfuehrendeService
+                .loadWettbewerbsdurchfuehrendenAndAuditMissing("Wettbewerbsanmeldung privat");
 
         if (Wettbewerbsdurchfuehrungsart.SCHULE == durchfuehrender.getArt()) {
-            throw new MinikaenguruAuthorizationException("Sie sich nicht privat zum Minikänguru-Wettbewerb anmelden.");
+            final String message = "Wettbewerbsanmeldung privat: Benutzer ist Lehrperson";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException(
+                    "Sie können sich nicht privat zum Minikänguru-Wettbewerb anmelden.");
         }
 
         final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
@@ -100,6 +107,38 @@ public class TeilnahmenService {
         return result;
     }
 
+    /**
+     * Läd die aktuelle Teilnahme der eingeloggten Privatperson.
+     *
+     * @return Teilnahme
+     * @throws MinikaenguruAuthorizationException wenn keine Berechtigung
+     */
+    public Teilnahme loadAktuellePrivatteilnahme()
+            throws MinikaenguruAuthorizationException, ResourceNotFoundException {
+
+        final WettbewerbsdurchfuehrenderEntity durchfuehrender = wettbewerbsdurchfuehrendeService
+                .loadWettbewerbsdurchfuehrendenAndAuditMissing("aktuelle Privatteilnahme laden");
+
+        if (Wettbewerbsdurchfuehrungsart.SCHULE == durchfuehrender.getArt()) {
+            final String message = "aktuelle Privatteilnahme laden: Benutzer ist Lehrperson";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException("Sie können keine Privatteilnahmen laden.");
+        }
+
+        final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
+
+        final TeilnahmeEntity teilnahmeEntity = teilnahmeDao
+                .findTeilnahmeByUniqueKey(durchfuehrender.getPrivatkuerzel(), aktuellerWettbewerb.getJahr());
+
+        if (teilnahmeEntity == null) {
+            throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
+        }
+
+        final Teilnahme result = mapFromEntity(teilnahmeEntity, false);
+        return result;
+
+    }
+
     private Teilnahme mapFromEntity(final TeilnahmeEntity entity, final boolean isNeu) {
         final Teilnahme teilnahme = new Teilnahme()
                 .kuerzel(entity.getTeilnahmekuerzel())
@@ -113,6 +152,20 @@ public class TeilnahmenService {
             teilnahme.setAnzahlKlassen(0);
             teilnahme.setAnzahlLoesungszettel(0);
         }
+
+        if (Wettbewerbsdurchfuehrungsart.SCHULE == entity.getTeilnahmeart()) {
+            teilnahme.setAnzahlKlassen(countDao.getAnzahlKlassenByKuerzelSchule(entity.getTeilnahmekuerzel()));
+        } else {
+            teilnahme.setAnzahlKlassen(0);
+        }
+
+        teilnahme
+                .setAnzahlKinder(
+                        Integer.valueOf(countDao.getAnzahlKinderByTeilnahmekuerzel(entity.getTeilnahmekuerzel())));
+        teilnahme
+                .setAnzahlLoesungszettel(countDao
+                        .getAnzahlLoesungszettelByTeilnahmekuerzelAndJahr(entity.getTeilnahmekuerzel(),
+                                entity.getJahr()));
 
         return teilnahme;
 

@@ -14,9 +14,9 @@ import jakarta.persistence.Table;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsstatus;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
  * WettbewerbEntity.
@@ -38,22 +38,23 @@ public class WettbewerbEntity {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @EqualsAndHashCode.Exclude
     private Wettbewerbsstatus status;
 
     @Column(name = "beginn")
-    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private LocalDate beginn;
 
     @Column(name = "freischaltung_schulen")
-    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private LocalDate freischaltungSchulen;
 
     @Column(name = "freischaltung_privat")
-    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private LocalDate freischaltungPrivat;
 
     @Column(name = "ende")
-    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private LocalDate ende;
 
 }

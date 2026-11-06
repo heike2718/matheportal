@@ -289,6 +289,16 @@ export interface components {
             /** @example Irgendein Fehler ist aufgetreten */
             readonly message: string;
         };
+        /**
+         * @description die Klassenstufe
+         * @example [
+         *       "IKID",
+         *       "EINS",
+         *       "ZWEI"
+         *     ]
+         * @enum {string}
+         */
+        readonly Klassenstufe: 'IKID' | 'EINS' | 'ZWEI';
         readonly Land: {
             readonly kuerzel: string;
             readonly name: string;
@@ -309,6 +319,15 @@ export interface components {
             readonly teilnahmerefs: readonly components['schemas']['TeilnahmeReferenz'][];
             readonly anmeldungMoeglich: boolean;
         };
+        /**
+         * @description die Quelle des Lösungszettels (online erfasst oder hochgeladen)
+         * @example [
+         *       "ONLINE",
+         *       "UPLOAD"
+         *     ]
+         * @enum {string}
+         */
+        readonly QuelleLoesungszettel: 'ONLINE' | 'UPLOAD';
         readonly Schule: {
             readonly ort: components['schemas']['Ort'];
             readonly kuerzel: string;
@@ -329,6 +348,15 @@ export interface components {
             readonly strasseUndHausnummer: string;
             readonly emailAuftraggeber: string;
         };
+        /**
+         * @description die Wettbewerbssprache (deutsch oder englisch)
+         * @example [
+         *       "DE",
+         *       "EN"
+         *     ]
+         * @enum {string}
+         */
+        readonly Sprache: 'DE' | 'EN';
         readonly Schulkollegium: {
             /** @description das Kürzel der Schule */
             readonly schulkuerzel: string;

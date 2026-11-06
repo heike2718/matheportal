@@ -33,51 +33,56 @@ import lombok.ToString;
         from TeilnahmeEntity t
         where t.teilnahmekuerzel = :teilnahmekuerzel
         order by t.jahr desc
-        """) })
+        """), @NamedQuery(
+        name = TeilnahmeEntity.FIND_BY_UNIQUE_KEY,
+        query = "select t from TeilnahmeEntity t where t.teilnahmekuerzel = :teilnahmekuerzel and t.jahr = :jahr") })
 public class TeilnahmeEntity {
 
     /** Name dieser NamedQuery. */
     public static final String FIND_REFS_BY_TEILNAHMEKUERZEL = "TeilnahmeEntity.FIND_REFS_BY_TEILNAHMEKUERZEL";
 
+    public static final String FIND_BY_UNIQUE_KEY = "TeilnahmeEntity.FIND_BY_UNIQUE_KEY";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Exclude
-    private final Long id; // NOPMD id ist nun mal richtig hier.
+    private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "jahr", nullable = false)
-    private final Integer jahr;
+    @EqualsAndHashCode.Exclude
+    private Integer jahr;
 
     @Column(name = "teilnahmekuerzel", nullable = false)
-    private final String teilnahmekuerzel;
+    @EqualsAndHashCode.Exclude
+    private String teilnahmekuerzel;
 
     @Column(name = "teilnahmeart", nullable = false)
     @Enumerated(EnumType.STRING)
     @EqualsAndHashCode.Exclude
-    private final Wettbewerbsdurchfuehrungsart teilnahmeart;
+    private Wettbewerbsdurchfuehrungsart teilnahmeart;
 
     @Column(name = "auswertungsart")
     @Enumerated(EnumType.STRING)
     @EqualsAndHashCode.Exclude
-    private final Auswertungsart auswertungsart;
+    private Auswertungsart auswertungsart;
 
     @Column(name = "angemeldet_durch")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private final String angemeldetDurch;
+    private String angemeldetDurch;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private final int version;
+    private int version;
 
 }

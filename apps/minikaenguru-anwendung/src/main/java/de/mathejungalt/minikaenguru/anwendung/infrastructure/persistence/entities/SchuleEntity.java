@@ -8,6 +8,7 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,18 +46,23 @@ public class SchuleEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "kuerzel_ort")
+    @EqualsAndHashCode.Exclude
     private String ortId;
 
     @Column(name = "name_ort")
+    @EqualsAndHashCode.Exclude
     private String ort;
 
     @Column(name = "kuerzel_land")
+    @EqualsAndHashCode.Exclude
     private String landId;
 
     @Column(name = "name_land")
+    @EqualsAndHashCode.Exclude
     private String land;
 
 }

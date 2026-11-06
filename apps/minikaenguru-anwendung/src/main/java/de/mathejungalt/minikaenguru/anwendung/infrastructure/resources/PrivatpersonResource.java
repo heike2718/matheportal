@@ -22,8 +22,8 @@ public class PrivatpersonResource implements PrivatpersonApi {
 
     @Override
     public Response loadMyAktuelleTeilnahme() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadMyAktuelleTeilnahme'");
+        final Teilnahme teilnahme = teilnahmenService.loadAktuellePrivatteilnahme();
+        return Response.status(Status.OK).entity(teilnahme).build();
     }
 
     @Override

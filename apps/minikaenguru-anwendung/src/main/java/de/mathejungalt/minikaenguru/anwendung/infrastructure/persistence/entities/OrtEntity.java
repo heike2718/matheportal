@@ -8,6 +8,7 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,15 +32,18 @@ public class OrtEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "kuerzel_land")
+    @EqualsAndHashCode.Exclude
     private String landId;
 
     @Column(name = "name_land")
+    @EqualsAndHashCode.Exclude
     private String land;
 
     @Column(name = "anzahl_schulen")
+    @EqualsAndHashCode.Exclude
     private int anzahlSchulen;
-
 }

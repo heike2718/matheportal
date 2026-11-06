@@ -48,14 +48,14 @@ public class SchulkollegiumsmitgliedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Exclude
     private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "kuerzel_schule", nullable = false, length = 8)
+    @EqualsAndHashCode.Exclude
     private String schulkuerzel;
 
     @Column(name = "user_uuid", nullable = false, length = 36)
-    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private String userUuid;
 
     @Column(name = "created_at", updatable = false)
