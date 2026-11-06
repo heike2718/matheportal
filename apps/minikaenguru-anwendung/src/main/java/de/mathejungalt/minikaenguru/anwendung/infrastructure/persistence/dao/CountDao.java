@@ -27,7 +27,7 @@ public class CountDao {
      * @param jahr             Integer
      * @return int
      */
-    public int getAnzahlLoesungszettelByTeilnahmekuerzelAndJahr(String teilnahmekuerzel, final Integer jahr) {
+    public int getAnzahlLoesungszettelByTeilnahmekuerzelAndJahr(final String teilnahmekuerzel, final Integer jahr) {
 
         return entityManager
                 .createNamedQuery(LoesungszettelEntity.COUNT_BY_TEILNAHMEKUERZEL_AND_JAHR, Long.class)
@@ -43,7 +43,7 @@ public class CountDao {
      * @param teilnahmekuerzel String
      * @return int
      */
-    public int getAnzahlKinderByTeilnahmekuerzel(String teilnahmekuerzel) {
+    public int getAnzahlKinderByTeilnahmekuerzel(final String teilnahmekuerzel) {
 
         return entityManager
                 .createNamedQuery(KindEntity.COUNT_BY_TEILNAHMEKUERZEL, Long.class)
@@ -59,7 +59,7 @@ public class CountDao {
      * @param kuerzelSchule String
      * @return int
      */
-    public int getAnzahlKlassenByKuerzelSchule(String kuerzelSchule) {
+    public int getAnzahlKlassenByKuerzelSchule(final String kuerzelSchule) {
 
         return entityManager
                 .createNamedQuery(KlasseEntity.COUNT_BY_KUERZEL_SCHULE, Long.class)

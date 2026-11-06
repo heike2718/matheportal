@@ -102,9 +102,7 @@ public class TeilnahmenService {
 
         teilnahmeDao.insertTeilnahme(teilnahmeEntity);
 
-        final Teilnahme result = mapFromEntity(teilnahmeEntity, true);
-
-        return result;
+        return mapFromEntity(teilnahmeEntity, true);
     }
 
     /**
@@ -134,9 +132,7 @@ public class TeilnahmenService {
             throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
         }
 
-        final Teilnahme result = mapFromEntity(teilnahmeEntity, false);
-        return result;
-
+        return mapFromEntity(teilnahmeEntity, false);
     }
 
     private Teilnahme mapFromEntity(final TeilnahmeEntity entity, final boolean isNeu) {
