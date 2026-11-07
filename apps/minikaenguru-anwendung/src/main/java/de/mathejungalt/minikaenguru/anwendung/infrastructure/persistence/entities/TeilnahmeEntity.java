@@ -17,10 +17,13 @@ import jakarta.persistence.Version;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchfuehrungsart;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@Builder
 @EqualsAndHashCode
 @Entity
 @Table(name = "teilnahmen", schema = "minikaenguru")
@@ -30,21 +33,27 @@ import lombok.Getter;
         from TeilnahmeEntity t
         where t.teilnahmekuerzel = :teilnahmekuerzel
         order by t.jahr desc
-        """) })
+        """), @NamedQuery(
+        name = TeilnahmeEntity.FIND_BY_UNIQUE_KEY,
+        query = "select t from TeilnahmeEntity t where t.teilnahmekuerzel = :teilnahmekuerzel and t.jahr = :jahr") })
+@SuppressWarnings("CPD-START")
 public class TeilnahmeEntity {
 
     /** Name dieser NamedQuery. */
     public static final String FIND_REFS_BY_TEILNAHMEKUERZEL = "TeilnahmeEntity.FIND_REFS_BY_TEILNAHMEKUERZEL";
 
+    public static final String FIND_BY_UNIQUE_KEY = "TeilnahmeEntity.FIND_BY_UNIQUE_KEY";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Exclude
     private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "jahr", nullable = false)
+    @EqualsAndHashCode.Exclude
     private Integer jahr;
 
     @Column(name = "teilnahmekuerzel", nullable = false)
+    @EqualsAndHashCode.Exclude
     private String teilnahmekuerzel;
 
     @Column(name = "teilnahmeart", nullable = false)
@@ -59,18 +68,22 @@ public class TeilnahmeEntity {
 
     @Column(name = "angemeldet_durch")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private String angemeldetDurch;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime updatedAt;
 
     @Version
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private int version;
 
 }

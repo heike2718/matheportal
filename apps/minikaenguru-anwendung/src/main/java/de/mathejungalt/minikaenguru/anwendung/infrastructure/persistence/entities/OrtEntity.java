@@ -8,6 +8,7 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NamedQueries({ @NamedQuery(
         name = OrtEntity.FIND_BY_NAME,
         query = "select o from OrtEntity o where o.name like :name order by o.name") })
+@SuppressWarnings("CPD-START")
 public class OrtEntity {
 
     public static final String FIND_BY_NAME = "OrtEntity.FIND_BY_NAME";
@@ -31,15 +33,18 @@ public class OrtEntity {
     private String kuerzel;
 
     @Column(name = "name")
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column(name = "kuerzel_land")
+    @EqualsAndHashCode.Exclude
     private String landId;
 
     @Column(name = "name_land")
+    @EqualsAndHashCode.Exclude
     private String land;
 
     @Column(name = "anzahl_schulen")
+    @EqualsAndHashCode.Exclude
     private int anzahlSchulen;
-
 }

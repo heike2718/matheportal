@@ -52,7 +52,6 @@
         "source.fixAll": "explicit"
     },
     "java.debug.settings.onBuildFailureProceed": true,
-    "java.cleanup.actions": ["addFinalModifier"],
     "java.test.config": [
         {
             "name": "matheportal-shell",

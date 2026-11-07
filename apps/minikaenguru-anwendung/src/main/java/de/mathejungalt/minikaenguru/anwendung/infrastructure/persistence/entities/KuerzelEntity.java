@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "vw_kuerzel", schema = "minikaenguru")
+@SuppressWarnings("CPD-START")
 public class KuerzelEntity {
+
     @Id
     @Column(name = "kuerzel", length = 10)
     private String kuerzel;

@@ -20,6 +20,15 @@ public class AuditEventDao {
     EntityManager entityManager;
 
     /**
+     * AuditEventDao.
+     */
+    public AuditEventDao() {
+        // irgendein quality check will das so.
+    }
+
+    /**
+     * Speichert ein neues AuditEvent.
+     *
      * @param entity AuditEventEntity
      */
     @Transactional

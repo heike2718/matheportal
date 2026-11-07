@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -34,6 +35,7 @@ import lombok.NoArgsConstructor;
         @NamedQuery(
                 name = SchulkollegiumsmitgliedEntity.FIND_BY_UNIQUE_KEY,
                 query = "select k from SchulkollegiumsmitgliedEntity k where k.userUuid = :userUuid and k.schulkuerzel = :schulkuerzel") })
+@SuppressWarnings("CPD-START")
 public class SchulkollegiumsmitgliedEntity {
 
     /** Name der named query. */
@@ -47,17 +49,19 @@ public class SchulkollegiumsmitgliedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Exclude
     private Long id; // NOPMD id ist nun mal richtig hier.
 
     @Column(name = "kuerzel_schule", nullable = false, length = 8)
+    @EqualsAndHashCode.Exclude
     private String schulkuerzel;
 
     @Column(name = "user_uuid", nullable = false, length = 36)
+    @EqualsAndHashCode.Exclude
     private String userUuid;
 
     @Column(name = "created_at", updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private LocalDateTime createdAt;
 
 }

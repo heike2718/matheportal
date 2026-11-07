@@ -289,6 +289,16 @@ export interface components {
             /** @example Irgendein Fehler ist aufgetreten */
             readonly message: string;
         };
+        /**
+         * @description die Klassenstufe
+         * @example [
+         *       "IKID",
+         *       "EINS",
+         *       "ZWEI"
+         *     ]
+         * @enum {string}
+         */
+        readonly Klassenstufe: 'IKID' | 'EINS' | 'ZWEI';
         readonly Land: {
             readonly kuerzel: string;
             readonly name: string;
@@ -309,6 +319,15 @@ export interface components {
             readonly teilnahmerefs: readonly components['schemas']['TeilnahmeReferenz'][];
             readonly anmeldungMoeglich: boolean;
         };
+        /**
+         * @description die Quelle des Lösungszettels (online erfasst oder hochgeladen)
+         * @example [
+         *       "ONLINE",
+         *       "UPLOAD"
+         *     ]
+         * @enum {string}
+         */
+        readonly QuelleLoesungszettel: 'ONLINE' | 'UPLOAD';
         readonly Schule: {
             readonly ort: components['schemas']['Ort'];
             readonly kuerzel: string;
@@ -329,6 +348,15 @@ export interface components {
             readonly strasseUndHausnummer: string;
             readonly emailAuftraggeber: string;
         };
+        /**
+         * @description die Wettbewerbssprache (deutsch oder englisch)
+         * @example [
+         *       "DE",
+         *       "EN"
+         *     ]
+         * @enum {string}
+         */
+        readonly Sprache: 'DE' | 'EN';
         readonly Schulkollegium: {
             /** @description das Kürzel der Schule */
             readonly schulkuerzel: string;
@@ -827,15 +855,6 @@ export interface operations {
                     readonly 'application/json': components['schemas']['Teilnahme'];
                 };
             };
-            /** @description Request ist ungültig */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
-                };
-            };
             /** @description keine Session oder Session abgelaufen */
             readonly 401: {
                 headers: {
@@ -875,21 +894,12 @@ export interface operations {
         readonly requestBody?: never;
         readonly responses: {
             /** @description OK */
-            readonly 200: {
+            readonly 201: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
                     readonly 'application/json': Record<string, never>;
-                };
-            };
-            /** @description Request ist ungültig */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
             };
             /** @description keine Session oder Session abgelaufen */
@@ -910,7 +920,7 @@ export interface operations {
                     readonly 'application/json': components['schemas']['ErrorResponse'];
                 };
             };
-            /** @description Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerb beendet) */
+            /** @description Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerbsstatus lässt keine Anmeldung zu) */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1175,7 +1185,7 @@ export interface operations {
         readonly requestBody?: never;
         readonly responses: {
             /** @description OK */
-            readonly 200: {
+            readonly 201: {
                 headers: {
                     readonly [name: string]: unknown;
                 };

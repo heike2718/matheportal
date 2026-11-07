@@ -316,12 +316,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Teilnahme'
-                '400':
-                    description: Request ist ungültig
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
                 '401':
                     description: keine Session oder Session abgelaufen
                     content:
@@ -349,7 +343,7 @@ paths:
             security:
                 - mpSession: []
             responses:
-                '200':
+                '201':
                     description: OK
                     content:
                         application/json:
@@ -357,12 +351,6 @@ paths:
                                 type: object
                                 items:
                                     $ref: '#/components/schemas/Teilnahme'
-                '400':
-                    description: Request ist ungültig
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ErrorResponse'
                 '401':
                     description: keine Session oder Session abgelaufen
                     content:
@@ -376,7 +364,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
                 '409':
-                    description: Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerb beendet)
+                    description: Anmeldung ist nicht möglich (entweder bereits angemeldet, oder Wettbewerbsstatus lässt keine Anmeldung zu)
                     content:
                         application/json:
                             schema:
@@ -579,7 +567,7 @@ paths:
                   required: true
                   description: kuerzel der Schule
             responses:
-                '200':
+                '201':
                     description: OK
                     content:
                         application/json:
@@ -686,6 +674,17 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
+        Klassenstufe:
+            type: string
+            enum:
+                - IKID
+                - EINS
+                - ZWEI
+            description: die Klassenstufe
+            example:
+                - IKID
+                - EINS
+                - ZWEI
         Land:
             type: object
             required:
@@ -750,6 +749,15 @@ components:
                         $ref: '#/components/schemas/TeilnahmeReferenz'
                 anmeldungMoeglich:
                     type: boolean
+        QuelleLoesungszettel:
+            type: string
+            enum:
+                - ONLINE
+                - UPLOAD
+            description: die Quelle des Lösungszettels (online erfasst oder hochgeladen)
+            example:
+                - ONLINE
+                - UPLOAD
         Schule:
             type: object
             required:
@@ -829,6 +837,15 @@ components:
                     type: string
                     pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
                     maxLength: 255
+        Sprache:
+            type: string
+            enum:
+                - DE
+                - EN
+            description: die Wettbewerbssprache (deutsch oder englisch)
+            example:
+                - DE
+                - EN
         Schulkollegium:
             type: object
             required:
@@ -875,13 +892,13 @@ components:
                 angemeldetDurch:
                     $ref: '#/components/schemas/Person'
                 anzahlKlassen:
-                    type: number
+                    type: integer
                     description: 'Anzahl der Klassen, die teilnehmen (nur für durchführungsart SCHULE und Auswertungsart ONLINE relevant)'
                 anzahlKinder:
-                    type: number
+                    type: integer
                     description: 'Anzahl der bereits eingetragenen Kinder (nur für Auswertungsart ONLINE relevant)'
                 anzahlLoesungszettel:
-                    type: number
+                    type: integer
                     description: 'Anzahl der bereits erfassten Lösungszettel (nur für Auswertungsart ONLINE relevant)'
         TeilnahmeReferenz:
             type: object
