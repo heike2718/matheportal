@@ -13,6 +13,10 @@
         <module name="JavadocMethod">
             <property name="tokens" value="METHOD_DEF" />
         </module>
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="public" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
         <module name="JavadocType">
             <property name="scope" value="public" />
         </module>
