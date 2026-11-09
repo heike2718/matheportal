@@ -54,6 +54,13 @@ describe('lehrpersonReducer', () => {
         url: '/schulen/',
     });
 
+    const notFoundErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+        status: 404,
+        statusText: 'not-found',
+        error: 'boom',
+        url: '/schulen/',
+    });
+
     const technicalErrorResponse: HttpErrorResponse = new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
@@ -85,6 +92,16 @@ describe('lehrpersonReducer', () => {
             const state = lehrpersonFeature.reducer(
                 previousState,
                 LehrpersonActions.schulenLadenFailed({ error: technicalErrorResponse })
+            );
+            expect(state).toEqual({
+                schulenLoadState: 'technical-error',
+                schulen: [],
+            });
+        });
+        it('should reset schulen and set the correct loadDtate when not found', () => {
+            const state = lehrpersonFeature.reducer(
+                previousState,
+                LehrpersonActions.schulenLadenFailed({ error: notFoundErrorResponse })
             );
             expect(state).toEqual({
                 schulenLoadState: 'technical-error',

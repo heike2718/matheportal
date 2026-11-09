@@ -159,6 +159,18 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(result).toBeInstanceOf(UrlTree);
             expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
         });
+        it('should redirect to ladefehler when wettbwerbLoadState is not-found', async () => {
+            const { router } = setup('loaded', 'loaded', 'not-found', 'loaded');
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
         it('should redirect to ladefehler when wettbwerbLoadState is technical-error', async () => {
             const { router } = setup('loaded', 'loaded', 'technical-error', 'loaded');
 
@@ -204,6 +216,18 @@ describe('mkaPrivatpersonGuard tests', () => {
             }
         );
 
+        it('should redirect to ladefehler when wettbewerbLoadState is not-found', async () => {
+            const { router } = setup('loaded', 'loaded', 'loaded', 'not-found');
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
+
         it('should redirect to ladefehler when wettbewerbLoadState is technical-error', async () => {
             const { router } = setup('loaded', 'loaded', 'loaded', 'technical-error');
             const resultPromise = TestBed.runInInjectionContext(() =>
@@ -229,6 +253,18 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(wettbewerbFacadeMock.ensureWettbewerbGeladen).not.toHaveBeenCalledOnce();
             expect(privatpersonFacadeMock.dashboardVorbereiten).not.toHaveBeenCalledOnce();
 
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/home');
+        });
+
+        it('should redirect users to portal home when sessionLoadState not-found', async () => {
+            const { router } = setup('not-found', 'not-loaded', 'not-loaded', 'not-loaded');
+
+            const result = await TestBed.runInInjectionContext(async () =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            expect(mkaAuthFacadeMock.ensureAuthorizationLoaded).not.toHaveBeenCalled();
             expect(result).toBeInstanceOf(UrlTree);
             expect(router.serializeUrl(result as UrlTree)).toBe('/home');
         });

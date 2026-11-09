@@ -36,7 +36,12 @@ export const mkaSchuleGuard = (): CanActivateFn => route => {
             if (wettbewerbLoadState === 'loaded' && wettbewerbskontextLoadState === 'loaded') {
                 return true;
             }
-            if (wettbewerbLoadState === 'technical-error' || wettbewerbskontextLoadState === 'technical-error') {
+            if (
+                wettbewerbLoadState === 'technical-error' ||
+                wettbewerbLoadState === 'not-found' ||
+                wettbewerbskontextLoadState === 'technical-error' ||
+                wettbewerbskontextLoadState === 'not-found'
+            ) {
                 return router.createUrlTree([
                     '/',
                     portalRoutes.minikaenguruAnwendung.root,

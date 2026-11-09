@@ -43,7 +43,7 @@ export const schulenFeature = createFeature({
         })),
         on(SchuleActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
             ...state,
-            wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error),
+            wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             wettbewerbskontext: undefined,
             schulkollegiumLoadState: 'not-loaded',
         })),
@@ -64,7 +64,7 @@ export const schulenFeature = createFeature({
             return {
                 ...state,
                 wettbewerbskontext: neuerWettbewerbskontext,
-                schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error),
+                schulkollegiumLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
         }),
         on(lehrpersonBerechtigungVerweigert, state => {

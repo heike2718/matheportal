@@ -29,8 +29,8 @@ export class WettbewerbsdurchfuehrendeHttpService {
     }
 
     /**
-     * Läd die Daten des Wettbewerbsdurchfuehrender. server error wird vom globalen error interceptor behandelt.
-     * @returns Observable eines Wettbewerbsdurchfuehrender
+     * Läd die Daten des Wettbewerbsdurchfuehrenden. server error wird vom globalen error interceptor behandelt.
+     * @returns Observable auf Wettbewerbsdurchfuehrender
      */
     public loadWettbewerbsdurchfuehrenden(): Observable<Wettbewerbsdurchfuehrender> {
         return this.#httpClient.get<Wettbewerbsdurchfuehrender>(

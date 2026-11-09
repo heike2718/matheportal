@@ -7,11 +7,7 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 export default defineConfig(() => ({
     root: __dirname,
     cacheDir: '../../../node_modules/.vite/libs/shared-model/shared-model',
-    plugins: [angular(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
-    // Uncomment this if you are using workers.
-    // worker: {
-    //   plugins: () => [ nxViteTsPaths() ],
-    // },
+    plugins: [angular(), nxViteTsPaths({ debug: false }), nxCopyAssetsPlugin(['*.md'])],
     test: {
         name: 'shared-model',
         watch: false,

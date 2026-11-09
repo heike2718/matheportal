@@ -39,7 +39,11 @@ export const schulkatalogsucheFeature = createFeature({
             selectedSchule: undefined,
         })),
         on(SchulkatalogsucheActions.findOrteFailed, (state, { error }) => {
-            return { ...state, orteLoadState: mapErrorToRestrictedResourceLoadState(error), selectedOrt: undefined };
+            return {
+                ...state,
+                orteLoadState: mapErrorToRestrictedResourceLoadState(error, false),
+                selectedOrt: undefined,
+            };
         }),
         on(SchulkatalogsucheActions.ortSelected, (state, { ort }) => ({
             ...state,
@@ -58,7 +62,7 @@ export const schulkatalogsucheFeature = createFeature({
         on(SchulkatalogsucheActions.loadSchulenFailed, (state, { error }) => {
             return {
                 ...state,
-                schulenLoadState: mapErrorToRestrictedResourceLoadState(error),
+                schulenLoadState: mapErrorToRestrictedResourceLoadState(error, false),
                 selectedSchule: undefined,
             };
         }),

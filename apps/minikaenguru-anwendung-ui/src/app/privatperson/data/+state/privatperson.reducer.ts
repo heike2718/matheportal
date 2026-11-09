@@ -35,7 +35,7 @@ export const privatpersonFeature = createFeature({
         on(PrivatpersonActions.wettbewerbskontextLadenFailed, (state, { error }) => ({
             ...state,
             wettbewerbskontext: undefined,
-            wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error),
+            wettbewerbskontextLoadState: mapErrorToAuthorizedResourceLoadState(error, false),
         })),
         on(userLoggedOut, () => initialPrivatpersonState)
     ),

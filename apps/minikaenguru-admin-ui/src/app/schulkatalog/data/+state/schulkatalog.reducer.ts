@@ -99,13 +99,13 @@ export const schulkatalogFeature = createFeature({
             schulen: schulen,
             schulenLoadState: 'loaded',
         })),
-        on(SchulkatalogActions.loadActionFailed, (state, action) => {
-            const LoadState = mapErrorToRestrictedResourceLoadState(action.error);
-            switch (action.kontext) {
+        on(SchulkatalogActions.loadActionFailed, (state, { kontext, error }) => {
+            const loadState = mapErrorToRestrictedResourceLoadState(error, false);
+            switch (kontext) {
                 case SCHULKATALOG_ADMIN_KONTEXT.laender:
                     return {
                         ...state,
-                        laenderLoadState: LoadState,
+                        laenderLoadState: loadState,
                         selectedLand: undefined,
                         orte: [],
                         orteLoadState: 'not-loaded',
@@ -117,7 +117,7 @@ export const schulkatalogFeature = createFeature({
                 case SCHULKATALOG_ADMIN_KONTEXT.orte:
                     return {
                         ...state,
-                        orteLoadState: LoadState,
+                        orteLoadState: loadState,
                         selectedOrt: undefined,
                         schulen: [],
                         schulenLoadState: 'not-loaded',
@@ -126,7 +126,7 @@ export const schulkatalogFeature = createFeature({
                 case SCHULKATALOG_ADMIN_KONTEXT.schulen:
                     return {
                         ...state,
-                        schulenLoadState: LoadState,
+                        schulenLoadState: loadState,
                         selectedSchule: undefined,
                     };
             }

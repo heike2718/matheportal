@@ -31,7 +31,7 @@ export const wettbewerbFeature = createFeature({
             return {
                 ...state,
                 wettbewerb: undefined,
-                wettbewerbLoadState: mapErrorToPublicResourceLoadState(error),
+                wettbewerbLoadState: mapErrorToPublicResourceLoadState(error, false),
             };
         }),
         on(userLoggedOut, () => initialWettbewerbState)

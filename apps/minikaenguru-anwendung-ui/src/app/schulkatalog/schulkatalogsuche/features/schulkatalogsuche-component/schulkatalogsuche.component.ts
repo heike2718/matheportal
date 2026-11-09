@@ -5,7 +5,6 @@ import { OrteSuchenComponent } from '../orte-suchen-component/orte-suchen.compon
 import { SchulenListComponent } from '../schulen-list-component/schulen-list.component';
 
 @Component({
-    selector: 'mka-schulkatalogsuche',
     imports: [OrteSuchenComponent, SchulenListComponent],
     templateUrl: './schulkatalogsuche.component.html',
     styleUrl: './schulkatalogsuche.component.scss',

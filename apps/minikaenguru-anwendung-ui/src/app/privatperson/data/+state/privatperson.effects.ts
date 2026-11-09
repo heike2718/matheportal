@@ -42,7 +42,7 @@ export class PrivatpersonEffects {
             this.#actions.pipe(
                 ofType(PrivatpersonActions.wettbewerbskontextLadenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisher.publishError(errorContext.message);
                 })
             ),

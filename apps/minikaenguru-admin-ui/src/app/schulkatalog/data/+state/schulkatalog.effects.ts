@@ -164,7 +164,7 @@ export class SchulkatalogEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogActions.loadActionFailed, SchulkatalogActions.changeActionFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisherService.publishError(errorContext.message);
                 })
             );

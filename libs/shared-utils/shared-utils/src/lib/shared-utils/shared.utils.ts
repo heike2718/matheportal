@@ -7,23 +7,28 @@ import {
     ErrorContext,
     ErrorResponse,
     NOT_FOUND_FEHLERMELDUNG,
-    PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG,
     PUBLIC_RESOURCE_LOAD_STATE,
     RESTRICTED_RESOURCE_LOAD_STATE,
     TECHNISCHER_FEHLER_FEHLERMELDUNG,
 } from '@matheportal/shared-model';
 
-export function mapErrorToPublicResourceLoadState(error: Error): PUBLIC_RESOURCE_LOAD_STATE {
+export function mapErrorToPublicResourceLoadState(
+    error: Error,
+    notFoundIsAValidResponseStatus: boolean
+): PUBLIC_RESOURCE_LOAD_STATE {
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         if (httpError.status === 404) {
-            return 'loaded';
+            return notFoundIsAValidResponseStatus ? 'not-found' : 'technical-error';
         }
     }
     return 'technical-error';
 }
 
-export function mapErrorToRestrictedResourceLoadState(error: Error): RESTRICTED_RESOURCE_LOAD_STATE {
+export function mapErrorToRestrictedResourceLoadState(
+    error: Error,
+    notFoundIsAValidResponseStatus: boolean
+): RESTRICTED_RESOURCE_LOAD_STATE {
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
@@ -31,7 +36,7 @@ export function mapErrorToRestrictedResourceLoadState(error: Error): RESTRICTED_
             case 403:
                 return 'unauthorized';
             case 404:
-                return 'loaded';
+                return notFoundIsAValidResponseStatus ? 'not-found' : 'technical-error';
             default:
                 return 'technical-error';
         }
@@ -39,7 +44,10 @@ export function mapErrorToRestrictedResourceLoadState(error: Error): RESTRICTED_
     return 'technical-error';
 }
 
-export function mapErrorToAuthorizedResourceLoadState(error: Error): AUTHORIZED_RESOURCE_LOAD_STATE {
+export function mapErrorToAuthorizedResourceLoadState(
+    error: Error,
+    notFoundIsAValidResponseStatus: boolean
+): AUTHORIZED_RESOURCE_LOAD_STATE {
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
@@ -48,7 +56,7 @@ export function mapErrorToAuthorizedResourceLoadState(error: Error): AUTHORIZED_
             case 403:
                 return 'forbidden';
             case 404:
-                return 'loaded';
+                return notFoundIsAValidResponseStatus ? 'not-found' : 'technical-error';
             default:
                 return 'technical-error';
         }
@@ -86,7 +94,7 @@ export function errorResponseToString(errorResponse: ErrorResponse): string {
     return result;
 }
 
-export function mapToErrorContext(error: Error): ErrorContext {
+export function mapToErrorContext(error: Error, notFoundIsAValidResponseStatus: boolean): ErrorContext {
     let errorResponse: ErrorResponse = {
         message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
         constraintViolations: [],
@@ -102,10 +110,17 @@ export function mapToErrorContext(error: Error): ErrorContext {
             case HttpStatusCode.BadRequest:
             case HttpStatusCode.Conflict:
             case HttpStatusCode.PreconditionFailed:
-                errorResponse = extractErrorResponse(httpError);
+                errorResponse = extractErrorResponse(httpError, notFoundIsAValidResponseStatus);
                 break;
             case HttpStatusCode.NotFound:
-                errorResponse = { message: NOT_FOUND_FEHLERMELDUNG, constraintViolations: [] };
+                if (notFoundIsAValidResponseStatus) {
+                    errorResponse = { message: NOT_FOUND_FEHLERMELDUNG, constraintViolations: [] };
+                } else {
+                    errorResponse = {
+                        message: TECHNISCHER_FEHLER_FEHLERMELDUNG,
+                        constraintViolations: [],
+                    };
+                }
                 break;
             case HttpStatusCode.Unauthorized:
             case HttpStatusCode.Forbidden:
@@ -125,17 +140,19 @@ export function mapToErrorContext(error: Error): ErrorContext {
     return { httpStatus, message };
 }
 
-export function extractErrorResponse(error: HttpErrorResponse): ErrorResponse {
+export function extractErrorResponse(error: HttpErrorResponse, notFoundIsAValidResponseStatus: boolean): ErrorResponse {
     const httpStatus = error.status;
     const theError = error.error;
     if (!theError || !theError['constraintViolations'] || !theError['message']) {
         switch (httpStatus) {
             case 400:
                 return { message: BAD_REQUEST_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
+            case 404:
+                return notFoundIsAValidResponseStatus
+                    ? { message: NOT_FOUND_FEHLERMELDUNG, constraintViolations: [] }
+                    : { message: TECHNISCHER_FEHLER_FEHLERMELDUNG, constraintViolations: [] };
             case 409:
                 return { message: CONFLICT_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
-            case 412:
-                return { message: PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
         }
         return { message: TECHNISCHER_FEHLER_FEHLERMELDUNG, constraintViolations: [] };
     }

@@ -49,6 +49,10 @@ describe('lehrpersonSelectors', () => {
             const result = selectSchulenLoaded.projector(theState);
             expect(result).toEqual(false);
         });
+        it('should selectSchulenLoaded return false when not-found', () => {
+            const result = selectSchulenLoaded.projector(theState);
+            expect(result).toEqual(false);
+        });
         it('should selectSchulenLoaded return false when unauthorized', () => {
             const result = selectSchulenLoaded.projector(theState);
             expect(result).toEqual(false);
