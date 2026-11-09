@@ -5,6 +5,8 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-
 import type { paths } from '../../generated/api-types';
 import { ArbeitskontextHttpService } from './arbeitskontext-http.service';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
+import { PrivatpersonWettbewerbskontext } from '../../privatperson/model/privatperson.model';
 
 describe('ArbeitskontextHttpService', () => {
     it('loadLehrpersonSchulen ruft den vereinbarten Pfad mit GET auf', () => {
@@ -28,6 +30,161 @@ describe('ArbeitskontextHttpService', () => {
         const service = TestBed.inject(ArbeitskontextHttpService);
 
         const subscription = service.loadLehrpersonSchulen().subscribe();
+
+        try {
+            expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(
+                apiUrl + expectedPath,
+                expect.objectContaining({
+                    context: expect.any(HttpContext),
+                    withCredentials: true,
+                })
+            );
+
+            const options = httpClientMock.get.mock.calls[0][1];
+
+            expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
+
+    it('loadSchuleWettbewerbskontext ruft den vereinbarten Pfad mit GET auf', () => {
+        const apiUrl = 'https://example.test';
+        const pathTemplate = '/api/schulen/{schuleId}/wettbewerbskontext' satisfies keyof paths;
+        const schuleId = 'S1234567';
+        const expectedPath = pathTemplate.replace('{schuleId}', schuleId);
+
+        const wettbewerbskontext: SchuleWettbewerbskontext = {
+            anmeldungMoeglich: false,
+            kollegen: [],
+            schule: {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    land: {
+                        kuerzel: 'DE-BB',
+                        name: 'Brandenburg',
+                        anzahlOrte: 456,
+                    },
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 13,
+                },
+            },
+            teilnahmerefs: [],
+            vertragDSGVOVorhanden: false,
+        };
+
+        const httpClientMock = {
+            get: vi.fn().mockReturnValue(of(wettbewerbskontext)),
+        };
+
+        TestBed.configureTestingModule({
+            providers: [
+                ArbeitskontextHttpService,
+                { provide: HttpClient, useValue: httpClientMock },
+                {
+                    provide: MINIKAENGURU_ANWENDUNG_CONFIGURATION,
+                    useValue: { apiUrl },
+                },
+            ],
+        });
+
+        const service = TestBed.inject(ArbeitskontextHttpService);
+
+        const subscription = service.loadSchuleWettbewerbskontext(schuleId).subscribe();
+
+        try {
+            expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(
+                apiUrl + expectedPath,
+                expect.objectContaining({
+                    context: expect.any(HttpContext),
+                    withCredentials: true,
+                })
+            );
+
+            const options = httpClientMock.get.mock.calls[0][1];
+
+            expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
+
+    it('loadPrivatpersonWettbewerbskontext ruft den vereinbarten Pfad mit GET auf', () => {
+        const apiUrl = 'https://example.test';
+        const expectedPath = '/api/privatperson/me/wettbewerbskontext' satisfies keyof paths;
+
+        const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
+            anmeldungMoeglich: false,
+            teilnahmerefs: [],
+        };
+
+        const httpClientMock = {
+            get: vi.fn().mockReturnValue(of(wettbewerbskontext)),
+        };
+
+        TestBed.configureTestingModule({
+            providers: [
+                ArbeitskontextHttpService,
+                { provide: HttpClient, useValue: httpClientMock },
+                {
+                    provide: MINIKAENGURU_ANWENDUNG_CONFIGURATION,
+                    useValue: { apiUrl },
+                },
+            ],
+        });
+
+        const service = TestBed.inject(ArbeitskontextHttpService);
+
+        const subscription = service.loadPrivatpersonWettbewerbskontext().subscribe();
+
+        try {
+            expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(
+                apiUrl + expectedPath,
+                expect.objectContaining({
+                    context: expect.any(HttpContext),
+                    withCredentials: true,
+                })
+            );
+
+            const options = httpClientMock.get.mock.calls[0][1];
+
+            expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
+
+    it('loadSchulkollegium ruft den vereinbarten Pfad mit GET auf', () => {
+        const apiUrl = 'https://example.test';
+        const pathTemplate = '/api/schulen/{schuleId}/kollegium' satisfies keyof paths;
+        const schuleId = 'S1234567';
+        const expectedPath = pathTemplate.replace('{schuleId}', schuleId);
+
+        const schulkollegium: Schulkollegium = {
+            schulkuerzel: 'S1234567',
+            kollegium: [],
+        };
+
+        const httpClientMock = {
+            get: vi.fn().mockReturnValue(of(schulkollegium)),
+        };
+
+        TestBed.configureTestingModule({
+            providers: [
+                ArbeitskontextHttpService,
+                { provide: HttpClient, useValue: httpClientMock },
+                {
+                    provide: MINIKAENGURU_ANWENDUNG_CONFIGURATION,
+                    useValue: { apiUrl },
+                },
+            ],
+        });
+
+        const service = TestBed.inject(ArbeitskontextHttpService);
+
+        const subscription = service.loadSchulkollegium(schuleId).subscribe();
 
         try {
             expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(

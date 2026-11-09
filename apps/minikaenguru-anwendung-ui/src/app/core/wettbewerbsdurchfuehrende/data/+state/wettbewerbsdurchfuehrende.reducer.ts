@@ -41,7 +41,7 @@ export const wettbewerbsdurchfuehrendeFeature = createFeature({
             return {
                 ...state,
                 durchfuehrender: undefined,
-                durchfuehrenderLoadState: mapErrorToRestrictedResourceLoadState(error, false),
+                durchfuehrenderLoadState: mapErrorToRestrictedResourceLoadState(error, true),
             };
         }),
         on(userLoggedOut, () => initialWettbewerbsdurchfuehrendeState)

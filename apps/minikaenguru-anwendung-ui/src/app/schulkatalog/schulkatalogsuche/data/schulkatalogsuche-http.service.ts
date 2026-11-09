@@ -23,7 +23,8 @@ export class SchulkatalogsucheHttpService {
     }
 
     public loadSchulen(kuerzelOrt: string): Observable<Schule[]> {
+        const options = { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true };
         const path = `/api/schulkatalog/orte/${kuerzelOrt}/schulen` as const;
-        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + path, { withCredentials: true });
+        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + path, options);
     }
 }

@@ -15,7 +15,7 @@ export class TeilnahmeHttpService {
      * @returns Observable auf Teilnahme
      */
     public privatAnmelden(): Observable<Teilnahme> {
-        return this.#httpClient.post<Teilnahme>(this.#config.apiUrl + 'api/privatperson/me/aktuelle-teilnahme', {
+        return this.#httpClient.post<Teilnahme>(this.#config.apiUrl + '/api/privatperson/me/aktuelle-teilnahme', null, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
