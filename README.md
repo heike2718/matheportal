@@ -53,6 +53,12 @@ pnpm nx run workspace-tools:configure-git
 pnpm nx run workspace-tools:show-git-config
 ```
 
+### Generieren der sourcen aus der openapi.yaml
+
+```bash
+pnpm nx run project-name:tech-generate-sources
+```
+
 ### Starten der Anwendungen
 
 ```bash
