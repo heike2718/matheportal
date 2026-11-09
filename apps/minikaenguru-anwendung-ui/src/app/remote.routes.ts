@@ -25,6 +25,8 @@ import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-wae
 import { LadefehlerComponent } from './start/ladefehler/ladefehler.component';
 import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
 import { PrivatteilnahmeComponent } from './teilnahme/features/privatteilnahme/privatteilnahme.component';
+import { teilnahmeDataProvider } from './teilnahme/api/teilnahme-data.provider';
+import { mkaPrivatteilnahmeGuard } from './teilnahme/api/mka-privatteilnahme.guard';
 
 export const remoteRoutes: Routes = [
     {
@@ -55,6 +57,7 @@ export const remoteRoutes: Routes = [
                     },
                     {
                         path: portalRoutes.minikaenguruAnwendung.privatteilnahme,
+                        canActivate: [mkaPrivatteilnahmeGuard()],
                         component: PrivatteilnahmeComponent,
                     },
                 ],
@@ -101,6 +104,7 @@ export const remoteRoutes: Routes = [
             ...schuleDataProvider,
             ...lehrpersonDataProvider,
             ...privatpersonDataProvider,
+            ...teilnahmeDataProvider,
             ArbeitskontextHttpService,
         ],
     },

@@ -154,37 +154,39 @@ describe('SchulkatalogsucheEffects', () => {
                 emittedActions.push(action);
             });
 
-            // --- SCHRITT 1: Erste Action triggern ---
-            action$.next(SchulkatalogsucheActions.findOrte({ name: 'zweiter Ort' }));
+            try {
+                // --- SCHRITT 1: Erste Action triggern ---
+                action$.next(SchulkatalogsucheActions.findOrte({ name: 'zweiter Ort' }));
 
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
-            expect(httpServiceMock.findOrte).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.findOrte).toHaveBeenLastCalledWith('zweiter Ort');
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.findOrte).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.findOrte).toHaveBeenLastCalledWith('zweiter Ort');
 
-            // --- SCHRITT 2: Zweite Action triggern (während Request 1 noch läuft) ---
-            action$.next(SchulkatalogsucheActions.findOrte({ name: 'erster' }));
+                // --- SCHRITT 2: Zweite Action triggern (während Request 1 noch läuft) ---
+                action$.next(SchulkatalogsucheActions.findOrte({ name: 'erster' }));
 
-            // BEWEIS 1: switchMap hat den ersten Request sofort abbestellt.
-            expect(firstRequestFinalized).toHaveBeenCalledOnce();
-            expect(httpServiceMock.findOrte).toHaveBeenCalledTimes(2);
-            expect(httpServiceMock.findOrte).toHaveBeenLastCalledWith('erster');
+                // BEWEIS 1: switchMap hat den ersten Request sofort abbestellt.
+                expect(firstRequestFinalized).toHaveBeenCalledOnce();
+                expect(httpServiceMock.findOrte).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.findOrte).toHaveBeenLastCalledWith('erster');
 
-            // --- SCHRITT 3: Verspätete Antwort des ZUERST abgebrochenen Requests simulieren ---
-            httpFirst$.next(treffer1);
-            httpFirst$.complete();
+                // --- SCHRITT 3: Verspätete Antwort des ZUERST abgebrochenen Requests simulieren ---
+                httpFirst$.next(treffer1);
+                httpFirst$.complete();
 
-            // BEWEIS 2: Das Array ist leer! treffer1 wurde wegen switchMap komplett ignoriert
-            expect(emittedActions).toEqual([]);
+                // BEWEIS 2: Das Array ist leer! treffer1 wurde wegen switchMap komplett ignoriert
+                expect(emittedActions).toEqual([]);
 
-            // --- SCHRITT 4: Antwort des zweiten (aktuellen) Requests simulieren ---
-            httpSecond$.next(treffer2);
-            httpSecond$.complete();
+                // --- SCHRITT 4: Antwort des zweiten (aktuellen) Requests simulieren ---
+                httpSecond$.next(treffer2);
+                httpSecond$.complete();
 
-            // BEWEIS 3: Nur die Action des zweiten Requests wurde emittiert
-            expect(emittedActions).toEqual([SchulkatalogsucheActions.findOrteSucceeded({ orte: treffer2 })]);
-
-            // Aufräumen
-            subscription.unsubscribe();
+                // BEWEIS 3: Nur die Action des zweiten Requests wurde emittiert
+                expect(emittedActions).toEqual([SchulkatalogsucheActions.findOrteSucceeded({ orte: treffer2 })]);
+            } finally {
+                // Aufräumen
+                subscription.unsubscribe();
+            }
         });
         it('should not call the httpService and map to orteCleared when normalized term has length 2', async () => {
             const name = ' or ';

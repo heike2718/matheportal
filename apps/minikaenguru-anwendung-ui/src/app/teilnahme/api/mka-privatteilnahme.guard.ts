@@ -13,14 +13,22 @@ export const mkaPrivatteilnahmeGuard = (): CanActivateFn => () => {
     return teilnahmeFacade.teilnahmeLoadState$.pipe(
         filter(loadState => loadState !== 'not-loaded'),
         take(1),
-        map(loadState =>
-            loadState === 'loaded'
-                ? true
-                : router.createUrlTree([
-                      '/',
-                      portalRoutes.minikaenguruAnwendung.root,
-                      portalRoutes.minikaenguruAnwendung.privatperson,
-                  ])
-        )
+        map(loadState => {
+            if (loadState === 'loaded') {
+                return true;
+            } else {
+                return loadState === 'technical-error'
+                    ? router.createUrlTree([
+                          '/',
+                          portalRoutes.minikaenguruAnwendung.root,
+                          portalRoutes.minikaenguruAnwendung.ladefehler,
+                      ])
+                    : router.createUrlTree([
+                          '/',
+                          portalRoutes.minikaenguruAnwendung.root,
+                          portalRoutes.minikaenguruAnwendung.privatperson,
+                      ]);
+            }
+        })
     );
 };

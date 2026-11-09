@@ -669,13 +669,6 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description keine Zuordnung gefunden */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content?: never;
-            };
             /** @description Serverfehler */
             readonly 500: {
                 headers: {

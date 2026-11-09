@@ -6,11 +6,11 @@ import {
     provideRouter,
     Router,
     RouterStateSnapshot,
+    UrlTree,
 } from '@angular/router';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { BehaviorSubject, firstValueFrom, isObservable, Observable, Subject } from 'rxjs';
 import { TeilnahmeFacade } from './teilnahme.facade';
-import { mkaPrivatpersonGuard } from '../../privatperson/api/mka-privatperson.guard';
 import { mkaPrivatteilnahmeGuard } from './mka-privatteilnahme.guard';
 
 describe('mkaPrivatteilnahmeGuard', () => {
@@ -69,5 +69,34 @@ describe('mkaPrivatteilnahmeGuard', () => {
         const result = await resultPromise;
 
         expect(result).toBe(true);
+    });
+
+    it.each(['unauthorized', 'forbidden', 'not-found'] as const)(
+        'should navigate to DashboardPrivat when state is %s',
+        async loadState => {
+            const { router } = setup(loadState);
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatteilnahmeGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/privatperson');
+        }
+    );
+
+    it('should navigate to ladefehler when technical-error', async () => {
+        const { router } = setup('technical-error');
+
+        const resultPromise = TestBed.runInInjectionContext(() =>
+            resolveGuardResult(mkaPrivatteilnahmeGuard()(route, state))
+        );
+
+        const result = await resultPromise;
+
+        expect(result).toBeInstanceOf(UrlTree);
+        expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
     });
 });

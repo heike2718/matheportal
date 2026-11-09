@@ -47,7 +47,13 @@ export class TeilnahmeEffects {
                 ofType(TeilnahmeActions.teilnahmeLadenFailed),
                 tap(action => {
                     const errorContext = mapToErrorContext(action.error, true);
-                    this.#messagePublisher.publishError(errorContext.message);
+                    if (errorContext.httpStatus !== 404) {
+                        this.#messagePublisher.publishError(errorContext.message);
+                    } else {
+                        this.#messagePublisher.publishWarning(
+                            'Sie sind noch nicht zum aktuellen Wettbewerb angemeldet.'
+                        );
+                    }
                 })
             ),
         { dispatch: false }

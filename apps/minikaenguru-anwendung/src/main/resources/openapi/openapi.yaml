@@ -183,8 +183,6 @@ paths:
                                 $ref: '#/components/schemas/User'
                 '401':
                     description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
-                '404':
-                    description: keine Zuordnung gefunden
                 '500':
                     description: Serverfehler
                     content:
