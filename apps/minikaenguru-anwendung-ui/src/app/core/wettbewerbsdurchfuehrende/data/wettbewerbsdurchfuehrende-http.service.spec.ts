@@ -8,12 +8,11 @@ import { WettbewerbsdurchfuehrendeHttpService } from './wettbewerbsdurchfuehrend
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
-import { paths } from '../../../generated/api-types';
 
 describe('WettbewerbsdurchfuehrendeHttpService', () => {
     it('loadWettbewerbsdurchfuehrenden ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/wettbewerbsdurchfuehrende/konto' satisfies keyof paths;
+        const expectedPath = '/api/wettbewerbsdurchfuehrende/konto';
 
         const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.privat,
@@ -54,7 +53,7 @@ describe('WettbewerbsdurchfuehrendeHttpService', () => {
 
     it('createWettbewerbsdurchfuehrenden ruft den vereinbarten Pfad mit POST auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/wettbewerbsdurchfuehrende/konto' satisfies keyof paths;
+        const expectedPath = '/api/wettbewerbsdurchfuehrende/konto';
 
         const wettbewerbsdurchfuehrender: Wettbewerbsdurchfuehrender = {
             durchfuehrungsart: DURCHFUEHRUNGSART.privat,

@@ -4,13 +4,12 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { Schulkatalogantrag } from '../model/schulkatalogantrag.model';
-import { paths } from '../../../generated/api-types';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 describe('SchulkatalogantragHttpService', () => {
     it('submitSchulkatalogantrag ruft den vereinbarten Pfad mit POST auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/schulkatalogantrag' satisfies keyof paths;
+        const expectedPath = '/api/schulkatalogantrag';
 
         const httpClientMock = {
             post: vi.fn().mockReturnValue(of()),

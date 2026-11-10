@@ -41,7 +41,7 @@ export class SchulkatalogHttpService {
 
     public landMitOrtUndSchuleAnlegen(payload: LandMitOrtUndSchuleAnlegenRequest): Observable<Schulkuerzel> {
         const options = { withCredentials: true };
-        const path = '/api/schulkatalog/schulen';
+        const path: keyof paths = '/api/schulkatalog/schulen';
 
         return this.#httpClient.post<Schulkuerzel>(this.#config.apiUrl + path, payload, options);
     }

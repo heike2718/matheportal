@@ -4,6 +4,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Teilnahme } from '../model/teilnahme.model';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
+import { paths } from '../../generated/api-types';
 
 @Injectable()
 export class TeilnahmeHttpService {
@@ -15,7 +16,8 @@ export class TeilnahmeHttpService {
      * @returns Observable auf Teilnahme
      */
     public privatAnmelden(): Observable<Teilnahme> {
-        return this.#httpClient.post<Teilnahme>(this.#config.apiUrl + '/api/privatperson/me/aktuelle-teilnahme', null, {
+        const path: keyof paths = '/api/privatperson/me/aktuelle-teilnahme';
+        return this.#httpClient.post<Teilnahme>(this.#config.apiUrl + path, null, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
@@ -26,7 +28,8 @@ export class TeilnahmeHttpService {
      * @returns Observable auf Teilnahme
      */
     public loadAktuellePrivatteilnahme(): Observable<Teilnahme> {
-        return this.#httpClient.get<Teilnahme>(this.#config.apiUrl + '/api/privatperson/me/aktuelle-teilnahme', {
+        const path: keyof paths = '/api/privatperson/me/aktuelle-teilnahme';
+        return this.#httpClient.get<Teilnahme>(this.#config.apiUrl + path, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });

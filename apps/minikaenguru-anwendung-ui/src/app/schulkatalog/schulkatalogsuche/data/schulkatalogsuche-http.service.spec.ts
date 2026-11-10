@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { paths } from '../../../generated/api-types';
 import { SchulkatalogsucheHttpService } from './schulkatalogsuche-http.service';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { of } from 'rxjs';
@@ -31,7 +30,7 @@ describe('SchulkatalogsucheHttpService', () => {
     });
 
     it('findOrte ruft den vereinbarten Pfad mit GET auf', () => {
-        const expectedPath = '/api/schulkatalog/orte' satisfies keyof paths;
+        const expectedPath = '/api/schulkatalog/orte';
 
         const subscription = service.findOrte('Wei').subscribe();
 
@@ -53,11 +52,10 @@ describe('SchulkatalogsucheHttpService', () => {
     });
 
     it('loadSchulen ruft den vereinbarten Pfad mit GET auf', () => {
-        const pathTemplate = '/api/schulkatalog/orte/{ortId}/schulen' satisfies keyof paths;
         const ortId = 'O1234567';
-        const expectedPath = pathTemplate.replace('{ortId}', ortId);
+        const expectedPath = '/api/schulkatalog/orte/O1234567/schulen';
 
-        const subscription = service.loadSchulen('O1234567').subscribe();
+        const subscription = service.loadSchulen(ortId).subscribe();
 
         try {
             expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(

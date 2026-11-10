@@ -2,7 +2,6 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-anwendung.configuration';
-import type { paths } from '../../generated/api-types';
 import { ArbeitskontextHttpService } from './arbeitskontext-http.service';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
@@ -11,7 +10,7 @@ import { PrivatpersonWettbewerbskontext } from '../../privatperson/model/privatp
 describe('ArbeitskontextHttpService', () => {
     it('loadLehrpersonSchulen ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/lehrperson/me/schulen' satisfies keyof paths;
+        const expectedPath = '/api/lehrperson/me/schulen';
         const httpClientMock = {
             get: vi.fn().mockReturnValue(of([])),
         };
@@ -50,9 +49,8 @@ describe('ArbeitskontextHttpService', () => {
 
     it('loadSchuleWettbewerbskontext ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const pathTemplate = '/api/schulen/{schuleId}/wettbewerbskontext' satisfies keyof paths;
         const schuleId = 'S1234567';
-        const expectedPath = pathTemplate.replace('{schuleId}', schuleId);
+        const expectedPath = '/api/schulen/S1234567/wettbewerbskontext';
 
         const wettbewerbskontext: SchuleWettbewerbskontext = {
             anmeldungMoeglich: false,
@@ -113,7 +111,7 @@ describe('ArbeitskontextHttpService', () => {
 
     it('loadPrivatpersonWettbewerbskontext ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/privatperson/me/wettbewerbskontext' satisfies keyof paths;
+        const expectedPath = '/api/privatperson/me/wettbewerbskontext';
 
         const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
             anmeldungMoeglich: false,
@@ -158,9 +156,8 @@ describe('ArbeitskontextHttpService', () => {
 
     it('loadSchulkollegium ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const pathTemplate = '/api/schulen/{schuleId}/kollegium' satisfies keyof paths;
         const schuleId = 'S1234567';
-        const expectedPath = pathTemplate.replace('{schuleId}', schuleId);
+        const expectedPath = '/api/schulen/S1234567/kollegium';
 
         const schulkollegium: Schulkollegium = {
             schulkuerzel: 'S1234567',

@@ -4,13 +4,12 @@ import { of } from 'rxjs';
 import { MkaAuthorizationHttpService } from './mka-authorization-http.service';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
-import { paths } from '../../../generated/api-types';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 
 describe('MkaAuthorizationHttpService', () => {
     it('loadMkaAuthorization ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/berechtigungen' satisfies keyof paths;
+        const expectedPath = '/api/berechtigungen';
 
         const user: User = {
             anonym: false,

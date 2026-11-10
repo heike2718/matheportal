@@ -2,7 +2,6 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { WettbewerbHttpService } from './wettbewerb-http.service';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { TestBed } from '@angular/core/testing';
-import { paths } from '../../../generated/api-types';
 import { Wettbewerb } from '../model/wettbewerb.model';
 import { of } from 'rxjs';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
@@ -10,7 +9,7 @@ import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 describe('WettbewerbHttpService', () => {
     it('loadWettbewerb ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/wettbewerb' satisfies keyof paths;
+        const expectedPath = '/api/wettbewerb';
 
         const wettbewerb: Wettbewerb = {
             beginn: '01.01.2027',

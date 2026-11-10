@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { paths } from '../../generated/api-types';
 import { TeilnahmeHttpService } from './teilnahme-http.service';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-anwendung.configuration';
@@ -22,7 +21,7 @@ describe('TeilnahmeHttpService', () => {
 
     it('privatAnmelden ruft den vereinbarten Pfad mit POST auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/privatperson/me/aktuelle-teilnahme' satisfies keyof paths;
+        const expectedPath = '/api/privatperson/me/aktuelle-teilnahme';
 
         const httpClientMock = {
             post: vi.fn().mockReturnValue(of(teilnahme)),
@@ -63,7 +62,7 @@ describe('TeilnahmeHttpService', () => {
 
     it('loadAktuellePrivatteilnahme ruft den vereinbarten Pfad mit GET auf', () => {
         const apiUrl = 'https://example.test';
-        const expectedPath = '/api/privatperson/me/aktuelle-teilnahme' satisfies keyof paths;
+        const expectedPath = '/api/privatperson/me/aktuelle-teilnahme';
 
         const httpClientMock = {
             get: vi.fn().mockReturnValue(of(teilnahme)),
