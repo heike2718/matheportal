@@ -11,6 +11,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.PrivatpersonWettbewerbskontext;
@@ -64,7 +65,7 @@ public class PrivatpersonResourceTest {
                 .extract()
                 .as(PrivatpersonWettbewerbskontext.class);
 
-        assertEquals(true, result.getAnmeldungMoeglich());
+        assertEquals(Anmeldestatus.MOEGLICH, result.getAnmeldestatus());
         final List<TeilnahmeReferenz> teilnahmeRefs = result.getTeilnahmerefs();
         assertEquals(1, teilnahmeRefs.size());
         final TeilnahmeReferenz teilnahmeRef = teilnahmeRefs.getFirst();

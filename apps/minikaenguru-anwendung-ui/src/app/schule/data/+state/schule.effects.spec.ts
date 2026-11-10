@@ -9,10 +9,11 @@ import { SchuleActions } from './schule.actions';
 import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { getEffectsMetadata } from '@ngrx/effects';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -130,7 +131,7 @@ describe('SchulenEffects', () => {
         };
         const wettbewerbskontext: SchuleWettbewerbskontext = {
             schule,
-            anmeldungMoeglich: true,
+            anmeldestatus: ANMELDESTATUS.moeglich,
             teilnahmerefs: [],
             kollegen: [],
             vertragDSGVOVorhanden: false,
@@ -153,7 +154,7 @@ describe('SchulenEffects', () => {
 
         const andererWettbewerbskontext: SchuleWettbewerbskontext = {
             schule: andereSchule,
-            anmeldungMoeglich: false,
+            anmeldestatus: ANMELDESTATUS.nochNichtMoeglich,
             teilnahmerefs: [],
             kollegen: [],
             vertragDSGVOVorhanden: true,
@@ -332,7 +333,7 @@ describe('SchulenEffects', () => {
             };
             const wettbewerbskontext: SchuleWettbewerbskontext = {
                 schule,
-                anmeldungMoeglich: true,
+                anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
                 teilnahmerefs: [],
                 kollegen: [],
                 vertragDSGVOVorhanden: false,

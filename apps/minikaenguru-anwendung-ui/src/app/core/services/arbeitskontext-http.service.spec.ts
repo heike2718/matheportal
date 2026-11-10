@@ -4,8 +4,9 @@ import { of } from 'rxjs';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-anwendung.configuration';
 import { ArbeitskontextHttpService } from './arbeitskontext-http.service';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
-import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
 import { PrivatpersonWettbewerbskontext } from '../../privatperson/model/privatperson.model';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../schule/model/schule.model';
+import { ANMELDESTATUS } from '../model/wettbewerbskontext.model';
 
 describe('ArbeitskontextHttpService', () => {
     it('loadLehrpersonSchulen ruft den vereinbarten Pfad mit GET auf', () => {
@@ -53,7 +54,7 @@ describe('ArbeitskontextHttpService', () => {
         const expectedPath = '/api/schulen/S1234567/wettbewerbskontext';
 
         const wettbewerbskontext: SchuleWettbewerbskontext = {
-            anmeldungMoeglich: false,
+            anmeldestatus: ANMELDESTATUS.nochNichtMoeglich,
             kollegen: [],
             schule: {
                 kuerzel: 'S1234567',
@@ -114,7 +115,7 @@ describe('ArbeitskontextHttpService', () => {
         const expectedPath = '/api/privatperson/me/wettbewerbskontext';
 
         const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-            anmeldungMoeglich: false,
+            anmeldestatus: ANMELDESTATUS.nichtMehrMoeglich,
             teilnahmerefs: [],
         };
 

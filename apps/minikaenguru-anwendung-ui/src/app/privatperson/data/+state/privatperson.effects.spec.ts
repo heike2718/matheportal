@@ -7,16 +7,12 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
 import { PrivatpersonActions } from './privatperson.actions';
 import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
-import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import {
-    selectWettbewerbskontextLadenVerweigert,
-    selectWettbewerbskontextLoaded,
-    selectWettbewerbskontextLoadState,
-} from './privatperson.selectors';
+import { selectWettbewerbskontextLadenVerweigert } from './privatperson.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { getEffectsMetadata } from '@ngrx/effects';
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 
 describe('PrivatpersonEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -93,7 +89,7 @@ describe('PrivatpersonEffects', () => {
 
     describe('wettbewerbskontextLaden$', () => {
         const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-            anmeldungMoeglich: false,
+            anmeldestatus: ANMELDESTATUS.nochNichtMoeglich,
             teilnahmerefs: [],
         };
 
@@ -133,8 +129,8 @@ describe('PrivatpersonEffects', () => {
 
         it('should switch to the latest action and cancel previous pending requests (switchMap)', async () => {
             const secondWettbewerbskontext: PrivatpersonWettbewerbskontext = {
-                anmeldungMoeglich: true,
-                teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'P123456789' }],
+                anmeldestatus: ANMELDESTATUS.moeglich,
+                teilnahmerefs: [{ jahr: 2025, teilnahmenummer: 'P123456789' }],
             };
 
             store.overrideSelector(selectWettbewerbskontextLadenVerweigert, false);
@@ -185,8 +181,8 @@ describe('PrivatpersonEffects', () => {
             store.refreshState();
 
             const secondWettbewerbskontext: PrivatpersonWettbewerbskontext = {
-                anmeldungMoeglich: true,
-                teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'P123456789' }],
+                anmeldestatus: ANMELDESTATUS.moeglich,
+                teilnahmerefs: [{ jahr: 2025, teilnahmenummer: 'P123456789' }],
             };
 
             const httpFirst$ = new Subject<PrivatpersonWettbewerbskontext>();

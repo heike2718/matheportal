@@ -1,4 +1,3 @@
-import { Schule } from '../../../core/model/schulkatalog.model';
 import { SchulenState } from './schule.reducer';
 import { selectWettbewerbskontextLoaded, selectWettbewerbskontextLoadState } from './schule.selectors';
 
@@ -18,4 +17,6 @@ describe('schulenSelectors', () => {
         const result = selectWettbewerbskontextLoaded.projector(state.wettbewerbskontextLoadState);
         expect(result).toEqual(true);
     });
+
+    // TODO: jede menge Tests fehlen
 });

@@ -3,10 +3,10 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Schule } from '../model/schulkatalog.model';
-import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
 import { ERROR_MESSAGE_HANDLED_LOCALLY, SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 import { PrivatpersonWettbewerbskontext } from '../../privatperson/model/privatperson.model';
 import { paths } from '../../generated/api-types';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../schule/model/schule.model';
 
 @Injectable()
 export class ArbeitskontextHttpService {

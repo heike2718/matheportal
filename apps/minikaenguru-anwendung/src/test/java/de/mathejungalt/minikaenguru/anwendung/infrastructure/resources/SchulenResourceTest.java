@@ -9,6 +9,7 @@ import io.quarkus.test.security.TestSecurity;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schulkollegium;
@@ -22,7 +23,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -61,7 +61,7 @@ public class SchulenResourceTest {
         final Schule schule = result.getSchule();
 
         assertAll(() -> assertEquals("Görlitz", schule.getOrt().getName()),
-                () -> assertTrue(result.getAnmeldungMoeglich()),
+                () -> assertEquals(Anmeldestatus.MOEGLICH, result.getAnmeldestatus()),
                 () -> assertEquals(1, result.getTeilnahmerefs().size()),
                 () -> assertEquals(2020, result.getTeilnahmerefs().getFirst().getJahr()),
                 () -> assertEquals(0, result.getKollegen().size()),

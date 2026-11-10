@@ -91,7 +91,7 @@ public final class SchuleService {
                 .kollegen(new ArrayList<>())
                 .teilnahmerefs(teilnahmerefs)
                 .vertragDSGVOVorhanden(vertragDSGVOVorhanden)
-                .anmeldungMoeglich(TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs));
+                .anmeldestatus(TeilnahmeUtils.berechneAnmeldestatus(aktuellerWettbewerb, teilnahmerefs));
     }
 
     /**

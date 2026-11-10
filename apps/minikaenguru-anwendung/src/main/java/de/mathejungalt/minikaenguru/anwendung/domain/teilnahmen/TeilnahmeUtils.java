@@ -3,6 +3,7 @@ package de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen;
 import java.util.List;
 import java.util.Optional;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsstatus;
@@ -24,25 +25,29 @@ public final class TeilnahmeUtils {
     }
 
     /**
-     * Ermittelt aus den gegebenen parametern, ob eine Anmeldung zum Wettbewerb möglich ist.
+     * Ermittelt aus den gegebenen parametern den Anmeldestatus.
      *
      * @param aktuellerWettbewerb Wettbewerb
      * @param teilnahmereferenzen List
-     * @return boolean
+     * @return Anmeldestatus
      */
-    public static boolean isAnmeldungMoeglich(final Wettbewerb aktuellerWettbewerb,
+    public static Anmeldestatus berechneAnmeldestatus(final Wettbewerb aktuellWettbewerb,
             final List<TeilnahmeReferenz> teilnahmereferenzen) {
 
-        final Optional<TeilnahmeReferenz> optTeilnahmeAktuellesJahr = teilnahmereferenzen
-                .stream()
-                .filter(r -> r.getJahr().equals(aktuellerWettbewerb.getJahr()))
-                .findFirst();
-
-        if (optTeilnahmeAktuellesJahr.isPresent()) {
-            return false;
+        if (Wettbewerbsstatus.ERFASST == aktuellWettbewerb.getStatus()) {
+            return Anmeldestatus.NOCH_NICHT_MOEGLICH;
         }
 
-        return laesstWettbewerbsstatusAnmeldungZu(aktuellerWettbewerb);
+        if (Wettbewerbsstatus.BEENDET == aktuellWettbewerb.getStatus()) {
+            return Anmeldestatus.NICHT_MEHR_MOEGLICH;
+        }
+
+        final Optional<TeilnahmeReferenz> optAktuelleTeilnahme = teilnahmereferenzen
+                .stream()
+                .filter(tr -> aktuellWettbewerb.getJahr().equals(tr.getJahr()))
+                .findFirst();
+
+        return optAktuelleTeilnahme.isPresent() ? Anmeldestatus.BEREITS_ANGEMELDET : Anmeldestatus.MOEGLICH;
     }
 
 }

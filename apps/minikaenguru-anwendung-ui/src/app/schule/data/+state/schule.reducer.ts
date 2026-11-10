@@ -3,8 +3,10 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { SchuleActions } from './schule.actions';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
-import { SchuleWettbewerbskontext } from '../../../core/model/schule-wettbewerbskontext.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
+import { SchuleWettbewerbskontext } from '../../model/schule.model';
+import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
+import { ANMELDESTATUS, TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchule';
 
@@ -74,6 +76,30 @@ export const schulenFeature = createFeature({
                 wettbewerbskontextLoadState: 'forbidden',
                 schulkollegiumLoadState: 'not-loaded',
             };
+        }),
+        on(teilnahmeAngemeldet, (state, { teilnahme }) => {
+            if (state.wettbewerbskontext) {
+                const newTeilnahmeRef: TeilnahmeReferenz = { jahr: teilnahme.jahr, teilnahmenummer: teilnahme.kuerzel };
+
+                const isDuplicate = state.wettbewerbskontext.teilnahmerefs.some(
+                    item =>
+                        item.jahr === newTeilnahmeRef.jahr && item.teilnahmenummer === newTeilnahmeRef.teilnahmenummer
+                );
+
+                const teilnahmerefs = isDuplicate
+                    ? [...state.wettbewerbskontext.teilnahmerefs]
+                    : [...state.wettbewerbskontext.teilnahmerefs, newTeilnahmeRef];
+
+                return {
+                    ...state,
+                    wettbewerbskontext: {
+                        ...state.wettbewerbskontext,
+                        anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
+                        teilnahmerefs,
+                    },
+                };
+            }
+            return state;
         }),
         on(SchuleActions.wettbewerbsorganisationVerlassen, state => {
             return {

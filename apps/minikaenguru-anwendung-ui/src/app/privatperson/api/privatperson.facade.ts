@@ -10,6 +10,7 @@ import {
     selectWettbewerbskontextLoadState,
 } from '../data/+state/privatperson.selectors';
 import { PrivatpersonActions } from '../data/+state/privatperson.actions';
+import { privatteilnahmeAnmelden } from '../../teilnahme/api/teilnahme-store.events';
 
 @Injectable()
 export class PrivatpersonFacade {
@@ -30,6 +31,10 @@ export class PrivatpersonFacade {
                 kontextkuerzel: undefined,
             })
         );
+    }
+
+    public privatteilnahmeAnmelden(): void {
+        this.#store.dispatch(privatteilnahmeAnmelden());
     }
 
     public wettbewerbOrganisieren(): void {

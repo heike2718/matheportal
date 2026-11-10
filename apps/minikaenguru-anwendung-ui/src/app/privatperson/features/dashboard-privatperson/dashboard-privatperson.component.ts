@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
+import { TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
@@ -54,10 +54,14 @@ export class DashboardPrivatpersonComponent {
 
     readonly wettbewerbBeendet = computed(() => this.aktuellerWettbewerb().status === WETTBEWERBSSTATUS.beendet);
 
-    readonly anmeldungMoeglich = computed(() => this.wettbewerbskontext()?.anmeldungMoeglich);
+    readonly anmeldestatus = computed(() => this.wettbewerbskontext()?.anmeldestatus);
 
     public privatteilnahmeAnmelden(): void {
-        console.log('jetzt action triggern zum Anmelden der Privatteilnahme');
+        this.#privatpersonFacade.privatteilnahmeAnmelden();
+    }
+
+    public wettbewerbOrganisieren(): void {
+        this.#privatpersonFacade.wettbewerbOrganisieren();
     }
 
     public statistikHerunterladen(teilnahme: TeilnahmeReferenz): void {

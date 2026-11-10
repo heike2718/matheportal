@@ -4,10 +4,14 @@ import { Action } from '@ngrx/store';
 import { initialPrivatpersonState, privatpersonFeature, PrivatpersonState } from './privatperson.reducer';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { PrivatpersonActions } from './privatperson.actions';
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
+import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
+import { Teilnahme } from '../../../teilnahme/model/teilnahme.model';
+import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 describe('privatpersonReducer', () => {
     const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-        anmeldungMoeglich: true,
+        anmeldestatus: ANMELDESTATUS.moeglich,
         teilnahmerefs: [],
     };
 
@@ -157,6 +161,73 @@ describe('privatpersonReducer', () => {
             expect(state).toEqual({
                 wettbewerbskontext: undefined,
                 wettbewerbskontextLoadState: 'technical-error',
+            });
+        });
+    });
+
+    describe('teilnahmeAngemeldet', () => {
+        const teilnahme: Teilnahme = {
+            angemeldetAm: '27.02.2026',
+            anzahlKinder: 56,
+            anzahlKlassen: 0,
+            anzahlLoesungszettel: 14,
+            auswertungsart: 'ONLINE',
+            durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+            jahr: 2026,
+            kuerzel: 'P123456789',
+        };
+
+        it('should return the previous state when wettbewerbskontext undefined', () => {
+            const previousState: PrivatpersonState = {
+                wettbewerbskontext: undefined,
+                wettbewerbskontextLoadState: 'not-loaded',
+            };
+
+            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+
+            expect(state).toBe(previousState);
+        });
+
+        it('should set the new anmeldetstatus and add the new teilnahme to teilnahmerefs when not contained', () => {
+            const previousState: PrivatpersonState = {
+                wettbewerbskontext: {
+                    ...wettbewerbskontext,
+                    teilnahmerefs: [{ jahr: 2025, teilnahmenummer: 'S1234567' }],
+                },
+                wettbewerbskontextLoadState: 'loaded',
+            };
+
+            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+
+            expect(state).toEqual({
+                wettbewerbskontextLoadState: 'loaded',
+                wettbewerbskontext: {
+                    anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
+                    teilnahmerefs: [
+                        { jahr: 2025, teilnahmenummer: 'S1234567' },
+                        { jahr: 2026, teilnahmenummer: 'P123456789' },
+                    ],
+                },
+            });
+        });
+
+        it('should set the new anmeldetstatus but keep teilnahmerefs when already contained', () => {
+            const previousState: PrivatpersonState = {
+                wettbewerbskontext: {
+                    ...wettbewerbskontext,
+                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'P123456789' }],
+                },
+                wettbewerbskontextLoadState: 'loaded',
+            };
+
+            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+
+            expect(state).toEqual({
+                wettbewerbskontextLoadState: 'loaded',
+                wettbewerbskontext: {
+                    anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
+                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'P123456789' }],
+                },
             });
         });
     });
