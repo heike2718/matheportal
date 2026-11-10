@@ -3,9 +3,10 @@ import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Schule } from '../model/schulkatalog.model';
-import { SchuleWettbewerbskontext, Schulkollegium } from '../model/schule-wettbewerbskontext.model';
 import { ERROR_MESSAGE_HANDLED_LOCALLY, SILENT_LOAD_CONTEXT } from '@matheportal/feedback-contracts';
 import { PrivatpersonWettbewerbskontext } from '../../privatperson/model/privatperson.model';
+import { paths } from '../../generated/api-types';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../schule/model/schule.model';
 
 @Injectable()
 export class ArbeitskontextHttpService {
@@ -17,7 +18,8 @@ export class ArbeitskontextHttpService {
      * @returns Observable<Schule[]>
      */
     public loadLehrpersonSchulen(): Observable<Schule[]> {
-        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + '/api/lehrperson/me/schulen', {
+        const path: keyof paths = '/api/lehrperson/me/schulen';
+        return this.#httpClient.get<Schule[]>(this.#config.apiUrl + path, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
@@ -29,13 +31,13 @@ export class ArbeitskontextHttpService {
      * @returns Observable<SchuleWettbewerbskontext>
      */
     public loadSchuleWettbewerbskontext(schuleId: string): Observable<SchuleWettbewerbskontext> {
-        return this.#httpClient.get<SchuleWettbewerbskontext>(
-            this.#config.apiUrl + '/api/schulen/' + schuleId + '/wettbewerbskontext',
-            {
-                context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
-                withCredentials: true,
-            }
-        );
+        const pathTemplate: keyof paths = '/api/schulen/{schuleId}/wettbewerbskontext';
+        const path = pathTemplate.replace('{schuleId}', schuleId);
+
+        return this.#httpClient.get<SchuleWettbewerbskontext>(this.#config.apiUrl + path, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        });
     }
 
     /**
@@ -44,7 +46,10 @@ export class ArbeitskontextHttpService {
      * @returns Observable<Schulkollegium>
      */
     public loadSchulkollegium(schuleId: string): Observable<Schulkollegium> {
-        return this.#httpClient.get<Schulkollegium>(this.#config.apiUrl + '/api/schulen/' + schuleId + '/kollegium', {
+        const pathTemplate: keyof paths = '/api/schulen/{schuleId}/kollegium';
+        const path = pathTemplate.replace('{schuleId}', schuleId);
+
+        return this.#httpClient.get<Schulkollegium>(this.#config.apiUrl + path, {
             context: new HttpContext().set(SILENT_LOAD_CONTEXT, true).set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });
@@ -55,12 +60,10 @@ export class ArbeitskontextHttpService {
      * @returns Observable<PrivatpersonWettbewerbskontext>
      */
     public loadPrivatpersonWettbewerbskontext(): Observable<PrivatpersonWettbewerbskontext> {
-        return this.#httpClient.get<PrivatpersonWettbewerbskontext>(
-            this.#config.apiUrl + '/api/privatperson/me/wettbewerbskontext',
-            {
-                context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
-                withCredentials: true,
-            }
-        );
+        const path: keyof paths = '/api/privatperson/me/wettbewerbskontext';
+        return this.#httpClient.get<PrivatpersonWettbewerbskontext>(this.#config.apiUrl + path, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        });
     }
 }

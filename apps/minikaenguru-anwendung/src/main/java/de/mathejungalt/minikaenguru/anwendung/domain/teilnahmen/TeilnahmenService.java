@@ -14,6 +14,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.auditevents.AuditEventType;
 import de.mathejungalt.minikaenguru.anwendung.domain.authorization.MinikaenguruAuthorizationException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruConflictException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Teilnahme;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
@@ -84,7 +85,8 @@ public class TeilnahmenService {
         final List<TeilnahmeReferenz> teilnahmerefs = teilnahmeDao
                 .loadTeilnahmereferenzen(durchfuehrender.getPrivatkuerzel());
 
-        if (!TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs)) {
+        if (Anmeldestatus.BEREITS_ANGEMELDET == TeilnahmeUtils
+                .berechneAnmeldestatus(aktuellerWettbewerb, teilnahmerefs)) {
             throw new MinikaenguruConflictException("Sie haben sich bereits zum aktuellen Wettbewerb angemeldet.");
         }
 

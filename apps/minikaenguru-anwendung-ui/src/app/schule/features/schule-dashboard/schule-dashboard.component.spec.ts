@@ -1,16 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchuleDashboardComponent } from './schule-dashboard.component';
 import { signal, Signal, WritableSignal } from '@angular/core';
-import {
-    SchuleWettbewerbskontext,
-    Schulkollegium,
-    TeilnahmeReferenz,
-} from '../../../core/model/schule-wettbewerbskontext.model';
+import { TeilnahmeReferenz, ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 import { SchuleFacade } from '../../api/schule.facade';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
 import { By } from '@angular/platform-browser';
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 
 describe('SchuleDashboardComponent', () => {
     const wettbewerb: Wettbewerb = {
@@ -53,7 +50,7 @@ describe('SchuleDashboardComponent', () => {
     ];
 
     const wettbewerbskontext: SchuleWettbewerbskontext = {
-        anmeldungMoeglich: true,
+        anmeldestatus: ANMELDESTATUS.moeglich,
         kollegen: kollegium.kollegium,
         schule,
         teilnahmerefs: teilnahmen,
@@ -187,34 +184,67 @@ describe('SchuleDashboardComponent', () => {
             const subtitleDe = fixture.debugElement.query(By.css('[data-testid="aktueller-wettbewerb-subtitle"]'));
             expect(subtitleDe.nativeElement.textContent.trim()).toBe('Minikänguru 2026');
         });
-        it('should show the aktuelle Teilnahme when already angemeldet', () => {
-            const alleTeilnahmen: TeilnahmeReferenz[] = [
-                ...teilnahmen,
-                {
-                    jahr: 2026,
-                    teilnahmenummer: 'S1234567',
-                },
-            ];
+
+        it('should show anmeldungsbeginn when anmeldung noch nicht möglich', () => {
             const aktuellerWettbewerbskontext: SchuleWettbewerbskontext = {
                 ...wettbewerbskontext,
-                anmeldungMoeglich: true,
-                teilnahmerefs: alleTeilnahmen,
+                anmeldestatus: ANMELDESTATUS.nochNichtMoeglich,
             };
+            wettbewerbskontextSignal.set(aktuellerWettbewerbskontext);
+            fixture.detectChanges();
+            const titleDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-header"]'));
+            expect(titleDe.nativeElement.textContent.trim()).toBe('Anmeldung noch nicht möglich');
+            const descriptionDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-description"]'));
+            expect(descriptionDe.nativeElement.textContent.trim()).toBe('Die Anmeldung ist ab 01.01.2026 möglich.');
+            const buttonDe = fixture.debugElement.query(By.css('[data-testid="schule-anmelden-btn"]'));
+            expect(buttonDe).toBeFalsy();
+
+            const sectionAnmeldungNichtMehrMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-nicht-mehr-moeglich"]')
+            );
+            expect(sectionAnmeldungNichtMehrMoeglichDe).toBeFalsy();
+
+            const sectionBereitsAngemeldetDe = fixture.debugElement.query(
+                By.css('[data-testid="section-bereits-angemeldet"]')
+            );
+            expect(sectionBereitsAngemeldetDe).toBeFalsy();
+
+            const sectionAnmeldungMoeglichDe = fixture.debugElement.query(By.css('[data-testid="section-moeglich"]'));
+            expect(sectionAnmeldungMoeglichDe).toBeFalsy();
+        });
+        it('should show that beendet when anmeldung nicht mehr möglich', () => {
+            const theWettbewerb: Wettbewerb = { ...wettbewerb, status: WETTBEWERBSSTATUS.beendet };
+            const aktuellerWettbewerbskontext: SchuleWettbewerbskontext = {
+                ...wettbewerbskontext,
+                anmeldestatus: ANMELDESTATUS.nichtMehrMoeglich,
+            };
+            aktuellerWettbewerbSignal.set(theWettbewerb);
             wettbewerbskontextSignal.set(aktuellerWettbewerbskontext);
             fixture.detectChanges();
 
             const titleDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-header"]'));
-            expect(titleDe.nativeElement.textContent.trim()).toBe(
-                'PENDING!!! Hier jetzt die teilnahme-component einhängen'
-            );
+            expect(titleDe.nativeElement.textContent.trim()).toBe('Anmeldung nicht mehr möglich');
 
-            const buttonDe = fixture.debugElement.query(By.css('[data-testid="schule-anmelden-btn"]'));
-            expect(buttonDe).toBeFalsy();
+            const descriptionDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-description"]'));
+            expect(descriptionDe.nativeElement.textContent.trim()).toBe('Der Wettbewerb 2026 ist beendet.');
+
+            const sectionAnmeldungNochNichtMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-noch-nicht-moeglich"]')
+            );
+            expect(sectionAnmeldungNochNichtMoeglichDe).toBeFalsy();
+
+            const sectionBereitsAngemeldetDe = fixture.debugElement.query(
+                By.css('[data-testid="section-bereits-angemeldet"]')
+            );
+            expect(sectionBereitsAngemeldetDe).toBeFalsy();
+
+            const sectionAnmeldungMoeglichDe = fixture.debugElement.query(By.css('[data-testid="section-moeglich"]'));
+            expect(sectionAnmeldungMoeglichDe).toBeFalsy();
         });
-        it('should show schule anmelden and the button when anmeldungMoeglich and not angemeldet', () => {
+        it('should show teilnahme anmelden when anmelden möglich', () => {
             const aktuellerWettbewerbskontext: SchuleWettbewerbskontext = {
                 ...wettbewerbskontext,
-                anmeldungMoeglich: true,
+                anmeldestatus: ANMELDESTATUS.moeglich,
             };
             wettbewerbskontextSignal.set(aktuellerWettbewerbskontext);
             fixture.detectChanges();
@@ -230,39 +260,61 @@ describe('SchuleDashboardComponent', () => {
             const buttonDe = fixture.debugElement.query(By.css('[data-testid="schule-anmelden-btn"]'));
             expect(buttonDe).toBeTruthy();
             expect(buttonDe.nativeElement.textContent.trim()).toBe('Schule anmelden');
+
+            const sectionAnmeldungNochNichtMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-noch-nicht-moeglich"]')
+            );
+            expect(sectionAnmeldungNochNichtMoeglichDe).toBeFalsy();
+
+            const sectionAnmeldungNichtMehrMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-nicht-mehr-moeglich"]')
+            );
+            expect(sectionAnmeldungNichtMehrMoeglichDe).toBeFalsy();
+
+            const sectionBereitsAngemeldetDe = fixture.debugElement.query(
+                By.css('[data-testid="section-bereits-angemeldet"]')
+            );
+            expect(sectionBereitsAngemeldetDe).toBeFalsy();
         });
-        it('should show anmeldungsbeginn when anmeldungMoeglich false and wettbewerb running', () => {
+        it('should show Wettbewerb organisieren when bereits angemeldet', () => {
             const aktuellerWettbewerbskontext: SchuleWettbewerbskontext = {
                 ...wettbewerbskontext,
-                anmeldungMoeglich: false,
+                anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
             };
             wettbewerbskontextSignal.set(aktuellerWettbewerbskontext);
             fixture.detectChanges();
-            const titleDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-header"]'));
-            expect(titleDe.nativeElement.textContent.trim()).toBe('Anmeldung noch nicht möglich');
-            const descriptionDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-description"]'));
-            expect(descriptionDe.nativeElement.textContent.trim()).toBe('Die Anmeldung ist ab 01.01.2026 möglich.');
-            const buttonDe = fixture.debugElement.query(By.css('[data-testid="schule-anmelden-btn"]'));
-            expect(buttonDe).toBeFalsy();
-        });
-        it('should show that beendet when anmeldungMoeglich false and wettbewerb beendet', () => {
-            const theWettbewerb: Wettbewerb = { ...wettbewerb, status: WETTBEWERBSSTATUS.beendet };
-            const aktuellerWettbewerbskontext: SchuleWettbewerbskontext = {
-                ...wettbewerbskontext,
-                anmeldungMoeglich: false,
-            };
-            aktuellerWettbewerbSignal.set(theWettbewerb);
-            wettbewerbskontextSignal.set(aktuellerWettbewerbskontext);
-            fixture.detectChanges();
 
-            const titleDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-header"]'));
-            expect(titleDe.nativeElement.textContent.trim()).toBe('Anmeldung nicht mehr möglich');
+            const organisierenHeaderDe = fixture.debugElement.query(
+                By.css('[data-testid="wettbewerb-organisieren-header"]')
+            );
+            expect(organisierenHeaderDe.nativeElement.textContent.trim()).toBe('Wettbewerb organisieren');
 
-            const descriptionDe = fixture.debugElement.query(By.css('[data-testid="anmeldung-description"]'));
-            expect(descriptionDe.nativeElement.textContent.trim()).toBe('Der Wettbewerb 2026 ist beendet.');
+            const organisierenDescriptionDe = fixture.debugElement.query(
+                By.css('[data-testid="wettbewerb-organisieren-description"]')
+            );
+            expect(organisierenDescriptionDe.nativeElement.textContent.trim()).toBe(
+                'Klassen, Kinder und Lösungszettel für den Wettbewerb 2026 erfassen und Urkunden ausdrucken'
+            );
 
-            const buttonDe = fixture.debugElement.query(By.css('[data-testid="schule-anmelden-btn"]'));
-            expect(buttonDe).toBeFalsy();
+            const organisierenButtonDe = fixture.debugElement.query(
+                By.css('[data-testid="wettbewerb-organisieren-btn"]')
+            );
+            expect(organisierenButtonDe.nativeElement.textContent.trim()).toBe('Wettbewerb organisieren');
+
+            const sectionAnmeldungNochNichtMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-noch-nicht-moeglich"]')
+            );
+            expect(sectionAnmeldungNochNichtMoeglichDe).toBeFalsy();
+
+            const sectionAnmeldungNichtMehrMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-nicht-mehr-moeglich"]')
+            );
+            expect(sectionAnmeldungNichtMehrMoeglichDe).toBeFalsy();
+
+            const sectionAnmeldungMoeglichDe = fixture.debugElement.query(
+                By.css('[data-testid="section-anmeldung-moeglich"]')
+            );
+            expect(sectionAnmeldungMoeglichDe).toBeFalsy();
         });
     });
 

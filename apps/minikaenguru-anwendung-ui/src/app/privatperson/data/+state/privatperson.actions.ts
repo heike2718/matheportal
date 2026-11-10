@@ -8,5 +8,7 @@ export const PrivatpersonActions = createActionGroup({
         wettbewerbskontextLaden: emptyProps(),
         wettbewerbskontextGeladen: props<{ wettbewerbskontext: PrivatpersonWettbewerbskontext }>(),
         wettbewerbskontextLadenFailed: props<{ error: Error }>(),
+        privatteilnahmeAnmelden: emptyProps(),
+        wettbewerbOrganisieren: emptyProps(),
     },
 });

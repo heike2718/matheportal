@@ -56,7 +56,7 @@ export class LehrpersonEffects {
         this.#actions.pipe(
             ofType(LehrpersonActions.schulenLadenFailed),
             map(({ error }) => {
-                const errorContext = mapToErrorContext(error);
+                const errorContext = mapToErrorContext(error, false);
 
                 if (errorContext.httpStatus === 403) {
                     this.#messagePublisher.publishError(errorContext.message);

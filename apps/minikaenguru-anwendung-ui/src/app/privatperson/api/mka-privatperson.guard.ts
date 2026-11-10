@@ -44,7 +44,12 @@ export const mkaPrivatpersonGuard = (): CanActivateFn => () => {
                     if (authState === 'loaded' && wettbewerbState === 'loaded' && kontextState === 'loaded') {
                         return true;
                     }
-                    if (wettbewerbState === 'technical-error' || kontextState === 'technical-error') {
+                    if (
+                        wettbewerbState === 'technical-error' ||
+                        wettbewerbState === 'not-found' ||
+                        kontextState === 'technical-error' ||
+                        kontextState === 'not-found'
+                    ) {
                         return router.createUrlTree([
                             '/',
                             portalRoutes.minikaenguruAnwendung.root,

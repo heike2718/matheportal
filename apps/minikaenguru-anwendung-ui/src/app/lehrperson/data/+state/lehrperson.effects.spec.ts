@@ -17,10 +17,6 @@ import { ErrorResponse, TECHNISCHER_FEHLER_FEHLERMELDUNG } from '@matheportal/sh
 describe('LehrpersonEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
 
-    const expectedErrorMessage =
-        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. ' +
-        'Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
-
     const httpServerErrorResponse = new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
@@ -109,7 +105,7 @@ describe('LehrpersonEffects', () => {
             }
         );
 
-        it.each(['loaded', 'unauthorized'] as const)(
+        it.each(['loaded', 'unauthorized', 'not-found'] as const)(
             'should not map to wettbewerbLaden when state is %s',
             async loadState => {
                 store.overrideSelector(selectSchulenLoadState, loadState);

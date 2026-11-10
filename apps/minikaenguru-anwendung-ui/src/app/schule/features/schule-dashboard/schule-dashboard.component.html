@@ -34,19 +34,11 @@
                 </mat-card-header>
 
                 <mat-card-content>
-                    @if (!anmeldungMoeglich()) {
-                        @if (wettbewerbBeendet()) {
-                            <div class="schule-dashboard__current-state">
-                                <div>
-                                    <h2 data-testid="anmeldung-header">Anmeldung nicht mehr möglich</h2>
-
-                                    <p data-testid="anmeldung-description">
-                                        Der Wettbewerb {{ aktuellerWettbewerb().jahr }} ist beendet.
-                                    </p>
-                                </div>
-                            </div>
-                        } @else {
-                            <div class="schule-dashboard__current-state">
+                    @switch (anmeldestatus()) {
+                        @case ('NOCH_NICHT_MOEGLICH') {
+                            <div
+                                class="schule-dashboard__current-state"
+                                data-testid="section-anmeldung-noch-nicht-moeglich">
                                 <div>
                                     <h2 data-testid="anmeldung-header">Anmeldung noch nicht möglich</h2>
 
@@ -58,15 +50,41 @@
                                 </div>
                             </div>
                         }
-                    } @else {
-                        @if (aktuelleTeilnahme()) {
-                            <div>
-                                <h2 data-testid="anmeldung-header">
-                                    PENDING!!! Hier jetzt die teilnahme-component einhängen
-                                </h2>
+                        @case ('NICHT_MEHR_MOEGLICH') {
+                            <div
+                                class="schule-dashboard__current-state"
+                                data-testid="section-anmeldung-nicht-mehr-moeglich">
+                                <div>
+                                    <h2 data-testid="anmeldung-header">Anmeldung nicht mehr möglich</h2>
+
+                                    <p data-testid="anmeldung-description">
+                                        Der Wettbewerb {{ aktuellerWettbewerb().jahr }} ist beendet.
+                                    </p>
+                                </div>
                             </div>
-                        } @else {
-                            <div class="schule-dashboard__current-state">
+                        }
+                        @case ('BEREITS_ANGEMELDET') {
+                            <div class="schule-dashboard__current-state" data-testid="section-bereits-angemeldet">
+                                <div>
+                                    <h2 data-testid="wettbewerb-organisieren-header">Wettbewerb organisieren</h2>
+
+                                    <p data-testid="wettbewerb-organisieren-description">
+                                        Klassen, Kinder und Lösungszettel für den Wettbewerb
+                                        {{ aktuellerWettbewerb().jahr }} erfassen und Urkunden ausdrucken
+                                    </p>
+                                </div>
+
+                                <button
+                                    mat-flat-button
+                                    type="button"
+                                    data-testid="wettbewerb-organisieren-btn"
+                                    (click)="wettbewerbOrganisieren()">
+                                    Wettbewerb organisieren
+                                </button>
+                            </div>
+                        }
+                        @case ('MOEGLICH') {
+                            <div class="schule-dashboard__current-state" data-testid="section-anmeldung-moeglich">
                                 <div>
                                     <h2 data-testid="anmeldung-header">Schule noch nicht angemeldet</h2>
 

@@ -63,7 +63,7 @@ export class SchulenEffects {
             this.#actions.pipe(
                 ofType(SchuleActions.wettbewerbskontextLadenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, true);
                     this.#messagePublisher.publishError(errorContext.message);
                 })
             ),

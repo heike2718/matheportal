@@ -159,7 +159,7 @@ public class WettbewerbsdurchfuehrendeService {
 
         return new PrivatpersonWettbewerbskontext()
                 .teilnahmerefs(teilnahmerefs)
-                .anmeldungMoeglich(TeilnahmeUtils.isAnmeldungMoeglich(aktuellerWettbewerb, teilnahmerefs));
+                .anmeldestatus(TeilnahmeUtils.berechneAnmeldestatus(aktuellerWettbewerb, teilnahmerefs));
     }
 
     /**

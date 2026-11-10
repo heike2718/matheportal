@@ -4,6 +4,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { Schulkatalogantrag } from '../model/schulkatalogantrag.model';
 import { Observable } from 'rxjs';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
+import { paths } from '../../../generated/api-types';
 
 @Injectable()
 export class SchulkatalogantragHttpService {
@@ -12,7 +13,7 @@ export class SchulkatalogantragHttpService {
 
     public submitSchulkatalogantrag(payload: Schulkatalogantrag): Observable<void> {
         const options = { context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true), withCredentials: true };
-        const path = '/api/schulkatalogantrag';
+        const path: keyof paths = '/api/schulkatalogantrag';
 
         return this.#httpClient.post<void>(this.#config.apiUrl + path, payload, options);
     }

@@ -35,7 +35,7 @@ export class SchulkatalogsucheEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogsucheActions.findOrteFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisherService.publishError(errorContext.message);
                 })
             );
@@ -69,7 +69,7 @@ export class SchulkatalogsucheEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogsucheActions.loadSchulenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisherService.publishError(errorContext.message);
                 })
             );

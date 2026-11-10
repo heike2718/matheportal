@@ -10,6 +10,8 @@ export const portalRoutes = {
         lehrperson: 'lehrperson',
         schule: 'schule/:schulkuerzel',
         ladefehler: 'ladefehler',
+        privatteilnahme: 'privatteilnahme',
+        schulteilnahme: 'schulteilnahme/:schulkuerzel',
         unknown: '**',
     },
 

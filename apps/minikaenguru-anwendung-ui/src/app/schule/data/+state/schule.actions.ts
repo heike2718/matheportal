@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Schule } from '../../../core/model/schulkatalog.model';
-import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 
 export const SchuleActions = createActionGroup({
     source: 'MKA Schule',

@@ -1,3 +1,4 @@
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
 import { initialPrivatpersonState, PrivatpersonState } from './privatperson.reducer';
 import {
@@ -8,10 +9,10 @@ import {
 
 describe('privatpersonSelectors', () => {
     const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-        anmeldungMoeglich: true,
+        anmeldestatus: ANMELDESTATUS.moeglich,
         teilnahmerefs: [
-            { jahr: 2026, teilnahmenummer: '12345678' },
             { jahr: 2025, teilnahmenummer: '12345678' },
+            { jahr: 2024, teilnahmenummer: '12345678' },
         ],
     };
 

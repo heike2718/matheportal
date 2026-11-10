@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { TeilnahmeReferenz } from '../../../core/model/schule-wettbewerbskontext.model';
+import { TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
 import { WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
@@ -73,7 +73,7 @@ export class SchuleDashboardComponent {
 
     readonly wettbewerbBeendet = computed(() => this.aktuellerWettbewerb().status === WETTBEWERBSSTATUS.beendet);
 
-    readonly anmeldungMoeglich = computed(() => this.wettbewerbskontext()?.anmeldungMoeglich);
+    readonly anmeldestatus = computed(() => this.wettbewerbskontext()?.anmeldestatus);
 
     readonly vertragDSGVOVorhanden = computed(() => this.wettbewerbskontext()?.vertragDSGVOVorhanden);
 
@@ -90,6 +90,10 @@ export class SchuleDashboardComponent {
 
     public schuleAnmelden(): void {
         console.log('jetzt action triggern zum Anmelden der Schule');
+    }
+
+    public wettbewerbOrganisieren(): void {
+        console.log('jetzt action triggern zum Organisieren des Wettbewerbs');
     }
 
     public dsgvoVertragHerunterladen(): void {

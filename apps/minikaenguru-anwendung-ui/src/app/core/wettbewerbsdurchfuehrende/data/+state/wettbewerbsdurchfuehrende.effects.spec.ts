@@ -217,40 +217,42 @@ describe('WettbewerbsdurchfuehrendeEffects tests', () => {
                 emittedActions.push(action);
             });
 
-            // --- ACTION 1: Erste Action triggern ---
-            action$.next(
-                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
-                    requestDto: firstRequestDto,
-                })
-            );
+            try {
+                // --- ACTION 1: Erste Action triggern ---
+                action$.next(
+                    WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                        requestDto: firstRequestDto,
+                    })
+                );
 
-            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
-            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenLastCalledWith(firstRequestDto);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenLastCalledWith(firstRequestDto);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
 
-            // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
-            action$.next(
-                WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
-                    requestDto: secondRequestDto,
-                })
-            );
+                // --- ACTION 2: Zweite Action triggern (während Request 1 noch läuft) ---
+                action$.next(
+                    WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegen({
+                        requestDto: secondRequestDto,
+                    })
+                );
 
-            // Der Service darf trotz der zweiten Action NICHT noch einmal aufgerufen worden sein!
-            expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
-            expect(firstRequestFinalized).not.toHaveBeenCalled();
-            expect(secondRequestFinalized).not.toHaveBeenCalled();
+                // Der Service darf trotz der zweiten Action NICHT noch einmal aufgerufen worden sein!
+                expect(httpServiceMock.createWettbewerbsdurchfuehrenden).toHaveBeenCalledTimes(1);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(secondRequestFinalized).not.toHaveBeenCalled();
 
-            // --- Ersten Request erfolgreich beenden ---
-            httpFirst$.next(responseDto1);
-            httpFirst$.complete();
+                // --- Ersten Request erfolgreich beenden ---
+                httpFirst$.next(responseDto1);
+                httpFirst$.complete();
 
-            expect(emittedActions).toEqual([
-                WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
-                    wettbewerbsdurchfuehrender: responseDto1,
-                }),
-            ]);
-
-            subscription.unsubscribe();
+                expect(emittedActions).toEqual([
+                    WettbewerbsdurchfuehrendeActions.durchfuehrenderAngelegt({
+                        wettbewerbsdurchfuehrender: responseDto1,
+                    }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
 
         it('should call the http service and map to durchfuehrendenAnlegenFailed when httpMock throws ServerError', async () => {

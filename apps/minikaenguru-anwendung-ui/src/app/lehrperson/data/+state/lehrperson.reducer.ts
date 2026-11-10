@@ -22,14 +22,7 @@ export const lehrpersonFeature = createFeature({
     reducer: createReducer<LehrpersonState>(
         initialLehrpersonState,
         on(LehrpersonActions.schulenLadenFailed, (state, { error }) => {
-            const newSchulenLoadState = mapErrorToAuthorizedResourceLoadState(error);
-            if (newSchulenLoadState === 'technical-error') {
-                return {
-                    ...state,
-                    schulenLoadState: mapErrorToAuthorizedResourceLoadState(error),
-                    schulen: [],
-                };
-            }
+            const newSchulenLoadState = mapErrorToAuthorizedResourceLoadState(error, false);
             return {
                 ...state,
                 schulenLoadState: newSchulenLoadState,

@@ -183,8 +183,6 @@ paths:
                                 $ref: '#/components/schemas/User'
                 '401':
                     description: Keine gültige Session vorhanden oder Session ist endgültig abgelaufen
-                '404':
-                    description: keine Zuordnung gefunden
                 '500':
                     description: Serverfehler
                     content:
@@ -660,6 +658,14 @@ components:
             name: MPSESSIONID
             description: Session-Cookie der Matheportal-Sitzung
     schemas:
+        Anmeldestatus:
+            type: string
+            enum:
+                - NOCH_NICHT_MOEGLICH
+                - NICHT_MEHR_MOEGLICH
+                - BEREITS_ANGEMELDET
+                - MOEGLICH
+            description: Der Anmeldestatus zum aktuellen Wettbewerb.
         Auswertungsart:
             type: string
             enum:
@@ -741,14 +747,14 @@ components:
             type: object
             required:
                 - teilnahmerefs
-                - anmeldungMoeglich
+                - anmeldestatus
             properties:
                 teilnahmerefs:
                     type: array
                     items:
                         $ref: '#/components/schemas/TeilnahmeReferenz'
-                anmeldungMoeglich:
-                    type: boolean
+                anmeldestatus:
+                    $ref: '#/components/schemas/Anmeldestatus'
         QuelleLoesungszettel:
             type: string
             enum:
@@ -782,7 +788,7 @@ components:
                 - kollegen
                 - teilnahmerefs
                 - vertragDSGVOVorhanden
-                - anmeldungMoeglich
+                - anmeldestatus
             properties:
                 schule:
                     $ref: '#/components/schemas/Schule'
@@ -796,8 +802,9 @@ components:
                         $ref: '#/components/schemas/TeilnahmeReferenz'
                 vertragDSGVOVorhanden:
                     type: boolean
-                anmeldungMoeglich:
-                    type: boolean
+                anmeldestatus:
+                    $ref: '#/components/schemas/Anmeldestatus'
+
         Schulkatalogantrag:
             type: object
             required:

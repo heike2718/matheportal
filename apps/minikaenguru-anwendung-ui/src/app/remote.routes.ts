@@ -24,6 +24,10 @@ import { privatpersonDataProvider } from './privatperson/api/privatperson-data.p
 import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
 import { LadefehlerComponent } from './start/ladefehler/ladefehler.component';
 import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
+import { PrivatteilnahmeComponent } from './teilnahme/features/privatteilnahme/privatteilnahme.component';
+import { teilnahmeDataProvider } from './teilnahme/api/teilnahme-data.provider';
+import { mkaPrivatteilnahmeGuard } from './teilnahme/api/mka-privatteilnahme.guard';
+import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -33,6 +37,10 @@ export const remoteRoutes: Routes = [
             {
                 path: '',
                 component: StartComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.guests,
+                component: GuestInfoComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.ladefehler,
@@ -46,7 +54,18 @@ export const remoteRoutes: Routes = [
                 path: portalRoutes.minikaenguruAnwendung.privatperson,
                 canActivate: [mkaPrivatpersonGuard()],
                 canActivateChild: [mkaPrivatpersonGuard()],
-                component: DashboardPrivatpersonComponent,
+                children: [
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        component: DashboardPrivatpersonComponent,
+                    },
+                    {
+                        path: portalRoutes.minikaenguruAnwendung.privatteilnahme,
+                        canActivate: [mkaPrivatteilnahmeGuard()],
+                        component: PrivatteilnahmeComponent,
+                    },
+                ],
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.lehrperson,
@@ -90,6 +109,7 @@ export const remoteRoutes: Routes = [
             ...schuleDataProvider,
             ...lehrpersonDataProvider,
             ...privatpersonDataProvider,
+            ...teilnahmeDataProvider,
             ArbeitskontextHttpService,
         ],
     },

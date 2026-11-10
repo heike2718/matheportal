@@ -52,9 +52,13 @@ __screenshots__/
 
 # generierte souren
 apps/matheportal-shell/src/main/resources/META-INF/resources/matheportal-shell
+apps/minikaenguru-admin/src/main/resources/META-INF/resources/minikaenguru-admin
 apps/minikaenguru-anwendung/src/main/resources/META-INF/resources/minikaenguru-anwendung
+apps/minikaenguru-statistik/src/main/resources/META-INF/resources/minikaenguru-statistik
 apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten
 **/target
+
+**/src/app/generated/api-types.ts
 
 .database/datenmigration/dumps
 

@@ -492,12 +492,14 @@ describe('MkaAuthorizationEffects tests', () => {
             const emitted = vi.fn();
             const subscription = effects.loadMkaAuthorization$.subscribe(emitted);
 
-            action$.next(MkaAuthorizationActions.loadMkaAuthorization());
+            try {
+                action$.next(MkaAuthorizationActions.loadMkaAuthorization());
 
-            expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
-            expect(emitted).not.toHaveBeenCalled();
-
-            subscription.unsubscribe();
+                expect(httpServiceMock.loadMkaAuthorization).not.toHaveBeenCalled();
+                expect(emitted).not.toHaveBeenCalled();
+            } finally {
+                subscription.unsubscribe();
+            }
         });
 
         it('should not load authorization when failed', () => {
@@ -515,7 +517,7 @@ describe('MkaAuthorizationEffects tests', () => {
             subscription.unsubscribe();
         });
 
-        it('should call httpService map to failed when returns HttpError', async () => {
+        it('should call httpService and map to failed when returns HttpError', async () => {
             const authorizationLoadState: AuthorizationLoadState = 'not-loaded';
             store.overrideSelector(fromMkaAuthorization.authorizationLoadState, authorizationLoadState);
             store.refreshState();

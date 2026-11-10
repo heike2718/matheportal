@@ -16,6 +16,9 @@ import { AuthorizationLoadState } from '../../core/authorization/authorization-m
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';
 import { WettbewerbFacade } from '../../core/wettbewerb/api/wettbewerb.facade';
 import { PrivatpersonFacade } from './privatperson.facade';
+import { remoteRoutes } from '../../remote.routes';
+import { GuestInfoComponent } from '../../start/guest-info/guest-info.component';
+import { LadefehlerComponent } from '../../start/ladefehler/ladefehler.component';
 
 // TODO: Bei Einführung von Child-Routes unter dashboard-privatperson zusätzliche Tests für die child routes
 // - Privatperson darf Child-Route aktivieren
@@ -159,6 +162,18 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(result).toBeInstanceOf(UrlTree);
             expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
         });
+        it('should redirect to ladefehler when wettbwerbLoadState is not-found', async () => {
+            const { router } = setup('loaded', 'loaded', 'not-found', 'loaded');
+
+            const resultPromise = TestBed.runInInjectionContext(() =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            const result = await resultPromise;
+
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
+        });
         it('should redirect to ladefehler when wettbwerbLoadState is technical-error', async () => {
             const { router } = setup('loaded', 'loaded', 'technical-error', 'loaded');
 
@@ -188,33 +203,56 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(result).toBe(true);
         });
 
-        it.each(['unauthorized', 'forbidden'] as const)(
-            'should redirect to guests when wettbewerbskontextLoadState is %s',
-            async kontextLoadState => {
-                const { router } = setup('loaded', 'loaded', 'loaded', kontextLoadState);
+        it.each([
+            {
+                loadState: 'unauthorized',
+                target: 'guests',
+                component: GuestInfoComponent,
+            },
+            {
+                loadState: 'forbidden',
+                target: 'guests',
+                component: GuestInfoComponent,
+            },
+            {
+                loadState: 'technical-error',
+                target: 'ladefehler',
+                component: LadefehlerComponent,
+            },
+            {
+                loadState: 'not-found',
+                target: 'ladefehler',
+                component: LadefehlerComponent,
+            },
+        ] as const)(
+            'should navigate to $target when wettbewerbskontextLoadState is $loadState',
+            async ({ loadState, target, component }) => {
+                const { router } = setup('loaded', 'loaded', 'loaded', loadState);
 
-                const resultPromise = TestBed.runInInjectionContext(() =>
-                    resolveGuardResult(mkaPrivatpersonGuard()(route, state))
-                );
+                router.resetConfig([
+                    {
+                        path: 'minikaenguru-anwendung',
+                        children: remoteRoutes.map(route => ({
+                            ...route,
+                            providers: [],
+                        })),
+                    },
+                ]);
 
-                const result = await resultPromise;
+                const navigated = await router.navigateByUrl('/minikaenguru-anwendung/privatperson');
 
-                expect(result).toBeInstanceOf(UrlTree);
-                expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/guests');
+                expect(navigated).toBe(true);
+                expect(router.url).toBe(`/minikaenguru-anwendung/${target}`);
+
+                let activatedRoute = router.routerState.snapshot.root;
+                while (activatedRoute.firstChild) {
+                    activatedRoute = activatedRoute.firstChild;
+                }
+
+                expect(activatedRoute.component).toBe(component);
+                expect(privatpersonFacadeMock.dashboardVorbereiten).toHaveBeenCalledOnce();
             }
         );
-
-        it('should redirect to ladefehler when wettbewerbLoadState is technical-error', async () => {
-            const { router } = setup('loaded', 'loaded', 'loaded', 'technical-error');
-            const resultPromise = TestBed.runInInjectionContext(() =>
-                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
-            );
-
-            const result = await resultPromise;
-
-            expect(result).toBeInstanceOf(UrlTree);
-            expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
-        });
     });
 
     describe('tests with sessionLoadState', () => {
@@ -229,6 +267,18 @@ describe('mkaPrivatpersonGuard tests', () => {
             expect(wettbewerbFacadeMock.ensureWettbewerbGeladen).not.toHaveBeenCalledOnce();
             expect(privatpersonFacadeMock.dashboardVorbereiten).not.toHaveBeenCalledOnce();
 
+            expect(result).toBeInstanceOf(UrlTree);
+            expect(router.serializeUrl(result as UrlTree)).toBe('/home');
+        });
+
+        it('should redirect users to portal home when sessionLoadState not-found', async () => {
+            const { router } = setup('not-found', 'not-loaded', 'not-loaded', 'not-loaded');
+
+            const result = await TestBed.runInInjectionContext(async () =>
+                resolveGuardResult(mkaPrivatpersonGuard()(route, state))
+            );
+
+            expect(mkaAuthFacadeMock.ensureAuthorizationLoaded).not.toHaveBeenCalled();
             expect(result).toBeInstanceOf(UrlTree);
             expect(router.serializeUrl(result as UrlTree)).toBe('/home');
         });

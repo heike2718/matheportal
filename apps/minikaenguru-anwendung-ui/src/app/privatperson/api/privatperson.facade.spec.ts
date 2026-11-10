@@ -11,10 +11,12 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { PrivatpersonActions } from '../data/+state/privatperson.actions';
+import { ANMELDESTATUS } from '../../core/model/wettbewerbskontext.model';
 
 describe('PrivatpersonFacade', () => {
     const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-        anmeldungMoeglich: true,
+        anmeldestatus: ANMELDESTATUS.moeglich,
         teilnahmerefs: [],
     };
 
@@ -88,7 +90,7 @@ describe('PrivatpersonFacade', () => {
 
             const updatedKontext: PrivatpersonWettbewerbskontext = {
                 ...wettbewerbskontext,
-                anmeldungMoeglich: true,
+                anmeldestatus: ANMELDESTATUS.moeglich,
             };
 
             store.overrideSelector(selectWettbewerbskontext, updatedKontext);
@@ -113,6 +115,13 @@ describe('PrivatpersonFacade', () => {
                     durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 })
             );
+        });
+
+        it('should dispatch the correct action on wettbewerbOrganisieren', () => {
+            facade.wettbewerbOrganisieren();
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(PrivatpersonActions.wettbewerbOrganisieren());
         });
     });
 });

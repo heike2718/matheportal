@@ -9,11 +9,12 @@ import {
     selectWettbewerbskontextLoadState,
 } from '../data/+state/schule.selectors';
 import { fromWettbewerb } from '../../core/wettbewerb/data/+state/wettbewerb.selectors';
-import { SchuleWettbewerbskontext } from '../../core/model/schule-wettbewerbskontext.model';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.selectors';
 import { SchuleActions } from '../data/+state/schule.actions';
+import { SchuleWettbewerbskontext } from '../model/schule.model';
+import { ANMELDESTATUS } from '../../core/model/wettbewerbskontext.model';
 
 describe('SchuleFacade', () => {
     const wettbewerbskontext: SchuleWettbewerbskontext = {
@@ -31,7 +32,7 @@ describe('SchuleFacade', () => {
                 anzahlSchulen: 1,
             },
         },
-        anmeldungMoeglich: true,
+        anmeldestatus: ANMELDESTATUS.moeglich,
         kollegen: [{ schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' }],
         teilnahmerefs: [],
         vertragDSGVOVorhanden: true,

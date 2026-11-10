@@ -46,7 +46,7 @@ export class SchulkatalogantragEffects {
             return this.#actions.pipe(
                 ofType(SchulkatalogantragActions.submitSchulkatalogantragFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisherService.publishError(errorContext.message);
                 })
             );

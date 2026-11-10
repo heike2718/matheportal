@@ -19,11 +19,11 @@ export class MkaAuthorizationFacade {
         fromMkaAuthorization.berechtigungstyp
     );
 
-    readonly #berechtigungstyp = toSignal(this.berechtigungstyp$);
+    readonly berechtigungstyp = toSignal(this.berechtigungstyp$);
 
-    readonly isLehrperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
+    readonly isLehrperson = computed(() => this.berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.schule);
 
-    readonly isPrivatperson = computed(() => this.#berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
+    readonly isPrivatperson = computed(() => this.berechtigungstyp() === MINIKAENGURU_BERECHTIGUNGSTYP.privat);
 
     minikaenguruAufgerufen(): void {
         this.#store.dispatch(MinikaenguruEinstiegActions.rootEinstiegRequested());

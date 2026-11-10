@@ -1,3 +1,4 @@
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
 import { PrivatpersonActions } from './privatperson.actions';
 
@@ -20,7 +21,7 @@ describe('PrivatpersonActions', () => {
 
     it('should create the wettbewerbskontextGeladen action', () => {
         const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
-            anmeldungMoeglich: true,
+            anmeldestatus: ANMELDESTATUS.moeglich,
             teilnahmerefs: [],
         };
 
@@ -39,6 +40,14 @@ describe('PrivatpersonActions', () => {
         expect(action).toEqual({
             type: '[MKA Privatperson] wettbewerbskontextLadenFailed',
             error,
+        });
+    });
+
+    it('should create the wettbewerbOrganisieren action', () => {
+        const action = PrivatpersonActions.wettbewerbOrganisieren();
+
+        expect(action).toEqual({
+            type: '[MKA Privatperson] wettbewerbOrganisieren',
         });
     });
 });

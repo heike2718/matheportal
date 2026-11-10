@@ -35,6 +35,11 @@ export const selectKollegen = createSelector(
     }
 );
 
+export const selectAnmeldestatus = createSelector(
+    selectWettbewerbskontext,
+    wettbewerbskontext => wettbewerbskontext?.anmeldestatus
+);
+
 // FIXME: auswertungsart der aktuellen Teilnahme berücksichtigen. Bei offline ist das nämlich nicht erforderlich
 export const selectDsgvoVertragErforderlich = createSelector(
     selectWettbewerbskontextLoaded,

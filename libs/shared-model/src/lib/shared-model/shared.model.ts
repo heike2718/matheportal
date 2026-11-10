@@ -10,15 +10,12 @@ export const NOT_FOUND_FEHLERMELDUNG =
     'Die angeforderten Daten wurden nicht gefunden. ' +
     'Möglicherweise wurden sie inzwischen von einer anderen berechtigten Person gelöscht.';
 
-export const PRECONDITION_FAILED_FALLBACK_FEHLERMELDUNG =
-    'Die Voraussetzungen für diese Änderung sind nicht mehr erfüllt. Ihre Änderungen wurden nicht gespeichert. Bitte laden Sie die aktuellen Daten neu und prüfen Sie, ob die gewünschte Änderung noch möglich ist.';
-
 export const BAD_REQUEST_FALLBACK_FEHLERMELDUNG =
     'Ihre Eingaben enthalten ungültige Zeichen. Bitte überprüfen Sie diese.';
 
 export const SESSION_EXPIRED_MESSAGE = 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.';
 
-export type PUBLIC_RESOURCE_LOAD_STATE = 'not-loaded' | 'loaded' | 'technical-error';
+export type PUBLIC_RESOURCE_LOAD_STATE = 'not-loaded' | 'loaded' | 'not-found' | 'technical-error';
 
 export type RESTRICTED_RESOURCE_LOAD_STATE = PUBLIC_RESOURCE_LOAD_STATE | 'unauthorized';
 

@@ -1,5 +1,6 @@
-import { SchuleWettbewerbskontext, Schulkollegium } from '../../../core/model/schule-wettbewerbskontext.model';
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 import { Schule } from '../../../core/model/schulkatalog.model';
+import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 import { SchuleActions } from './schule.actions';
 
 describe('SchuleActions', () => {
@@ -38,7 +39,7 @@ describe('SchuleActions', () => {
     it('should create the wettbewerbskontextGeladen action', () => {
         const wettbewerbskontext: SchuleWettbewerbskontext = {
             schule,
-            anmeldungMoeglich: true,
+            anmeldestatus: ANMELDESTATUS.moeglich,
             kollegen: [],
             teilnahmerefs: [],
             vertragDSGVOVorhanden: false,

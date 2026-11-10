@@ -43,7 +43,7 @@ export class WettbewerbEffects {
             this.#actions.pipe(
                 ofType(WettbewerbActions.wettbewerbLadenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisher.publishError(errorContext.message);
                 })
             ),

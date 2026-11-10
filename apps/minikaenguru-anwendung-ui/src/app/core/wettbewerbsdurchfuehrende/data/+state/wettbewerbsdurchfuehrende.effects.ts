@@ -85,7 +85,7 @@ export class WettbewerbsdurchfuehrendeEffects {
             this.#actions.pipe(
                 ofType(WettbewerbsdurchfuehrendeActions.durchfuehrendenAnlegenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisher.publishError(errorContext.message);
                 })
             ),

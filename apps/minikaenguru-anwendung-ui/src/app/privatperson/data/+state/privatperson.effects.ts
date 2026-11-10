@@ -6,8 +6,10 @@ import { ensureWettbewerbskontextPrivatGeladen } from '../../api/privatperson-st
 import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { PrivatpersonActions } from './privatperson.actions';
 import { Store } from '@ngrx/store';
-import { selectWettbewerbskontextLadenVerweigert } from './privatperson.selectors';
+import { selectWettbewerbskontextLadenVerweigert, selectWettbewerbskontextLoadState } from './privatperson.selectors';
 import { mapToErrorContext } from '@matheportal/shared-utils';
+import { portalRoutes } from '@matheportal/portal-navigation';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class PrivatpersonEffects {
@@ -15,10 +17,13 @@ export class PrivatpersonEffects {
     #httpService = inject(ArbeitskontextHttpService);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
+    #router = inject(Router);
 
     readonly ensureWettbewerbskontextPrivatGeladen$ = createEffect(() =>
         this.#actions.pipe(
             ofType(ensureWettbewerbskontextPrivatGeladen),
+            withLatestFrom(this.#store.select(selectWettbewerbskontextLoadState)),
+            filter(([, loadState]) => loadState !== 'loaded'),
             map(() => PrivatpersonActions.wettbewerbskontextLaden())
         )
     );
@@ -42,8 +47,25 @@ export class PrivatpersonEffects {
             this.#actions.pipe(
                 ofType(PrivatpersonActions.wettbewerbskontextLadenFailed),
                 tap(action => {
-                    const errorContext = mapToErrorContext(action.error);
+                    const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisher.publishError(errorContext.message);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly navigateOnWettbewerbOrganisieren$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(PrivatpersonActions.wettbewerbOrganisieren),
+                tap(() => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
+                    void this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.privatperson,
+                        portalRoutes.minikaenguruAnwendung.privatteilnahme,
+                    ]);
                 })
             ),
         { dispatch: false }
