@@ -190,6 +190,9 @@ describe('DashboardPrivatComponent', () => {
                 By.css('[data-testid="section-bereits-angemeldet"]')
             );
             expect(sectionBereitsAngemeldetDe).toBeFalsy();
+
+            buttonDe.triggerEventHandler('click');
+            expect(facadeMock.privatteilnahmeAnmelden).toHaveBeenCalled();
         });
         it('should show Wettbewerb organisieren when bereits angemeldet', () => {
             const aktuellerWettbewerbskontext: PrivatpersonWettbewerbskontext = {
@@ -230,6 +233,9 @@ describe('DashboardPrivatComponent', () => {
                 By.css('[data-testid="section-anmeldung-moeglich"]')
             );
             expect(sectionAnmeldungMoeglichDe).toBeFalsy();
+
+            organisierenButtonDe.triggerEventHandler('click');
+            expect(facadeMock.wettbewerbOrganisieren).toHaveBeenCalled();
         });
     });
 

@@ -99,4 +99,15 @@ describe('mkaPrivatteilnahmeGuard', () => {
         expect(result).toBeInstanceOf(UrlTree);
         expect(router.serializeUrl(result as UrlTree)).toBe('/minikaenguru-anwendung/ladefehler');
     });
+
+    it('should allow access when teilnahme is already loaded', async () => {
+        setup('loaded');
+
+        const result = await TestBed.runInInjectionContext(() =>
+            resolveGuardResult(mkaPrivatteilnahmeGuard()(route, state))
+        );
+
+        expect(result).toBe(true);
+        expect(teilnahmeFacadeMock.aktuellePrivatteilnahmeVorbereiten).toHaveBeenCalledOnce();
+    });
 });

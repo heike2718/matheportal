@@ -27,6 +27,7 @@ import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
 import { PrivatteilnahmeComponent } from './teilnahme/features/privatteilnahme/privatteilnahme.component';
 import { teilnahmeDataProvider } from './teilnahme/api/teilnahme-data.provider';
 import { mkaPrivatteilnahmeGuard } from './teilnahme/api/mka-privatteilnahme.guard';
+import { GuestInfoComponent } from './start/guest-info/guest-info.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -36,6 +37,10 @@ export const remoteRoutes: Routes = [
             {
                 path: '',
                 component: StartComponent,
+            },
+            {
+                path: portalRoutes.minikaenguruAnwendung.guests,
+                component: GuestInfoComponent,
             },
             {
                 path: portalRoutes.minikaenguruAnwendung.ladefehler,

@@ -6,7 +6,7 @@ import { ensureWettbewerbskontextPrivatGeladen } from '../../api/privatperson-st
 import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { PrivatpersonActions } from './privatperson.actions';
 import { Store } from '@ngrx/store';
-import { selectWettbewerbskontextLadenVerweigert } from './privatperson.selectors';
+import { selectWettbewerbskontextLadenVerweigert, selectWettbewerbskontextLoadState } from './privatperson.selectors';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
@@ -22,6 +22,8 @@ export class PrivatpersonEffects {
     readonly ensureWettbewerbskontextPrivatGeladen$ = createEffect(() =>
         this.#actions.pipe(
             ofType(ensureWettbewerbskontextPrivatGeladen),
+            withLatestFrom(this.#store.select(selectWettbewerbskontextLoadState)),
+            filter(([, loadState]) => loadState !== 'loaded'),
             map(() => PrivatpersonActions.wettbewerbskontextLaden())
         )
     );

@@ -258,4 +258,20 @@ describe('teilnahmeReducer', () => {
             });
         });
     });
+
+    describe('teilnahmeAngemeldet', () => {
+        it('should set the teilnahme and teilnahmeLoadState when teilnahme angemeldet', () => {
+            const previousState: TeilnahmeState = {
+                teilnahme: undefined,
+                teilnahmeLoadState: 'not-found',
+            };
+
+            const state = teilnahmeFeature.reducer(previousState, TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
+
+            expect(state).toEqual({
+                teilnahme,
+                teilnahmeLoadState: 'loaded',
+            });
+        });
+    });
 });

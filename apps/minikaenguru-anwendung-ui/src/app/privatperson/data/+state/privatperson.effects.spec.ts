@@ -7,7 +7,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
 import { PrivatpersonActions } from './privatperson.actions';
 import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
-import { selectWettbewerbskontextLadenVerweigert } from './privatperson.selectors';
+import { selectWettbewerbskontextLadenVerweigert, selectWettbewerbskontextLoadState } from './privatperson.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
@@ -75,15 +75,64 @@ describe('PrivatpersonEffects', () => {
     });
 
     describe('ensureWettbewerbskontextPrivatGeladen$', () => {
-        it('should map to wettbewerbskontextLaden', async () => {
-            const promise = firstValueFrom(effects.ensureWettbewerbskontextPrivatGeladen$);
+        it.each(['not-loaded', 'technical-error', 'not-found', 'forbidden', 'unauthorized'] as const)(
+            'should map to wettbewerbskontextLaden when loadState is %s',
+            async loadState => {
+                store.overrideSelector(selectWettbewerbskontextLoadState, loadState);
+                store.refreshState();
 
-            action$.next(PrivatpersonActions.ensureWettbewerbskontextGeladen());
+                const promise = firstValueFrom(effects.ensureWettbewerbskontextPrivatGeladen$);
 
-            const emitted = await promise;
+                action$.next(PrivatpersonActions.ensureWettbewerbskontextGeladen());
 
-            expect(httpServiceMock.loadPrivatpersonWettbewerbskontext).not.toHaveBeenCalled();
-            expect(emitted).toEqual(PrivatpersonActions.wettbewerbskontextLaden());
+                const emitted = await promise;
+
+                expect(emitted).toEqual(PrivatpersonActions.wettbewerbskontextLaden());
+                expect(httpServiceMock.loadPrivatpersonWettbewerbskontext).not.toHaveBeenCalled();
+            }
+        );
+
+        it('should not dispatch a load action when already loaded', () => {
+            store.overrideSelector(selectWettbewerbskontextLoadState, 'loaded');
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureWettbewerbskontextPrivatGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(PrivatpersonActions.ensureWettbewerbskontextGeladen());
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should skip the second load request after the context has been loaded', () => {
+            const loadStateSelector = store.overrideSelector(selectWettbewerbskontextLoadState, 'not-loaded');
+            store.refreshState();
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureWettbewerbskontextPrivatGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(PrivatpersonActions.ensureWettbewerbskontextGeladen());
+
+                expect(emittedActions).toEqual([PrivatpersonActions.wettbewerbskontextLaden()]);
+
+                loadStateSelector.setResult('loaded');
+                store.refreshState();
+
+                action$.next(PrivatpersonActions.ensureWettbewerbskontextGeladen());
+
+                expect(emittedActions).toEqual([PrivatpersonActions.wettbewerbskontextLaden()]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
     });
 

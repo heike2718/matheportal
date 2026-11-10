@@ -32,7 +32,7 @@ export const teilnahmeFeature = createFeature({
                 ? initialTeilnahmeState
                 : state;
         }),
-        on(TeilnahmeActions.teilnahmeGeladen, (state, { teilnahme }) => ({
+        on(TeilnahmeActions.teilnahmeGeladen, TeilnahmeActions.teilnahmeAngemeldet, (state, { teilnahme }) => ({
             ...state,
             teilnahme,
             teilnahmeLoadState: 'loaded',
