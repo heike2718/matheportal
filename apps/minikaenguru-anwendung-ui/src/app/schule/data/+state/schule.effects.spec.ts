@@ -177,7 +177,7 @@ describe('SchulenEffects', () => {
             }
         });
 
-        it('should call the httpService and map to schulkollegiumGeladen when successful', async () => {
+        it('should call the httpService and map to wettbewerbskontextGeladen when successful', async () => {
             store.overrideSelector(schulenLadenVerweigert, false);
             store.refreshState();
 

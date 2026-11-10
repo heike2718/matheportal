@@ -41,4 +41,12 @@ describe('PrivatpersonActions', () => {
             error,
         });
     });
+
+    it('should create the wettbewerbOrganisieren action', () => {
+        const action = PrivatpersonActions.wettbewerbOrganisieren();
+
+        expect(action).toEqual({
+            type: '[MKA Privatperson] wettbewerbOrganisieren',
+        });
+    });
 });

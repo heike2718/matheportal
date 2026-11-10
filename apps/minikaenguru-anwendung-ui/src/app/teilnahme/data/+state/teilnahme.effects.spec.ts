@@ -28,12 +28,9 @@ describe('TeilnahmeEffects', () => {
         kuerzel: 'S1234567',
     };
 
-    const expectedErrorMessage =
-        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. ' +
-        'Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.';
-
     let httpServiceMock: {
         loadAktuellePrivatteilnahme: ReturnType<typeof vi.fn>;
+        privatAnmelden: ReturnType<typeof vi.fn>;
     };
 
     let messagePublisherMock: { publishWarning: ReturnType<typeof vi.fn>; publishError: ReturnType<typeof vi.fn> };
@@ -58,6 +55,7 @@ describe('TeilnahmeEffects', () => {
 
         httpServiceMock = {
             loadAktuellePrivatteilnahme: vi.fn(),
+            privatAnmelden: vi.fn(),
         };
 
         messagePublisherMock = {
@@ -269,6 +267,130 @@ describe('TeilnahmeEffects', () => {
 
             action$.next(
                 TeilnahmeActions.teilnahmeLadenFailed({
+                    error: httpServerErrorResponse,
+                })
+            );
+            await promise;
+
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
+            );
+
+            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('privatteilnahmeAnmelden$', () => {
+        it('should call the httpService and map to teilnahmeAngemeldet', async () => {
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(of(teilnahme));
+
+            const promise = firstValueFrom(effects.privatteilnahmeAnmelden$);
+
+            action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
+
+            expect(httpServiceMock.privatAnmelden).toHaveBeenCalledOnce();
+        });
+
+        it('should ignore the second action while the first request is active (exhaustMap)', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+
+            const firstRequestFinalized = vi.fn();
+            const secondRequestFinalized = vi.fn();
+
+            httpServiceMock.privatAnmelden.mockReturnValue(httpFirst$);
+
+            const emittedActions: unknown[] = [];
+            const subscription = effects.privatteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(1);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(emittedActions).toEqual([]);
+
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(1);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(secondRequestFinalized).not.toHaveBeenCalled();
+                expect(emittedActions).toEqual([]);
+
+                httpFirst$.next(teilnahme);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([TeilnahmeActions.teilnahmeAngemeldet({ teilnahme })]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should maps to teilnahmeAnmeldenFailed and keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.privatteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(2);
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+    });
+
+    describe('teilnahmeAnmeldenFailed$', () => {
+        it('should show an error when http-status is 404 and not dispatch any action', async () => {
+            const promise = firstValueFrom(effects.teilnahmeAnmeldenFailed$);
+
+            action$.next(
+                TeilnahmeActions.teilnahmeAnmeldenFailed({
+                    error: notFoundResponse,
+                })
+            );
+            await promise;
+
+            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
+                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
+            );
+
+            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+        });
+        it('should show an error when http-status is 500 and not dispatch any action', async () => {
+            const promise = firstValueFrom(effects.teilnahmeAnmeldenFailed$);
+
+            action$.next(
+                TeilnahmeActions.teilnahmeAnmeldenFailed({
                     error: httpServerErrorResponse,
                 })
             );

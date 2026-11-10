@@ -32,10 +32,10 @@ export function mapErrorToRestrictedResourceLoadState(
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
-            case 401:
-            case 403:
+            case HttpStatusCode.Unauthorized:
+            case HttpStatusCode.Forbidden:
                 return 'unauthorized';
-            case 404:
+            case HttpStatusCode.NotFound:
                 return notFoundIsAValidResponseStatus ? 'not-found' : 'technical-error';
             default:
                 return 'technical-error';
@@ -51,11 +51,11 @@ export function mapErrorToAuthorizedResourceLoadState(
     if (error.name === 'HttpErrorResponse') {
         const httpError = error as HttpErrorResponse;
         switch (httpError.status) {
-            case 401:
+            case HttpStatusCode.Unauthorized:
                 return 'unauthorized';
-            case 403:
+            case HttpStatusCode.Forbidden:
                 return 'forbidden';
-            case 404:
+            case HttpStatusCode.NotFound:
                 return notFoundIsAValidResponseStatus ? 'not-found' : 'technical-error';
             default:
                 return 'technical-error';
@@ -109,7 +109,6 @@ export function mapToErrorContext(error: Error, notFoundIsAValidResponseStatus: 
         switch (httpError.status) {
             case HttpStatusCode.BadRequest:
             case HttpStatusCode.Conflict:
-            case HttpStatusCode.PreconditionFailed:
                 errorResponse = extractErrorResponse(httpError, notFoundIsAValidResponseStatus);
                 break;
             case HttpStatusCode.NotFound:
@@ -145,13 +144,13 @@ export function extractErrorResponse(error: HttpErrorResponse, notFoundIsAValidR
     const theError = error.error;
     if (!theError || !theError['constraintViolations'] || !theError['message']) {
         switch (httpStatus) {
-            case 400:
+            case HttpStatusCode.BadRequest:
                 return { message: BAD_REQUEST_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
-            case 404:
+            case HttpStatusCode.NotFound:
                 return notFoundIsAValidResponseStatus
                     ? { message: NOT_FOUND_FEHLERMELDUNG, constraintViolations: [] }
                     : { message: TECHNISCHER_FEHLER_FEHLERMELDUNG, constraintViolations: [] };
-            case 409:
+            case HttpStatusCode.Conflict:
                 return { message: CONFLICT_FALLBACK_FEHLERMELDUNG, constraintViolations: [] };
         }
         return { message: TECHNISCHER_FEHLER_FEHLERMELDUNG, constraintViolations: [] };

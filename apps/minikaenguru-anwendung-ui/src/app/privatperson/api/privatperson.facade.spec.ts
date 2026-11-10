@@ -11,6 +11,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaenguru-einstieg.actions';
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { PrivatpersonActions } from '../data/+state/privatperson.actions';
 
 describe('PrivatpersonFacade', () => {
     const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
@@ -113,6 +114,13 @@ describe('PrivatpersonFacade', () => {
                     durchfuehrungsart: DURCHFUEHRUNGSART.privat,
                 })
             );
+        });
+
+        it('should dispatch the correct action on wettbewerbOrganisieren', () => {
+            facade.wettbewerbOrganisieren();
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(PrivatpersonActions.wettbewerbOrganisieren());
         });
     });
 });

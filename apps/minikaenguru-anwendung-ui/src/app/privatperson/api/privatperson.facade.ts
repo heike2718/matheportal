@@ -9,6 +9,7 @@ import {
     selectWettbewerbskontextLoaded,
     selectWettbewerbskontextLoadState,
 } from '../data/+state/privatperson.selectors';
+import { PrivatpersonActions } from '../data/+state/privatperson.actions';
 
 @Injectable()
 export class PrivatpersonFacade {
@@ -29,5 +30,9 @@ export class PrivatpersonFacade {
                 kontextkuerzel: undefined,
             })
         );
+    }
+
+    public wettbewerbOrganisieren(): void {
+        this.#store.dispatch(PrivatpersonActions.wettbewerbOrganisieren());
     }
 }

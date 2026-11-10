@@ -8,6 +8,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { selectTeilnahmeLoadState } from './teilnahme.selectors';
+import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 @Injectable()
 export class TeilnahmeEffects {
@@ -73,5 +74,17 @@ export class TeilnahmeEffects {
                 )
             )
         )
+    );
+
+    readonly teilnahmeAnmeldenFailed$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(TeilnahmeActions.teilnahmeAnmeldenFailed),
+                tap(action => {
+                    const errorContext = mapToErrorContext(action.error, false);
+                    this.#messagePublisher.publishError(errorContext.message);
+                })
+            ),
+        { dispatch: false }
     );
 }
