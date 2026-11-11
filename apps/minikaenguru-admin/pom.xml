@@ -20,7 +20,7 @@
         <matheportal-validation.version>0.0.1-SNAPSHOT</matheportal-validation.version>
 
         <mixin-maven-plugin.version>1.0.6</mixin-maven-plugin.version>
-        <egladil-maven-mixins.version>2.1.0</egladil-maven-mixins.version>
+        <egladil-maven-mixins.version>2.1.1</egladil-maven-mixins.version>
 
         <!-- Start mixin-properties -->
         <pmd.failOnViolation>true</pmd.failOnViolation>

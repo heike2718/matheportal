@@ -15,6 +15,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
@@ -23,6 +24,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.schulkatalog.SchulkatalogService;
 import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmeUtils;
+import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmenService;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbService;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationKey;
@@ -30,9 +32,9 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.Kuerz
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderHttpException;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkollegiumDao;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.TeilnahmeDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.VertragAuftragsdatenverarbeitungDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.TeilnahmeEntity;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,7 +62,7 @@ public final class SchuleService {
     WettbewerbService wettbewerbService;
 
     @Inject
-    TeilnahmeDao teilnahmeDao;
+    TeilnahmenService teilnahmenService;
 
     @Inject
     SchulkollegiumDao schulkollegiumDao;
@@ -81,7 +83,7 @@ public final class SchuleService {
     public SchuleWettbewerbskontext loadWettbewerbskontext(@AuthorizationKey final String schuleId) {
 
         final Schule schule = schulkatalogService.loadSchulenByKuerzel(new String[] { schuleId }).getFirst();
-        final List<TeilnahmeReferenz> teilnahmerefs = teilnahmeDao.loadTeilnahmereferenzen(schuleId);
+        final List<TeilnahmeReferenz> teilnahmerefs = teilnahmenService.getTeilnahmeReferenzen(schuleId);
         final boolean vertragDSGVOVorhanden = vertragAuftragsdatenverarbeitungDao.schuleHasVertragDSGVO(schuleId);
 
         final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
@@ -122,6 +124,29 @@ public final class SchuleService {
 
         return new Schulkollegium().schulkuerzel(schuleId).kollegium(personen);
 
+    }
+
+    /**
+     * Fragt beim IAM den Namen der anmeldenden Person ab.
+     *
+     * @param schuleId String
+     * @return Person
+     */
+    @KuerzelZugriff("schulteilnahme: anmeldende Person")
+    public Person getAnmeldendePerson(@AuthorizationKey final String schuleId) {
+
+        TeilnahmeEntity teilnahmeEntity = teilnahmenService
+                .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(schuleId);
+
+        if (teilnahmeEntity == null) {
+            throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
+        }
+
+        if (teilnahmeEntity.getAngemeldetDurch() != null) {
+            return new Person().fullName(this.loadKollege(teilnahmeEntity.getAngemeldetDurch())).schulkuerzel(schuleId);
+        }
+
+        throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
     }
 
     String loadKollege(final String userUuid) {

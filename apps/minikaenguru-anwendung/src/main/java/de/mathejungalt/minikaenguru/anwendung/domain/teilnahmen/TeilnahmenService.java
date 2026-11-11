@@ -23,6 +23,8 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerbsdurchf
 import de.mathejungalt.minikaenguru.anwendung.domain.utils.MappingUtils;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbService;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.WettbewerbsdurchfuehrendeService;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.AuthorizationKey;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.KuerzelZugriff;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.CountDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.TeilnahmeDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.TeilnahmeEntity;
@@ -54,6 +56,17 @@ public class TeilnahmenService {
 
     @Inject
     Clock clock;
+
+    /**
+     * Läd die Teilnahmereferenzen. Muss nicht per KuerzelZugriff abgesichert werden, da es nur von bereits
+     * abgesicherten Methoden aufgerufen wird.
+     *
+     * @param teilnahmekuerzel String
+     * @return List
+     */
+    public List<TeilnahmeReferenz> getTeilnahmeReferenzen(final String teilnahmekuerzel) {
+        return teilnahmeDao.loadTeilnahmereferenzen(teilnahmekuerzel);
+    }
 
     /**
      * Legt eine Privatteilnahme zum aktuellen Wettbewerb an.
@@ -125,10 +138,8 @@ public class TeilnahmenService {
             throw new MinikaenguruAuthorizationException("Sie können keine Privatteilnahmen laden.");
         }
 
-        final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
-
-        final TeilnahmeEntity teilnahmeEntity = teilnahmeDao
-                .findTeilnahmeByUniqueKey(durchfuehrender.getPrivatkuerzel(), aktuellerWettbewerb.getJahr());
+        final TeilnahmeEntity teilnahmeEntity = this
+                .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(durchfuehrender.getPrivatkuerzel());
 
         if (teilnahmeEntity == null) {
             throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
@@ -166,4 +177,102 @@ public class TeilnahmenService {
         return teilnahme;
     }
 
+    /**
+     * Legt eine Schulteilnahme zum aktuellen Wettbewerb an.
+     *
+     * @param schuleId       String das schulkuerzel
+     * @param auswertungsart Auswertungsart
+     * @return Teilnahme
+     */
+    @KuerzelZugriff("schule: Teilnahme anlegen")
+    public Teilnahme schulteilnahmeAnlegen(final @AuthorizationKey String schuleId,
+            final Auswertungsart auswertungsart) {
+
+        // es ist einfacher, diese Methode zu verwenden. Es wird an dieser Stelle nie
+        // ein AuditEvent ausgelöst werden wegen der interceptorgesteuerten
+        // Autorisierung
+        final WettbewerbsdurchfuehrenderEntity durchfuehrender = wettbewerbsdurchfuehrendeService
+                .loadWettbewerbsdurchfuehrendenAndAuditMissing("Laden der aktuellen Schulteilnahme");
+
+        if (Wettbewerbsdurchfuehrungsart.PRIVAT == durchfuehrender.getArt()) {
+            final String message = "Wettbewerbsanmeldung Schule: Benutzer ist Privatperson";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException(
+                    "Sie können keine Schule zum Minikänguru-Wettbewerb anmelden.");
+        }
+
+        final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
+
+        if (!TeilnahmeUtils.laesstWettbewerbsstatusAnmeldungZu(aktuellerWettbewerb)) {
+            throw new MinikaenguruConflictException("Der aktuelle Wettbewerb lässt keine Anmeldung zu.");
+        }
+
+        final List<TeilnahmeReferenz> teilnahmerefs = teilnahmeDao.loadTeilnahmereferenzen(schuleId);
+
+        if (Anmeldestatus.BEREITS_ANGEMELDET == TeilnahmeUtils
+                .berechneAnmeldestatus(aktuellerWettbewerb, teilnahmerefs)) {
+            throw new MinikaenguruConflictException("Die Schule ist bereits zum aktuellen Wettbewerb angemeldet.");
+        }
+
+        final LocalDateTime now = LocalDateTime.now(clock);
+
+        final TeilnahmeEntity teilnahmeEntity = TeilnahmeEntity
+                .builder()
+                .teilnahmeart(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .teilnahmekuerzel(schuleId)
+                .createdAt(now)
+                .angemeldetDurch(securityIdentity.getPrincipal().getName())
+                .auswertungsart(auswertungsart)
+                .jahr(aktuellerWettbewerb.getJahr())
+                .build();
+
+        teilnahmeDao.insertTeilnahme(teilnahmeEntity);
+
+        return mapFromEntity(teilnahmeEntity, true);
+    }
+
+    /**
+     * Läd die Teilnahme der gegebenen Schule am aktuellen Wettbewerb.
+     *
+     * @param schuleId String das schulkuerzel
+     * @return Teilnahme
+     */
+    @KuerzelZugriff("schule: aktuelle Teilnahme laden")
+    public Teilnahme loadAktuelleSchulteilnahme(final @AuthorizationKey String schuleId) {
+
+        // es ist einfacher, diese Methode zu verwenden. Es wird an dieser Stelle nie
+        // ein AuditEvent ausgelöst werden wegen der interceptorgesteuerten
+        // Autorisierung
+        final WettbewerbsdurchfuehrenderEntity durchfuehrender = wettbewerbsdurchfuehrendeService
+                .loadWettbewerbsdurchfuehrendenAndAuditMissing("Laden der aktuellen Schulteilnahme");
+
+        if (Wettbewerbsdurchfuehrungsart.PRIVAT == durchfuehrender.getArt()) {
+            final String message = "Laden der aktuellen Teilnahme einer Schule: Benutzer ist Privatperson";
+            auditEventService.recordAuditEvent(AuditEventType.ACCESS_DENIED, message);
+            throw new MinikaenguruAuthorizationException("Sie können keine Schulteilnahmen laden.");
+        }
+
+        final TeilnahmeEntity teilnahmeEntity = this
+                .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(durchfuehrender.getSchulkuerzel());
+
+        if (teilnahmeEntity == null) {
+            throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
+        }
+
+        return mapFromEntity(teilnahmeEntity, false);
+    }
+
+    /**
+     * Sucht die JPA-Entity der aktuellen Teilnahme mit dem gegebenen kuerzel.
+     *
+     * @param teilnahmekuerzel String
+     * @return TeilnahmeEntity oder null
+     */
+    public TeilnahmeEntity findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(String teilnahmekuerzel) {
+
+        final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
+
+        return teilnahmeDao.findTeilnahmeByUniqueKey(teilnahmekuerzel, aktuellerWettbewerb.getJahr());
+
+    }
 }
