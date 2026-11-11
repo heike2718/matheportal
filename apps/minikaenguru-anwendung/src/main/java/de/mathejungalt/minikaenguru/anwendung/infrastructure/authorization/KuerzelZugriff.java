@@ -18,6 +18,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ METHOD, TYPE })
 public @interface KuerzelZugriff {
 
+    /**
+     * @return String für das audit event.
+     */
     @Nonbinding
     String value() default "";
 }

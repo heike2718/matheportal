@@ -1,20 +1,24 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import io.quarkus.security.Authenticated;
 
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.schule.SchuleService;
-import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.SchulenApi;
+import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmenService;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.SchuleApi;
 
 /**
- * SchulenResource.
+ * SchuleResource.
  */
 @Authenticated
-public class SchulenResource implements SchulenApi {
+public class SchuleResource implements SchuleApi {
 
     private static final String REGEXP_KUERZEL = "^[A-Z0-9]*$";
 
@@ -22,6 +26,9 @@ public class SchulenResource implements SchulenApi {
 
     @Inject
     SchuleService schuleService;
+
+    @Inject
+    TeilnahmenService teilnahmenService;
 
     @Override
     public Response getWettbewerbskontextSchule(
@@ -32,15 +39,13 @@ public class SchulenResource implements SchulenApi {
     @Override
     public Response loadAktuelleSchulteilnahme(
             @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadAktuelleSchulteilnahme'");
+        return Response.ok(teilnahmenService.loadAktuelleSchulteilnahme(schuleId)).build();
     }
 
     @Override
     public Response loadAnmeldendePerson(
             @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadAnmeldendePerson'");
+        return Response.ok(schuleService.getAnmeldendePerson(schuleId)).build();
     }
 
     @Override
@@ -51,9 +56,12 @@ public class SchulenResource implements SchulenApi {
 
     @Override
     public Response schuleAnmelden(
-            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'schuleAnmelden'");
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId,
+            @NotNull final Auswertungsart auswertungsart) {
+        return Response
+                .status(Status.CREATED)
+                .entity(teilnahmenService.schulteilnahmeAnlegen(schuleId, auswertungsart))
+                .build();
     }
 
 }

@@ -406,7 +406,7 @@ paths:
     /api/schulen/{schuleId}/wettbewerbskontext:
         get:
             tags:
-                - Schulen
+                - Schule
             summary: 'Wettbewerbskontext einer Schule'
             description: 'stellt den Wettbewerbskontext einer bestimmten Schule zur Verfügung'
             operationId: getWettbewerbskontextSchule
@@ -453,7 +453,7 @@ paths:
     /api/schulen/{schuleId}/kollegium:
         get:
             tags:
-                - Schulen
+                - Schule
             summary: 'Kollegen einer Lehrperson'
             description: 'liest die Kollegen der eingeloggten Lehrperson'
             operationId: loadSchulkollegium
@@ -501,7 +501,7 @@ paths:
     /api/schulen/{schuleId}/aktuelle-teilnahme:
         get:
             tags:
-                - Schulen
+                - Schule
             summary: aktuelle Teilnahme der gegebenen Schule
             description: läd die aktuelle Teilnahme der Schule mit der gegebenen ID
             operationId: loadAktuelleSchulteilnahme
@@ -549,7 +549,7 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
         post:
             tags:
-                - Schulen
+                - Schule
             summary: Schule zum aktuellen Wettbewerb anmelden
             description: meldet die Schule mit der gegebenen ID zum aktuellen Wettbewerb an
             operationId: schuleAnmelden
@@ -564,6 +564,12 @@ paths:
                       maxLength: 8
                   required: true
                   description: kuerzel der Schule
+                - in: query
+                  name: auswertungsart
+                  schema:
+                      $ref: '#/components/schemas/Auswertungsart'
+                  required: true
+                  description: beabsichtigte Auswertungsart
             responses:
                 '201':
                     description: OK
@@ -604,7 +610,7 @@ paths:
     /api/schulen/{schuleId}/aktuelle-teilnahme/anmeldende-person:
         get:
             tags:
-                - Schulen
+                - Schule
             summary: die Person, die diese Schule zum aktuellen Wettbewerb angemeldet hat
             description: läd anmeldende Person dieser, die die Schule mit der gegebenen ID angemeldet hat
             operationId: loadAnmeldendePerson

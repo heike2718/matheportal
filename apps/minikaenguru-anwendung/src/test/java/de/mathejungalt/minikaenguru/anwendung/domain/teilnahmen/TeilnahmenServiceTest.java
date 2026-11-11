@@ -107,13 +107,167 @@ public class TeilnahmenServiceTest {
     }
 
     @Nested
+    class SchulteilnahmeTests {
+
+        private static final String KUERZEL = "S1234567";
+        private static final Auswertungsart AUSWERTUNGSART = Auswertungsart.ONLINE;
+
+        private final WettbewerbsdurchfuehrenderEntity lehrperson = WettbewerbsdurchfuehrenderEntity
+                .builder()
+                .art(Wettbewerbsdurchfuehrungsart.SCHULE)
+                .schulkuerzel(KUERZEL)
+                .build();
+
+        @ParameterizedTest
+        @EnumSource(value = Wettbewerbsstatus.class, names = { "ANMELDUNG", "DOWNLOAD_LEHRER", "DOWNLOAD_PRIVAT" })
+        void should_schulteilnahmeAnlegene_work_with_auswertungsart_online(final Wettbewerbsstatus wettbewerbsstatus) {
+
+            // arrange
+            doReturn(fixedClock.instant()).when(clock).instant();
+            doReturn(fixedClock.getZone()).when(clock).getZone();
+
+            when(securityIdentity.getPrincipal()).thenReturn(principal);
+
+            when(wettbewerbsdurchfuehrendeService.loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()))
+                    .thenReturn(lehrperson);
+
+            final Wettbewerb aktuellerWettbewerb = new Wettbewerb().status(wettbewerbsstatus).jahr(2026);
+            when(wettbewerbService.loadAktuellenWettbewerb()).thenReturn(aktuellerWettbewerb);
+
+            when(teilnahmeDao.loadTeilnahmereferenzen(KUERZEL)).thenReturn(new ArrayList<>());
+            doNothing().when(teilnahmeDao).insertTeilnahme(any(TeilnahmeEntity.class));
+
+            final Teilnahme teilnahme = teilnahmenService.schulteilnahmeAnlegen(KUERZEL, Auswertungsart.ONLINE);
+
+            // assert
+            assertAll(() -> assertNotNull(teilnahme), () -> assertEquals(KUERZEL, teilnahme.getKuerzel()),
+                    () -> assertEquals(2026, teilnahme.getJahr()),
+                    () -> assertEquals(Auswertungsart.ONLINE, teilnahme.getAuswertungsart()),
+                    () -> assertEquals(Wettbewerbsdurchfuehrungsart.SCHULE, teilnahme.getDurchfuehrungsart()),
+                    () -> assertNull(teilnahme.getAngemeldetDurch()),
+                    () -> assertEquals(0, teilnahme.getAnzahlKinder()),
+                    () -> assertEquals(0, teilnahme.getAnzahlKlassen()),
+                    () -> assertEquals(0, teilnahme.getAnzahlLoesungszettel()),
+                    () -> assertEquals("08.04.2026 10:15:30", teilnahme.getAngemeldetAm()),
+                    () -> verify(securityIdentity).getPrincipal(),
+                    () -> verify(wettbewerbService).loadAktuellenWettbewerb(),
+                    () -> verify(wettbewerbsdurchfuehrendeService)
+                            .loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()),
+                    () -> verify(teilnahmeDao).loadTeilnahmereferenzen(KUERZEL),
+                    () -> verify(teilnahmeDao).insertTeilnahme(any(TeilnahmeEntity.class)));
+
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = Wettbewerbsstatus.class, names = { "ANMELDUNG", "DOWNLOAD_LEHRER", "DOWNLOAD_PRIVAT" })
+        void should_schulteilnahmeAnlegene_work_with_auswertungsart_offline(final Wettbewerbsstatus wettbewerbsstatus) {
+
+            // arrange
+            doReturn(fixedClock.instant()).when(clock).instant();
+            doReturn(fixedClock.getZone()).when(clock).getZone();
+
+            when(securityIdentity.getPrincipal()).thenReturn(principal);
+
+            when(wettbewerbsdurchfuehrendeService.loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()))
+                    .thenReturn(lehrperson);
+
+            final Wettbewerb aktuellerWettbewerb = new Wettbewerb().status(wettbewerbsstatus).jahr(2026);
+            when(wettbewerbService.loadAktuellenWettbewerb()).thenReturn(aktuellerWettbewerb);
+
+            when(teilnahmeDao.loadTeilnahmereferenzen(KUERZEL)).thenReturn(new ArrayList<>());
+            doNothing().when(teilnahmeDao).insertTeilnahme(any(TeilnahmeEntity.class));
+
+            final Teilnahme teilnahme = teilnahmenService.schulteilnahmeAnlegen(KUERZEL, Auswertungsart.OFFLINE);
+
+            // assert
+            assertAll(() -> assertNotNull(teilnahme), () -> assertEquals(KUERZEL, teilnahme.getKuerzel()),
+                    () -> assertEquals(2026, teilnahme.getJahr()),
+                    () -> assertEquals(Auswertungsart.OFFLINE, teilnahme.getAuswertungsart()),
+                    () -> assertEquals(Wettbewerbsdurchfuehrungsart.SCHULE, teilnahme.getDurchfuehrungsart()),
+                    () -> assertNull(teilnahme.getAngemeldetDurch()),
+                    () -> assertEquals(0, teilnahme.getAnzahlKinder()),
+                    () -> assertEquals(0, teilnahme.getAnzahlKlassen()),
+                    () -> assertEquals(0, teilnahme.getAnzahlLoesungszettel()),
+                    () -> assertEquals("08.04.2026 10:15:30", teilnahme.getAngemeldetAm()),
+                    () -> verify(securityIdentity).getPrincipal(),
+                    () -> verify(wettbewerbService).loadAktuellenWettbewerb(),
+                    () -> verify(wettbewerbsdurchfuehrendeService)
+                            .loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()),
+                    () -> verify(teilnahmeDao).loadTeilnahmereferenzen(KUERZEL),
+                    () -> verify(teilnahmeDao).insertTeilnahme(any(TeilnahmeEntity.class)));
+
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = Wettbewerbsstatus.class, names = { "ERFASST", "BEENDET" })
+        void should_schulteilnahmeAnlegen_throwConflictException_because_of_wettbewerbsstatus(
+                final Wettbewerbsstatus wettbewerbsstatus) {
+
+            // arrange
+            when(wettbewerbsdurchfuehrendeService.loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()))
+                    .thenReturn(lehrperson);
+
+            final Wettbewerb aktuellerWettbewerb = new Wettbewerb().status(wettbewerbsstatus).jahr(2026);
+            when(wettbewerbService.loadAktuellenWettbewerb()).thenReturn(aktuellerWettbewerb);
+
+            // act
+            final MinikaenguruConflictException exception = assertThrows(MinikaenguruConflictException.class,
+                    () -> teilnahmenService.schulteilnahmeAnlegen(KUERZEL, AUSWERTUNGSART));
+
+            // assert
+            assertAll(() -> assertEquals("Der aktuelle Wettbewerb lässt keine Anmeldung zu.", exception.getMessage()),
+                    () -> verify(securityIdentity, never()).getPrincipal(),
+                    () -> verify(wettbewerbService).loadAktuellenWettbewerb(),
+                    () -> verify(wettbewerbsdurchfuehrendeService)
+                            .loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()),
+                    () -> verify(teilnahmeDao, never()).loadTeilnahmereferenzen(KUERZEL),
+                    () -> verify(teilnahmeDao, never()).insertTeilnahme(any(TeilnahmeEntity.class)));
+
+        }
+
+        @Test
+        void should_schulteilnahmeAnlegen_throwAuthorizationException_when_durchfuehrender_lehrperson() {
+
+            // arrange
+            doNothing().when(auditEventService).recordAuditEvent(any(AuditEventType.class), anyString());
+            // when(securityIdentity.getPrincipal()).thenReturn(principal);
+
+            final WettbewerbsdurchfuehrenderEntity privatperson = WettbewerbsdurchfuehrenderEntity
+                    .builder()
+                    .art(Wettbewerbsdurchfuehrungsart.PRIVAT)
+                    .privatkuerzel(KUERZEL)
+                    .build();
+
+            when(wettbewerbsdurchfuehrendeService.loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()))
+                    .thenReturn(privatperson);
+
+            // act
+            final MinikaenguruAuthorizationException exception = assertThrows(MinikaenguruAuthorizationException.class,
+                    () -> teilnahmenService.schulteilnahmeAnlegen(KUERZEL, AUSWERTUNGSART));
+
+            // assert
+            assertAll(
+                    () -> assertEquals("Sie können keine Schule zum Minikänguru-Wettbewerb anmelden.",
+                            exception.getMessage()),
+                    () -> verify(securityIdentity, never()).getPrincipal(),
+                    () -> verify(wettbewerbService, never()).loadAktuellenWettbewerb(),
+                    () -> verify(wettbewerbsdurchfuehrendeService)
+                            .loadWettbewerbsdurchfuehrendenAndAuditMissing(anyString()),
+                    () -> verify(teilnahmeDao, never()).loadTeilnahmereferenzen(KUERZEL),
+                    () -> verify(teilnahmeDao, never()).insertTeilnahme(any(TeilnahmeEntity.class)),
+                    () -> verify(auditEventService).recordAuditEvent(any(AuditEventType.class), anyString()));
+        }
+
+    }
+
+    @Nested
     class PrivatteilnahmeTests {
 
         private static final String KUERZEL = "P123456789";
 
         @ParameterizedTest
         @EnumSource(value = Wettbewerbsstatus.class, names = { "ANMELDUNG", "DOWNLOAD_LEHRER", "DOWNLOAD_PRIVAT" })
-        void should_createPrivatteilnahme_work(final Wettbewerbsstatus wettbewerbsstatus) {
+        void should_privatteilnahmeAnlegen_work(final Wettbewerbsstatus wettbewerbsstatus) {
 
             // arrange
             doReturn(fixedClock.instant()).when(clock).instant();
@@ -160,7 +314,7 @@ public class TeilnahmenServiceTest {
 
         @ParameterizedTest
         @EnumSource(value = Wettbewerbsstatus.class, names = { "ERFASST", "BEENDET" })
-        void should_createPrivatteilnahme_throwConflictException_because_of_wettbewerbsstatus(
+        void should_privatteilnahmeAnlegen_throwConflictException_because_of_wettbewerbsstatus(
                 final Wettbewerbsstatus wettbewerbsstatus) {
 
             // arrange
@@ -195,7 +349,7 @@ public class TeilnahmenServiceTest {
 
         @ParameterizedTest
         @EnumSource(value = Wettbewerbsstatus.class, names = { "ANMELDUNG", "DOWNLOAD_LEHRER", "DOWNLOAD_PRIVAT" })
-        void should_createPrivatteilnahme_throwConflictException_when_teilnahmeExists(
+        void should_privatteilnahmeAnlegen_throwConflictException_when_teilnahmeExists(
                 final Wettbewerbsstatus wettbewerbsstatus) {
 
             // arrange
@@ -234,7 +388,7 @@ public class TeilnahmenServiceTest {
         }
 
         @Test
-        void should_createPrivatteilnahme_throwAuthorizationException_when_keine_Minikaenguruberechtigung() {
+        void should_privatteilnahmeAnlegen_throwAuthorizationException_when_keine_Minikaenguruberechtigung() {
 
             // arrange
             when(securityIdentity.getPrincipal()).thenReturn(principal);
@@ -258,7 +412,7 @@ public class TeilnahmenServiceTest {
         }
 
         @Test
-        void should_createPrivatteilnahme_throwAuthorizationException_when_durchfuehrender_lehrperson() {
+        void should_privatteilnahmeAnlegen_throwAuthorizationException_when_durchfuehrender_lehrperson() {
 
             // arrange
             doNothing().when(auditEventService).recordAuditEvent(any(AuditEventType.class), anyString());
