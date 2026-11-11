@@ -268,7 +268,8 @@ public class TeilnahmenService {
      * @param teilnahmekuerzel String
      * @return TeilnahmeEntity oder null
      */
-    public TeilnahmeEntity findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(String teilnahmekuerzel) {
+    public TeilnahmeEntity findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(
+            final String teilnahmekuerzel) {
 
         final Wettbewerb aktuellerWettbewerb = wettbewerbService.loadAktuellenWettbewerb();
 

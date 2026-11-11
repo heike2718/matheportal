@@ -135,7 +135,7 @@ public final class SchuleService {
     @KuerzelZugriff("schulteilnahme: anmeldende Person")
     public Person getAnmeldendePerson(@AuthorizationKey final String schuleId) {
 
-        TeilnahmeEntity teilnahmeEntity = teilnahmenService
+        final TeilnahmeEntity teilnahmeEntity = teilnahmenService
                 .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(schuleId);
 
         if (teilnahmeEntity == null) {

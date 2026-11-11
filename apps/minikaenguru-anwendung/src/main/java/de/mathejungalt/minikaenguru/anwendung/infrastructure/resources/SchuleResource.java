@@ -55,8 +55,9 @@ public class SchuleResource implements SchuleApi {
     }
 
     @Override
-    public Response schuleAnmelden(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) String schuleId,
-            @NotNull Auswertungsart auswertungsart) {
+    public Response schuleAnmelden(
+            @Pattern(regexp = REGEXP_KUERZEL) @Size(max = MAX_SIZE_KUERZEL) final String schuleId,
+            @NotNull final Auswertungsart auswertungsart) {
         return Response
                 .status(Status.CREATED)
                 .entity(teilnahmenService.schulteilnahmeAnlegen(schuleId, auswertungsart))
