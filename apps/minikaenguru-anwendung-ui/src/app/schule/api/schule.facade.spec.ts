@@ -15,7 +15,6 @@ import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.s
 import { SchuleActions } from '../data/+state/schule.actions';
 import { SchuleWettbewerbskontext } from '../model/schule.model';
 import { ANMELDESTATUS } from '../../core/model/wettbewerbskontext.model';
-import { schulteilnahmeAnmelden } from '../../teilnahme/api/teilnahme-store.events';
 
 describe('SchuleFacade', () => {
     const wettbewerbskontext: SchuleWettbewerbskontext = {

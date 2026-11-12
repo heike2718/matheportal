@@ -7,15 +7,14 @@
 .nav {
     display: flex;
     align-items: center;
-    min-height: 4rem;
-    padding-inline: mp-theme.$mp-space-4;
+    min-height: calc(mp-theme.$mp-control-min-height-l + mp-theme.$mp-space-4);
+    height: auto;
+    padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
     gap: mp-theme.$mp-space-3;
-
-    background-color: mp-theme.$mp-color-on-brand;
+    background-color: mp-theme.$mp-color-surface;
     border-bottom: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
-    box-shadow: 0 0.125rem 0.375rem mp-theme.$mp-border-color-subtle;
+    box-shadow: mp-theme.$mp-shadow-1;
 
-    // --- Layout Sections ---
     &__section {
         display: flex;
         align-items: center;
@@ -27,8 +26,6 @@
 
         &--right {
             flex: 0 0 auto;
-            display: flex;
-            align-items: center;
             gap: mp-theme.$mp-space-5;
         }
     }
@@ -36,8 +33,6 @@
     &__spacer {
         flex: 1 1 auto;
     }
-
-    // --- Left Navigation ---
 
     &__links {
         display: flex;
@@ -47,25 +42,31 @@
 
     &__menu-btn {
         flex: 0 0 auto;
+
+        &:focus-visible {
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
+        }
     }
 
     &__link {
+        @include mp-theme.mp-button-text;
+        @include mp-theme.mp-transition;
+
         display: inline-flex;
         align-items: center;
-        min-height: 2.5rem;
-        padding-inline: mp-theme.$mp-space-3;
-        border: 1px solid transparent;
-        border-radius: 999px;
+        min-height: mp-theme.$mp-control-min-height-m;
+        height: auto;
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+        border: mp-theme.$mp-border-width solid transparent;
+        border-radius: mp-theme.$mp-radius-m;
         color: inherit;
         text-decoration: none;
-        transition:
-            background-color 150ms ease-in-out,
-            border-color 150ms ease-in-out,
-            color 150ms ease-in-out,
-            box-shadow 150ms ease-in-out;
+        transition-property: background-color, border-color, color;
 
         &:focus-visible {
-            box-shadow: 0 0 0 mp-theme.$mp-focus-ring-width mp-theme.$mp-border-color-interactive;
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
         }
 
         &--portal {
@@ -79,83 +80,33 @@
             }
 
             &.nav__link--active {
+                color: mp-theme.mp-primary();
                 background-color: mp-theme.$mp-color-surface-subtle-hover;
-                border-color: mp-theme.$mp-border-color-interactive;
-                color: mp-theme.mp-primary(500);
-                box-shadow: inset 0 0 0 mp-theme.$mp-border-width mp-theme.$mp-border-color-subtle;
+                border-color: mp-theme.mp-primary();
             }
         }
 
-        &--minikaenguru {
-            background-color: mp-theme.mp-brand-hover(minikaenguru);
-            border-color: mp-theme.mp-brand-border(minikaenguru);
+        @each $context in minikaenguru, raetselbaukasten, minikaenguru-statistik, minikaenguru-admin {
+            &--#{$context} {
+                background-color: mp-theme.mp-brand-hover($context);
+                border-color: mp-theme.mp-brand-border($context);
 
-            &:hover,
-            &:focus-visible {
-                border-color: mp-theme.mp-brand-border-hover(minikaenguru);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru);
-            }
+                &:hover {
+                    background-color: mp-theme.mp-brand-soft($context);
+                    border-color: mp-theme.mp-brand-border-hover($context);
+                }
 
-            &.nav__link--active {
-                border-color: mp-theme.mp-brand(minikaenguru);
-                color: mp-theme.mp-brand(minikaenguru);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru);
-            }
-        }
+                &:focus-visible {
+                    @include mp-theme.mp-focus-ring($context);
+                }
 
-        &--raetselbaukasten {
-            background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-            border-color: mp-theme.mp-brand-border(raetselbaukasten);
-
-            &:hover,
-            &:focus-visible {
-                border-color: mp-theme.mp-brand-border-hover(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(raetselbaukasten);
-            }
-
-            &.nav__link--active {
-                border-color: mp-theme.mp-brand(raetselbaukasten);
-                color: mp-theme.mp-brand(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(raetselbaukasten);
-            }
-        }
-
-        &--minikaenguru-statistik {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
-            border-color: mp-theme.mp-brand-border(minikaenguru-statistik);
-
-            &:hover,
-            &:focus-visible {
-                border-color: mp-theme.mp-brand-border-hover(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-statistik);
-            }
-
-            &.nav__link--active {
-                border-color: mp-theme.mp-brand(minikaenguru-statistik);
-                color: mp-theme.mp-brand(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru-statistik);
-            }
-        }
-
-        &--minikaenguru-admin {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-            border-color: mp-theme.mp-brand-border(minikaenguru-admin);
-
-            &:hover,
-            &:focus-visible {
-                border-color: mp-theme.mp-brand-border-hover(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-admin);
-            }
-
-            &.nav__link--active {
-                border-color: mp-theme.mp-brand(minikaenguru-admin);
-                color: mp-theme.mp-brand(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand(minikaenguru-admin);
+                &.nav__link--active {
+                    color: mp-theme.mp-brand($context);
+                    border-color: mp-theme.mp-brand($context);
+                }
             }
         }
     }
-
-    // --- Right Side: User Group ---
 
     &__user {
         display: flex;
@@ -164,53 +115,69 @@
     }
 
     &__greeting {
-        @include mp-theme.mp-body-default;
+        @include mp-theme.mp-body-small;
+
         color: mp-theme.$mp-color-text-default;
         white-space: nowrap;
-        font-weight: 500;
     }
 
     &__auth-btn {
-        white-space: nowrap;
-    }
+        @include mp-theme.mp-button-text;
 
-    // --- Right Side: Meta Group ---
+        min-height: mp-theme.$mp-control-min-height-m;
+        height: auto;
+        padding-block: mp-theme.$mp-space-2;
+        border-radius: mp-theme.$mp-radius-m;
+        white-space: nowrap;
+
+        &:focus-visible {
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
+        }
+    }
 
     &__meta-group {
         display: flex;
         align-items: center;
         gap: mp-theme.$mp-space-3;
         padding-left: mp-theme.$mp-space-4;
-        border-left: 1px solid mp-theme.$mp-border-color-subtle;
+        border-left: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
     }
 
     &__meta {
         @include mp-theme.mp-body-small;
+
         color: mp-theme.$mp-color-text-muted;
         white-space: nowrap;
     }
 
     &__meta-link {
         @include mp-theme.mp-body-small;
+        @include mp-theme.mp-transition;
+
         color: mp-theme.$mp-color-text-default;
         text-decoration: none;
         white-space: nowrap;
-        transition: color 150ms ease-in-out;
+        transition-property: color;
 
-        &:hover,
+        &:hover {
+            color: mp-theme.mp-primary();
+            text-decoration: underline;
+        }
+
         &:focus-visible {
-            color: mp-theme.mp-primary(500);
+            color: mp-theme.mp-primary();
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
             text-decoration: underline;
         }
     }
-
-    // --- Icons & Text ---
 
     &__icon {
         margin-right: 0;
 
         &--link {
-            margin-right: mp-theme.$mp-space-3;
+            margin-right: mp-theme.$mp-space-2;
         }
 
         &--button {

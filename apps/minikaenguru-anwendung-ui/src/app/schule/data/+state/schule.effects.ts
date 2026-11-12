@@ -9,7 +9,7 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
-import { Dialog } from '@angular/cdk/dialog';
+// import { Dialog } from '@angular/cdk/dialog';
 
 @Injectable()
 export class SchulenEffects {
@@ -18,7 +18,7 @@ export class SchulenEffects {
     #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
-    #dialog = inject(Dialog);
+    // #dialog = inject(Dialog);
 
     readonly ensureWettbewerbskontextGeladen$ = createEffect(() =>
         this.#actions.pipe(

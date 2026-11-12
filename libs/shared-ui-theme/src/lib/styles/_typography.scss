@@ -93,17 +93,3 @@ $mp-typography: mat.m2-define-typography-config(
     font-weight: $mp-font-weight-regular;
     line-height: $mp-line-height-normal;
 }
-
-// Bestehende öffentliche Namen.
-// Für neuen Code die rollenbezogenen Mixins verwenden.
-@mixin mp-headline-large {
-    @include mp-page-title;
-}
-
-@mixin mp-headline-medium {
-    @include mp-section-title;
-}
-
-@mixin mp-headline-small {
-    @include mp-card-title-compact;
-}

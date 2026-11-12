@@ -1,4 +1,3 @@
-@use '@angular/material' as mat;
 @use 'mp-theme' as mp-theme;
 
 :host {
@@ -7,29 +6,13 @@
 }
 
 .privatperson-dashboard {
+    @include mp-theme.mp-body-default;
+    @include mp-theme.mp-material-actions(minikaenguru);
+
     box-sizing: border-box;
     width: 100%;
-    max-width: mp-theme.$mp-content-max-width;
     min-width: 0;
-
     color: mp-theme.$mp-color-text-default;
-    font-family: mp-theme.$mp-font-family;
-    font-size: mp-theme.$mp-font-size-m;
-    line-height: mp-theme.$mp-line-height-normal;
-
-    // Material-Aktionen im Minikänguru-Branding.
-    @include mat.button-overrides(
-        (
-            filled-container-color: mp-theme.mp-brand(minikaenguru),
-            filled-label-text-color: mp-theme.$mp-color-on-brand,
-            filled-state-layer-color: mp-theme.$mp-color-on-brand,
-            filled-container-shape: mp-theme.$mp-radius-m,
-            outlined-label-text-color: mp-theme.mp-brand(minikaenguru),
-            outlined-outline-color: mp-theme.mp-brand-border(minikaenguru),
-            outlined-state-layer-color: mp-theme.mp-brand(minikaenguru),
-            outlined-container-shape: mp-theme.$mp-radius-m,
-        )
-    );
 
     &__header {
         display: flex;
@@ -45,27 +28,27 @@
     }
 
     &__title {
+        @include mp-theme.mp-section-title;
+
         margin: 0;
         color: mp-theme.mp-brand(minikaenguru);
-        font-size: mp-theme.$mp-font-size-xl;
-        font-weight: 700;
-        line-height: mp-theme.$mp-line-height-tight;
         overflow-wrap: anywhere;
     }
 
     &__location {
+        @include mp-theme.mp-body-small;
+
         margin: mp-theme.$mp-space-2 0 0;
         color: mp-theme.$mp-color-text-muted;
-        font-size: mp-theme.$mp-font-size-s;
         overflow-wrap: anywhere;
     }
 
     &__hint {
-        max-width: 44rem;
+        @include mp-theme.mp-body-small;
+
+        max-width: mp-theme.$mp-reading-max-width;
         margin: mp-theme.$mp-space-3 0 0;
         color: mp-theme.$mp-color-text-muted;
-        font-size: mp-theme.$mp-font-size-s;
-        line-height: mp-theme.$mp-line-height-normal;
     }
 
     &__content,
@@ -73,6 +56,7 @@
     &__participations {
         display: flex;
         flex-direction: column;
+        min-width: 0;
     }
 
     &__content {
@@ -91,42 +75,7 @@
     }
 
     &__card {
-        min-width: 0;
-        color: mp-theme.$mp-color-text-default;
-        border-left: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(minikaenguru);
-
-        @include mat.card-overrides(
-            (
-                outlined-container-color: mp-theme.$mp-color-surface,
-                outlined-container-shape: mp-theme.$mp-radius-m,
-                outlined-outline-color: mp-theme.$mp-border-color-subtle,
-                outlined-outline-width: mp-theme.$mp-border-width,
-                subtitle-text-color: mp-theme.$mp-color-text-muted,
-            )
-        );
-
-        mat-card-header {
-            padding: mp-theme.$mp-space-4 mp-theme.$mp-space-4 mp-theme.$mp-space-3;
-        }
-
-        mat-card-title {
-            color: mp-theme.mp-brand(minikaenguru);
-            font-family: mp-theme.$mp-font-family;
-            font-size: mp-theme.$mp-font-size-l;
-            font-weight: 700;
-            line-height: mp-theme.$mp-line-height-tight;
-        }
-
-        mat-card-subtitle {
-            margin-top: mp-theme.$mp-space-1;
-            font-family: mp-theme.$mp-font-family;
-            font-size: mp-theme.$mp-font-size-s;
-            line-height: mp-theme.$mp-line-height-normal;
-        }
-
-        mat-card-content {
-            padding: 0 mp-theme.$mp-space-4 mp-theme.$mp-space-4;
-        }
+        @include mp-theme.mp-material-card(minikaenguru);
 
         mat-divider {
             border-top-color: mp-theme.$mp-border-color-subtle;
@@ -143,13 +92,13 @@
 
         > div,
         > span {
+            flex: 1 1 auto;
             min-width: 0;
-            flex: 1 1 12rem;
             overflow-wrap: anywhere;
         }
 
         button {
-            flex-shrink: 0;
+            max-width: 100%;
         }
     }
 
@@ -164,11 +113,9 @@
 
     &__current-state h2,
     &__section h2 {
+        @include mp-theme.mp-card-title-compact;
+
         margin: 0 0 mp-theme.$mp-space-2;
-        color: mp-theme.$mp-color-text-default;
-        font-size: mp-theme.$mp-font-size-m;
-        font-weight: 700;
-        line-height: mp-theme.$mp-line-height-tight;
     }
 
     &__colleagues {
@@ -182,9 +129,10 @@
     }
 
     &__secondary-text {
+        @include mp-theme.mp-body-small;
+
         margin: 0;
         color: mp-theme.$mp-color-text-muted;
-        font-size: mp-theme.$mp-font-size-s;
     }
 
     &__participation {
@@ -205,20 +153,11 @@
     }
 
     &__year {
-        font-size: mp-theme.$mp-font-size-m;
-        font-weight: 700;
-    }
-
-    button[mat-flat-button],
-    button[mat-stroked-button] {
-        &:focus-visible {
-            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-brand(minikaenguru);
-            outline-offset: mp-theme.$mp-focus-ring-offset;
-        }
+        @include mp-theme.mp-card-title-compact;
     }
 }
 
-@media (width <= 800px) {
+@media (width <= mp-theme.$mp-breakpoint-wide) {
     .privatperson-dashboard {
         &__secondary {
             grid-template-columns: minmax(0, 1fr);
@@ -228,11 +167,6 @@
         &__section-row {
             flex-direction: column;
             align-items: flex-start;
-
-            > div,
-            > span {
-                flex: initial;
-            }
         }
     }
 }

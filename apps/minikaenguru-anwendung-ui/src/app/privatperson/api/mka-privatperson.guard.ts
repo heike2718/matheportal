@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { combineLatest, filter, map, of, switchMap, take, tap } from 'rxjs';
+import { combineLatest, filter, map, of, switchMap, take } from 'rxjs';
 import { portalRoutes } from '@matheportal/portal-navigation';
 import { PortalSessionFacade } from '@matheportal/auth-api';
 import { MkaAuthorizationFacade } from '../../core/authorization/authorization-api/mka-authorization.facade';

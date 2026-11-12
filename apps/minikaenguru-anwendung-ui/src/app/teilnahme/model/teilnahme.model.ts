@@ -8,3 +8,8 @@ export const AUSWERUNGSART = {
 } as const satisfies Record<string, Auswertungsart>;
 
 export type Teilnahme = components['schemas']['Teilnahme'];
+
+export interface AuswertungsartDialogData {
+    readonly auswertungsart: Auswertungsart | undefined;
+    readonly klassenVorhanden: boolean;
+}

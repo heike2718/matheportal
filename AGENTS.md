@@ -29,3 +29,33 @@
 
 - Führe Tests oder Builds nur auf ausdrückliche Bitte aus.
   Sag deutlich, ob Vorschläge tatsächlich getestet wurden.
+
+## SCSS und Layout
+
+- Verwende BEM für komponentenspezifische CSS-Klassen.
+
+- Prüfe vor Styling-Vorschlägen die vorhandenen SCSS-Struktur-Patterns
+  und Theme-Tokens in `libs/shared-ui-theme`.
+
+- Verwende bestehende Struktur-Patterns, sofern sie zur
+  Layoutanforderung passen. Vermeide Copy-and-paste von
+  Layoutregeln aus anderen Komponenten.
+
+- Beschränke Component-SCSS auf tatsächlich komponentenspezifische
+  Anforderungen. Vermeide unnötige globale Styles und Selektoren,
+  die in andere Komponenten hineinwirken.
+
+- Verwende die vorhandenen Theme-Tokens statt fest codierter
+  Farben, Rahmen- oder anderer bereits zentral definierter Werte.
+
+- Schlag neue gemeinsame Struktur-Patterns nur vor, wenn
+  tatsächlich wiederverwendbare Layoutanforderungen vorliegen.
+  Vermeide unnötige Abstraktionen und übermäßig parametrisierte Mixins.
+
+- Prüfe bei SCSS-Reviews insbesondere auf Duplikation,
+  ungenutzte Struktur-Patterns und unnötige Spezifität.
+  Begründe Abweichungen von bestehenden Konventionen.
+
+- Erklär bei neuen oder wesentlich geänderten SCSS-Patterns
+  deren Verantwortung, Verwendung und Abgrenzung zu
+  komponentenspezifischen Styles.

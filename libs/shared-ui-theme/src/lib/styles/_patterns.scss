@@ -1,0 +1,156 @@
+@use './tokens' as tokens;
+@use './typography' as typography;
+@use './layout' as layout;
+@use './components' as components;
+@use './functions' as functions;
+
+// Gemeinsame Struktur der vorhandenen Such- und Ergebnislisten.
+@mixin mp-search-list($context) {
+    @include typography.mp-body-default;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: tokens.$mp-space-5;
+    width: 100%;
+    min-width: 0;
+    color: tokens.$mp-color-text-default;
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: tokens.$mp-space-4;
+
+        > * {
+            min-width: 0;
+        }
+    }
+
+    &__title {
+        @include typography.mp-section-title;
+
+        margin: 0;
+        color: functions.mp-brand($context);
+        overflow-wrap: anywhere;
+    }
+
+    &__back {
+        @include components.mp-action-secondary($context);
+
+        align-self: flex-start;
+    }
+
+    &__back-icon {
+        @include components.mp-icon-size;
+    }
+
+    &__search-field {
+        display: flex;
+        flex-direction: column;
+        gap: tokens.$mp-space-2;
+        width: 100%;
+        max-width: layout.$mp-form-max-width;
+        min-width: 0;
+    }
+
+    &__label {
+        @include typography.mp-card-title-compact;
+    }
+
+    &__input {
+        @include components.mp-input($context);
+
+        max-width: layout.$mp-form-max-width;
+    }
+
+    &__result-count {
+        margin: 0;
+    }
+
+    &__result-count,
+    &__results {
+        width: 100%;
+        max-width: layout.$mp-results-max-width;
+        min-width: 0;
+    }
+
+    &__results {
+        display: flex;
+        flex-direction: column;
+        gap: tokens.$mp-space-3;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__result {
+        min-width: 0;
+        margin: 0;
+    }
+
+    &__action {
+        @include components.mp-action-primary($context);
+
+        align-self: flex-start;
+    }
+
+    @media (width <= layout.$mp-breakpoint-compact) {
+        gap: tokens.$mp-space-4;
+    }
+}
+
+// Gemeinsame Struktur der vorhandenen CDK-Formulardialoge.
+@mixin mp-form-dialog($context) {
+    @include components.mp-dialog-surface($context);
+
+    &__title {
+        @include typography.mp-section-title;
+
+        flex: 0 0 auto;
+        margin: 0;
+        color: functions.mp-brand($context);
+        overflow-wrap: anywhere;
+    }
+
+    &__form {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: tokens.$mp-space-5;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    &__content {
+        @include components.mp-dialog-content;
+
+        display: flex;
+        flex-direction: column;
+        gap: tokens.$mp-space-3;
+    }
+
+    &__field {
+        width: 100%;
+        min-width: 0;
+
+        mat-error {
+            @include typography.mp-body-small;
+        }
+    }
+
+    &__actions {
+        @include components.mp-dialog-actions;
+    }
+
+    &__action {
+        &--primary {
+            @include components.mp-action-primary($context);
+        }
+
+        &--secondary {
+            @include components.mp-action-secondary($context);
+        }
+    }
+}

@@ -1,4 +1,3 @@
-/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
 @use 'mp-theme' as mp-theme;
 
 :host {
@@ -9,20 +8,12 @@
 .mka-schulkatalogsuche {
     box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
     min-width: 0;
 
-    padding: mp-theme.$mp-space-6;
-
     &__title {
+        @include mp-theme.mp-section-title;
+
         margin: 0 0 mp-theme.$mp-space-5;
         color: mp-theme.mp-brand(minikaenguru);
-        font-size: mp-theme.$mp-font-size-xl;
-        font-weight: 700;
-        line-height: mp-theme.$mp-line-height-tight;
-    }
-
-    @media (width <= 37.5rem) {
-        padding: mp-theme.$mp-space-4;
     }
 }

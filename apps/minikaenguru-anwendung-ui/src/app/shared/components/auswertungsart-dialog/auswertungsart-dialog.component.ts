@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Auswertungsart } from '../../../teilnahme/model/teilnahme.model';
+import { Auswertungsart, AuswertungsartDialogData } from '../../../teilnahme/model/teilnahme.model';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,13 +13,19 @@ import { MatIconModule } from '@angular/material/icon';
 export class AuswertungsartDialogComponent {
     readonly #dialogRef = inject<DialogRef<Auswertungsart>>(DialogRef);
 
-    readonly #payload = inject<Auswertungsart>(DIALOG_DATA);
+    readonly data = inject<AuswertungsartDialogData>(DIALOG_DATA);
 
-    readonly loeschungErforderlich = true;
+    readonly loeschungErforderlich = this.data.klassenVorhanden;
 
-    selectOffline(): void {}
+    selectOffline(): void {
+        this.#dialogRef.close('OFFLINE');
+    }
 
-    selectOnline(): void {}
+    selectOnline(): void {
+        this.#dialogRef.close('ONLINE');
+    }
 
-    selectAbbrechen(): void {}
+    selectAbbrechen(): void {
+        this.#dialogRef.close();
+    }
 }

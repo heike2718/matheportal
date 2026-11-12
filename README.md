@@ -17,6 +17,10 @@ Das Projekt basiert auf einem Nx-Monorepo und verwendet eine Microfrontend-Archi
 - [native federation](https://blog.angular.dev/micro-frontends-with-angular-and-native-federation-7623cfc5f413)
 - Quarkus (Backend)
 
+## Konventionen
+
+[CSS- und SCSS-Architekturkonvention des Matheportals](./libs/shared-ui-theme/README.md)
+
 ## Entwicklung
 
 ### Voraussetzungen

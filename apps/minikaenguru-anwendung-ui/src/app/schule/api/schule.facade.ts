@@ -12,7 +12,6 @@ import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaen
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.selectors';
 import { SchuleActions } from '../data/+state/schule.actions';
-import { schulteilnahmeAnmelden } from '../../teilnahme/api/teilnahme-store.events';
 
 @Injectable()
 export class SchuleFacade {
