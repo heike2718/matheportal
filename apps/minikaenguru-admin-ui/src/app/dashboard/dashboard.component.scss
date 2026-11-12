@@ -1,57 +1,45 @@
-/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
 @use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
 
 .mk-admin-dashboard {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    padding: 2rem;
+    gap: mp-theme.$mp-space-5;
+    min-width: 0;
 
     &__heading {
+        @include mp-theme.mp-page-title;
+
         margin: 0;
         color: mp-theme.mp-brand(minikaenguru-admin);
     }
 
     &__content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-        gap: 1.5rem;
+        @include mp-theme.mp-card-grid(mp-theme.$mp-card-min-width-l);
     }
 
     &__card {
+        @include mp-theme.mp-card-surface(minikaenguru-admin);
+        @include mp-theme.mp-card-interaction(minikaenguru-admin);
+        @include mp-theme.mp-body-default;
+
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-
-        padding: 1.5rem;
-
-        color: inherit;
+        gap: mp-theme.$mp-space-4;
+        padding: mp-theme.$mp-space-5;
         text-decoration: none;
-        cursor: pointer;
-
-        border: 1px solid mp-theme.mp-brand-border(minikaenguru-admin);
-        border-radius: 0.75rem;
-
-        transition:
-            border-color 150ms ease,
-            box-shadow 150ms ease,
-            background-color 150ms ease;
-
-        &:hover {
-            border-color: mp-theme.mp-brand-border-hover(minikaenguru-admin);
-            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-            box-shadow: 0 0 0 2px mp-theme.mp-brand-shadow(minikaenguru-admin);
-        }
-
-        &:focus-visible {
-            outline: 2px solid mp-theme.mp-brand(minikaenguru-admin);
-            outline-offset: 3px;
-        }
     }
 
     &__card-heading {
+        @include mp-theme.mp-card-title;
+
         margin: 0;
         color: mp-theme.mp-brand(minikaenguru-admin);
+        overflow-wrap: anywhere;
     }
 
     &__card-content {

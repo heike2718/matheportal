@@ -6,10 +6,13 @@
 }
 
 .sidenav {
+    @include mp-theme.mp-body-default;
+
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: mp-theme.$mp-color-on-brand;
+    background-color: mp-theme.$mp-color-surface;
+    color: mp-theme.$mp-color-text-default;
 
     &__header {
         padding: mp-theme.$mp-space-5;
@@ -18,8 +21,9 @@
     }
 
     &__title {
-        @include mp-theme.mp-headline-medium;
-        color: mp-theme.mp-primary(500);
+        @include mp-theme.mp-section-title;
+
+        color: mp-theme.mp-primary();
     }
 
     &__nav {
@@ -36,95 +40,54 @@
     }
 
     &__link {
+        @include mp-theme.mp-transition;
+
         display: flex;
         align-items: center;
         gap: mp-theme.$mp-space-3;
-        min-height: 3rem;
-        padding-inline: mp-theme.$mp-space-3;
-        border-left: 0.3rem solid transparent;
-        border-radius: mp-theme.$mp-radius-s;
+        min-height: mp-theme.$mp-control-min-height-l;
+        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+        border-left: mp-theme.$mp-border-width-accent solid transparent;
+        border-radius: mp-theme.$mp-radius-m;
         color: inherit;
         text-decoration: none;
-        transition:
-            background-color 150ms ease-in-out,
-            border-color 150ms ease-in-out,
-            color 150ms ease-in-out,
-            box-shadow 150ms ease-in-out;
+        transition-property: background-color, border-color, color;
 
-        &:hover,
+        &:hover {
+            background-color: mp-theme.$mp-color-surface-subtle-hover;
+        }
+
         &:focus-visible {
-            background-color: mp-theme.$mp-border-color-subtle;
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
         }
 
         &--portal,
         &--remote {
             &.sidenav__link--active {
-                border-left-color: mp-theme.mp-primary(500);
-                background-color: mp-theme.$mp-border-color-interactive;
-                color: mp-theme.mp-primary(500);
-            }
-        }
-        &--minikaenguru {
-            background-color: mp-theme.mp-brand-hover(minikaenguru);
-            border-left-color: mp-theme.mp-brand(minikaenguru);
-
-            &:hover,
-            &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(minikaenguru);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru);
-            }
-
-            &.sidenav__link--active {
-                color: mp-theme.mp-brand(minikaenguru);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru);
+                border-left-color: mp-theme.mp-primary();
+                background-color: mp-theme.$mp-color-surface-subtle;
+                color: mp-theme.mp-primary();
             }
         }
 
-        &--raetselbaukasten {
-            background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-            border-left-color: mp-theme.mp-brand(raetselbaukasten);
+        @each $context in minikaenguru, raetselbaukasten, minikaenguru-statistik, minikaenguru-admin {
+            &--#{$context} {
+                background-color: mp-theme.mp-brand-hover($context);
+                border-left-color: mp-theme.mp-brand($context);
 
-            &:hover,
-            &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(raetselbaukasten);
-            }
+                &:hover {
+                    background-color: mp-theme.mp-brand-soft($context);
+                }
 
-            &.sidenav__link--active {
-                color: mp-theme.mp-brand(raetselbaukasten);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(raetselbaukasten);
-            }
-        }
+                &:focus-visible {
+                    @include mp-theme.mp-focus-ring($context);
+                }
 
-        &--minikaenguru-statistik {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
-            border-left-color: mp-theme.mp-brand(minikaenguru-statistik);
-
-            &:hover,
-            &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-statistik);
-            }
-
-            &.sidenav__link--active {
-                color: mp-theme.mp-brand(minikaenguru-statistik);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru-statistik);
-            }
-        }
-
-        &--minikaenguru-admin {
-            background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-            border-left-color: mp-theme.mp-brand(minikaenguru-admin);
-
-            &:hover,
-            &:focus-visible {
-                background-color: mp-theme.mp-brand-hover(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-shadow(minikaenguru-admin);
-            }
-
-            &.sidenav__link--active {
-                color: mp-theme.mp-brand(minikaenguru-admin);
-                box-shadow: inset 0 0 0 1px mp-theme.mp-brand-border(minikaenguru-admin);
+                &.sidenav__link--active {
+                    color: mp-theme.mp-brand($context);
+                    background-color: mp-theme.mp-brand-soft($context);
+                }
             }
         }
     }
@@ -133,7 +96,7 @@
         margin-right: 0;
 
         &--link {
-            margin-right: mp-theme.$mp-space-3;
+            margin-right: mp-theme.$mp-space-2;
         }
 
         &--button {
@@ -143,6 +106,7 @@
 
     &__label {
         @include mp-theme.mp-body-default;
+
         white-space: nowrap;
     }
 
@@ -152,12 +116,23 @@
         gap: mp-theme.$mp-space-2;
         padding: mp-theme.$mp-space-4;
         padding-top: mp-theme.$mp-space-5;
-        border-top: 1px solid mp-theme.$mp-border-color-subtle;
+        border-top: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
     }
 
     &__auth-btn {
+        @include mp-theme.mp-button-text;
+
         justify-content: flex-start;
         width: 100%;
+        min-height: mp-theme.$mp-control-min-height-l;
+        height: auto;
+        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
+        border-radius: mp-theme.$mp-radius-m;
+
+        &:focus-visible {
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
+        }
     }
 
     &__footer {
@@ -165,32 +140,38 @@
         flex-direction: column;
         gap: mp-theme.$mp-space-4;
         padding: mp-theme.$mp-space-4;
-        border-top: 1px solid mp-theme.$mp-border-color-subtle;
+        border-top: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
         background-color: mp-theme.$mp-color-surface-subtle;
     }
 
     &__version {
         @include mp-theme.mp-body-small;
+
         color: mp-theme.$mp-color-text-muted;
     }
 
     &__secondary-link {
+        @include mp-theme.mp-body-small;
+        @include mp-theme.mp-transition;
+
         display: inline-flex;
         align-items: center;
         gap: mp-theme.$mp-space-3;
-        min-height: 2.75rem;
+        min-height: mp-theme.$mp-control-min-height-l;
+        padding: mp-theme.$mp-space-2;
         color: inherit;
         text-decoration: none;
-        border-radius: mp-theme.$mp-radius-s;
-        padding-inline: mp-theme.$mp-space-2;
-        transition:
-            background-color 150ms ease-in-out,
-            color 150ms ease-in-out;
+        border-radius: mp-theme.$mp-radius-m;
+        transition-property: background-color, color;
 
-        &:hover,
+        &:hover {
+            background-color: mp-theme.$mp-color-surface-subtle-hover;
+            color: mp-theme.mp-primary();
+        }
+
         &:focus-visible {
-            background-color: mp-theme.$mp-color-surface-subtle;
-            color: mp-theme.mp-primary(500);
+            outline: mp-theme.$mp-focus-ring-width solid mp-theme.mp-primary();
+            outline-offset: mp-theme.$mp-focus-ring-offset;
         }
     }
 }

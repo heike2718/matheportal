@@ -1,4 +1,44 @@
 @use './tokens' as tokens;
+@use './typography' as typography;
+
+// Maximale Breite des gesamten Seiteninhalts.
+$mp-content-max-width: 1200px;
+$mp-content-max-width-narrow: 900px;
+
+// Breiten innerhalb einer Seite.
+$mp-form-max-width: 32rem;
+$mp-results-max-width: 44rem;
+$mp-reading-max-width: 65ch;
+
+// Gemeinsame Schwellen für responsive Layouts.
+// Ob sie Viewport oder Container betreffen, bestimmt die jeweilige Abfrage.
+$mp-breakpoint-compact: 30rem;
+$mp-breakpoint-medium: 37.5rem;
+$mp-breakpoint-wide: 50rem;
+
+// Genau einmal pro Seite verwenden.
+// Eingebettete Komponenten vergeben kein weiteres Seitenpadding.
+@mixin mp-page-layout {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: $mp-content-max-width;
+    min-width: 0;
+    margin-inline: auto;
+    padding: tokens.$mp-space-6;
+
+    @media (width <= $mp-breakpoint-medium) {
+        padding: tokens.$mp-space-4;
+    }
+}
+
+// Kartenbreite wird vom Aufrufer aus der Komponenten-Skala gewählt.
+@mixin mp-card-grid($min-width) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, $min-width), 1fr));
+    align-items: stretch;
+    gap: tokens.$mp-space-5;
+    min-width: 0;
+}
 
 html,
 body {
@@ -6,10 +46,9 @@ body {
 }
 
 body {
+    @include typography.mp-body-default;
+
     margin: 0;
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-m;
-    line-height: tokens.$mp-line-height-normal;
 }
 
 *,
@@ -23,17 +62,18 @@ body {
 }
 
 .mp-page {
+    @include mp-page-layout;
+
     min-height: 100dvh;
-    padding: tokens.$mp-space-5;
 }
 
 .mp-page__content {
-    max-width: tokens.$mp-content-max-width;
-    margin: 0 auto;
+    max-width: $mp-content-max-width;
+    margin-inline: auto;
 }
 
 .mp-page__content--narrow {
-    max-width: tokens.$mp-content-max-width-narrow;
+    max-width: $mp-content-max-width-narrow;
 }
 
 .mp-section {
@@ -41,12 +81,13 @@ body {
 }
 
 .mp-section__title {
+    @include typography.mp-section-title;
+
     margin: 0 0 tokens.$mp-space-4;
-    font-size: tokens.$mp-font-size-xl;
-    line-height: tokens.$mp-line-height-tight;
 }
 
 .mp-section__subtitle {
+    @include typography.mp-body-default;
+
     margin: 0 0 tokens.$mp-space-5;
-    font-size: tokens.$mp-font-size-m;
 }

@@ -8,7 +8,6 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { selectTeilnahmeLoadState } from './teilnahme.selectors';
-import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 @Injectable()
 export class TeilnahmeEffects {

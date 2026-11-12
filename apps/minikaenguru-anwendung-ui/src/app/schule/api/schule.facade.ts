@@ -39,6 +39,14 @@ export class SchuleFacade {
     }
 
     public schuleWechselnRequested(): void {
-        this.#store.dispatch(SchuleActions.wettbewerbsorganisationVerlassen());
+        this.#store.dispatch(SchuleActions.schuldashboardVerlassen());
+    }
+
+    public schulteilnahmeAnmelden(schulkuerzel: string): void {
+        this.#store.dispatch(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel }));
+    }
+
+    public wettbewerbOrganisieren(schulkuerzel: string): void {
+        this.#store.dispatch(SchuleActions.wettbewerbOrganisieren({ schulkuerzel }));
     }
 }

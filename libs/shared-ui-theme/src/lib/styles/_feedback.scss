@@ -1,0 +1,28 @@
+@use 'sass:color';
+@use '@angular/material' as mat;
+@use './tokens' as tokens;
+@use './functions' as functions;
+
+$mp-layer-loading: 2000;
+$mp-layer-message: 2100;
+
+$mp-loading-backdrop: color.change(tokens.$mp-color-surface, $alpha: 0.35);
+
+// Feedback-Farben sind unabhängig vom Branding der aktuellen Anwendung.
+@mixin mp-feedback-info {
+    background-color: functions.mp-primary(50);
+    border-color: functions.mp-primary(700);
+    color: functions.mp-primary(900);
+}
+
+@mixin mp-feedback-warning {
+    background-color: mat.m2-get-color-from-palette(mat.$m2-orange-palette, 50);
+    border-color: mat.m2-get-color-from-palette(mat.$m2-orange-palette, 800);
+    color: mat.m2-get-color-from-palette(mat.$m2-orange-palette, 900);
+}
+
+@mixin mp-feedback-error {
+    background-color: functions.mp-warn-background();
+    border-color: functions.mp-warn-border();
+    color: functions.mp-warn-text();
+}

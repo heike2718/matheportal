@@ -9,6 +9,7 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
+// import { Dialog } from '@angular/cdk/dialog';
 
 @Injectable()
 export class SchulenEffects {
@@ -17,6 +18,7 @@ export class SchulenEffects {
     #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
+    // #dialog = inject(Dialog);
 
     readonly ensureWettbewerbskontextGeladen$ = createEffect(() =>
         this.#actions.pipe(
@@ -70,10 +72,10 @@ export class SchulenEffects {
         { dispatch: false }
     );
 
-    readonly wettbewerbsorganisationVerlassen$ = createEffect(
+    readonly schuldashboardVerlassen$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(SchuleActions.wettbewerbsorganisationVerlassen),
+                ofType(SchuleActions.schuldashboardVerlassen),
                 tap(() => {
                     // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
                     void this.#router.navigate([
@@ -84,5 +86,9 @@ export class SchulenEffects {
                 })
             ),
         { dispatch: false }
+    );
+
+    readonly prepareSchulteilnahmeAnmelden$ = createEffect(() =>
+        this.#actions.pipe(ofType(SchuleActions.prepareSchulteilnahmeAnmelden))
     );
 }

@@ -2,12 +2,19 @@
 
 :host {
     display: block;
+    min-width: 0;
 }
 
 .mka-root {
-    padding: mp-theme.$mp-space-4 mp-theme.$mp-space-6;
+    @include mp-theme.mp-page-layout;
+    @include mp-theme.mp-body-default;
+
+    color: mp-theme.$mp-color-text-default;
 
     &__title {
-        margin: 0 0 mp-theme.$mp-space-3 0;
+        @include mp-theme.mp-page-title;
+
+        margin: 0 0 mp-theme.$mp-space-5;
+        color: mp-theme.mp-brand(minikaenguru);
     }
 }

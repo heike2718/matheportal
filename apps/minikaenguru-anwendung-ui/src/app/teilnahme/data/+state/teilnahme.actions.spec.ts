@@ -1,4 +1,4 @@
-import { Teilnahme } from '../../model/teilnahme.model';
+import { AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.model';
 import { TeilnahmeActions } from './teilnahme.actions';
 
 describe('TeilnahmeActions', () => {
@@ -75,11 +75,15 @@ describe('TeilnahmeActions', () => {
     });
 
     it('should create the schulteilnahmeAnmelden action', () => {
-        const action = TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel: 'S1234567' });
+        const action = TeilnahmeActions.schulteilnahmeAnmelden({
+            schulkuerzel: 'S1234567',
+            auswertungsart: AUSWERUNGSART.online,
+        });
 
         expect(action).toEqual({
             type: '[MKA Teilnahme] schulteilnahmeAnmelden',
             schulkuerzel: 'S1234567',
+            auswertungsart: AUSWERUNGSART.online,
         });
     });
 
@@ -110,6 +114,32 @@ describe('TeilnahmeActions', () => {
         expect(action).toEqual({
             type: '[MKA Teilnahme] teilnahmeAnmeldenFailed',
             error,
+        });
+    });
+
+    it('should create the auswertungsartWaehlen action', () => {
+        const action = TeilnahmeActions.auswertungsartWaehlen();
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] auswertungsartWaehlen',
+        });
+    });
+
+    it('should create the auswertungsartGewaehlt action', () => {
+        const action = TeilnahmeActions.auswertungsartGewaehlt({ auswertungsart: AUSWERUNGSART.offline });
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] auswertungsartGewaehlt',
+            auswertungsart: AUSWERUNGSART.offline,
+        });
+    });
+
+    it('should create the auswertungsartAendern action', () => {
+        const action = TeilnahmeActions.auswertungsartAendern({ neueAuswertungsart: AUSWERUNGSART.offline });
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] auswertungsartAendern',
+            neueAuswertungsart: AUSWERUNGSART.offline,
         });
     });
 });

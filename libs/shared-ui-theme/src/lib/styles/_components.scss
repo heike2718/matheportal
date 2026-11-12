@@ -1,25 +1,304 @@
 @use './tokens' as tokens;
-@use '@angular/material' as mat;
-@use './palettes' as palettes;
+@use './typography' as typography;
+@use './layout' as layout;
+@use './functions' as functions;
+@use './material-theme' as material;
 
-$mp-card-accent: mat.m2-get-color-from-palette(palettes.$mp-secondary-palette, 700);
-$mp-card-border: rgba(0, 0, 0, 0.08);
+// Mindestbreiten einzelner Grid-Karten.
+// S: kurze Auswahl, M: Navigation, L: ausführliche Beschreibung.
+$mp-card-min-width-s: 15rem;
+$mp-card-min-width-m: 17.5rem;
+$mp-card-min-width-l: 20rem;
 
-.mp-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+// Mindesthöhen interaktiver Bedienelemente.
+// L ist der Standard für Formulare und Hauptaktionen.
+$mp-control-min-height-s: 2rem;
+$mp-control-min-height-m: 2.5rem;
+$mp-control-min-height-l: 3rem;
+
+// Größe des Icons selbst, unabhängig von seiner Klickfläche.
+$mp-icon-size-s: 20px;
+$mp-icon-size-m: 24px;
+$mp-icon-size-l: 32px;
+
+// Bestehende öffentliche Namen.
+$mp-card-accent: functions.mp-accent(700);
+$mp-card-border: tokens.$mp-border-color-subtle;
+
+@mixin mp-focus-ring($context) {
+    outline: tokens.$mp-focus-ring-width solid functions.mp-brand($context);
+    outline-offset: tokens.$mp-focus-ring-offset;
+}
+
+@mixin mp-icon-size($size: $mp-icon-size-m) {
+    flex: 0 0 $size;
+    width: $size;
+    height: $size;
+    font-size: $size;
+}
+
+// Gemeinsame Oberfläche ohne Innenlayout.
+// Ohne Kontext entsteht eine neutrale Karte.
+@mixin mp-card-surface($context: null) {
+    box-sizing: border-box;
+    min-width: 0;
+    border: tokens.$mp-border-width solid $mp-card-border;
+    border-radius: tokens.$mp-radius-m;
+    background-color: tokens.$mp-color-surface;
+    color: tokens.$mp-color-text-default;
+
+    @if $context != null {
+        border-left: tokens.$mp-border-width-accent solid functions.mp-brand($context);
+    }
+}
+
+// Auf dem tatsächlich anklickbaren Karten-Element verwenden.
+// Für Karten mit eigenen Aktionsbuttons dieses Mixin nicht verwenden.
+@mixin mp-card-interaction($context) {
+    @include tokens.mp-transition;
+
+    cursor: pointer;
+    transition-property: background-color, border-color, box-shadow;
+
+    @media (hover: hover) {
+        &:hover:not(:disabled) {
+            background-color: functions.mp-brand-hover($context);
+            box-shadow: tokens.$mp-shadow-1;
+        }
+    }
+
+    &:focus-visible {
+        @include mp-focus-ring($context);
+    }
+
+    &:active:not(:disabled) {
+        background-color: functions.mp-brand-soft($context);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+// Material-Karte mit denselben Oberflächen- und Textregeln.
+@mixin mp-material-card($context) {
+    @include material.mp-material-card-style;
+    @include mp-card-surface($context);
+
+    mat-card-header {
+        padding: tokens.$mp-space-5 tokens.$mp-space-5 tokens.$mp-space-3;
+    }
+
+    mat-card-title {
+        @include typography.mp-card-title;
+
+        color: functions.mp-brand($context);
+        overflow-wrap: anywhere;
+    }
+
+    mat-card-subtitle {
+        @include typography.mp-body-small;
+
+        margin-top: tokens.$mp-space-1;
+        color: tokens.$mp-color-text-muted;
+    }
+
+    mat-card-content {
+        @include typography.mp-body-default;
+
+        padding: 0 tokens.$mp-space-5 tokens.$mp-space-5;
+    }
+
+    mat-card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: tokens.$mp-space-3;
+        padding: 0 tokens.$mp-space-5 tokens.$mp-space-5;
+    }
+}
+
+// Material-Aktionen im Anwendungskontext.
+@mixin mp-material-actions($context) {
+    @include material.mp-material-button-style(functions.mp-brand($context), $mp-control-min-height-l);
+}
+
+// Gemeinsame Geometrie eigener Buttons und Links mit Buttondarstellung.
+@mixin mp-action-base($context) {
+    @include typography.mp-button-text;
+    @include tokens.mp-transition;
+
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: tokens.$mp-space-2;
+    min-width: 0;
+    max-width: 100%;
+    min-height: $mp-control-min-height-l;
+    padding: tokens.$mp-space-3 tokens.$mp-space-4;
+    border: tokens.$mp-border-width solid transparent;
+    border-radius: tokens.$mp-radius-m;
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition-property: background-color, border-color, box-shadow;
+
+    &:focus-visible {
+        @include mp-focus-ring($context);
+    }
+
+    &:disabled {
+        color: tokens.$mp-color-text-muted;
+        background-color: tokens.$mp-color-surface-subtle;
+        border-color: tokens.$mp-border-color-subtle;
+        cursor: not-allowed;
+    }
+}
+
+@mixin mp-action-primary($context) {
+    @include mp-action-base($context);
+
+    color: tokens.$mp-color-on-brand;
+    background-color: functions.mp-brand($context);
+    border-color: functions.mp-brand($context);
+
+    @media (hover: hover) {
+        &:hover:not(:disabled) {
+            box-shadow: tokens.$mp-shadow-1;
+        }
+    }
+
+    &:active:not(:disabled) {
+        box-shadow: inset 0 0 0 tokens.$mp-border-width tokens.$mp-color-on-brand;
+    }
+}
+
+@mixin mp-action-secondary($context) {
+    @include mp-action-base($context);
+
+    color: functions.mp-brand($context);
+    background-color: tokens.$mp-color-surface;
+    border-color: functions.mp-brand-border($context);
+
+    @media (hover: hover) {
+        &:hover:not(:disabled) {
+            background-color: functions.mp-brand-hover($context);
+            border-color: functions.mp-brand-border-hover($context);
+        }
+    }
+
+    &:active:not(:disabled) {
+        background-color: functions.mp-brand-soft($context);
+    }
+}
+
+// Eigene Formulareingaben ohne Material-Form-Field.
+@mixin mp-input($context) {
+    @include typography.mp-body-default;
+    @include tokens.mp-transition;
+
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: $mp-control-min-height-l;
+    padding: tokens.$mp-space-3 tokens.$mp-space-4;
+    border: tokens.$mp-border-width solid tokens.$mp-border-color-interactive;
+    border-radius: tokens.$mp-radius-m;
+    background-color: tokens.$mp-color-surface;
+    color: tokens.$mp-color-text-default;
+    transition-property: background-color, border-color;
+
+    @media (hover: hover) {
+        &:hover:not(:disabled) {
+            border-color: tokens.$mp-border-color-interactive-hover;
+        }
+    }
+
+    &:focus-visible {
+        @include mp-focus-ring($context);
+
+        border-color: functions.mp-brand($context);
+    }
+
+    &:disabled {
+        color: tokens.$mp-color-text-muted;
+        background-color: tokens.$mp-color-surface-subtle;
+        cursor: not-allowed;
+    }
+}
+
+// Dialoghülle. Der Inhalt erhält separat mp-dialog-content.
+@mixin mp-dialog-surface($context) {
+    @include typography.mp-body-default;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     gap: tokens.$mp-space-5;
+    width: 100%;
+    min-width: 0;
+    max-height: calc(100dvh - 2 * #{tokens.$mp-space-3});
+    padding: tokens.$mp-space-6;
+    overflow: hidden;
+    border: tokens.$mp-border-width solid functions.mp-brand-border($context);
+    border-radius: tokens.$mp-radius-l;
+    background-color: tokens.$mp-color-surface;
+    color: tokens.$mp-color-text-default;
+    box-shadow: tokens.$mp-shadow-2;
+
+    @media (width <= layout.$mp-breakpoint-medium) {
+        gap: tokens.$mp-space-4;
+        padding: tokens.$mp-space-4;
+    }
+}
+
+@mixin mp-dialog-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    // Freiraum für Konturen innerhalb des Scrollbereichs.
+    padding: tokens.$mp-space-2;
+}
+
+@mixin mp-dialog-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: tokens.$mp-space-3;
+    padding-top: tokens.$mp-space-4;
+    border-top: tokens.$mp-border-width solid tokens.$mp-border-color-subtle;
+
+    > button,
+    > a {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
+
+// Bestehende globale Komponentenklassen.
+.mp-card-grid {
+    @include layout.mp-card-grid($mp-card-min-width-m);
 }
 
 .mp-card {
-    border: tokens.$mp-border-width solid $mp-card-border;
-    border-radius: tokens.$mp-radius-l;
-    box-shadow: tokens.$mp-shadow-1;
-    overflow: hidden;
+    @include mp-card-surface;
 }
 
+// Ohne Anwendungsmodifier bleibt die bisherige Akzentfarbe verfügbar.
 .mp-card--accented {
-    border-top: 4px solid $mp-card-accent;
+    border-left: tokens.$mp-border-width-accent solid $mp-card-accent;
+}
+
+@each $context in minikaenguru, raetselbaukasten, minikaenguru-statistik, minikaenguru-admin {
+    .mp-card--#{$context} {
+        border-left: tokens.$mp-border-width-accent solid functions.mp-brand($context);
+    }
 }
 
 .mp-card__header {
@@ -27,24 +306,28 @@ $mp-card-border: rgba(0, 0, 0, 0.08);
 }
 
 .mp-card__title {
+    @include typography.mp-card-title;
+
     margin: 0;
-    font-size: tokens.$mp-font-size-l;
-    line-height: tokens.$mp-line-height-tight;
 }
 
 .mp-card__subtitle {
+    @include typography.mp-body-small;
+
     margin: tokens.$mp-space-2 0 0;
-    font-size: tokens.$mp-font-size-s;
+    color: tokens.$mp-color-text-muted;
 }
 
 .mp-card__content {
-    padding: 0 tokens.$mp-space-5 tokens.$mp-space-4;
+    @include typography.mp-body-default;
+
+    padding: 0 tokens.$mp-space-5 tokens.$mp-space-5;
 }
 
 .mp-card__actions {
     display: flex;
-    gap: tokens.$mp-space-3;
     flex-wrap: wrap;
+    gap: tokens.$mp-space-3;
     padding: 0 tokens.$mp-space-5 tokens.$mp-space-5;
 }
 

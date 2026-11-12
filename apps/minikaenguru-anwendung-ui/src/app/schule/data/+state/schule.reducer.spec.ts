@@ -321,7 +321,7 @@ describe('schulenReducer', () => {
         });
     });
 
-    describe('wettbewerbsorganisationVerlassen', () => {
+    describe('schuldashboardVerlassen', () => {
         it('should reset wettbewerbskontext and loading states', () => {
             const previousState: SchulenState = {
                 wettbewerbskontext: {
@@ -335,7 +335,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'loaded',
             };
 
-            const state = schulenFeature.reducer(previousState, SchuleActions.wettbewerbsorganisationVerlassen());
+            const state = schulenFeature.reducer(previousState, SchuleActions.schuldashboardVerlassen());
 
             expect(state).toEqual({
                 wettbewerbskontext: undefined,

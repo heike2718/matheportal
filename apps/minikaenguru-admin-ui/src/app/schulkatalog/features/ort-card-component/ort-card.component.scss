@@ -1,99 +1,65 @@
-/** referenzen: mp-brand(...) siehe libs/shared-ui-theme/src/lib/styles/_branding.scss */
 @use 'mp-theme' as mp-theme;
 
 :host {
     display: block;
+    min-width: 0;
 }
 
 .mk-admin-ort-card {
-    box-sizing: border-box;
+    @include mp-theme.mp-body-default;
+    @include mp-theme.mp-card-surface(minikaenguru-admin);
+
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    width: 100%;
     gap: mp-theme.$mp-space-4;
+    width: 100%;
     padding: mp-theme.$mp-space-4;
-
-    background-color: mp-theme.$mp-color-surface;
-    border: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-interactive;
-    border-radius: mp-theme.$mp-radius-m;
 
     &__content {
         display: flex;
         flex-direction: column;
-        min-width: 0;
         gap: mp-theme.$mp-space-1;
+        min-width: 0;
     }
 
     &__name {
+        @include mp-theme.mp-card-title-compact;
+
         margin: 0;
-
         color: mp-theme.mp-brand(minikaenguru-admin);
-
-        @include mp-theme.mp-headline-small;
+        overflow-wrap: anywhere;
     }
 
     &__meta {
+        @include mp-theme.mp-body-small;
+
         display: flex;
         flex-direction: column;
         gap: mp-theme.$mp-space-1;
-
         color: mp-theme.$mp-color-text-muted;
-
-        @include mp-theme.mp-body-small;
+        overflow-wrap: anywhere;
     }
 
     &__actions {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: flex-end;
+        gap: mp-theme.$mp-space-3;
+        min-width: 0;
     }
 
     &__action {
-        padding: mp-theme.$mp-space-2 mp-theme.$mp-space-4;
-
-        color: mp-theme.$mp-color-surface;
-        font: inherit;
-        font-weight: 600;
-
-        background-color: mp-theme.mp-brand(minikaenguru-admin);
-        border: mp-theme.$mp-border-width solid mp-theme.mp-brand(minikaenguru-admin);
-        border-radius: mp-theme.$mp-radius-m;
-
-        cursor: pointer;
-
-        transition:
-            filter 140ms ease,
-            box-shadow 140ms ease;
-
-        &:hover {
-            filter: brightness(0.92);
-        }
-
-        &:focus-visible {
-            outline: 3px solid mp-theme.mp-brand(minikaenguru-admin);
-            outline-offset: mp-theme.$mp-space-1;
-        }
-
-        &:active {
-            filter: brightness(0.84);
-        }
+        @include mp-theme.mp-action-primary(minikaenguru-admin);
     }
 }
 
-@media (width <= 480px) {
+@media (width <= mp-theme.$mp-breakpoint-compact) {
     .mk-admin-ort-card {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: mp-theme.$mp-space-3;
         padding: mp-theme.$mp-space-3;
-
-        &__meta {
-            font-size: mp-theme.$mp-font-size-s;
-        }
-
-        &__actions {
-            width: 100%;
-        }
 
         &__action {
             width: 100%;

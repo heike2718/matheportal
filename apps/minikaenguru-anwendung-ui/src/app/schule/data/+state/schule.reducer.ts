@@ -101,7 +101,7 @@ export const schulenFeature = createFeature({
             }
             return state;
         }),
-        on(SchuleActions.wettbewerbsorganisationVerlassen, state => {
+        on(SchuleActions.schuldashboardVerlassen, state => {
             return {
                 ...state,
                 wettbewerbskontext: undefined,

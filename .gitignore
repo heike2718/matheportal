@@ -67,3 +67,5 @@ apps/raetselbaukasten/src/main/resources/META-INF/resources/raetselbaukasten
 vitest.config.*.timestamp*
 
 /.quarkus/cli/
+
+/.temp/

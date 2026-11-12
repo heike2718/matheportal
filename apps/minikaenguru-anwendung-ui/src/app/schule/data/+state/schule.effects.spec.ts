@@ -588,11 +588,11 @@ describe('SchulenEffects', () => {
         });
     });
 
-    describe('wettbewerbsorganisationVerlassen$', () => {
+    describe('schuldashboardVerlassen$', () => {
         it('should navigate to lehrperson ', async () => {
-            const promise = firstValueFrom(effects.wettbewerbsorganisationVerlassen$);
+            const promise = firstValueFrom(effects.schuldashboardVerlassen$);
 
-            action$.next(SchuleActions.wettbewerbsorganisationVerlassen());
+            action$.next(SchuleActions.schuldashboardVerlassen());
 
             await promise;
 

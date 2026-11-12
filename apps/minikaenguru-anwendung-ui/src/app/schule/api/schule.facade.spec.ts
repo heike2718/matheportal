@@ -176,7 +176,29 @@ describe('SchuleFacade', () => {
             facade.schuleWechselnRequested();
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(SchuleActions.wettbewerbsorganisationVerlassen());
+            expect(dispatchSpy).toHaveBeenCalledWith(SchuleActions.schuldashboardVerlassen());
+        });
+
+        it('should dispatch the correct action on schulteilnahmeAnmelden', () => {
+            const schulkuerzel = 'S1234567';
+
+            facade.schulteilnahmeAnmelden(schulkuerzel);
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S1234567' })
+            );
+        });
+
+        it('should dispatch the correct action on wettbewerbOrganisieren', () => {
+            const schulkuerzel = 'S1234567';
+
+            facade.wettbewerbOrganisieren(schulkuerzel);
+
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                SchuleActions.wettbewerbOrganisieren({ schulkuerzel: 'S1234567' })
+            );
         });
     });
 });

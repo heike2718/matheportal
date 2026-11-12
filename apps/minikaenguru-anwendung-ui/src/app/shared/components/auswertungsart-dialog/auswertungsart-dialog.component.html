@@ -1,0 +1,89 @@
+<div class="auswertungsart-dialog">
+    <h2 mat-dialog-title class="auswertungsart-dialog__title">Auswertungsart auswählen</h2>
+
+    <main class="auswertungsart-dialog__content">
+        <div class="auswertungsart-dialog__introduction">
+            <p>Bitte wählen Sie aus, wie die Ergebnisse des aktuellen Wettbewerbs ausgewertet werden sollen.</p>
+            <p class="auswertungsart-dialog__scope">
+                Die gewählte Auswertungsart gilt für die gesamte Schule, nicht für einzelne Klassen. Sie gilt nur für
+                den aktuellen Wettbewerb und kann geändert werden, solange noch keine Lösungszettel erfasst wurden.
+            </p>
+        </div>
+
+        <div class="auswertungsart-dialog__options">
+            <!-- Online-Section -->
+            <section class="auswertungsart-dialog__option" aria-labelledby="auswertungsart-online-title">
+                <h3 id="auswertungsart-online-title" class="auswertungsart-dialog__option-title">
+                    Online – Auswertung durch die Minikänguru-Anwendung
+                </h3>
+
+                <p class="auswertungsart-dialog__option-description">
+                    Die Anwendung übernimmt die Auswertung und erstellt die Urkunden. Dazu erfassen wir die Klassen und
+                    teilnehmenden Kinder oder laden Klassenlisten hoch. Anschließend erfassen wir die Lösungszettel.
+                </p>
+
+                <div class="auswertungsart-dialog__option-actions">
+                    <button
+                        mat-flat-button
+                        type="button"
+                        class="auswertungsart-dialog__select-button"
+                        (click)="selectOnline()">
+                        Online-Auswertung wählen
+                    </button>
+                </div>
+            </section>
+
+            <!-- Offline-Section -->
+            <section class="auswertungsart-dialog__option" aria-labelledby="auswertungsart-offline-title">
+                <h3 id="auswertungsart-offline-title" class="auswertungsart-dialog__option-title">
+                    Offline – Auswertung mit Excel-Vorlagen
+                </h3>
+
+                <p class="auswertungsart-dialog__option-description">
+                    Wir werten die Ergebnisse selbst mit den bereitgestellten Excel-Tabellen aus und erstellen die
+                    Urkunden mit Hilfe der Urkundenvorlagen. In der Minikänguru-Anwendung erfassen wir keine Klassen,
+                    Kinder oder Lösungszettel.
+                </p>
+
+                <p class="auswertungsart-dialog__option-description">
+                    Für eine statistische Auswertung unserer Teilnahme können wir die ausgefüllten Excel-Tabellen
+                    anschließend hochladen. Die Ergebnisse werden dabei anonymisiert. So erhalten wir beispielsweise
+                    Statistiken zum Median und zu den Anteilen richtig, falsch oder nicht gelöster Aufgaben.
+                </p>
+
+                <!-- Nur bei drohendem Datenverlust anzeigen -->
+                <div class="auswertungsart-dialog__warning" role="alert">
+                    <mat-icon class="auswertungsart-dialog__warning-icon" aria-hidden="true"> warning </mat-icon>
+
+                    <div class="auswertungsart-dialog__warning-content">
+                        <p class="auswertungsart-dialog__warning-title">
+                            Achtung: Bereits erfasste Daten werden gelöscht!
+                        </p>
+                        <p class="auswertungsart-dialog__warning-description">
+                            Beim Wechsel zur Offline-Auswertung werden alle bereits erfassten Klassen und Kinder der
+                            Schule für den aktuellen Wettbewerb unwiderruflich gelöscht.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="auswertungsart-dialog__option-actions">
+                    <button
+                        mat-flat-button
+                        type="button"
+                        class="auswertungsart-dialog__select-button"
+                        (click)="selectOffline()">
+                        {{
+                            loeschungErforderlich
+                                ? 'Klassen und Kinder löschen und offline auswerten'
+                                : 'Offline-Auswertung wählen'
+                        }}
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="auswertungsart-dialog__actions">
+        <button mat-button type="button" (click)="selectAbbrechen()">Abbrechen</button>
+    </footer>
+</div>

@@ -1,11 +1,11 @@
+@use 'mp-theme' as mp-theme;
+
 .loading-indicator {
     position: fixed;
     inset: 0;
-
+    z-index: mp-theme.$mp-layer-loading;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    background: rgba(255, 255, 255, 0.35);
-    z-index: 2000;
+    background-color: mp-theme.$mp-loading-backdrop;
 }

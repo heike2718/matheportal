@@ -3,110 +3,90 @@
 :host {
     display: block;
     min-width: 0;
+    container-type: inline-size;
 }
 
 .rbk-guest-info {
+    @include mp-theme.mp-body-default;
+
     box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
     min-width: 0;
-
-    // Kein eigenes Seitenpadding hier.
-    // Das sollte der äußere Start-/Page-Wrapper übernehmen.
+    color: mp-theme.$mp-color-text-default;
 
     &__title {
-        margin: 0 0 mp-theme.$mp-space-5 0;
+        @include mp-theme.mp-section-title;
+
+        margin: 0 0 mp-theme.$mp-space-5;
+        color: mp-theme.mp-brand(raetselbaukasten);
     }
 
     p {
-        max-width: 65ch;
+        max-width: mp-theme.$mp-reading-max-width;
     }
 
     &__emphasized {
-        box-sizing: border-box;
-        max-width: 65ch;
+        max-width: mp-theme.$mp-reading-max-width;
         margin-block: mp-theme.$mp-space-4;
-
-        font-weight: 600;
-        line-height: 1.45;
+        font-weight: mp-theme.$mp-font-weight-semibold;
     }
 
     &__login-hint {
-        box-sizing: border-box;
-        width: 100%;
-        max-width: 42rem;
-        min-width: 0;
+        @include mp-theme.mp-card-surface(raetselbaukasten);
 
         display: flex;
-        gap: mp-theme.$mp-space-4;
         align-items: flex-start;
-
+        gap: mp-theme.$mp-space-4;
+        width: 100%;
+        max-width: mp-theme.$mp-reading-max-width;
         margin-block: mp-theme.$mp-space-6;
-        padding: mp-theme.$mp-space-4 mp-theme.$mp-space-5;
-
-        border-left: 0.4rem solid mp-theme.mp-brand(raetselbaukasten);
-        border-radius: mp-theme.$mp-radius-m;
+        padding: mp-theme.$mp-space-5;
         background-color: mp-theme.mp-brand-hover(raetselbaukasten);
     }
 
     &__login-hint-icon {
-        flex: 0 0 auto;
-        margin-top: 0.15rem;
+        @include mp-theme.mp-icon-size;
+
+        color: mp-theme.mp-brand(raetselbaukasten);
     }
 
     &__login-hint-text {
         min-width: 0;
 
         h2 {
-            margin: 0 0 mp-theme.$mp-space-2 0;
-            font-size: 1.15rem;
+            @include mp-theme.mp-card-title;
+
+            margin: 0 0 mp-theme.$mp-space-2;
+            color: mp-theme.mp-brand(raetselbaukasten);
         }
 
         p {
             margin: 0;
             max-width: none;
-            overflow-wrap: break-word;
-            word-break: normal;
+            overflow-wrap: anywhere;
         }
     }
 
     &__browser-hint {
-        box-sizing: border-box;
+        @include mp-theme.mp-body-small;
+        @include mp-theme.mp-card-surface(raetselbaukasten);
+
         margin-top: mp-theme.$mp-space-6;
-        padding: mp-theme.$mp-space-3 mp-theme.$mp-space-4;
-
-        border-left: mp-theme.$mp-border-width-accent solid mp-theme.mp-brand(raetselbaukasten);
-        border-radius: mp-theme.$mp-radius-m;
+        padding: mp-theme.$mp-space-4;
         background-color: mp-theme.$mp-color-surface-subtle;
-
-        font-size: mp-theme.$mp-font-size-s;
-        line-height: 1.4;
     }
+}
 
-    @media (width <= 37.5rem) {
-        p {
-            max-width: none;
-        }
-
+@container (max-width: #{mp-theme.$mp-breakpoint-medium}) {
+    .rbk-guest-info {
         &__emphasized {
-            max-width: none;
             margin-block: mp-theme.$mp-space-3;
         }
 
         &__login-hint {
-            display: block;
-            padding: mp-theme.$mp-space-3;
-        }
-
-        &__login-hint-icon {
-            display: block;
-            margin: 0 0 mp-theme.$mp-space-2 0;
-        }
-
-        &__login-hint-text {
-            h2 {
-                font-size: 1.05rem;
-            }
+            flex-direction: column;
+            gap: mp-theme.$mp-space-3;
+            padding: mp-theme.$mp-space-4;
         }
     }
 }

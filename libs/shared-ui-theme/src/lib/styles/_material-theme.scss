@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 @use './palettes' as palettes;
 @use './typography' as typography;
+@use './tokens' as tokens;
 
 @include mat.elevation-classes();
 @include mat.app-background();
@@ -23,4 +24,74 @@ $mp-theme: mat.m2-define-light-theme(
 
 @mixin mp-material-theme() {
     @include mat.all-component-themes($mp-theme);
+}
+
+// Auf dem Material-Card-Element einbinden.
+// Oberfläche und Akzentkante werden vom allgemeinen Karten-Mixin gesetzt.
+@mixin mp-material-card-style {
+    @include mat.card-overrides(
+        (
+            elevated-container-color: tokens.$mp-color-surface,
+            elevated-container-shape: tokens.$mp-radius-m,
+            elevated-container-elevation: none,
+            outlined-container-color: tokens.$mp-color-surface,
+            outlined-container-shape: tokens.$mp-radius-m,
+            outlined-container-elevation: none,
+            outlined-outline-color: tokens.$mp-border-color-subtle,
+            outlined-outline-width: tokens.$mp-border-width,
+            filled-container-color: tokens.$mp-color-surface,
+            filled-container-shape: tokens.$mp-radius-m,
+            filled-container-elevation: none,
+            title-text-font: typography.$mp-font-family,
+            title-text-size: typography.$mp-font-size-l,
+            title-text-weight: typography.$mp-font-weight-semibold,
+            title-text-line-height: typography.$mp-line-height-normal,
+            subtitle-text-font: typography.$mp-font-family,
+            subtitle-text-size: typography.$mp-font-size-s,
+            subtitle-text-weight: typography.$mp-font-weight-regular,
+            subtitle-text-line-height: typography.$mp-line-height-normal,
+            subtitle-text-color: tokens.$mp-color-text-muted,
+        )
+    );
+}
+
+// Auf einem Container mit Material-Buttons einbinden.
+@mixin mp-material-button-style($brand-color, $min-height) {
+    @include mat.button-overrides(
+        (
+            filled-container-color: $brand-color,
+            filled-label-text-color: tokens.$mp-color-on-brand,
+            filled-state-layer-color: tokens.$mp-color-on-brand,
+            filled-container-shape: tokens.$mp-radius-m,
+            outlined-label-text-color: $brand-color,
+            outlined-outline-color: $brand-color,
+            outlined-state-layer-color: $brand-color,
+            outlined-container-shape: tokens.$mp-radius-m,
+            text-label-text-color: $brand-color,
+            text-state-layer-color: $brand-color,
+            text-container-shape: tokens.$mp-radius-m,
+        )
+    );
+
+    button[mat-flat-button],
+    button[mat-stroked-button],
+    button[mat-button],
+    a[mat-flat-button],
+    a[mat-stroked-button],
+    a[mat-button] {
+        @include typography.mp-button-text;
+
+        min-width: 0;
+        max-width: 100%;
+        min-height: $min-height;
+        height: auto;
+        padding: tokens.$mp-space-3 tokens.$mp-space-4;
+        white-space: normal;
+        overflow-wrap: anywhere;
+
+        &:focus-visible {
+            outline: tokens.$mp-focus-ring-width solid $brand-color;
+            outline-offset: tokens.$mp-focus-ring-offset;
+        }
+    }
 }

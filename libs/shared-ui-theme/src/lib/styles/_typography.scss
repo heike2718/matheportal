@@ -1,60 +1,95 @@
 @use '@angular/material' as mat;
-@use './tokens' as tokens;
 
+$mp-font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+$mp-font-size-xs: 0.75rem;
+$mp-font-size-s: 0.875rem;
+$mp-font-size-m: 1rem;
+$mp-font-size-l: 1.15rem;
+$mp-font-size-xl: 1.5rem;
+$mp-font-size-xxl: 2rem;
+
+$mp-font-weight-regular: 400;
+$mp-font-weight-semibold: 600;
+$mp-font-weight-bold: 700;
+
+$mp-line-height-tight: 1.25;
+$mp-line-height-normal: 1.5;
+$mp-line-height-loose: 1.7;
+
+// Material-Konfiguration.
+// Bestehende größere Material-Überschriften bleiben erhalten.
+// Die im Portal verwendeten Textgrößen beziehen sich auf die gemeinsamen Werte.
 $mp-typography: mat.m2-define-typography-config(
-    $font-family: tokens.$mp-font-family,
-    $headline-1: mat.m2-define-typography-level(2rem, 2.5rem, 700),
-    $headline-2: mat.m2-define-typography-level(1.75rem, 2.25rem, 700),
-    $headline-3: mat.m2-define-typography-level(1.5rem, 2rem, 600),
-    $headline-4: mat.m2-define-typography-level(1.25rem, 1.75rem, 600),
-    $headline-5: mat.m2-define-typography-level(1.125rem, 1.5rem, 600),
-    $headline-6: mat.m2-define-typography-level(1rem, 1.5rem, 600),
-    $body-1: mat.m2-define-typography-level(1rem, 1.5rem, 400),
-    $body-2: mat.m2-define-typography-level(0.875rem, 1.25rem, 400),
-    $button: mat.m2-define-typography-level(0.95rem, 0.95rem, 600),
-    $caption: mat.m2-define-typography-level(0.75rem, 1rem, 400),
+    $font-family: $mp-font-family,
+    $headline-1: mat.m2-define-typography-level($mp-font-size-xxl, $mp-line-height-tight, $mp-font-weight-bold),
+    $headline-2: mat.m2-define-typography-level(1.75rem, $mp-line-height-tight, $mp-font-weight-bold),
+    $headline-3: mat.m2-define-typography-level($mp-font-size-xl, $mp-line-height-tight, $mp-font-weight-bold),
+    $headline-4: mat.m2-define-typography-level($mp-font-size-l, $mp-line-height-tight, $mp-font-weight-bold),
+    $headline-5: mat.m2-define-typography-level($mp-font-size-l, $mp-line-height-normal, $mp-font-weight-semibold),
+    $headline-6: mat.m2-define-typography-level($mp-font-size-m, $mp-line-height-normal, $mp-font-weight-semibold),
+    $body-1: mat.m2-define-typography-level($mp-font-size-m, $mp-line-height-normal, $mp-font-weight-regular),
+    $body-2: mat.m2-define-typography-level($mp-font-size-s, $mp-line-height-normal, $mp-font-weight-regular),
+    $button: mat.m2-define-typography-level($mp-font-size-s, $mp-line-height-normal, $mp-font-weight-semibold),
+    $caption: mat.m2-define-typography-level($mp-font-size-xs, $mp-line-height-normal, $mp-font-weight-regular),
 );
 
-// Semantische Typography-Mixins für Components
-
-@mixin mp-headline-large {
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-xl;
-    line-height: 2rem;
-    font-weight: 600;
+// Seitentitel.
+@mixin mp-page-title {
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-xl;
+    font-weight: $mp-font-weight-bold;
+    line-height: $mp-line-height-tight;
 }
 
-@mixin mp-headline-medium {
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-l;
-    line-height: 1.75rem;
-    font-weight: 600;
+// Abschnitts- und Dialogtitel.
+@mixin mp-section-title {
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-l;
+    font-weight: $mp-font-weight-bold;
+    line-height: $mp-line-height-tight;
 }
 
-@mixin mp-headline-small {
-    font-family: tokens.$mp-font-family;
-    font-size: 1.125rem;
-    line-height: 1.5rem;
-    font-weight: 600;
+// Titel normaler Inhalts- und Navigationskarten.
+@mixin mp-card-title {
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-l;
+    font-weight: $mp-font-weight-semibold;
+    line-height: $mp-line-height-normal;
+}
+
+// Titel kompakter Listen- und Auswahlkarten.
+@mixin mp-card-title-compact {
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-m;
+    font-weight: $mp-font-weight-semibold;
+    line-height: $mp-line-height-normal;
 }
 
 @mixin mp-body-default {
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-m;
-    line-height: 1.5rem;
-    font-weight: 400;
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-m;
+    font-weight: $mp-font-weight-regular;
+    line-height: $mp-line-height-normal;
 }
 
 @mixin mp-body-small {
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-s;
-    line-height: 1.25rem;
-    font-weight: 400;
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-s;
+    font-weight: $mp-font-weight-regular;
+    line-height: $mp-line-height-normal;
+}
+
+@mixin mp-button-text {
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-s;
+    font-weight: $mp-font-weight-semibold;
+    line-height: $mp-line-height-normal;
 }
 
 @mixin mp-caption {
-    font-family: tokens.$mp-font-family;
-    font-size: tokens.$mp-font-size-xs;
-    line-height: 1rem;
-    font-weight: 400;
+    font-family: $mp-font-family;
+    font-size: $mp-font-size-xs;
+    font-weight: $mp-font-weight-regular;
+    line-height: $mp-line-height-normal;
 }

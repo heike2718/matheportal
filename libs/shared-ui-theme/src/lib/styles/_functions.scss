@@ -26,6 +26,21 @@
     @return mat.m2-get-contrast-color-from-palette(theme.$mp-warn, $hue);
 }
 
+// Zusammengehörige Farben für Warnflächen.
+// Komponenten verwenden diese Rollen statt eigener Palettenstufen.
+
+@function mp-warn-background() {
+    @return mp-warn(50);
+}
+
+@function mp-warn-border() {
+    @return mp-warn(700);
+}
+
+@function mp-warn-text() {
+    @return mp-warn(900);
+}
+
 @function mp-brand($context) {
     @if $context == minikaenguru {
         @return branding.$mp-brand-minikaenguru;
