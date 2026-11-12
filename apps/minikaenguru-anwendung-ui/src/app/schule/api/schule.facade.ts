@@ -12,6 +12,7 @@ import { MinikaenguruEinstiegActions } from '../../core/ablaufsteuerung/minikaen
 import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { isSchulauswahlMoeglich } from '../../lehrperson/api/public-lehrperson.selectors';
 import { SchuleActions } from '../data/+state/schule.actions';
+import { schulteilnahmeAnmelden } from '../../teilnahme/api/teilnahme-store.events';
 
 @Injectable()
 export class SchuleFacade {
@@ -39,6 +40,14 @@ export class SchuleFacade {
     }
 
     public schuleWechselnRequested(): void {
-        this.#store.dispatch(SchuleActions.wettbewerbsorganisationVerlassen());
+        this.#store.dispatch(SchuleActions.schuldashboardVerlassen());
+    }
+
+    public schulteilnahmeAnmelden(schulkuerzel: string): void {
+        this.#store.dispatch(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel }));
+    }
+
+    public wettbewerbOrganisieren(schulkuerzel: string): void {
+        this.#store.dispatch(SchuleActions.wettbewerbOrganisieren({ schulkuerzel }));
     }
 }

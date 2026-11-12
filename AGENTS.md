@@ -12,6 +12,12 @@
 - Ändere keine Dateien. Liefere Code- und Testvorschläge im Chat,
   damit ich sie selbst prüfen und übernehmen kann.
 
+- Gib bei Änderungsvorschlägen an bestehendem Code immer den vollständigen
+  Dateiinhalt ohne Auslassungsplatzhalter (wie `// ...`) aus.
+  Ausnahme sind sehr große Dateien (> 300 Zeilen): Dort darfst Du
+  relevante Ausschnitte zeigen, musst Änderungen aber durch
+  Inline-Diff-Marks (`+`/`-`) eindeutig erkennbar machen.
+
 - Orientier Dich bei Code und Tests an vorhandenen Beispielen
   im Projekt: Stil, Benennung, Struktur und verwendete Werkzeuge.
 

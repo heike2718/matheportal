@@ -99,10 +99,19 @@ describe('SchuleActions', () => {
         });
     });
 
-    it('should create the wettbewerbsorganisationVerlassen action', () => {
-        const action = SchuleActions.wettbewerbsorganisationVerlassen();
+    it('should create the schuldashboardVerlassen action', () => {
+        const action = SchuleActions.schuldashboardVerlassen();
         expect(action).toEqual({
-            type: '[MKA Schule] wettbewerbsorganisationVerlassen',
+            type: '[MKA Schule] schuldashboardVerlassen',
+        });
+    });
+
+    it('should create the wettbewerbOrganisieren action', () => {
+        const action = SchuleActions.wettbewerbOrganisieren({ schulkuerzel: schule.kuerzel });
+
+        expect(action).toEqual({
+            type: '[MKA Schule] wettbewerbOrganisieren',
+            schulkuerzel: 'S1234567',
         });
     });
 });

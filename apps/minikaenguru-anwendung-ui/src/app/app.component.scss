@@ -2,10 +2,11 @@
 
 :host {
     display: block;
+    min-width: 0;
 }
 
 .mka-root {
-    padding: mp-theme.$mp-space-4 mp-theme.$mp-space-6;
+    @include mp-theme.mp-page-layout;
 
     &__title {
         margin: 0 0 mp-theme.$mp-space-3 0;
