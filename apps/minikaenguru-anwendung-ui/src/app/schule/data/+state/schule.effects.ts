@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
-import { catchError, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { SchuleActions } from './schule.actions';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { ArbeitskontextHttpService } from '../../../core/services/arbeitskontext-http.service';
@@ -9,7 +9,10 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
-// import { Dialog } from '@angular/cdk/dialog';
+import { Dialog } from '@angular/cdk/dialog';
+import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahme/model/teilnahme.model';
+import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
+import { schulteilnahmeAnmelden } from '../../../teilnahme/api/teilnahme-store.events';
 
 @Injectable()
 export class SchulenEffects {
@@ -18,7 +21,7 @@ export class SchulenEffects {
     #router = inject(Router);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
-    // #dialog = inject(Dialog);
+    #dialog = inject(Dialog);
 
     readonly ensureWettbewerbskontextGeladen$ = createEffect(() =>
         this.#actions.pipe(
@@ -89,6 +92,28 @@ export class SchulenEffects {
     );
 
     readonly prepareSchulteilnahmeAnmelden$ = createEffect(() =>
-        this.#actions.pipe(ofType(SchuleActions.prepareSchulteilnahmeAnmelden))
+        this.#actions.pipe(
+            ofType(SchuleActions.prepareSchulteilnahmeAnmelden),
+            exhaustMap(({ schulkuerzel }) => {
+                const dialogRef = this.#dialog.open<AuswertungsartDialogResult>(AuswertungsartDialogComponent, {
+                    width: '500px',
+                    data: {
+                        schulkuerzel,
+                        auswertungsart: undefined,
+                        loesungszettelVorhanden: false,
+                    } satisfies AuswertungsartDialogData,
+                });
+
+                return dialogRef.closed.pipe(
+                    filter((result): result is AuswertungsartDialogResult => result !== undefined),
+                    map(result =>
+                        schulteilnahmeAnmelden({
+                            schulkuerzel: result.schulkuerzel,
+                            auswertungsart: result.gewaehlteAuswertungsart,
+                        })
+                    )
+                );
+            })
+        )
     );
 }

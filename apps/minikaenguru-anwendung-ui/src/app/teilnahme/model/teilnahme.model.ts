@@ -10,6 +10,12 @@ export const AUSWERUNGSART = {
 export type Teilnahme = components['schemas']['Teilnahme'];
 
 export interface AuswertungsartDialogData {
+    readonly schulkuerzel: string;
     readonly auswertungsart: Auswertungsart | undefined;
-    readonly klassenVorhanden: boolean;
+    readonly loesungszettelVorhanden: boolean;
+}
+
+export interface AuswertungsartDialogResult {
+    schulkuerzel: string;
+    gewaehlteAuswertungsart: Auswertungsart;
 }

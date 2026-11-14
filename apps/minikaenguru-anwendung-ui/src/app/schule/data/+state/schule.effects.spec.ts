@@ -14,6 +14,14 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
+import { Dialog } from '@angular/cdk/dialog';
+import {
+    AuswertungsartDialogData,
+    AuswertungsartDialogResult,
+    AUSWERUNGSART,
+} from '../../../teilnahme/model/teilnahme.model';
+import { schulteilnahmeAnmelden } from '../../../teilnahme/api/teilnahme-store.events';
+import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();
@@ -48,6 +56,10 @@ describe('SchulenEffects', () => {
 
     let messagePublisherMock: { publishError: ReturnType<typeof vi.fn> };
 
+    const dialogMock = {
+        open: vi.fn(),
+    };
+
     beforeEach(() => {
         vi.resetAllMocks();
         routerMock.currentNavigation.mockReturnValue(null);
@@ -79,6 +91,10 @@ describe('SchulenEffects', () => {
                 {
                     provide: MESSAGE_PUBLISHER,
                     useValue: messagePublisherMock,
+                },
+                {
+                    provide: Dialog,
+                    useValue: dialogMock,
                 },
             ],
         });
@@ -598,6 +614,108 @@ describe('SchulenEffects', () => {
 
             expect(routerMock.navigate).toHaveBeenCalledOnce();
             expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'minikaenguru-anwendung', 'lehrperson']);
+        });
+    });
+
+    describe('prepareSchulteilnahmeAnmelden$', () => {
+        let closed$: Subject<AuswertungsartDialogResult | undefined>;
+
+        beforeEach(() => {
+            closed$ = new Subject<AuswertungsartDialogResult | undefined>();
+
+            dialogMock.open.mockReturnValue({
+                closed: closed$,
+            });
+        });
+
+        it.each(['OFFLINE', 'ONLINE'] as const)(
+            'should open a dialog and dispatch schulteilnahmeAnmelden when the dialog is closed with defined result and auswertungsart %s',
+            async gewaehlteAuswertungsart => {
+                const result: AuswertungsartDialogResult = {
+                    schulkuerzel: 'S1234567',
+                    gewaehlteAuswertungsart,
+                };
+
+                const promise = firstValueFrom(effects.prepareSchulteilnahmeAnmelden$);
+
+                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S12345678' }));
+                closed$.next(result);
+
+                const emitted = await promise;
+
+                expect(emitted).toEqual(
+                    schulteilnahmeAnmelden({ schulkuerzel: 'S1234567', auswertungsart: gewaehlteAuswertungsart })
+                );
+            }
+        );
+
+        it('should ignore the second action while the first action is not finished', async () => {
+            const result: AuswertungsartDialogResult = {
+                schulkuerzel: 'S1234567',
+                gewaehlteAuswertungsart: AUSWERUNGSART.online,
+            };
+            const emittedActions: Action[] = [];
+            const subscription = effects.prepareSchulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S1234567' }));
+
+                expect(emittedActions).toEqual([]);
+
+                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: '7654321S' }));
+
+                expect(emittedActions).toEqual([]);
+                expect(dialogMock.open).toHaveBeenCalledTimes(1);
+                expect(dialogMock.open).toHaveBeenCalledWith(
+                    AuswertungsartDialogComponent,
+                    expect.objectContaining({
+                        data: {
+                            schulkuerzel: 'S1234567',
+                            auswertungsart: undefined,
+                            loesungszettelVorhanden: false,
+                        } satisfies AuswertungsartDialogData,
+                    })
+                );
+
+                closed$.next(result);
+                closed$.complete();
+
+                expect(dialogMock.open).toHaveBeenCalledTimes(1);
+                expect(dialogMock.open).toHaveBeenLastCalledWith(
+                    AuswertungsartDialogComponent,
+                    expect.objectContaining({
+                        data: {
+                            schulkuerzel: 'S1234567',
+                            auswertungsart: undefined,
+                            loesungszettelVorhanden: false,
+                        } satisfies AuswertungsartDialogData,
+                    })
+                );
+
+                expect(emittedActions).toEqual([
+                    schulteilnahmeAnmelden({ schulkuerzel: 'S1234567', auswertungsart: AUSWERUNGSART.online }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should open a dialog but dispatch no action when the dialog is cancelled', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.prepareSchulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S12345678' }));
+                closed$.next(undefined);
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
     });
 });
