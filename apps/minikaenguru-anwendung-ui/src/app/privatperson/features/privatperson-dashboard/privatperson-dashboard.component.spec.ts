@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardPrivatpersonComponent } from './dashboard-privatperson.component';
 import { Wettbewerb, WETTBEWERBSSTATUS } from '../../../core/wettbewerb/model/wettbewerb.model';
 import { ANMELDESTATUS, TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
 import { PrivatpersonWettbewerbskontext } from '../../model/privatperson.model';
@@ -7,6 +6,7 @@ import { signal, Signal, WritableSignal } from '@angular/core';
 import { PrivatpersonFacade } from '../../api/privatperson.facade';
 import { By } from '@angular/platform-browser';
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
+import { PrivatpersonDashboardComponent } from './privatperson-dashboard.component';
 
 describe('DashboardPrivatComponent', () => {
     const wettbewerb: Wettbewerb = {
@@ -30,8 +30,8 @@ describe('DashboardPrivatComponent', () => {
         teilnahmerefs: teilnahmen,
     };
 
-    let component: DashboardPrivatpersonComponent;
-    let fixture: ComponentFixture<DashboardPrivatpersonComponent>;
+    let component: PrivatpersonDashboardComponent;
+    let fixture: ComponentFixture<PrivatpersonDashboardComponent>;
 
     let aktuellerWettbewerbSignal: WritableSignal<Wettbewerb>;
     let wettbewerbskontextLoadedSignal: WritableSignal<boolean>;
@@ -65,7 +65,7 @@ describe('DashboardPrivatComponent', () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [DashboardPrivatpersonComponent],
+            imports: [PrivatpersonDashboardComponent],
             providers: [
                 {
                     provide: WettbewerbFacade,
@@ -78,7 +78,7 @@ describe('DashboardPrivatComponent', () => {
             ],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(DashboardPrivatpersonComponent);
+        fixture = TestBed.createComponent(PrivatpersonDashboardComponent);
         component = fixture.componentInstance;
         await fixture.whenStable();
     });

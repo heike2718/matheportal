@@ -41,6 +41,31 @@ export class TeilnahmeEffects {
         );
     });
 
+    readonly ensureSchulteilnahmeLoaded$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.ensureSchulteilnahmeLoaded),
+            withLatestFrom(this.#store.select(selectTeilnahmeLoadState)),
+            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
+            map(([{ schulkuerzel }]) => TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: schulkuerzel }))
+        )
+    );
+
+    readonly schulteilnahmeLaden$ = createEffect(() => {
+        return this.#actions.pipe(
+            ofType(TeilnahmeActions.schulteilnahmeLaden),
+            switchMap(({ schulkuerzel }) =>
+                this.#httpService.loadAktuelleSchulteilnahme(schulkuerzel).pipe(
+                    map((teilnahme: Teilnahme) =>
+                        TeilnahmeActions.teilnahmeGeladen({
+                            teilnahme,
+                        })
+                    ),
+                    catchError((error: Error) => of(TeilnahmeActions.teilnahmeLadenFailed({ error })))
+                )
+            )
+        );
+    });
+
     readonly teilnahmeLadenFailed$ = createEffect(
         () =>
             this.#actions.pipe(

@@ -34,4 +34,17 @@ export class TeilnahmeHttpService {
             withCredentials: true,
         });
     }
+
+    /**
+     * Läd die Daten der aktuellen Teilnahme der Schule.
+     * @returns Observable auf Teilnahme
+     */
+    public loadAktuelleSchulteilnahme(schulkuerzel: string): Observable<Teilnahme> {
+        const pathTemplate: keyof paths = '/api/schulen/{schuleId}/aktuelle-teilnahme';
+        const path = pathTemplate.replace('{schuleId}', schulkuerzel);
+        return this.#httpClient.get<Teilnahme>(this.#config.apiUrl + path, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        });
+    }
 }
