@@ -96,7 +96,9 @@ export class SchulenEffects {
             ofType(SchuleActions.prepareSchulteilnahmeAnmelden),
             exhaustMap(({ schulkuerzel }) => {
                 const dialogRef = this.#dialog.open<AuswertungsartDialogResult>(AuswertungsartDialogComponent, {
-                    width: '500px',
+                    width: '800px',
+                    maxWidth: 'calc(100vw - 24px)',
+                    maxHeight: 'calc(100dvh - 24px)',
                     data: {
                         schulkuerzel,
                         auswertungsart: undefined,

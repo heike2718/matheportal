@@ -253,7 +253,7 @@ public class TeilnahmenService {
         }
 
         final TeilnahmeEntity teilnahmeEntity = this
-                .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(durchfuehrender.getSchulkuerzel());
+                .findTeilnahmeEntityForTeilnahmekuerzelAktuellesWettbewerbsjahr(schuleId);
 
         if (teilnahmeEntity == null) {
             throw new ResourceNotFoundException("Diese Resource gibt es leider nicht oder nicht mehr.");
