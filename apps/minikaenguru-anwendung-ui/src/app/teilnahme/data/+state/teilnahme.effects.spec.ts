@@ -9,7 +9,7 @@ import { TeilnahmeHttpService } from '../teilnahme-http.service';
 import { TeilnahmeActions } from './teilnahme.actions';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectTeilnahmeLoadState } from './teilnahme.selectors';
-import { Teilnahme } from '../../model/teilnahme.model';
+import { Auswertungsart, AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 describe('TeilnahmeEffects', () => {
@@ -31,6 +31,8 @@ describe('TeilnahmeEffects', () => {
     let httpServiceMock: {
         loadAktuellePrivatteilnahme: ReturnType<typeof vi.fn>;
         privatAnmelden: ReturnType<typeof vi.fn>;
+        loadAktuelleSchulteilnahme: ReturnType<typeof vi.fn>;
+        schuleAnmelden: ReturnType<typeof vi.fn>;
     };
 
     let messagePublisherMock: { publishWarning: ReturnType<typeof vi.fn>; publishError: ReturnType<typeof vi.fn> };
@@ -56,6 +58,8 @@ describe('TeilnahmeEffects', () => {
         httpServiceMock = {
             loadAktuellePrivatteilnahme: vi.fn(),
             privatAnmelden: vi.fn(),
+            loadAktuelleSchulteilnahme: vi.fn(),
+            schuleAnmelden: vi.fn(),
         };
 
         messagePublisherMock = {
@@ -243,6 +247,172 @@ describe('TeilnahmeEffects', () => {
         });
     });
 
+    describe('ensureSchulteilnahmeLoaded$', () => {
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to schulteilnahmeLaden when loadState %s',
+            async loadState => {
+                store.overrideSelector(selectTeilnahmeLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+
+                const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
+
+                    expect(emittedActions).toEqual([
+                        TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: 'S1234567' }),
+                    ]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+
+        it.each(['loaded', 'unauthorized'] as const)(
+            'should not map to schulteilnahmeLaden when loadState %s',
+            async loadState => {
+                store.overrideSelector(selectTeilnahmeLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+
+                const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
+
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    });
+
+    describe('schulteilnahmeLaden$', () => {
+        const schulkuerzel = 'S1234567';
+
+        it('should call the httpService and map to teilnahmeGeladen when 200', async () => {
+            httpServiceMock.loadAktuelleSchulteilnahme.mockReturnValueOnce(of(teilnahme));
+
+            const promise = firstValueFrom(effects.schulteilnahmeLaden$);
+
+            action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeGeladen({ teilnahme }));
+
+            expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledOnce();
+            expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledWith('S1234567');
+        });
+
+        it('should switch to the latest action and cancel previos pending request (switchMap)', async () => {
+            const firstResult = teilnahme;
+
+            const secondResult: Teilnahme = {
+                ...teilnahme,
+                anzahlKlassen: 3,
+                anzahlKinder: 74,
+                anzahlLoesungszettel: 38,
+            };
+
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            const firstRequestFinalized = vi.fn();
+
+            httpServiceMock.loadAktuelleSchulteilnahme
+                .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
+                .mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulteilnahmeLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: '7654321S' }));
+
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenLastCalledWith('7654321S');
+
+                action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
+                expect(firstRequestFinalized).toHaveBeenCalledOnce();
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenLastCalledWith('S1234567');
+
+                httpFirst$.next(firstResult);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([]);
+
+                httpSecond$.next(secondResult);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([TeilnahmeActions.teilnahmeGeladen({ teilnahme: secondResult })]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.loadAktuelleSchulteilnahme.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulteilnahmeLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: '7654321S' }));
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
+
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenLastCalledWith('S1234567');
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeGeladen({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to teilnahmeLadenFailed error', async () => {
+            httpServiceMock.loadAktuelleSchulteilnahme.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.schulteilnahmeLaden$);
+
+            action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }));
+
+            expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledOnce();
+        });
+    });
+
     describe('teilnahmeLadenFailed$', () => {
         it('should show a warning when http-status is 404 and not dispatch any action', async () => {
             const promise = firstValueFrom(effects.teilnahmeLadenFailed$);
@@ -365,6 +535,247 @@ describe('TeilnahmeEffects', () => {
             } finally {
                 subscription.unsubscribe();
             }
+        });
+
+        it('should maps to teilnahmeAnmeldenFailed and keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.privatteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(2);
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.privatteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(2);
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to teilnahmeAnmeldenFailed on error', async () => {
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.privatteilnahmeAnmelden$);
+
+            action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }));
+
+            expect(httpServiceMock.privatAnmelden).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('schulteilnahmeAnmelden$', () => {
+        const schulkuerzel = 'S1234567';
+        const auswertungsart: Auswertungsart = AUSWERUNGSART.offline;
+
+        const schulkuerzel2 = '7654321S';
+        const auswertungsart2: Auswertungsart = AUSWERUNGSART.online;
+
+        it('should call the httpService and map to teilnahmeAngemeldet', async () => {
+            httpServiceMock.schuleAnmelden.mockReturnValueOnce(of(teilnahme));
+
+            const promise = firstValueFrom(effects.schulteilnahmeAnmelden$);
+
+            action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
+
+            expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledOnce();
+            expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+        });
+
+        it('should ignore the second action while the first request is active (exhaustMap)', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+
+            const firstRequestFinalized = vi.fn();
+            const secondRequestFinalized = vi.fn();
+
+            httpServiceMock.schuleAnmelden.mockReturnValue(httpFirst$);
+
+            const emittedActions: unknown[] = [];
+            const subscription = effects.schulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(emittedActions).toEqual([]);
+
+                action$.next(
+                    TeilnahmeActions.schulteilnahmeAnmelden({
+                        schulkuerzel: schulkuerzel2,
+                        auswertungsart: auswertungsart2,
+                    })
+                );
+
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(secondRequestFinalized).not.toHaveBeenCalled();
+                expect(emittedActions).toEqual([]);
+
+                httpFirst$.next(teilnahme);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([TeilnahmeActions.teilnahmeAngemeldet({ teilnahme })]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should maps to teilnahmeAnmeldenFailed and keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.privatAnmelden.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.privatteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.privatteilnahmeAnmelden());
+
+                expect(httpServiceMock.privatAnmelden).toHaveBeenCalledTimes(2);
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should keep the effects stream alive after an error occured', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+            const httpSecond$ = new Subject<Teilnahme>();
+
+            httpServiceMock.schuleAnmelden.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(
+                    TeilnahmeActions.schulteilnahmeAnmelden({
+                        schulkuerzel: schulkuerzel2,
+                        auswertungsart: auswertungsart2,
+                    })
+                );
+
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenLastCalledWith('7654321S', AUSWERUNGSART.online);
+
+                httpSecond$.next(teilnahme);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to teilnahmeAnmeldenFailed on error', async () => {
+            httpServiceMock.schuleAnmelden.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.schulteilnahmeAnmelden$);
+
+            action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }));
+
+            expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledOnce();
         });
     });
 

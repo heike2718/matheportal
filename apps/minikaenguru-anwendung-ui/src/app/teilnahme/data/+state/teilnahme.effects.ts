@@ -100,6 +100,22 @@ export class TeilnahmeEffects {
         )
     );
 
+    readonly schulteilnahmeAnmelden$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.schulteilnahmeAnmelden),
+            exhaustMap(({ schulkuerzel, auswertungsart }) =>
+                this.#httpService.schuleAnmelden(schulkuerzel, auswertungsart).pipe(
+                    map((teilnahme: Teilnahme) =>
+                        TeilnahmeActions.teilnahmeAngemeldet({
+                            teilnahme,
+                        })
+                    ),
+                    catchError((error: Error) => of(TeilnahmeActions.teilnahmeAnmeldenFailed({ error })))
+                )
+            )
+        )
+    );
+
     readonly teilnahmeAnmeldenFailed$ = createEffect(
         () =>
             this.#actions.pipe(
