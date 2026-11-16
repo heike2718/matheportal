@@ -1,10 +1,10 @@
-import { AUTHORIZED_RESOURCE_LOAD_STATE, ErrorContext } from '@matheportal/shared-model';
+import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { Teilnahme } from '../../model/teilnahme.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { TeilnahmeActions } from './teilnahme.actions';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
-import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
+import { lehrpersonBerechtigungVerweigert, schuleAusgewaehlt } from '../../../lehrperson/api/lehrperson-store.events';
 
 const TEILNAHME_FEATURE_KEY = 'MKATeilnahme';
 
@@ -46,19 +46,14 @@ export const teilnahmeFeature = createFeature({
             teilnahmeLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
         })),
         on(TeilnahmeActions.anmeldendePersonGeladen, (state, { person }) => {
-            if (
-                (state.teilnahme &&
-                    state.teilnahme.angemeldetDurch &&
-                    state.teilnahme.angemeldetDurch.schulkuerzel === person.schulkuerzel) ||
-                (state.teilnahme && !state.teilnahme.angemeldetDurch)
-            ) {
+            if (state.teilnahme && state.teilnahme.kuerzel === person.schulkuerzel) {
                 return {
                     ...state,
                     teilnahme: { ...state.teilnahme, angemeldetDurch: person },
                     anmeldendePersonLoadState: 'loaded',
                 };
             }
-            return { ...state, anmeldendePersonLoadState: 'loaded' };
+            return state;
         }),
         on(TeilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
             const neueTeilnahme = !state.teilnahme ? undefined : { ...state.teilnahme, angemeldetDurch: undefined };
@@ -69,6 +64,7 @@ export const teilnahmeFeature = createFeature({
                 anmeldendePersonLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
         }),
+        on(schuleAusgewaehlt, () => initialTeilnahmeState),
         on(lehrpersonBerechtigungVerweigert, () => initialTeilnahmeState),
         on(userLoggedOut, () => initialTeilnahmeState)
     ),

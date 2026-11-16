@@ -354,7 +354,7 @@ describe('schulenReducer', () => {
             auswertungsart: 'ONLINE',
             durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             jahr: 2026,
-            kuerzel: 'S1234567',
+            kuerzel: 'SCHULE-1',
         };
 
         it('should return the previous state when wettbewerbskontext undefined', () => {
@@ -373,7 +373,7 @@ describe('schulenReducer', () => {
             const previousState: SchulenState = {
                 wettbewerbskontext: {
                     ...wettbewerbskontext,
-                    teilnahmerefs: [{ jahr: 2025, teilnahmenummer: 'S1234567' }],
+                    teilnahmerefs: [{ jahr: 2025, teilnahmenummer: 'SCHULE-1' }],
                 },
                 wettbewerbskontextLoadState: 'loaded',
                 schulkollegiumLoadState: 'not-loaded',
@@ -386,8 +386,8 @@ describe('schulenReducer', () => {
                 wettbewerbskontext: {
                     anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
                     teilnahmerefs: [
-                        { jahr: 2025, teilnahmenummer: 'S1234567' },
-                        { jahr: 2026, teilnahmenummer: 'S1234567' },
+                        { jahr: 2025, teilnahmenummer: 'SCHULE-1' },
+                        { jahr: 2026, teilnahmenummer: 'SCHULE-1' },
                     ],
                     kollegen: [{ schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' }],
                     vertragDSGVOVorhanden: true,
@@ -401,7 +401,7 @@ describe('schulenReducer', () => {
             const previousState: SchulenState = {
                 wettbewerbskontext: {
                     ...wettbewerbskontext,
-                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'S1234567' }],
+                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'SCHULE-1' }],
                 },
                 wettbewerbskontextLoadState: 'loaded',
                 schulkollegiumLoadState: 'not-loaded',
@@ -413,13 +413,39 @@ describe('schulenReducer', () => {
                 wettbewerbskontextLoadState: 'loaded',
                 wettbewerbskontext: {
                     anmeldestatus: ANMELDESTATUS.bereitsAngemeldet,
-                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'S1234567' }],
+                    teilnahmerefs: [{ jahr: 2026, teilnahmenummer: 'SCHULE-1' }],
                     kollegen: [{ schulkuerzel: 'SCHULE-1', fullName: 'Anna Johanna' }],
                     vertragDSGVOVorhanden: true,
                     schule: schulen[0],
                 },
                 schulkollegiumLoadState: 'not-loaded',
             });
+        });
+
+        it('should keep the current school context when another school was registered', () => {
+            const previousState: SchulenState = {
+                wettbewerbskontext: {
+                    ...wettbewerbskontext,
+                    schule: schulen[1],
+                    kollegen: [],
+                    teilnahmerefs: [],
+                    anmeldestatus: ANMELDESTATUS.moeglich,
+                },
+                wettbewerbskontextLoadState: 'loaded',
+                schulkollegiumLoadState: 'not-loaded',
+            };
+
+            const teilnahmeAndereSchule: Teilnahme = {
+                ...teilnahme,
+                kuerzel: schulen[0].kuerzel,
+            };
+
+            const state = schulenFeature.reducer(
+                previousState,
+                teilnahmeAngemeldet({ teilnahme: teilnahmeAndereSchule })
+            );
+
+            expect(state).toBe(previousState);
         });
     });
 

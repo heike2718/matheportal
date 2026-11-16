@@ -7,7 +7,7 @@ import { Person, Teilnahme } from '../../model/teilnahme.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
-import { selectAnmeldendePersonLoadState, selectTeilnahmeLoadState } from './teilnahme.selectors';
+import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadState } from './teilnahme.selectors';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
@@ -53,9 +53,13 @@ export class TeilnahmeEffects {
     readonly ensureSchulteilnahmeLoaded$ = createEffect(() =>
         this.#actions.pipe(
             ofType(TeilnahmeActions.ensureSchulteilnahmeLoaded),
-            withLatestFrom(this.#store.select(selectTeilnahmeLoadState)),
-            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
-            map(([{ schulkuerzel }]) => TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: schulkuerzel }))
+            withLatestFrom(this.#store.select(selectTeilnahme), this.#store.select(selectTeilnahmeLoadState)),
+            filter(([{ schulkuerzel }, teilnahme, loadState]) => {
+                const andereSchule = teilnahme !== undefined && teilnahme.kuerzel !== schulkuerzel;
+                const needsLoad = loadState === 'not-loaded' || loadState === 'technical-error';
+                return andereSchule || needsLoad;
+            }),
+            map(([{ schulkuerzel }]) => TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }))
         )
     );
 
@@ -82,9 +86,9 @@ export class TeilnahmeEffects {
         );
     });
 
-    readonly teilnahmeGeladen$ = createEffect(() =>
+    readonly teilnahmeAngemeldetOrGeladen$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(TeilnahmeActions.teilnahmeGeladen),
+            ofType(TeilnahmeActions.teilnahmeAngemeldet, TeilnahmeActions.teilnahmeGeladen),
             map(action => ({
                 schulkuerzel: action.teilnahme.kuerzel,
                 durchfuehrungsart: action.teilnahme.durchfuehrungsart,

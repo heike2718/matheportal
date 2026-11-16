@@ -45,7 +45,7 @@ export class LehrpersonEffects {
             filter(({ schulen }) => schulen.length === 1),
             filter(() => this.istAufEinstiegsseite()),
             map(({ schulen }) =>
-                LehrpersonActions.wettbewerbsorganisationGestartet({
+                LehrpersonActions.schuleAusgewaehlt({
                     schulkuerzel: schulen[0].kuerzel,
                 })
             )
@@ -81,10 +81,10 @@ export class LehrpersonEffects {
         { dispatch: false }
     );
 
-    readonly wettbewerbsorganisationGestartet$ = createEffect(
+    readonly schuleAusgewaehlt$ = createEffect(
         () =>
             this.#actions.pipe(
-                ofType(LehrpersonActions.wettbewerbsorganisationGestartet),
+                ofType(LehrpersonActions.schuleAusgewaehlt),
                 tap(action => {
                     // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
                     void this.#router.navigate([

@@ -8,7 +8,7 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { TeilnahmeHttpService } from '../teilnahme-http.service';
 import { TeilnahmeActions } from './teilnahme.actions';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectAnmeldendePersonLoadState, selectTeilnahmeLoadState } from './teilnahme.selectors';
+import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadState } from './teilnahme.selectors';
 import { Auswertungsart, AUSWERUNGSART, Person, Teilnahme } from '../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
@@ -268,10 +268,44 @@ describe('TeilnahmeEffects', () => {
         });
     });
 
-    describe('teilnahmeGeladen$', () => {
-        it('should map to ensureAnmeldendePersonGeladen when durchfuehrungsart schule', async () => {
+    describe('teilnahmeAngemeldetOrGeladen$', () => {
+        it('should map to ensureAnmeldendePersonGeladen when teilnahmeAngemeldet and durchfuehrungsart schule', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeGeladen$.subscribe(action => {
+            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel: 'S1234567' }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not map to any action when teilnahmeAngemeldet and durchfuehrungsart privat', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            const privatteilnahme: Teilnahme = { ...teilnahme, durchfuehrungsart: DURCHFUEHRUNGSART.privat };
+
+            try {
+                action$.next(TeilnahmeActions.teilnahmeAngemeldet({ teilnahme: privatteilnahme }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should map to ensureAnmeldendePersonGeladen when teilnahmeGeladen and durchfuehrungsart schule', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
                 emittedActions.push(action);
             });
 
@@ -286,9 +320,9 @@ describe('TeilnahmeEffects', () => {
             }
         });
 
-        it('should not map to any action when durchfuehrungsart privat', async () => {
+        it('should not map to any action when teilnahmeGeladen and durchfuehrungsart privat', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeGeladen$.subscribe(action => {
+            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
                 emittedActions.push(action);
             });
 
@@ -308,6 +342,7 @@ describe('TeilnahmeEffects', () => {
         it.each(['not-loaded', 'technical-error'] as const)(
             'should map to schulteilnahmeLaden when loadState %s',
             async loadState => {
+                store.overrideSelector(selectTeilnahme, teilnahme);
                 store.overrideSelector(selectTeilnahmeLoadState, loadState);
                 store.refreshState();
 
@@ -329,27 +364,47 @@ describe('TeilnahmeEffects', () => {
             }
         );
 
-        it.each(['loaded', 'unauthorized'] as const)(
-            'should not map to schulteilnahmeLaden when loadState %s',
-            async loadState => {
-                store.overrideSelector(selectTeilnahmeLoadState, loadState);
-                store.refreshState();
+        it('should not map to schulteilnahmeLaden when loadState loaded and teilnahmekuerzel remains the same', async () => {
+            store.overrideSelector(selectTeilnahme, teilnahme);
+            store.overrideSelector(selectTeilnahmeLoadState, 'loaded');
+            store.refreshState();
 
-                const emittedActions: Action[] = [];
+            const emittedActions: Action[] = [];
 
-                const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
-                    next: action => emittedActions.push(action),
-                });
+            const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+                next: action => emittedActions.push(action),
+            });
 
-                try {
-                    action$.next(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
+            try {
+                action$.next(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
 
-                    expect(emittedActions).toEqual([]);
-                } finally {
-                    subscription.unsubscribe();
-                }
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
             }
-        );
+        });
+
+        it('should map to schulteilnahmeLaden when loaded and teilnahmekuerzel belongs to another school', async () => {
+            store.overrideSelector(selectTeilnahme, teilnahme);
+            store.overrideSelector(selectTeilnahmeLoadState, 'loaded');
+            store.refreshState();
+
+            const schulkuerzelB = '7654321S';
+
+            const emittedActions: Action[] = [];
+
+            const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+                next: action => emittedActions.push(action),
+            });
+
+            try {
+                action$.next(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: schulkuerzelB }));
+
+                expect(emittedActions).toEqual([TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel: '7654321S' })]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
     });
 
     describe('schulteilnahmeLaden$', () => {
@@ -596,7 +651,7 @@ describe('TeilnahmeEffects', () => {
         const schulkuerzel = 'S1234567';
 
         it.each(['not-loaded', 'technical-error'] as const)(
-            'should map to anmeldendePersonLaden when loadState %s',
+            'should map to anmeldendePersonLaden when teilnahmeGeladen and loadState %s',
             loadState => {
                 store.overrideSelector(selectAnmeldendePersonLoadState, loadState);
                 store.refreshState();
@@ -617,7 +672,7 @@ describe('TeilnahmeEffects', () => {
         );
 
         it.each(['loaded', 'not-found', 'unauthorized', 'forbidden'] as const)(
-            'should not map to anmeldendePersonLaden when loadState %s',
+            'should not map to anmeldendePersonLaden when teilnahmeGeladen and loadState %s',
             loadState => {
                 store.overrideSelector(selectAnmeldendePersonLoadState, loadState);
                 store.refreshState();

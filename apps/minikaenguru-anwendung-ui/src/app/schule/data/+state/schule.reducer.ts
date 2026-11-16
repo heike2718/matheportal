@@ -79,6 +79,10 @@ export const schulenFeature = createFeature({
         }),
         on(teilnahmeAngemeldet, (state, { teilnahme }) => {
             if (state.wettbewerbskontext) {
+                if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel !== teilnahme.kuerzel) {
+                    return state;
+                }
+
                 const newTeilnahmeRef: TeilnahmeReferenz = { jahr: teilnahme.jahr, teilnahmenummer: teilnahme.kuerzel };
 
                 const isDuplicate = state.wettbewerbskontext.teilnahmerefs.some(

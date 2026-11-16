@@ -16,10 +16,10 @@ describe('LehrpersonActions', () => {
             anzahlSchulen: 2,
         },
     };
-    it('should create the wettbewerbsorganisationGestartet action', () => {
-        const action = LehrpersonActions.wettbewerbsorganisationGestartet({ schulkuerzel: schule.kuerzel });
+    it('should create the schuleAusgewaehlt action', () => {
+        const action = LehrpersonActions.schuleAusgewaehlt({ schulkuerzel: schule.kuerzel });
         expect(action).toEqual({
-            type: '[MKA Lehrperson] wettbewerbsorganisationGestartet',
+            type: '[MKA Lehrperson] schuleAusgewaehlt',
             schulkuerzel: 'S-1',
         });
     });
