@@ -60,7 +60,7 @@ export const teilnahmeFeature = createFeature({
             }
             return { ...state, anmeldendePersonLoadState: 'loaded' };
         }),
-        on(TeilnahmeActions.anlemdendePersonLadenFailed, (state, { error }) => {
+        on(TeilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
             const neueTeilnahme = !state.teilnahme ? undefined : { ...state.teilnahme, angemeldetDurch: undefined };
 
             return {

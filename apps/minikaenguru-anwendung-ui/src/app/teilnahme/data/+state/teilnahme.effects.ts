@@ -2,16 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { TeilnahmeHttpService } from '../teilnahme-http.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TeilnahmeActions } from './teilnahme.actions';
-import { catchError, EMPTY, exhaustMap, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
-import { Teilnahme } from '../../model/teilnahme.model';
+import { catchError, exhaustMap, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { Person, Teilnahme } from '../../model/teilnahme.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
-import { selectTeilnahmeLoadState } from './teilnahme.selectors';
-import {
-    Durchfuehrungsart,
-    DURCHFUEHRUNGSART,
-} from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { selectAnmeldendePersonLoadState, selectTeilnahmeLoadState } from './teilnahme.selectors';
+import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
 @Injectable()
@@ -85,6 +82,18 @@ export class TeilnahmeEffects {
         );
     });
 
+    readonly teilnahmeGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.teilnahmeGeladen),
+            map(action => ({
+                schulkuerzel: action.teilnahme.kuerzel,
+                durchfuehrungsart: action.teilnahme.durchfuehrungsart,
+            })),
+            filter(({ durchfuehrungsart }) => durchfuehrungsart === DURCHFUEHRUNGSART.schule),
+            map(({ schulkuerzel }) => TeilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel }))
+        )
+    );
+
     readonly teilnahmeLadenFailed$ = createEffect(() =>
         this.#actions.pipe(
             ofType(TeilnahmeActions.teilnahmeLadenFailed),
@@ -112,6 +121,31 @@ export class TeilnahmeEffects {
                     durchfuehrungsart === DURCHFUEHRUNGSART.schule && errorContext.httpStatus === 403
             ),
             map(() => lehrpersonBerechtigungVerweigert())
+        )
+    );
+
+    readonly ensureAnmeldendePersonGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.ensureAnmeldendePersonGeladen),
+            withLatestFrom(this.#store.select(selectAnmeldendePersonLoadState)),
+            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
+            map(([{ schulkuerzel }]) => TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }))
+        )
+    );
+
+    readonly anmeldendePersonLaden$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.anmeldendePersonLaden),
+            switchMap(({ schulkuerzel }) =>
+                this.#httpService.loadAnmeldendePerson(schulkuerzel).pipe(
+                    map((person: Person) =>
+                        TeilnahmeActions.anmeldendePersonGeladen({
+                            person,
+                        })
+                    ),
+                    catchError((error: Error) => of(TeilnahmeActions.anmeldendePersonLadenFailed({ error })))
+                )
+            )
         )
     );
 

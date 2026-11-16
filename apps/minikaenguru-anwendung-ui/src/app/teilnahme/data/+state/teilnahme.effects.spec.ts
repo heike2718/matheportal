@@ -8,8 +8,8 @@ import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { TeilnahmeHttpService } from '../teilnahme-http.service';
 import { TeilnahmeActions } from './teilnahme.actions';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectTeilnahmeLoadState } from './teilnahme.selectors';
-import { Auswertungsart, AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.model';
+import { selectAnmeldendePersonLoadState, selectTeilnahmeLoadState } from './teilnahme.selectors';
+import { Auswertungsart, AUSWERUNGSART, Person, Teilnahme } from '../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
@@ -34,6 +34,7 @@ describe('TeilnahmeEffects', () => {
         privatAnmelden: ReturnType<typeof vi.fn>;
         loadAktuelleSchulteilnahme: ReturnType<typeof vi.fn>;
         schuleAnmelden: ReturnType<typeof vi.fn>;
+        loadAnmeldendePerson: ReturnType<typeof vi.fn>;
     };
 
     let messagePublisherMock: { publishWarning: ReturnType<typeof vi.fn>; publishError: ReturnType<typeof vi.fn> };
@@ -68,6 +69,7 @@ describe('TeilnahmeEffects', () => {
             privatAnmelden: vi.fn(),
             loadAktuelleSchulteilnahme: vi.fn(),
             schuleAnmelden: vi.fn(),
+            loadAnmeldendePerson: vi.fn(),
         };
 
         messagePublisherMock = {
@@ -263,6 +265,42 @@ describe('TeilnahmeEffects', () => {
             );
 
             expect(httpServiceMock.loadAktuellePrivatteilnahme).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('teilnahmeGeladen$', () => {
+        it('should map to ensureAnmeldendePersonGeladen when durchfuehrungsart schule', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.teilnahmeGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.teilnahmeGeladen({ teilnahme }));
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel: 'S1234567' }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not map to any action when durchfuehrungsart privat', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.teilnahmeGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            const privatteilnahme: Teilnahme = { ...teilnahme, durchfuehrungsart: DURCHFUEHRUNGSART.privat };
+
+            try {
+                action$.next(TeilnahmeActions.teilnahmeGeladen({ teilnahme: privatteilnahme }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
     });
 
@@ -552,6 +590,174 @@ describe('TeilnahmeEffects', () => {
                 }
             }
         );
+    });
+
+    describe('ensureAnmeldendePersonGeladen$', () => {
+        const schulkuerzel = 'S1234567';
+
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to anmeldendePersonLaden when loadState %s',
+            loadState => {
+                store.overrideSelector(selectAnmeldendePersonLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const subscription = effects.ensureAnmeldendePersonGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(TeilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel }));
+
+                    expect(emittedActions).toEqual([TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel })]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+
+        it.each(['loaded', 'not-found', 'unauthorized', 'forbidden'] as const)(
+            'should not map to anmeldendePersonLaden when loadState %s',
+            loadState => {
+                store.overrideSelector(selectAnmeldendePersonLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const subscription = effects.ensureAnmeldendePersonGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(TeilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel }));
+
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    });
+
+    describe('anmeldendePersonLaden$', () => {
+        const schulkuerzel = 'S1234567';
+        const schulkuerzel2 = '7654321S';
+
+        const person: Person = {
+            schulkuerzel,
+            fullName: 'Rita Reihe',
+        };
+
+        it('should call the httpService and map to anmeldendePersonGeladen when 200', async () => {
+            httpServiceMock.loadAnmeldendePerson.mockReturnValueOnce(of(person));
+
+            const promise = firstValueFrom(effects.anmeldendePersonLaden$);
+
+            action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.anmeldendePersonGeladen({ person }));
+
+            expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledOnce();
+            expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledWith(schulkuerzel);
+        });
+
+        it('should switch to the latest action and cancel previous pending request (switchMap)', () => {
+            const secondResult: Person = {
+                schulkuerzel: schulkuerzel2,
+                fullName: 'Anton Anzahl',
+            };
+
+            const httpFirst$ = new Subject<Person>();
+            const httpSecond$ = new Subject<Person>();
+
+            const firstRequestFinalized = vi.fn();
+
+            httpServiceMock.loadAnmeldendePerson
+                .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
+                .mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.anmeldendePersonLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
+
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenNthCalledWith(1, schulkuerzel);
+
+                action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel: schulkuerzel2 }));
+
+                expect(firstRequestFinalized).toHaveBeenCalledOnce();
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenNthCalledWith(2, schulkuerzel2);
+
+                httpFirst$.next(person);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([]);
+
+                httpSecond$.next(secondResult);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([TeilnahmeActions.anmeldendePersonGeladen({ person: secondResult })]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should keep the effects stream alive after an error occurred', () => {
+            const httpFirst$ = new Subject<Person>();
+            const httpSecond$ = new Subject<Person>();
+
+            httpServiceMock.loadAnmeldendePerson.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.anmeldendePersonLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
+
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenLastCalledWith(schulkuerzel);
+
+                httpSecond$.next(person);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    TeilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.anmeldendePersonGeladen({ person }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to anmeldendePersonLadenFailed on error', async () => {
+            httpServiceMock.loadAnmeldendePerson.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.anmeldendePersonLaden$);
+
+            action$.next(TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(TeilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse }));
+
+            expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledOnce();
+            expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledWith(schulkuerzel);
+        });
     });
 
     describe('privatteilnahmeAnmelden$', () => {

@@ -154,12 +154,12 @@ describe('TeilnahmeActions', () => {
         });
     });
 
-    it('should create the teilnahmeAnmeldenFailed action', () => {
+    it('should create the anmeldendePersonLadenFailed action', () => {
         const error = new Error('uiuiui');
-        const action = TeilnahmeActions.teilnahmeAnmeldenFailed({ error });
+        const action = TeilnahmeActions.anmeldendePersonLadenFailed({ error });
 
         expect(action).toEqual({
-            type: '[MKA Teilnahme] teilnahmeAnmeldenFailed',
+            type: '[MKA Teilnahme] anmeldendePersonLadenFailed',
             error,
         });
     });

@@ -18,8 +18,9 @@ export const TeilnahmeActions = createActionGroup({
         auswertungsartWaehlen: emptyProps(),
         auswertungsartGewaehlt: props<{ auswertungsart: Auswertungsart }>(),
         auswertungsartAendern: props<{ neueAuswertungsart: Auswertungsart }>(),
+        ensureAnmeldendePersonGeladen: props<{ schulkuerzel: string }>(),
         anmeldendePersonLaden: props<{ schulkuerzel: string }>(),
-        anlemdendePersonLadenFailed: props<{ error: Error }>(),
+        anmeldendePersonLadenFailed: props<{ error: Error }>(),
         anmeldendePersonGeladen: props<{ person: Person }>(),
     },
 });

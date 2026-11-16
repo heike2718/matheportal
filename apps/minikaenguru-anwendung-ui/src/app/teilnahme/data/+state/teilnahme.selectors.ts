@@ -13,3 +13,8 @@ export const selectAktuelleTeilnahmeLoaded = createSelector(
 );
 
 export const selectAngemeldet = createSelector(selectTeilnahme, teilnahme => teilnahme !== undefined);
+
+export const selectAnmeldendePersonLoadState = createSelector(
+    selectMKATeilnahmeState,
+    state => state.anmeldendePersonLoadState
+);

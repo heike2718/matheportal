@@ -417,7 +417,7 @@ describe('teilnahmeReducer', () => {
 
             const state = teilnahmeFeature.reducer(
                 previousState,
-                TeilnahmeActions.anlemdendePersonLadenFailed({ error: technicalErrorResponse })
+                TeilnahmeActions.anmeldendePersonLadenFailed({ error: technicalErrorResponse })
             );
 
             expect(state).toEqual({
@@ -456,7 +456,7 @@ describe('teilnahmeReducer', () => {
 
             const state = teilnahmeFeature.reducer(
                 previousState,
-                TeilnahmeActions.anlemdendePersonLadenFailed({ error: unauthorizedErrorResponse })
+                TeilnahmeActions.anmeldendePersonLadenFailed({ error: unauthorizedErrorResponse })
             );
 
             expect(state).toEqual({
@@ -495,7 +495,7 @@ describe('teilnahmeReducer', () => {
 
             const state = teilnahmeFeature.reducer(
                 previousState,
-                TeilnahmeActions.anlemdendePersonLadenFailed({ error: forbiddenErrorResponse })
+                TeilnahmeActions.anmeldendePersonLadenFailed({ error: forbiddenErrorResponse })
             );
 
             expect(state).toEqual({
@@ -534,7 +534,7 @@ describe('teilnahmeReducer', () => {
 
             const state = teilnahmeFeature.reducer(
                 previousState,
-                TeilnahmeActions.anlemdendePersonLadenFailed({ error: notFoundResponse })
+                TeilnahmeActions.anmeldendePersonLadenFailed({ error: notFoundResponse })
             );
 
             expect(state).toEqual({
@@ -573,7 +573,7 @@ describe('teilnahmeReducer', () => {
 
             const state = teilnahmeFeature.reducer(
                 previousState,
-                TeilnahmeActions.anlemdendePersonLadenFailed({ error: new Error('uiuiui') })
+                TeilnahmeActions.anmeldendePersonLadenFailed({ error: new Error('uiuiui') })
             );
 
             expect(state).toEqual({
