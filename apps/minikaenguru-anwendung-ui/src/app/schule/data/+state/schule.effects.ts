@@ -118,4 +118,23 @@ export class SchulenEffects {
             })
         )
     );
+
+    readonly navigateOnWettbewerbOrganisieren$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(SchuleActions.wettbewerbOrganisieren),
+                tap(({ schulkuerzel }) => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
+                    void this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.lehrperson,
+                        'schule',
+                        schulkuerzel,
+                        portalRoutes.minikaenguruAnwendung.schulteilnahme,
+                    ]);
+                })
+            ),
+        { dispatch: false }
+    );
 }

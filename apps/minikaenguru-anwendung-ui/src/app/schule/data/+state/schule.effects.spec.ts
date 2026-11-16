@@ -718,4 +718,30 @@ describe('SchulenEffects', () => {
             }
         });
     });
+
+    describe('navigateOnWettbewerbOrganisieren$', () => {
+        it('should be configured not to dispatch any action', () => {
+            const metadata = getEffectsMetadata(effects);
+
+            expect(metadata.navigateOnWettbewerbOrganisieren$?.dispatch).toBe(false);
+        });
+
+        it('should navigate to privatteilnahme', async () => {
+            const promise = firstValueFrom(effects.navigateOnWettbewerbOrganisieren$);
+
+            action$.next(SchuleActions.wettbewerbOrganisieren({ schulkuerzel: 'S12345678' }));
+
+            await promise;
+
+            expect(routerMock.navigate).toHaveBeenCalledOnce();
+            expect(routerMock.navigate).toHaveBeenCalledWith([
+                '/',
+                'minikaenguru-anwendung',
+                'lehrperson',
+                'schule',
+                'S12345678',
+                'teilnahme',
+            ]);
+        });
+    });
 });
