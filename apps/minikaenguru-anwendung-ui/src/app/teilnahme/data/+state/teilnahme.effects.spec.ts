@@ -1,5 +1,5 @@
 import { Action, Store } from '@ngrx/store';
-import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
+import { finalize, firstValueFrom, of, Subject, subscribeOn, throwError } from 'rxjs';
 import { TeilnahmeEffects } from './teilnahme.effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
@@ -11,6 +11,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectTeilnahmeLoadState } from './teilnahme.selectors';
 import { Auswertungsart, AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
 describe('TeilnahmeEffects', () => {
     let action$: Subject<Action>;
@@ -40,6 +41,13 @@ describe('TeilnahmeEffects', () => {
     const notFoundResponse = new HttpErrorResponse({
         status: 404,
         statusText: 'NotFound',
+        error: 'boom',
+        url: '/teilnahme',
+    });
+
+    const forbidddenResponse = new HttpErrorResponse({
+        status: 403,
+        statusText: 'forbidden',
         error: 'boom',
         url: '/teilnahme',
     });
@@ -214,7 +222,10 @@ describe('TeilnahmeEffects', () => {
                 httpFirst$.error(httpServerErrorResponse);
 
                 expect(emittedActions).toEqual([
-                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                        error: httpServerErrorResponse,
+                    }),
                 ]);
 
                 action$.next(TeilnahmeActions.privatteilnahmeLaden());
@@ -225,7 +236,10 @@ describe('TeilnahmeEffects', () => {
                 httpSecond$.complete();
 
                 expect(emittedActions).toEqual([
-                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                        error: httpServerErrorResponse,
+                    }),
                     TeilnahmeActions.teilnahmeGeladen({ teilnahme }),
                 ]);
             } finally {
@@ -241,7 +255,12 @@ describe('TeilnahmeEffects', () => {
             action$.next(TeilnahmeActions.privatteilnahmeLaden());
             const emitted = await promise;
 
-            expect(emitted).toEqual(TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }));
+            expect(emitted).toEqual(
+                TeilnahmeActions.teilnahmeLadenFailed({
+                    durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                    error: httpServerErrorResponse,
+                })
+            );
 
             expect(httpServiceMock.loadAktuellePrivatteilnahme).toHaveBeenCalledOnce();
         });
@@ -379,7 +398,10 @@ describe('TeilnahmeEffects', () => {
                 httpFirst$.error(httpServerErrorResponse);
 
                 expect(emittedActions).toEqual([
-                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                        error: httpServerErrorResponse,
+                    }),
                 ]);
 
                 action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
@@ -391,7 +413,10 @@ describe('TeilnahmeEffects', () => {
                 httpSecond$.complete();
 
                 expect(emittedActions).toEqual([
-                    TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }),
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                        error: httpServerErrorResponse,
+                    }),
                     TeilnahmeActions.teilnahmeGeladen({ teilnahme }),
                 ]);
             } finally {
@@ -407,48 +432,126 @@ describe('TeilnahmeEffects', () => {
             action$.next(TeilnahmeActions.schulteilnahmeLaden({ schulkuerzel }));
             const emitted = await promise;
 
-            expect(emitted).toEqual(TeilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }));
+            expect(emitted).toEqual(
+                TeilnahmeActions.teilnahmeLadenFailed({
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    error: httpServerErrorResponse,
+                })
+            );
 
             expect(httpServiceMock.loadAktuelleSchulteilnahme).toHaveBeenCalledOnce();
         });
     });
 
     describe('teilnahmeLadenFailed$', () => {
-        it('should show a warning when http-status is 404 and not dispatch any action', async () => {
-            const promise = firstValueFrom(effects.teilnahmeLadenFailed$);
+        it('should show the correct warning when http-status is 404 and not dispatch any action when durchfuehrungsart privat', async () => {
+            const emittedActions: unknown[] = [];
+            const subscription = effects.teilnahmeLadenFailed$.subscribe(action => {
+                emittedActions.push(action);
+            });
 
-            action$.next(
-                TeilnahmeActions.teilnahmeLadenFailed({
-                    error: notFoundResponse,
-                })
-            );
-            await promise;
+            try {
+                action$.next(
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                        error: notFoundResponse,
+                    })
+                );
 
-            expect(messagePublisherMock.publishWarning).toHaveBeenCalledOnce();
-            expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
-                'Sie sind noch nicht zum aktuellen Wettbewerb angemeldet.'
-            );
+                expect(messagePublisherMock.publishWarning).toHaveBeenCalledOnce();
+                expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
+                    'Sie sind noch nicht zum aktuellen Wettbewerb angemeldet.'
+                );
 
-            expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
+                expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
 
-        it('should show an error when http-status is 500 and not dispatch any action', async () => {
-            const promise = firstValueFrom(effects.teilnahmeLadenFailed$);
+        it('should show the correct warning when http-status is 404 and not dispatch any action when durchfuehrungsart schule', async () => {
+            const emittedActions: unknown[] = [];
+            const subscription = effects.teilnahmeLadenFailed$.subscribe(action => {
+                emittedActions.push(action);
+            });
 
-            action$.next(
-                TeilnahmeActions.teilnahmeLadenFailed({
-                    error: httpServerErrorResponse,
-                })
-            );
-            await promise;
+            try {
+                action$.next(
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                        error: notFoundResponse,
+                    })
+                );
 
-            expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
-            expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
-                'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
-            );
+                expect(messagePublisherMock.publishWarning).toHaveBeenCalledOnce();
+                expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
+                    'Die Schule ist noch nicht zum aktuellen Wettbewerb angemeldet.'
+                );
 
-            expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+                expect(messagePublisherMock.publishError).not.toHaveBeenCalled();
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
+
+        it('should show an error message and map to lehrpersonBerechtigungVerweigert when durchfuehrungsart schule and load state forbidden', async () => {
+            const emittedActions: unknown[] = [];
+            const subscription = effects.teilnahmeLadenFailed$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(
+                    TeilnahmeActions.teilnahmeLadenFailed({
+                        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                        error: forbidddenResponse,
+                    })
+                );
+
+                expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+                expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
+                    'Sie haben leider keine Berechtigung für diese Aktion.'
+                );
+
+                expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+
+                expect(emittedActions).toEqual([lehrpersonBerechtigungVerweigert()]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it.each(['SCHULE', 'PRIVAT'] as const)(
+            'should show an error when http-status is 500 and not dispatch any action when durchfuehrungsart %s',
+            async durchfuehrungsart => {
+                const emittedActions: unknown[] = [];
+                const subscription = effects.teilnahmeLadenFailed$.subscribe(action => {
+                    emittedActions.push(action);
+                });
+
+                try {
+                    action$.next(
+                        TeilnahmeActions.teilnahmeLadenFailed({
+                            durchfuehrungsart,
+                            error: httpServerErrorResponse,
+                        })
+                    );
+
+                    expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
+                    expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
+                        'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn Sie eine Mail senden, fügen Sie bitte wenn möglich einen Screenshot hinzu.'
+                    );
+
+                    expect(messagePublisherMock.publishWarning).not.toHaveBeenCalled();
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     });
 
     describe('privatteilnahmeAnmelden$', () => {

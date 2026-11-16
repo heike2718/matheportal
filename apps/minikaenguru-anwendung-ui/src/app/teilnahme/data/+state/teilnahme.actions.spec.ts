@@ -1,4 +1,5 @@
-import { AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.model';
+import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { AUSWERUNGSART, Person, Teilnahme } from '../../model/teilnahme.model';
 import { TeilnahmeActions } from './teilnahme.actions';
 
 describe('TeilnahmeActions', () => {
@@ -58,10 +59,11 @@ describe('TeilnahmeActions', () => {
 
     it('should create the teilnahmeLadenFailed action', () => {
         const error = new Error('uiuiui');
-        const action = TeilnahmeActions.teilnahmeLadenFailed({ error });
+        const action = TeilnahmeActions.teilnahmeLadenFailed({ durchfuehrungsart: DURCHFUEHRUNGSART.schule, error });
 
         expect(action).toEqual({
             type: '[MKA Teilnahme] teilnahmeLadenFailed',
+            durchfuehrungsart: DURCHFUEHRUNGSART.schule,
             error,
         });
     });
@@ -140,6 +142,38 @@ describe('TeilnahmeActions', () => {
         expect(action).toEqual({
             type: '[MKA Teilnahme] auswertungsartAendern',
             neueAuswertungsart: AUSWERUNGSART.offline,
+        });
+    });
+
+    it('should create the anmeldendePersonLaden action', () => {
+        const action = TeilnahmeActions.anmeldendePersonLaden({ schulkuerzel: 'S1234567' });
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] anmeldendePersonLaden',
+            schulkuerzel: 'S1234567',
+        });
+    });
+
+    it('should create the teilnahmeAnmeldenFailed action', () => {
+        const error = new Error('uiuiui');
+        const action = TeilnahmeActions.teilnahmeAnmeldenFailed({ error });
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] teilnahmeAnmeldenFailed',
+            error,
+        });
+    });
+
+    it('should create the anmeldendePersonGeladen action', () => {
+        const person: Person = {
+            schulkuerzel: 'S1234567',
+            fullName: 'Rita Reihe',
+        };
+        const action = TeilnahmeActions.anmeldendePersonGeladen({ person });
+
+        expect(action).toEqual({
+            type: '[MKA Teilnahme] anmeldendePersonGeladen',
+            person,
         });
     });
 });

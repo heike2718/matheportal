@@ -517,27 +517,27 @@ describe('shared utils tests', () => {
         it('maps unauthorized and notFound is invalid', () => {
             expect(mapToErrorContext(unauthorized, false)).toEqual({
                 httpStatus: 401,
-                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+                message: 'Sie haben leider keine Berechtigung für diese Aktion.',
             });
         });
         it('maps unauthorized and notFound is valid', () => {
             expect(mapToErrorContext(unauthorized, true)).toEqual({
                 httpStatus: 401,
-                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+                message: 'Sie haben leider keine Berechtigung für diese Aktion.',
             });
         });
 
         it('maps forbidden and notFound is invalid', () => {
             expect(mapToErrorContext(forbidden, false)).toEqual({
                 httpStatus: 403,
-                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+                message: 'Sie haben leider keine Berechtigung für diese Aktion.',
             });
         });
 
         it('maps forbidden and notFound is valid', () => {
             expect(mapToErrorContext(forbidden, true)).toEqual({
                 httpStatus: 403,
-                message: 'Sie haben leider keine Berechtigung für diese Aktion',
+                message: 'Sie haben leider keine Berechtigung für diese Aktion.',
             });
         });
 

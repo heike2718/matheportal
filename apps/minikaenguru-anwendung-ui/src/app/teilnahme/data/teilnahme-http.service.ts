@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-anwendung.configuration';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Auswertungsart, Teilnahme } from '../model/teilnahme.model';
+import { Auswertungsart, Person, Teilnahme } from '../model/teilnahme.model';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
 import { paths } from '../../generated/api-types';
 
@@ -59,6 +59,20 @@ export class TeilnahmeHttpService {
         const pathTemplate: keyof paths = '/api/schulen/{schuleId}/aktuelle-teilnahme';
         const path = pathTemplate.replace('{schuleId}', schulkuerzel);
         return this.#httpClient.get<Teilnahme>(this.#config.apiUrl + path, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        });
+    }
+
+    /**
+     * Läd die Persoon, die diese Schule zum Wettbewerb angemeldet hat.
+     * @param schulkuerzel string
+     * @returns Observable auf Person
+     */
+    public loadAnmeldendePerson(schulkuerzel: string): Observable<Person> {
+        const pathTemplate: keyof paths = '/api/schulen/{schuleId}/aktuelle-teilnahme/anmeldende-person';
+        const path = pathTemplate.replace('{schuleId}', schulkuerzel);
+        return this.#httpClient.get<Person>(this.#config.apiUrl + path, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });

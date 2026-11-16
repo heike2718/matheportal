@@ -19,3 +19,5 @@ export interface AuswertungsartDialogResult {
     schulkuerzel: string;
     gewaehlteAuswertungsart: Auswertungsart;
 }
+
+export type Person = components['schemas']['Person'];

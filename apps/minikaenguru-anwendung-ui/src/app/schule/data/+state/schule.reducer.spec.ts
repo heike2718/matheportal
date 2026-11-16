@@ -240,7 +240,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'loaded',
             });
         });
-        it('should not change the kollegium but set the loading state when loaded and other schule', () => {
+        it('should not change the kollegium but set the load state when loaded and other schule', () => {
             const schulkollegium: Schulkollegium = {
                 schulkuerzel: 'SCHULE-2',
                 kollegium: [
@@ -260,7 +260,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'loaded',
             });
         });
-        it('should not change the kollegium but set the loading state when technical error on schulkollegiumLadenFailed', () => {
+        it('should not change the kollegium but set the load state when technical error on schulkollegiumLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulkollegiumLadenFailed({ error: technicalErrorResponse })
@@ -274,7 +274,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'technical-error',
             });
         });
-        it('should not change the kollegium but set the loading state when unauthorized on schulkollegiumLadenFailed', () => {
+        it('should not change the kollegium but set the load state when unauthorized on schulkollegiumLadenFailed', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulkollegiumLadenFailed({ error: unauthorizedErrorResponse })
@@ -288,7 +288,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'unauthorized',
             });
         });
-        it('should not change the kollegium but set the loading state when schulkollegiumLadenFailed with 403', () => {
+        it('should not change the kollegium but set the load state when schulkollegiumLadenFailed with 403', () => {
             const state = schulenFeature.reducer(
                 previousState,
                 SchuleActions.schulkollegiumLadenFailed({ error: forbiddenErrorResponse })

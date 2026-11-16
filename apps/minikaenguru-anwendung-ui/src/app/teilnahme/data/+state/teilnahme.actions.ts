@@ -1,5 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Auswertungsart, Teilnahme } from '../../model/teilnahme.model';
+import { Auswertungsart, Person, Teilnahme } from '../../model/teilnahme.model';
+import { Durchfuehrungsart } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 
 export const TeilnahmeActions = createActionGroup({
     source: 'MKA Teilnahme',
@@ -9,7 +10,7 @@ export const TeilnahmeActions = createActionGroup({
         ensureSchulteilnahmeLoaded: props<{ schulkuerzel: string }>(),
         schulteilnahmeLaden: props<{ schulkuerzel: string }>(),
         teilnahmeGeladen: props<{ teilnahme: Teilnahme }>(),
-        teilnahmeLadenFailed: props<{ error: Error }>(),
+        teilnahmeLadenFailed: props<{ durchfuehrungsart: Durchfuehrungsart; error: Error }>(),
         privatteilnahmeAnmelden: emptyProps(),
         schulteilnahmeAnmelden: props<{ schulkuerzel: string; auswertungsart: Auswertungsart }>(),
         teilnahmeAngemeldet: props<{ teilnahme: Teilnahme }>(),
@@ -17,5 +18,8 @@ export const TeilnahmeActions = createActionGroup({
         auswertungsartWaehlen: emptyProps(),
         auswertungsartGewaehlt: props<{ auswertungsart: Auswertungsart }>(),
         auswertungsartAendern: props<{ neueAuswertungsart: Auswertungsart }>(),
+        anmeldendePersonLaden: props<{ schulkuerzel: string }>(),
+        anlemdendePersonLadenFailed: props<{ error: Error }>(),
+        anmeldendePersonGeladen: props<{ person: Person }>(),
     },
 });

@@ -2,12 +2,17 @@ import { inject, Injectable } from '@angular/core';
 import { TeilnahmeHttpService } from '../teilnahme-http.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TeilnahmeActions } from './teilnahme.actions';
-import { catchError, exhaustMap, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Teilnahme } from '../../model/teilnahme.model';
 import { MESSAGE_PUBLISHER } from '@matheportal/error-handling-api';
 import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { selectTeilnahmeLoadState } from './teilnahme.selectors';
+import {
+    Durchfuehrungsart,
+    DURCHFUEHRUNGSART,
+} from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 
 @Injectable()
 export class TeilnahmeEffects {
@@ -35,7 +40,14 @@ export class TeilnahmeEffects {
                             teilnahme,
                         })
                     ),
-                    catchError((error: Error) => of(TeilnahmeActions.teilnahmeLadenFailed({ error })))
+                    catchError((error: Error) =>
+                        of(
+                            TeilnahmeActions.teilnahmeLadenFailed({
+                                durchfuehrungsart: DURCHFUEHRUNGSART.privat,
+                                error,
+                            })
+                        )
+                    )
                 )
             )
         );
@@ -60,28 +72,47 @@ export class TeilnahmeEffects {
                             teilnahme,
                         })
                     ),
-                    catchError((error: Error) => of(TeilnahmeActions.teilnahmeLadenFailed({ error })))
+                    catchError((error: Error) =>
+                        of(
+                            TeilnahmeActions.teilnahmeLadenFailed({
+                                durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                                error,
+                            })
+                        )
+                    )
                 )
             )
         );
     });
 
-    readonly teilnahmeLadenFailed$ = createEffect(
-        () =>
-            this.#actions.pipe(
-                ofType(TeilnahmeActions.teilnahmeLadenFailed),
-                tap(action => {
-                    const errorContext = mapToErrorContext(action.error, true);
-                    if (errorContext.httpStatus !== 404) {
-                        this.#messagePublisher.publishError(errorContext.message);
-                    } else {
+    readonly teilnahmeLadenFailed$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(TeilnahmeActions.teilnahmeLadenFailed),
+            map(action => ({
+                durchfuehrungsart: action.durchfuehrungsart,
+                errorContext: mapToErrorContext(action.error, true),
+            })),
+            tap(({ durchfuehrungsart, errorContext }) => {
+                if (errorContext.httpStatus !== 404) {
+                    this.#messagePublisher.publishError(errorContext.message);
+                } else {
+                    if (durchfuehrungsart === DURCHFUEHRUNGSART.privat) {
                         this.#messagePublisher.publishWarning(
                             'Sie sind noch nicht zum aktuellen Wettbewerb angemeldet.'
                         );
+                    } else {
+                        this.#messagePublisher.publishWarning(
+                            'Die Schule ist noch nicht zum aktuellen Wettbewerb angemeldet.'
+                        );
                     }
-                })
+                }
+            }),
+            filter(
+                ({ durchfuehrungsart, errorContext }) =>
+                    durchfuehrungsart === DURCHFUEHRUNGSART.schule && errorContext.httpStatus === 403
             ),
-        { dispatch: false }
+            map(() => lehrpersonBerechtigungVerweigert())
+        )
     );
 
     readonly privatteilnahmeAnmelden$ = createEffect(() =>

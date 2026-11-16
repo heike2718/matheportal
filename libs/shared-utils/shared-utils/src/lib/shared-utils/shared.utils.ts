@@ -124,7 +124,7 @@ export function mapToErrorContext(error: Error, notFoundIsAValidResponseStatus: 
             case HttpStatusCode.Unauthorized:
             case HttpStatusCode.Forbidden:
                 errorResponse = {
-                    message: 'Sie haben leider keine Berechtigung für diese Aktion',
+                    message: 'Sie haben leider keine Berechtigung für diese Aktion.',
                     constraintViolations: [],
                 };
                 break;
