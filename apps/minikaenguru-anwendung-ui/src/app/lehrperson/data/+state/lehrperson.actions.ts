@@ -4,7 +4,7 @@ import { Schule } from '../../../core/model/schulkatalog.model';
 export const LehrpersonActions = createActionGroup({
     source: 'MKA Lehrperson',
     events: {
-        wettbewerbsorganisationGestartet: props<{ schulkuerzel: string }>(),
+        schuleAusgewaehlt: props<{ schulkuerzel: string }>(),
         ensureSchulenGeladen: emptyProps(),
         schulenLaden: emptyProps(),
         schulenGeladen: props<{ schulen: Schule[] }>(),

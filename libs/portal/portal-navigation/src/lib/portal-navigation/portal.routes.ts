@@ -11,7 +11,7 @@ export const portalRoutes = {
         schule: 'schule/:schulkuerzel',
         ladefehler: 'ladefehler',
         privatteilnahme: 'privatteilnahme',
-        schulteilnahme: 'schulteilnahme/:schulkuerzel',
+        schulteilnahme: 'teilnahme',
         unknown: '**',
     },
 

@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardLehrpersonComponent } from './dashboard-lehrperson.component';
 import { signal, Signal, WritableSignal } from '@angular/core';
 import { Schule } from '../../../core/model/schulkatalog.model';
 import { LehrpersonFacade } from '../../api/lehrperson.facade';
 import { By } from '@angular/platform-browser';
 import { ngMocks } from 'ng-mocks';
 import { LehrpersonSchulenComponent } from '../lehrperson-schulen-component/lehrperson-schulen.component';
+import { LehrpersonDashboardComponent } from './lehrperson-dashboard.component';
 
 describe('DashboardLehrpersonComponent', () => {
-    let component: DashboardLehrpersonComponent;
-    let fixture: ComponentFixture<DashboardLehrpersonComponent>;
+    let component: LehrpersonDashboardComponent;
+    let fixture: ComponentFixture<LehrpersonDashboardComponent>;
 
     let schulenSignal: WritableSignal<Schule[]>;
     let isSchulenLoadedSignal: WritableSignal<boolean>;
@@ -31,7 +31,7 @@ describe('DashboardLehrpersonComponent', () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [DashboardLehrpersonComponent],
+            imports: [LehrpersonDashboardComponent],
             providers: [
                 {
                     provide: LehrpersonFacade,
@@ -40,7 +40,7 @@ describe('DashboardLehrpersonComponent', () => {
             ],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(DashboardLehrpersonComponent);
+        fixture = TestBed.createComponent(LehrpersonDashboardComponent);
         component = fixture.componentInstance;
         await fixture.whenStable();
     });

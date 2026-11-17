@@ -11,14 +11,12 @@ import { portalRoutes } from '@matheportal/portal-navigation';
 import { mkaSchulkatalogsucheGuard } from './schulkatalog/schulkatalogsuche/api/schulkatalogsuche.guard';
 import { schulkatalogantragDataProvider } from './schulkatalog/schulkatalogantrag/api/schulkatalogantrag-data.provider';
 import { wettbewerbDataProvider } from './core/wettbewerb/api/wettbewerb-data.provider';
-import { DashboardLehrpersonComponent } from './lehrperson/features/dashboard-lehrperson/dashboard-lehrperson.component';
 import { schuleDataProvider } from './schule/api/schule-data.provider';
 import { ArbeitskontextHttpService } from './core/services/arbeitskontext-http.service';
 import { lehrpersonDataProvider } from './lehrperson/api/lehrperson-data.provider';
 import { SchuleDashboardComponent } from './schule/features/schule-dashboard/schule-dashboard.component';
 import { mkaSchuleGuard } from './schule/api/mka-schule.guard';
 import { ablaufsteuerungDataProvider } from './core/ablaufsteuerung/ablaufsteuerung-data.provider';
-import { DashboardPrivatpersonComponent } from './privatperson/features/dashboard-privatperson/dashboard-privatperson.component';
 import { mkaPrivatpersonGuard } from './privatperson/api/mka-privatperson.guard';
 import { privatpersonDataProvider } from './privatperson/api/privatperson-data.provider';
 import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
@@ -28,6 +26,10 @@ import { PrivatteilnahmeComponent } from './teilnahme/features/privatteilnahme/p
 import { teilnahmeDataProvider } from './teilnahme/api/teilnahme-data.provider';
 import { mkaPrivatteilnahmeGuard } from './teilnahme/api/mka-privatteilnahme.guard';
 import { GuestInfoComponent } from './start/guest-info/guest-info.component';
+import { mkaSchulteilnahmeGuard } from './teilnahme/api/mka-schulteilnahme.guard';
+import { SchulteilnahmeComponent } from './teilnahme/features/schulteilnahme/schulteilnahme.component';
+import { LehrpersonDashboardComponent } from './lehrperson/features/lehrperson-dashboard/lehrperson-dashboard.component';
+import { PrivatpersonDashboardComponent } from './privatperson/features/privatperson-dashboard/privatperson-dashboard.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -58,7 +60,7 @@ export const remoteRoutes: Routes = [
                     {
                         path: '',
                         pathMatch: 'full',
-                        component: DashboardPrivatpersonComponent,
+                        component: PrivatpersonDashboardComponent,
                     },
                     {
                         path: portalRoutes.minikaenguruAnwendung.privatteilnahme,
@@ -75,12 +77,23 @@ export const remoteRoutes: Routes = [
                     {
                         path: '',
                         pathMatch: 'full',
-                        component: DashboardLehrpersonComponent,
+                        component: LehrpersonDashboardComponent,
                     },
                     {
                         path: portalRoutes.minikaenguruAnwendung.schule,
                         canActivate: [mkaSchuleGuard()],
-                        component: SchuleDashboardComponent,
+                        children: [
+                            {
+                                path: '',
+                                pathMatch: 'full',
+                                component: SchuleDashboardComponent,
+                            },
+                            {
+                                path: portalRoutes.minikaenguruAnwendung.schulteilnahme,
+                                canActivate: [mkaSchulteilnahmeGuard()],
+                                component: SchulteilnahmeComponent,
+                            },
+                        ],
                     },
                 ],
             },

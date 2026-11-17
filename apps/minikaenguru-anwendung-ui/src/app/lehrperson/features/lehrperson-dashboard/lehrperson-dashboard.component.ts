@@ -4,13 +4,12 @@ import { LehrpersonSchulenComponent } from '../lehrperson-schulen-component/lehr
 import { Schule } from '../../../core/model/schulkatalog.model';
 
 @Component({
-    selector: 'mka-dashboard-lehrperson',
     imports: [LehrpersonSchulenComponent],
-    templateUrl: './dashboard-lehrperson.component.html',
-    styleUrl: './dashboard-lehrperson.component.scss',
+    templateUrl: './lehrperson-dashboard.component.html',
+    styleUrl: './lehrperson-dashboard.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardLehrpersonComponent {
+export class LehrpersonDashboardComponent {
     readonly lehrpersonFacade = inject(LehrpersonFacade);
     readonly isSchulenLoaded = this.lehrpersonFacade.isSchulenLoaded;
     readonly schulen = this.lehrpersonFacade.schulen;

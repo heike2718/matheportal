@@ -27,6 +27,10 @@ export class TeilnahmeFacade {
         this.#store.dispatch(TeilnahmeActions.ensurePrivatteilnahmeLoaded());
     }
 
+    public aktuelleSchulteilnahmeVorbereiten(schulkuerzel: string): void {
+        this.#store.dispatch(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel }));
+    }
+
     public privatteilnahmeAnmelden(): void {
         this.#store.dispatch(TeilnahmeActions.privatteilnahmeAnmelden());
     }

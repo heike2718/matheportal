@@ -331,7 +331,7 @@ describe('PrivatpersonEffects', () => {
 
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
             expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
-                'Sie haben leider keine Berechtigung für diese Aktion'
+                'Sie haben leider keine Berechtigung für diese Aktion.'
             );
         });
 

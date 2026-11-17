@@ -20,11 +20,6 @@ import { remoteRoutes } from '../../remote.routes';
 import { GuestInfoComponent } from '../../start/guest-info/guest-info.component';
 import { LadefehlerComponent } from '../../start/ladefehler/ladefehler.component';
 
-// TODO: Bei Einführung von Child-Routes unter dashboard-privatperson zusätzliche Tests für die child routes
-// - Privatperson darf Child-Route aktivieren
-// - Lehrperson wird blockiert/umgeleitet
-// - anonymer User wird blockiert/umgeleitet
-
 describe('mkaPrivatpersonGuard tests', () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;

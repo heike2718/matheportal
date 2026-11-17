@@ -9,13 +9,12 @@ import { TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model'
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 
 @Component({
-    selector: 'mka-dashboard-privatperson',
     imports: [MatButtonModule, MatCardModule, MatDividerModule, MatIconModule],
-    templateUrl: './dashboard-privatperson.component.html',
-    styleUrl: './dashboard-privatperson.component.scss',
+    templateUrl: './privatperson-dashboard.component.html',
+    styleUrl: './privatperson-dashboard.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardPrivatpersonComponent {
+export class PrivatpersonDashboardComponent {
     #privatpersonFacade = inject(PrivatpersonFacade);
     #wettbewerbFacade = inject(WettbewerbFacade);
 

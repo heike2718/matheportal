@@ -312,7 +312,7 @@ describe('LehrpersonEffects', () => {
 
             const emitted = await promise;
 
-            expect(emitted).toEqual(LehrpersonActions.wettbewerbsorganisationGestartet({ schulkuerzel: 'S1234567' }));
+            expect(emitted).toEqual(LehrpersonActions.schuleAusgewaehlt({ schulkuerzel: 'S1234567' }));
         });
 
         it('should not emitt an action when there is exactly one school but url is that of schule', async () => {
@@ -457,7 +457,7 @@ describe('LehrpersonEffects', () => {
             expect(emitted).toEqual(LehrpersonActions.berechtigungVerweigert());
             expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
             expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
-                'Sie haben leider keine Berechtigung für diese Aktion'
+                'Sie haben leider keine Berechtigung für diese Aktion.'
             );
         });
     });
@@ -496,7 +496,7 @@ describe('LehrpersonEffects', () => {
         });
     });
 
-    describe('wettbewerbsorganisationGestartet$', () => {
+    describe('schuleAusgewaehlt$', () => {
         it('should navigate to lehrperson/schule ', async () => {
             const schule: Schule = {
                 kuerzel: 'S1234567',
@@ -513,9 +513,9 @@ describe('LehrpersonEffects', () => {
                 },
             };
 
-            const promise = firstValueFrom(effects.wettbewerbsorganisationGestartet$);
+            const promise = firstValueFrom(effects.schuleAusgewaehlt$);
 
-            action$.next(LehrpersonActions.wettbewerbsorganisationGestartet({ schulkuerzel: schule.kuerzel }));
+            action$.next(LehrpersonActions.schuleAusgewaehlt({ schulkuerzel: schule.kuerzel }));
 
             await promise;
 

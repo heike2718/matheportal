@@ -384,6 +384,19 @@ public class SchuleResourceTest {
     }
 
     @Test
+    @TestSecurity(user = "412b67dc-132f-465a-a3c3-468269e866cb")
+    void test_loadAktuelleTeilnahme() {
+        given()
+                .pathParam("schuleId", "R67URH8B")
+                .get("/aktuelle-teilnahme")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Teilnahme.class);
+    }
+
+    @Test
     @TestSecurity(user = UUID_SANDRA_SATZ)
     void should_loadAnmeldendePerson_return_400() {
 

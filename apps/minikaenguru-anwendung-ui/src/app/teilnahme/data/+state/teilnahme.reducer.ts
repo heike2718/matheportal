@@ -4,17 +4,20 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { TeilnahmeActions } from './teilnahme.actions';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
+import { lehrpersonBerechtigungVerweigert, schuleAusgewaehlt } from '../../../lehrperson/api/lehrperson-store.events';
 
 const TEILNAHME_FEATURE_KEY = 'MKATeilnahme';
 
 export interface TeilnahmeState {
-    teilnahmeLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
-    teilnahme: Teilnahme | undefined;
+    readonly teilnahmeLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly teilnahme: Teilnahme | undefined;
+    readonly anmeldendePersonLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
 }
 
 export const initialTeilnahmeState: TeilnahmeState = {
     teilnahmeLoadState: 'not-loaded',
     teilnahme: undefined,
+    anmeldendePersonLoadState: 'not-loaded',
 };
 
 export const teilnahmeFeature = createFeature({
@@ -42,6 +45,27 @@ export const teilnahmeFeature = createFeature({
             teilnahme: undefined,
             teilnahmeLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
         })),
+        on(TeilnahmeActions.anmeldendePersonGeladen, (state, { person }) => {
+            if (state.teilnahme && state.teilnahme.kuerzel === person.schulkuerzel) {
+                return {
+                    ...state,
+                    teilnahme: { ...state.teilnahme, angemeldetDurch: person },
+                    anmeldendePersonLoadState: 'loaded',
+                };
+            }
+            return state;
+        }),
+        on(TeilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
+            const neueTeilnahme = !state.teilnahme ? undefined : { ...state.teilnahme, angemeldetDurch: undefined };
+
+            return {
+                ...state,
+                teilnahme: neueTeilnahme,
+                anmeldendePersonLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
+            };
+        }),
+        on(schuleAusgewaehlt, () => initialTeilnahmeState),
+        on(lehrpersonBerechtigungVerweigert, () => initialTeilnahmeState),
         on(userLoggedOut, () => initialTeilnahmeState)
     ),
 });

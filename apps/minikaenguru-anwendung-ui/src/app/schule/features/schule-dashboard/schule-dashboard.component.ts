@@ -89,11 +89,17 @@ export class SchuleDashboardComponent {
     }
 
     public schuleAnmelden(): void {
-        console.log('jetzt action triggern zum Anmelden der Schule');
+        const theSchule = this.schule();
+        if (theSchule) {
+            this.#schuleFacade.schulteilnahmeAnmelden(theSchule.kuerzel);
+        }
     }
 
     public wettbewerbOrganisieren(): void {
-        console.log('jetzt action triggern zum Organisieren des Wettbewerbs');
+        const theSchule = this.schule();
+        if (theSchule) {
+            this.#schuleFacade.wettbewerbOrganisieren(theSchule.kuerzel);
+        }
     }
 
     public dsgvoVertragHerunterladen(): void {
