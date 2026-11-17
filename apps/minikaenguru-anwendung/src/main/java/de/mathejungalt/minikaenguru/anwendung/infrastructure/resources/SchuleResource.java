@@ -69,14 +69,13 @@ public class SchuleResource implements SchuleApi {
     @Override
     public Response klasseAnlegen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId,
             @Valid @NotNull KlasseRequest klasseRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'klasseAnlegen'");
+        return Response.status(Status.CREATED).entity(schuleService.klasseAnlegen(schuleId, klasseRequest)).build();
     }
 
     @Override
     public Response klassenLoeschen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'klassenLoeschen'");
+        schuleService.alleKlassenLoeschen(schuleId);
+        return Response.status(Status.NO_CONTENT).build();
     }
 
     @Override

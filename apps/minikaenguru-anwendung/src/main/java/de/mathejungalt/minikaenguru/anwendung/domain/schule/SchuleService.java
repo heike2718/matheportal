@@ -1,7 +1,10 @@
 package de.mathejungalt.minikaenguru.anwendung.domain.schule;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,8 +18,14 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import org.hibernate.exception.ConstraintViolationException;
+
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.ExcpetionUtils;
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruConflictException;
+import de.mathejungalt.minikaenguru.anwendung.domain.exception.MinikaenguruRuntimeException;
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Klasse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.KlasseRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
@@ -24,6 +33,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schulkollegium;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.TeilnahmeReferenz;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Wettbewerb;
 import de.mathejungalt.minikaenguru.anwendung.domain.schulkatalog.SchulkatalogService;
+import de.mathejungalt.minikaenguru.anwendung.domain.shared.Loeschservice;
 import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmeUtils;
 import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmenService;
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbService;
@@ -68,6 +78,9 @@ public final class SchuleService {
     TeilnahmenService teilnahmenService;
 
     @Inject
+    Loeschservice loeschservice;
+
+    @Inject
     SchulkollegiumDao schulkollegiumDao;
 
     @Inject
@@ -78,6 +91,9 @@ public final class SchuleService {
 
     @Inject
     SecurityIdentity securityIdentity;
+
+    @Inject
+    Clock clock;
 
     /**
      * Läd den Wettebwerbskontext der Schule mit diesem kuerzel.
@@ -208,7 +224,72 @@ public final class SchuleService {
         return klasseDao.findKlassenBySchulkuerzel(schuleId).stream().map(this::mapFromDb).toList();
     }
 
+    /**
+     * Legt in der gegebenen Schule eine neue Klasse an.
+     *
+     * @param schuleId      String
+     * @param klasseRequest KlasseRequest
+     * @return Klasse
+     */
+    @KuerzelZugriff("schule: klasse anlegen")
+    public Klasse klasseAnlegen(@AuthorizationKey final String schuleId, final KlasseRequest klasseRequest) {
+
+        try {
+
+            final String ownUuid = securityIdentity.getPrincipal().getName();
+            final String uuid = UUID.randomUUID().toString();
+            final LocalDateTime now = LocalDateTime.now(clock);
+
+            KlasseEntity entity = KlasseEntity
+                    .builder()
+                    .uuid(uuid)
+                    .schulkuerzel(schuleId)
+                    .name(klasseRequest.getName())
+                    .createdAt(now)
+                    .createdBy(ownUuid)
+                    .updatedAt(now)
+                    .updatedBy(ownUuid)
+                    .build();
+
+            klasseDao.insertKlasse(entity);
+
+            return this.mapFromDb(entity);
+        } catch (RuntimeException e) {
+            if (isConstraintViolationExceptionWithUKName(e, KlasseEntity.UK_NAME_KLASSEN)) {
+                throw new MinikaenguruConflictException(
+                        "In dieser Schule gibt es bereits eine Klasse gleichen Namens.");
+            }
+            throw new MinikaenguruRuntimeException(
+                    "Beim Anlegen einer Klasse ist ein Fehler aufgetreten: " + e.getMessage(), e);
+
+        }
+    }
+
     private Klasse mapFromDb(final KlasseEntity entity) {
         return new Klasse().name(entity.getName()).schulkuerzel(entity.getSchulkuerzel()).uuid(entity.getUuid());
+    }
+
+    private boolean isConstraintViolationExceptionWithUKName(final RuntimeException exception, final String ukName) {
+        final Optional<ConstraintViolationException> opt = ExcpetionUtils
+                .findCause(exception, ConstraintViolationException.class);
+
+        if (opt.isPresent()) {
+            final ConstraintViolationException cve = opt.get();
+            if (ukName.equals(cve.getConstraintName())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    /**
+     * Löscht kaskadierend alle Klassen einer Schule, also inklusive Kindern und Lösungszetteln.
+     *
+     * @param schuleId String
+     */
+    @KuerzelZugriff("schule: alle klassen löschen")
+    public void alleKlassenLoeschen(@AuthorizationKey final String schuleId) {
+        this.loeschservice.alleKlassenEinerSchuleLoeschen(schuleId);
     }
 }

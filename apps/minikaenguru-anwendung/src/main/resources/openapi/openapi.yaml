@@ -1062,14 +1062,8 @@ components:
         KlasseRequest:
             type: object
             required:
-                - schulkuerzel
                 - name
             properties:
-                schulkuerzel:
-                    type: string
-                    pattern: '^[A-Z0-9]*$'
-                    maxLength: 8
-                    description: Kürzel der Schule, zu der die Klasse gehört.
                 name:
                     type: string
                     pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'

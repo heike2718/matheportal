@@ -32,13 +32,15 @@ import lombok.ToString;
                 query = "select count(k) from KlasseEntity k where k.schulkuerzel = :schulkuerzel"),
         @NamedQuery(
                 name = KlasseEntity.FIND_KLASSEN_BY_SCHULKURZEL,
-                query = "select k from KlasseEntity k where k.schulkuerzel = :schulkuerzel") })
+                query = "select k from KlasseEntity k where k.schulkuerzel = :schulkuerzel order by k.name") })
 @SuppressWarnings("CPD-START")
 public class KlasseEntity {
 
     public static final String COUNT_BY_SCHULKUERZEL = "KlasseEntity.COUNT_BY_SCHULKUERZEL";
 
     public static final String FIND_KLASSEN_BY_SCHULKURZEL = "KlasseEntity.FIND_KLASSEN_BY_SCHULKURZEL";
+
+    public static final String UK_NAME_KLASSEN = "uk_klassen_1";
 
     @Id
     @Column(name = "uuid", nullable = false, length = 36)
