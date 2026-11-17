@@ -26,21 +26,27 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "klassen", schema = "minikaenguru")
-@NamedQueries({ @NamedQuery(
-        name = KlasseEntity.COUNT_BY_KUERZEL_SCHULE,
-        query = "select count(k) from KlasseEntity k where k.kuerzelSchule = :kuerzelSchule") })
+@NamedQueries({
+        @NamedQuery(
+                name = KlasseEntity.COUNT_BY_SCHULKUERZEL,
+                query = "select count(k) from KlasseEntity k where k.schulkuerzel = :schulkuerzel"),
+        @NamedQuery(
+                name = KlasseEntity.FIND_KLASSEN_BY_SCHULKURZEL,
+                query = "select k from KlasseEntity k where k.schulkuerzel = :schulkuerzel") })
 @SuppressWarnings("CPD-START")
 public class KlasseEntity {
 
-    public static final String COUNT_BY_KUERZEL_SCHULE = "KlasseEntity.COUNT_BY_KUERZEL_SCHULE";
+    public static final String COUNT_BY_SCHULKUERZEL = "KlasseEntity.COUNT_BY_SCHULKUERZEL";
+
+    public static final String FIND_KLASSEN_BY_SCHULKURZEL = "KlasseEntity.FIND_KLASSEN_BY_SCHULKURZEL";
 
     @Id
     @Column(name = "uuid", nullable = false, length = 36)
     private String uuid;
 
-    @Column(name = "kuerzel_schule", nullable = false, length = 10)
+    @Column(name = "schulkuerzel", nullable = false, length = 10)
     @EqualsAndHashCode.Exclude
-    private String kuerzelSchule;
+    private String schulkuerzel;
 
     @Column(name = "name", nullable = false, length = 55)
     @EqualsAndHashCode.Exclude

@@ -1,6 +1,7 @@
 package de.mathejungalt.minikaenguru.anwendung.infrastructure.resources;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.Response.Status;
 import io.quarkus.security.Authenticated;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.KlasseRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.schule.SchuleService;
 import de.mathejungalt.minikaenguru.anwendung.domain.teilnahmen.TeilnahmenService;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.generated.SchuleApi;
@@ -62,6 +64,24 @@ public class SchuleResource implements SchuleApi {
                 .status(Status.CREATED)
                 .entity(teilnahmenService.schulteilnahmeAnlegen(schuleId, auswertungsart))
                 .build();
+    }
+
+    @Override
+    public Response klasseAnlegen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId,
+            @Valid @NotNull KlasseRequest klasseRequest) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'klasseAnlegen'");
+    }
+
+    @Override
+    public Response klassenLoeschen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'klassenLoeschen'");
+    }
+
+    @Override
+    public Response loadKlassen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) final String schuleId) {
+        return Response.ok(schuleService.loadKlassen(schuleId)).build();
     }
 
 }

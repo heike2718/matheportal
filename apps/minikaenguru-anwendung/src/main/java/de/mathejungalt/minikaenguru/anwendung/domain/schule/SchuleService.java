@@ -16,6 +16,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mathejungalt.minikaenguru.anwendung.domain.exception.ResourceNotFoundException;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Klasse;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
@@ -31,8 +32,10 @@ import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.Autho
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authorization.KuerzelZugriff;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderHttpException;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.KlasseDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.SchulkollegiumDao;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.dao.VertragAuftragsdatenverarbeitungDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.KlasseEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.SchulkollegiumsmitgliedEntity;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.persistence.entities.TeilnahmeEntity;
 
@@ -66,6 +69,9 @@ public final class SchuleService {
 
     @Inject
     SchulkollegiumDao schulkollegiumDao;
+
+    @Inject
+    KlasseDao klasseDao;
 
     @Inject
     VertragAuftragsdatenverarbeitungDao vertragAuftragsdatenverarbeitungDao;
@@ -189,5 +195,20 @@ public final class SchuleService {
                             e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Läd die Klassen der gegebenen Schule.
+     *
+     * @param schuleId String
+     * @return List
+     */
+    @KuerzelZugriff("schule: klassen laden")
+    public List<Klasse> loadKlassen(@AuthorizationKey final String schuleId) {
+        return klasseDao.findKlassenBySchulkuerzel(schuleId).stream().map(this::mapFromDb).toList();
+    }
+
+    private Klasse mapFromDb(final KlasseEntity entity) {
+        return new Klasse().name(entity.getName()).schulkuerzel(entity.getSchulkuerzel()).uuid(entity.getUuid());
     }
 }

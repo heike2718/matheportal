@@ -14,6 +14,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Klasse;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
@@ -25,6 +26,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbServic
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.CleanupTestDataDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.TestConstants;
 
 import io.restassured.http.ContentType;
 
@@ -53,6 +55,9 @@ public class SchuleResourceTest {
 
     private static final String UUID_RITA_REIHE = "c540dbeb-d7fc-48c5-bd60-f860859cc88c";
     private static final String SCHULE_RITA_REIHE = "CSS3MMX7";
+
+    private static final String UUID_FRODO = "412b67dc-132f-465a-a3c3-468269e866cb";
+    private static final String SCHULE_MIT_KLASSEN_FRODO = "R67URH8B";
 
     @InjectMock
     @RestClient
@@ -458,5 +463,52 @@ public class SchuleResourceTest {
                 .statusCode(404);
 
         verify(authproviderRestClient, never()).getUserDetails(anyString(), anyString(), anyString(), anyString());
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlassen_work() {
+
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .get("/klassen")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse[].class);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlassen_return_400() {
+
+        final ErrorResponse errorResponse = given()
+                .pathParam("schuleId", "ÜÜÜ")
+                .get("/klassen")
+                .then()
+                .statusCode(400)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, errorResponse.getMessage());
+
+    }
+
+    @Test
+    void should_loadKlassen_return_401() {
+
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).get("/klassen").then().statusCode(401);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlassen_return_403() {
+
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).get("/klassen").then().statusCode(403);
+
     }
 }
