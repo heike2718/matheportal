@@ -22,7 +22,7 @@ public class MinikaenguruConflictException extends RuntimeException {
      * @param message String
      * @param cause   Throwable
      */
-    public MinikaenguruConflictException(String message, Throwable cause) {
+    public MinikaenguruConflictException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
