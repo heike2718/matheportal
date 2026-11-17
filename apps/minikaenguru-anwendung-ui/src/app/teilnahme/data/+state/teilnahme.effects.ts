@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadState } from './teilnahme.selectors';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
+import { selectSchuleWettbewerbskontext } from '../../../schule/api/public-schule.selectors';
+import { selectWettbewerbskontext } from '../../../schule/data/+state/schule.selectors';
 
 @Injectable()
 export class TeilnahmeEffects {
@@ -174,7 +176,11 @@ export class TeilnahmeEffects {
             ofType(TeilnahmeActions.schulteilnahmeAnmelden),
             exhaustMap(({ schulkuerzel, auswertungsart }) =>
                 this.#httpService.schuleAnmelden(schulkuerzel, auswertungsart).pipe(
-                    map((teilnahme: Teilnahme) =>
+                    withLatestFrom(this.#store.select(selectSchuleWettbewerbskontext)),
+                    filter(
+                        ([teilnahme, wettbewerbskontext]) => teilnahme.kuerzel === wettbewerbskontext?.schule.kuerzel
+                    ),
+                    map(([teilnahme]) =>
                         TeilnahmeActions.teilnahmeAngemeldet({
                             teilnahme,
                         })

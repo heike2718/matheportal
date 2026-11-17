@@ -1,5 +1,5 @@
 import { Action, Store } from '@ngrx/store';
-import { finalize, firstValueFrom, of, Subject, subscribeOn, throwError } from 'rxjs';
+import { finalize, firstValueFrom, of, Subject, throwError } from 'rxjs';
 import { TeilnahmeEffects } from './teilnahme.effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
@@ -12,6 +12,9 @@ import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadSt
 import { Auswertungsart, AUSWERUNGSART, Person, Teilnahme } from '../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
+import { SchuleWettbewerbskontext } from '../../../schule/model/schule.model';
+import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
+import { selectSchuleWettbewerbskontext } from '../../../schule/api/public-schule.selectors';
 
 describe('TeilnahmeEffects', () => {
     let action$: Subject<Action>;
@@ -95,6 +98,7 @@ describe('TeilnahmeEffects', () => {
 
         effects = TestBed.inject(TeilnahmeEffects);
         store = TestBed.inject(Store) as MockStore;
+        vi.clearAllMocks();
     });
 
     describe('ensurePrivatteilnahmeLoaded$', () => {
@@ -994,6 +998,32 @@ describe('TeilnahmeEffects', () => {
         const schulkuerzel2 = '7654321S';
         const auswertungsart2: Auswertungsart = AUSWERUNGSART.online;
 
+        const wettbewerbskontext: SchuleWettbewerbskontext = {
+            anmeldestatus: ANMELDESTATUS.moeglich,
+            kollegen: [],
+            schule: {
+                kuerzel: 'S1234567',
+                name: 'Baumschule',
+                ort: {
+                    land: {
+                        kuerzel: 'DE-BB',
+                        name: 'Brandenburg',
+                        anzahlOrte: 456,
+                    },
+                    kuerzel: 'O1234567',
+                    name: 'Waldeck',
+                    anzahlSchulen: 13,
+                },
+            },
+            teilnahmerefs: [],
+            vertragDSGVOVorhanden: false,
+        };
+
+        beforeEach(() => {
+            store.overrideSelector(selectSchuleWettbewerbskontext, wettbewerbskontext);
+            store.refreshState();
+        });
+
         it('should call the httpService and map to teilnahmeAngemeldet', async () => {
             httpServiceMock.schuleAnmelden.mockReturnValueOnce(of(teilnahme));
 
@@ -1006,6 +1036,62 @@ describe('TeilnahmeEffects', () => {
 
             expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledOnce();
             expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+        });
+
+        it('should call the httpService but not map to teilnahmeAngemeldet when no wettbewerbskontext is loaded', async () => {
+            store.overrideSelector(selectSchuleWettbewerbskontext, undefined);
+            store.refreshState();
+
+            httpServiceMock.schuleAnmelden.mockReturnValueOnce(of(teilnahme));
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.schulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledOnce();
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not map to teilnahmeAngemeldet when the school context changes before the response arrives', async () => {
+            const httpFirst$ = new Subject<Teilnahme>();
+
+            httpServiceMock.schuleAnmelden.mockReturnValue(httpFirst$);
+
+            const wettbewerbskontext2: SchuleWettbewerbskontext = {
+                ...wettbewerbskontext,
+                schule: { ...wettbewerbskontext.schule, kuerzel: '7654321S' },
+            };
+
+            const emittedActions: unknown[] = [];
+            const subscription = effects.schulteilnahmeAnmelden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(TeilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
+
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledWith('S1234567', AUSWERUNGSART.offline);
+                expect(emittedActions).toEqual([]);
+
+                store.overrideSelector(selectSchuleWettbewerbskontext, wettbewerbskontext2);
+                store.refreshState();
+
+                httpFirst$.next(teilnahme);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
         });
 
         it('should ignore the second action while the first request is active (exhaustMap)', async () => {
