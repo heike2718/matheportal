@@ -30,11 +30,11 @@ public class LoesungszettelDao {
     /**
      * Gibt den Loesungszettel mit der gegebenen id zurück.
      *
-     * @param id Long
+     * @param primaryKey Long
      * @return LoesungszettelEntity oder null
      */
-    public LoesungszettelEntity findByPrimaryKey(final Long id) {
-        return entityManager.find(LoesungszettelEntity.class, id);
+    public LoesungszettelEntity findByPrimaryKey(final Long primaryKey) {
+        return entityManager.find(LoesungszettelEntity.class, primaryKey);
     }
 
     /**

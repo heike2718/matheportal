@@ -46,20 +46,20 @@ public class Loeschservice {
     @Transactional
     public void alleKlassenEinerSchuleLoeschen(final String schulkuerzel) {
 
-        List<KlasseEntity> klassen = klasseDao.findKlassenBySchulkuerzel(schulkuerzel);
+        final List<KlasseEntity> klassen = klasseDao.findKlassenBySchulkuerzel(schulkuerzel);
 
         int anzahlKlassen = 0;
         int anzahlKinder = 0;
         int anzahlLoesungszettel = 0;
 
-        for (KlasseEntity klasseEntity : klassen) {
+        for (final KlasseEntity klasseEntity : klassen) {
 
-            List<KindEntity> kinder = kindDao.findKinderByKlasseId(klasseEntity.getUuid());
+            final List<KindEntity> kinder = kindDao.findKinderByKlasseId(klasseEntity.getUuid());
 
-            for (KindEntity kindEntity : kinder) {
+            for (final KindEntity kindEntity : kinder) {
 
                 if (kindEntity.getLoesungszettelId() != null) {
-                    LoesungszettelEntity loesungszettel = loesungszettelDao
+                    final LoesungszettelEntity loesungszettel = loesungszettelDao
                             .findByPrimaryKey(kindEntity.getLoesungszettelId());
                     loesungszettelDao.deleteLoesungszettel(loesungszettel);
                     anzahlLoesungszettel++;
@@ -74,7 +74,7 @@ public class Loeschservice {
 
         }
 
-        String context = "alle Klassen der Schule " + schulkuerzel + " gelöscht. anzahlLoesungszettel="
+        final String context = "alle Klassen der Schule " + schulkuerzel + " gelöscht. anzahlLoesungszettel="
                 + anzahlLoesungszettel + ", anzahlKinder=" + anzahlKinder + ", anzahlKlassen=" + anzahlKlassen;
         auditEventService.recordAuditEvent(AuditEventType.SCHULE_KLASSEN_GELOESCHT, context);
     }

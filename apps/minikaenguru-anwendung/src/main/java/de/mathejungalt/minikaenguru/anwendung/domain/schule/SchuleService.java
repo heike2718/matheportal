@@ -240,7 +240,7 @@ public final class SchuleService {
             final String uuid = UUID.randomUUID().toString();
             final LocalDateTime now = LocalDateTime.now(clock);
 
-            KlasseEntity entity = KlasseEntity
+            final KlasseEntity entity = KlasseEntity
                     .builder()
                     .uuid(uuid)
                     .schulkuerzel(schuleId)
@@ -256,8 +256,8 @@ public final class SchuleService {
             return this.mapFromDb(entity);
         } catch (RuntimeException e) {
             if (isConstraintViolationExceptionWithUKName(e, KlasseEntity.UK_NAME_KLASSEN)) {
-                throw new MinikaenguruConflictException(
-                        "In dieser Schule gibt es bereits eine Klasse gleichen Namens.");
+                throw new MinikaenguruConflictException("In dieser Schule gibt es bereits eine Klasse gleichen Namens.",
+                        e);
             }
             throw new MinikaenguruRuntimeException(
                     "Beim Anlegen einer Klasse ist ein Fehler aufgetreten: " + e.getMessage(), e);

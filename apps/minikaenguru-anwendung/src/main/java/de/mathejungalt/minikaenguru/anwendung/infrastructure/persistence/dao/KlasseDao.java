@@ -50,7 +50,7 @@ public class KlasseDao {
      * @param klasse KlasseEntity
      */
     @Transactional
-    public void insertKlasse(KlasseEntity klasse) {
+    public void insertKlasse(final KlasseEntity klasse) {
         this.entityManager.persist(klasse);
     }
 

@@ -67,13 +67,13 @@ public class SchuleResource implements SchuleApi {
     }
 
     @Override
-    public Response klasseAnlegen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId,
-            @Valid @NotNull KlasseRequest klasseRequest) {
+    public Response klasseAnlegen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) final String schuleId,
+            @Valid @NotNull final KlasseRequest klasseRequest) {
         return Response.status(Status.CREATED).entity(schuleService.klasseAnlegen(schuleId, klasseRequest)).build();
     }
 
     @Override
-    public Response klassenLoeschen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) String schuleId) {
+    public Response klassenLoeschen(@Pattern(regexp = REGEXP_KUERZEL) @Size(max = 8) final String schuleId) {
         schuleService.alleKlassenLoeschen(schuleId);
         return Response.status(Status.NO_CONTENT).build();
     }
