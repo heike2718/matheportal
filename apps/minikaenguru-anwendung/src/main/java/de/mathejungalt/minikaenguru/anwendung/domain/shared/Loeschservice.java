@@ -85,7 +85,7 @@ public class Loeschservice {
      * @param klasseId String
      */
     @Transactional
-    public void klasseLoeschen(String klasseId) {
+    public void klasseLoeschen(final String klasseId) {
         final KlasseEntity klasseEntity = klasseDao.findKlasseByPrimaryKey(klasseId);
 
         if (klasseEntity == null) {

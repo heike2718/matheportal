@@ -284,7 +284,7 @@ public final class SchuleService {
     @KuerzelZugriff("schule: klasse laden")
     public Klasse loadKlasse(@AuthorizationKey final String schuleId, final String klasseId) {
 
-        KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
+        final KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
 
         if (entity == null) {
             throw new ResourceNotFoundException("Diese Klasse gibt es nicht");
@@ -305,7 +305,7 @@ public final class SchuleService {
     public Klasse klasseAendern(@AuthorizationKey final String schuleId, final String klasseId,
             final KlasseRequest klasseRequest) {
 
-        KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
+        final KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
 
         if (entity == null) {
             throw new ResourceNotFoundException("Diese Klasse gibt es nicht");
