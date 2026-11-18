@@ -79,4 +79,40 @@ public class Loeschservice {
         auditEventService.recordAuditEvent(AuditEventType.SCHULE_KLASSEN_GELOESCHT, context);
     }
 
+    /**
+     * Löscht die Klasse mit der gegebenen id und alle Kinder nebst Lösungszetteln
+     *
+     * @param klasseId String
+     */
+    @Transactional
+    public void klasseLoeschen(String klasseId) {
+        final KlasseEntity klasseEntity = klasseDao.findKlasseByPrimaryKey(klasseId);
+
+        if (klasseEntity == null) {
+            return;
+        }
+
+        int anzahlKinder = 0;
+        int anzahlLoesungszettel = 0;
+
+        final List<KindEntity> kinder = kindDao.findKinderByKlasseId(klasseEntity.getUuid());
+
+        for (final KindEntity kindEntity : kinder) {
+            if (kindEntity.getLoesungszettelId() != null) {
+                final LoesungszettelEntity loesungszettel = loesungszettelDao
+                        .findByPrimaryKey(kindEntity.getLoesungszettelId());
+                loesungszettelDao.deleteLoesungszettel(loesungszettel);
+                anzahlLoesungszettel++;
+            }
+
+            kindDao.deleteKind(kindEntity);
+            anzahlKinder++;
+        }
+
+        klasseDao.deleteKlasse(klasseEntity);
+
+        final String context = "Klasse " + klasseEntity.getName() + " der Schule " + klasseEntity.getSchulkuerzel()
+                + " gelöscht. anzahlLoesungszettel=" + anzahlLoesungszettel + ", anzahlKinder=" + anzahlKinder;
+        auditEventService.recordAuditEvent(AuditEventType.KLASSE_GELOESCHT, context);
+    }
 }

@@ -84,4 +84,37 @@ public class SchuleResource implements SchuleApi {
         return Response.ok(schuleService.loadKlassen(schuleId)).build();
     }
 
+    @Override
+    public Response getKlasse(
+            @Pattern(regexp = PatternConstants.REGEXP_KUERZEL)
+            @Size(max = PatternConstants.MAX_SIZE_KUERZEL_SCHULKATALOG) final String schuleId,
+            @Pattern(regexp = PatternConstants.REGEXP_UUID)
+            @Size(max = PatternConstants.MAX_SIZE_UUID) final String klasseId) {
+
+        return Response.ok(schuleService.loadKlasse(schuleId, klasseId)).build();
+
+    }
+
+    @Override
+    public Response klasseAendern(
+            @Pattern(regexp = PatternConstants.REGEXP_KUERZEL)
+            @Size(max = PatternConstants.MAX_SIZE_KUERZEL_SCHULKATALOG) final String schuleId,
+            @Pattern(regexp = PatternConstants.REGEXP_UUID)
+            @Size(max = PatternConstants.MAX_SIZE_UUID) final String klasseId,
+            @Valid @NotNull KlasseRequest klasseRequest) {
+
+        return Response.ok(schuleService.klasseAendern(schuleId, klasseId, klasseRequest)).build();
+    }
+
+    @Override
+    public Response klasseLoeschen(
+            @Pattern(regexp = PatternConstants.REGEXP_KUERZEL)
+            @Size(max = PatternConstants.MAX_SIZE_KUERZEL_SCHULKATALOG) final String schuleId,
+            @Pattern(regexp = PatternConstants.REGEXP_UUID)
+            @Size(max = PatternConstants.MAX_SIZE_UUID) final String klasseId) {
+
+        schuleService.klasseLoeschen(schuleId, klasseId);
+        return Response.status(Status.NO_CONTENT).build();
+    }
+
 }

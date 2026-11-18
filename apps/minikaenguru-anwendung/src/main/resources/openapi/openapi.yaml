@@ -814,7 +814,7 @@ paths:
     /api/schulen/{schuleId}/klassen/{klasseId}:
         get:
             tags:
-                - Klasse
+                - Schule
             summary: die Klasse einer Schule
             description: läd die durch die klasseId definierte Klasse
             operationId: getKlasse
@@ -874,7 +874,7 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
         put:
             tags:
-                - Klasse
+                - Schule
             summary: Klasse ändern
             description: ändert die durch die klasseId definierte Klasse
             operationId: klasseAendern
@@ -947,7 +947,7 @@ paths:
                                 $ref: '#/components/schemas/ErrorResponse'
         delete:
             tags:
-                - Klasse
+                - Schule
             summary: Klasse löschen
             description: löscht die durch die klasseId definierte Klasse
             operationId: klasseLoeschen

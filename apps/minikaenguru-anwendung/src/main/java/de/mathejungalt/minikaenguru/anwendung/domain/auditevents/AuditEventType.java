@@ -5,6 +5,6 @@ package de.mathejungalt.minikaenguru.anwendung.domain.auditevents;
  */
 public enum AuditEventType {
 
-    ACCESS_DENIED, SCHULE_KLASSEN_GELOESCHT;
+    ACCESS_DENIED, KLASSE_GELOESCHT, SCHULE_KLASSEN_GELOESCHT;
 
 }

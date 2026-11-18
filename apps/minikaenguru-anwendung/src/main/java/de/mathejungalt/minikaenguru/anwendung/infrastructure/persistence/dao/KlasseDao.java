@@ -31,6 +31,16 @@ public class KlasseDao {
     }
 
     /**
+     * Sucht die Klasse anhand des primary keys.
+     *
+     * @param klasseUuid String
+     * @return KlasseEntity oder null
+     */
+    public KlasseEntity findKlasseByPrimaryKey(final String klasseUuid) {
+        return entityManager.find(KlasseEntity.class, klasseUuid);
+    }
+
+    /**
      * Sucht die Klassen mit dem gegebenen Schulkuerzel.
      *
      * @param schulkuerzel
@@ -47,11 +57,21 @@ public class KlasseDao {
     /**
      * Speichert eine neue Klasse.
      *
-     * @param klasse KlasseEntity
+     * @param entity KlasseEntity
      */
     @Transactional
-    public void insertKlasse(final KlasseEntity klasse) {
-        this.entityManager.persist(klasse);
+    public void insertKlasse(final KlasseEntity entity) {
+        this.entityManager.persist(entity);
+    }
+
+    /**
+     * Ändert eine vorhandene Klasse.
+     *
+     * @param entity KlasseEntity
+     */
+    @Transactional
+    public void updateKlasse(final KlasseEntity entity) {
+        this.entityManager.merge(entity);
     }
 
     /**

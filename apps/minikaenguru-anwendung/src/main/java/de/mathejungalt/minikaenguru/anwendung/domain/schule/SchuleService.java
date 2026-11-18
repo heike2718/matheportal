@@ -255,14 +255,90 @@ public final class SchuleService {
 
             return this.mapFromDb(entity);
         } catch (RuntimeException e) {
-            if (isConstraintViolationExceptionWithUKName(e, KlasseEntity.UK_NAME_KLASSEN)) {
+            if (this.isConstraintViolationExceptionWithUKName(e, KlasseEntity.UK_NAME_KLASSEN)) {
                 throw new MinikaenguruConflictException("In dieser Schule gibt es bereits eine Klasse gleichen Namens.",
                         e);
             }
             throw new MinikaenguruRuntimeException(
                     "Beim Anlegen einer Klasse ist ein Fehler aufgetreten: " + e.getMessage(), e);
-
         }
+    }
+
+    /**
+     * Löscht kaskadierend alle Klassen einer Schule, also inklusive Kindern und Lösungszetteln.
+     *
+     * @param schuleId String
+     */
+    @KuerzelZugriff("schule: alle klassen löschen")
+    public void alleKlassenLoeschen(@AuthorizationKey final String schuleId) {
+        this.loeschservice.alleKlassenEinerSchuleLoeschen(schuleId);
+    }
+
+    /**
+     * Läd die Klasse mit der gegebenen klasseId
+     *
+     * @param schuleId String
+     * @param klasseId String
+     * @return Klasse
+     */
+    @KuerzelZugriff("schule: klasse laden")
+    public Klasse loadKlasse(@AuthorizationKey final String schuleId, final String klasseId) {
+
+        KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
+
+        if (entity == null) {
+            throw new ResourceNotFoundException("Diese Klasse gibt es nicht");
+        }
+
+        return this.mapFromDb(entity);
+    }
+
+    /**
+     * Ändert den Namen der Klasse.
+     *
+     * @param schuleId      String
+     * @param klasseId      String
+     * @param klasseRequest KlasseRequest
+     * @return Klasse
+     */
+    @KuerzelZugriff("schule: klasse ändern")
+    public Klasse klasseAendern(@AuthorizationKey final String schuleId, final String klasseId,
+            final KlasseRequest klasseRequest) {
+
+        KlasseEntity entity = klasseDao.findKlasseByPrimaryKey(klasseId);
+
+        if (entity == null) {
+            throw new ResourceNotFoundException("Diese Klasse gibt es nicht");
+        }
+
+        try {
+            entity.setUpdatedAt(LocalDateTime.now(clock));
+            entity.setUpdatedBy(securityIdentity.getPrincipal().getName());
+            entity.setName(klasseRequest.getName());
+
+            klasseDao.updateKlasse(entity);
+
+            return this.mapFromDb(entity);
+
+        } catch (RuntimeException e) {
+            if (this.isConstraintViolationExceptionWithUKName(e, KlasseEntity.UK_NAME_KLASSEN)) {
+                throw new MinikaenguruConflictException("In dieser Schule gibt es bereits eine Klasse gleichen Namens.",
+                        e);
+            }
+            throw new MinikaenguruRuntimeException(
+                    "Beim Ändern einer Klasse ist ein Fehler aufgetreten: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Löscht die gegebene Klasse
+     *
+     * @param schuleId String
+     * @param klasseId Strin
+     */
+    @KuerzelZugriff("schule: klasse löschen")
+    public void klasseLoeschen(@AuthorizationKey final String schuleId, final String klasseId) {
+        this.loeschservice.klasseLoeschen(klasseId);
     }
 
     private Klasse mapFromDb(final KlasseEntity entity) {
@@ -281,15 +357,5 @@ public final class SchuleService {
 
         }
         return false;
-    }
-
-    /**
-     * Löscht kaskadierend alle Klassen einer Schule, also inklusive Kindern und Lösungszetteln.
-     *
-     * @param schuleId String
-     */
-    @KuerzelZugriff("schule: alle klassen löschen")
-    public void alleKlassenLoeschen(@AuthorizationKey final String schuleId) {
-        this.loeschservice.alleKlassenEinerSchuleLoeschen(schuleId);
     }
 }
