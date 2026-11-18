@@ -46,14 +46,12 @@ public final class PrivatpersonAnlegenDelegate {
     @Inject
     Clock clock;
 
-    @Transactional
     Wettbewerbsdurchfuehrender privatpersonAnlegen() {
 
         for (int attempt = 1; attempt <= MAX_SAVE_RETRIES; attempt++) {
             try {
 
-                final WettbewerbsdurchfuehrenderEntity entity = createWettbewerbsdurchfuehrendePrivatEntity();
-                final WettbewerbsdurchfuehrenderEntity result = wettbewerbsdurchfuehrenderDao.saveEntity(entity);
+                final WettbewerbsdurchfuehrenderEntity result = createAndSaveWettbewerbsdurchfuehrendePrivatEntity();
 
                 log.debug("anlegen hat nach Versuch {} geklappt", attempt);
                 log
@@ -78,7 +76,8 @@ public final class PrivatpersonAnlegenDelegate {
                 + " Versuchen kein eindeutiges privatkuerzel für wettbewerbsdurchfuegernden generieren, gebe auf");
     }
 
-    WettbewerbsdurchfuehrenderEntity createWettbewerbsdurchfuehrendePrivatEntity() {
+    @Transactional
+    WettbewerbsdurchfuehrenderEntity createAndSaveWettbewerbsdurchfuehrendePrivatEntity() {
 
         final String privatkuerzel = kuerzelGeneratorService.generatePrivatteilnahmekuerzel();
 
@@ -90,9 +89,11 @@ public final class PrivatpersonAnlegenDelegate {
 
         final LocalDateTime now = LocalDateTime.now(clock);
 
-        return this.mappingDelegate
+        final WettbewerbsdurchfuehrenderEntity entity = this.mappingDelegate
                 .createWettbewerbsdurchfuehrendeEntity(securityIdentity.getPrincipal().getName(), privatkuerzel,
                         Wettbewerbsdurchfuehrungsart.PRIVAT, now);
+
+        return wettbewerbsdurchfuehrenderDao.saveEntity(entity);
     }
 
     private boolean isConstraintViolationExceptionWithUKName(final PersistenceException exception,

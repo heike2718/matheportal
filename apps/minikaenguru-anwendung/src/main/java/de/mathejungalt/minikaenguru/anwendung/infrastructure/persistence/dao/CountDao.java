@@ -56,14 +56,14 @@ public class CountDao {
     /**
      * Ermittelt die Anzahl Klassen einer speziellen Schule.
      *
-     * @param kuerzelSchule String
+     * @param schulkuerzel String
      * @return int
      */
-    public int getAnzahlKlassenByKuerzelSchule(final String kuerzelSchule) {
+    public int getAnzahlKlassenByKuerzelSchule(final String schulkuerzel) {
 
         return entityManager
-                .createNamedQuery(KlasseEntity.COUNT_BY_KUERZEL_SCHULE, Long.class)
-                .setParameter("kuerzelSchule", kuerzelSchule)
+                .createNamedQuery(KlasseEntity.COUNT_BY_SCHULKUERZEL, Long.class)
+                .setParameter("schulkuerzel", schulkuerzel)
                 .getSingleResult()
                 .intValue();
     }

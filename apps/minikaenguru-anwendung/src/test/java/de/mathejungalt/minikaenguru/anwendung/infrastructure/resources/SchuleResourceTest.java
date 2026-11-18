@@ -14,6 +14,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Anmeldestatus;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Auswertungsart;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.ErrorResponse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.Klasse;
+import de.mathejungalt.minikaenguru.anwendung.domain.generated.KlasseRequest;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Person;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.Schule;
 import de.mathejungalt.minikaenguru.anwendung.domain.generated.SchuleWettbewerbskontext;
@@ -25,6 +27,7 @@ import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerb.WettbewerbServic
 import de.mathejungalt.minikaenguru.anwendung.domain.wettbewerbsdurchfuehrende.UserDetails;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.authprovider.AuthproviderRestClient;
 import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.CleanupTestDataDao;
+import de.mathejungalt.minikaenguru.anwendung.infrastructure.test.TestConstants;
 
 import io.restassured.http.ContentType;
 
@@ -45,6 +48,8 @@ import static org.mockito.Mockito.when;
 @TestHTTPEndpoint(SchuleResource.class)
 public class SchuleResourceTest {
 
+    private static final String PATH_KLASSE = "/klassen/15feb40b-553b-4209-b8c6-3cf92ba85268";
+
     private static final String UUID_LEHRPERSON = "412b67dc-132f-465a-a3c3-468269e866cb";
 
     private static final String UUID_SANDRA_SATZ = "6ed7dc4f-8ce5-4d4d-b808-f82901d09206";
@@ -53,6 +58,9 @@ public class SchuleResourceTest {
 
     private static final String UUID_RITA_REIHE = "c540dbeb-d7fc-48c5-bd60-f860859cc88c";
     private static final String SCHULE_RITA_REIHE = "CSS3MMX7";
+
+    private static final String UUID_FRODO = "412b67dc-132f-465a-a3c3-468269e866cb";
+    private static final String SCHULE_MIT_KLASSEN_FRODO = "R67URH8B";
 
     @InjectMock
     @RestClient
@@ -459,4 +467,361 @@ public class SchuleResourceTest {
 
         verify(authproviderRestClient, never()).getUserDetails(anyString(), anyString(), anyString(), anyString());
     }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlassen_return_400() {
+
+        final ErrorResponse errorResponse = given()
+                .pathParam("schuleId", "ÜÜÜ")
+                .get("/klassen")
+                .then()
+                .statusCode(400)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, errorResponse.getMessage());
+
+    }
+
+    @Test
+    void should_loadKlassen_return_401() {
+
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).get("/klassen").then().statusCode(401);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlassen_return_403() {
+
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).get("/klassen").then().statusCode(403);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void complete_test_klassen_laden_anlegen_aendern_loeschen() {
+
+        // nicht vorhandene Klasse laden
+        String pathNichtVorhandeneKlasse = "/klassen/bcbeb52a-4760-4e07-85e7-5ace55669965";
+
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).get(pathNichtVorhandeneKlasse).then().statusCode(404);
+
+        // nicht vorhandene Klasse umbenennen
+        KlasseRequest klasseNichtVorhandenRequest = new KlasseRequest().name("Elsterklasse");
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseNichtVorhandenRequest)
+                .put(pathNichtVorhandeneKlasse)
+                .then()
+                .statusCode(404);
+
+        // nicht vorhandene Klasse löschen
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .delete(pathNichtVorhandeneKlasse)
+                .then()
+                .statusCode(204);
+
+        // erste Klasse anlegen
+        KlasseRequest klasseRequestTuxklasse = new KlasseRequest().name("Tuxklasse");
+
+        Klasse tuxklasse = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseRequestTuxklasse)
+                .post("/klassen")
+                .then()
+                .statusCode(201)
+                .and()
+                .extract()
+                .as(Klasse.class);
+
+        assertAll(() -> assertNotNull(tuxklasse.getUuid()),
+                () -> assertEquals(SCHULE_MIT_KLASSEN_FRODO, tuxklasse.getSchulkuerzel()),
+                () -> assertEquals("Tuxklasse", tuxklasse.getName()));
+
+        final String uuidTuxklasse = tuxklasse.getUuid();
+
+        // klasse ein zweites Mal anlegen
+        final ErrorResponse errorResponse = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseRequestTuxklasse)
+                .post("/klassen")
+                .then()
+                .statusCode(409)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals("In dieser Schule gibt es bereits eine Klasse gleichen Namens.", errorResponse.getMessage());
+
+        // zweite Klasse anlegen
+        KlasseRequest klasseRequestFuchsklasse = new KlasseRequest().name("Fuchsklasse");
+
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseRequestFuchsklasse)
+                .post("/klassen")
+                .then()
+                .statusCode(201);
+
+        // alle Klassen laden
+        Klasse[] klassen = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .get("/klassen")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse[].class);
+
+        assertAll(() -> assertEquals(2, klassen.length), () -> assertEquals("Fuchsklasse", klassen[0].getName()),
+                () -> assertEquals(SCHULE_MIT_KLASSEN_FRODO, klassen[0].getSchulkuerzel()),
+                () -> assertEquals("Tuxklasse", klassen[1].getName()),
+                () -> assertEquals(SCHULE_MIT_KLASSEN_FRODO, klassen[1].getSchulkuerzel()));
+
+        // erste klasse laden
+        final Klasse tuxklasseLoaded = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .get("/klassen/" + uuidTuxklasse)
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse.class);
+
+        assertAll(() -> assertEquals("Tuxklasse", tuxklasseLoaded.getName()),
+                () -> assertEquals(uuidTuxklasse, tuxklasseLoaded.getUuid()));
+
+        // erste Klasse umbenennen - UK
+        KlasseRequest renameTuxklasseToFuchsklasse = new KlasseRequest().name("Fuchsklasse");
+        final ErrorResponse errorResponseRename = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(renameTuxklasseToFuchsklasse)
+                .put("/klassen/" + uuidTuxklasse)
+                .then()
+                .statusCode(409)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals("In dieser Schule gibt es bereits eine Klasse gleichen Namens.", errorResponseRename.getMessage());
+
+        // erste Klasse umbenennen
+        KlasseRequest renameTuxklasseToLuchsklasse = new KlasseRequest().name("Luchsklasse");
+        final Klasse luchsKlasse = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(renameTuxklasseToLuchsklasse)
+                .put("/klassen/" + uuidTuxklasse)
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse.class);
+
+        assertAll(() -> assertEquals("Luchsklasse", luchsKlasse.getName()),
+                () -> assertEquals(uuidTuxklasse, luchsKlasse.getUuid()));
+
+        // erste Klasse löschen
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .delete("/klassen/" + uuidTuxklasse)
+                .then()
+                .statusCode(204);
+
+        // alle Klassen laden
+        Klasse[] klassenNachDemLoeschenDerErstenKlasse = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .get("/klassen")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse[].class);
+
+        assertAll(() -> assertEquals(1, klassenNachDemLoeschenDerErstenKlasse.length),
+                () -> assertEquals("Fuchsklasse", klassen[0].getName()),
+                () -> assertEquals(SCHULE_MIT_KLASSEN_FRODO, klassen[0].getSchulkuerzel()));
+
+        // alle klassen löschen
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).delete("/klassen").then().statusCode(204);
+
+        // nochmal lesen
+        Klasse[] klassenNachLoeschen = given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .get("/klassen")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .as(Klasse[].class);
+
+        assertEquals(0, klassenNachLoeschen.length);
+
+        // alle Klassen löschen ist idempotent
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).delete("/klassen").then().statusCode(204);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseAnlegen_return_400() {
+        KlasseRequest klasseRequest = new KlasseRequest().name("Лисы");
+
+        final ErrorResponse errorResponse = given()
+                .pathParam("schuleId", "ÜÜÜ")
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .post("/klassen")
+                .then()
+                .statusCode(400)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, errorResponse.getMessage());
+    }
+
+    @Test
+    void should_klasseAnlegen_return_401() {
+        KlasseRequest klasseRequest = new KlasseRequest().name("Füchse");
+
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .post("/klassen")
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseAnlegen_return_403() {
+        KlasseRequest klasseRequest = new KlasseRequest().name("Füchse");
+
+        given()
+                .pathParam("schuleId", SCHULE_RITA_REIHE)
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .post("/klassen")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_alleKlassenLoeschen_return_400() {
+        final ErrorResponse errorResponse = given()
+                .pathParam("schuleId", "ÜÜÜ")
+                .delete("/klassen")
+                .then()
+                .statusCode(400)
+                .and()
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertEquals(TestConstants.EXPECTED_BAD_REQUEST_MESSAGE, errorResponse.getMessage());
+    }
+
+    @Test
+    void should_alleKlassenLoeschen_return_401() {
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).delete("/klassen").then().statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_alleKlassenLoeschen_return_403() {
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).delete("/klassen").then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlasse_return_400() {
+
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).get("/klassen/abcde").then().statusCode(400);
+
+    }
+
+    @Test
+    void should_loadKlasse_return_401() {
+
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).get(PATH_KLASSE).then().statusCode(401);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_loadKlasse_return_403() {
+        given().pathParam("schuleId", SCHULE_RITA_REIHE).get(PATH_KLASSE).then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseAendern_return_400() {
+
+        final KlasseRequest klasseRequest = new KlasseRequest().name("Лисы");
+        given()
+                .pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO)
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .put(PATH_KLASSE)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void should_klasseAendern_return_401() {
+
+        final KlasseRequest klasseRequest = new KlasseRequest().name("Elsterklasse");
+        given()
+                .pathParam("schuleId", SCHULE_RITA_REIHE)
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .put(PATH_KLASSE)
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseAendern_return_403() {
+
+        final KlasseRequest klasseRequest = new KlasseRequest().name("Elsterklasse");
+        given()
+                .pathParam("schuleId", SCHULE_RITA_REIHE)
+                .contentType(ContentType.JSON)
+                .body(klasseRequest)
+                .put(PATH_KLASSE)
+                .then()
+                .statusCode(403);
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseLoeschen_return_400() {
+
+        given().pathParam("schuleId", SCHULE_MIT_KLASSEN_FRODO).delete("/klassen/abcde").then().statusCode(400);
+
+    }
+
+    @Test
+    void should_klasseLoeschen_return_401() {
+
+    }
+
+    @Test
+    @TestSecurity(user = UUID_FRODO)
+    void should_klasseLoeschen_return_403() {
+
+    }
+
 }

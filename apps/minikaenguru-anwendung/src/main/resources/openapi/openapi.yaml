@@ -612,7 +612,7 @@ paths:
             tags:
                 - Schule
             summary: die Person, die diese Schule zum aktuellen Wettbewerb angemeldet hat
-            description: läd anmeldende Person dieser, die die Schule mit der gegebenen ID angemeldet hat
+            description: läd die Person, die die Schule mit der gegebenen ID angemeldet hat
             operationId: loadAnmeldendePerson
             security:
                 - mpSession: []
@@ -656,6 +656,347 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/klassen:
+        get:
+            tags:
+                - Schule
+            summary: Klassen einer Schule
+            description: läd die Klassen dieser Schule
+            operationId: loadKlassen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Klasse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        post:
+            tags:
+                - Schule
+            summary: eine neue Klasse anlegen
+            description: zur gegebenen Schule wird eine neue Klasse angelegt
+            operationId: klasseAnlegen
+            security:
+                - mpSession: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/KlasseRequest'
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '201':
+                    description: created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Klasse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '409':
+                    description: conflict - In dieser Schule gibt es bereits eine Klasse mit dem gewünschten Namen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        delete:
+            tags:
+                - Schule
+            summary: Klassen einer Schule löschen
+            description: löscht alle Klassen nebst Kindern und Lösungszetteln dieser Schule
+            operationId: klassenLoeschen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+            responses:
+                '204':
+                    description: OK
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+    /api/schulen/{schuleId}/klassen/{klasseId}:
+        get:
+            tags:
+                - Schule
+            summary: die Klasse einer Schule
+            description: läd die durch die klasseId definierte Klasse
+            operationId: getKlasse
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+                - in: path
+                  name: klasseId
+                  schema:
+                      type: string
+                      pattern: '^[0-9(a-f|A-F)]{8}-[0-9(a-f|A-F)]{4}-4[0-9(a-f|A-F)]{3}-[89ab][0-9(a-f|A-F)]{3}-[0-9(a-f|A-F)]{12}$'
+                      maxLength: 36
+                  required: true
+                  description: uuid der Klasse
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Klasse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: Klasse gibt es nicht
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        put:
+            tags:
+                - Schule
+            summary: Klasse ändern
+            description: ändert die durch die klasseId definierte Klasse
+            operationId: klasseAendern
+            security:
+                - mpSession: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/KlasseRequest'
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+                - in: path
+                  name: klasseId
+                  schema:
+                      type: string
+                      pattern: '^[0-9(a-f|A-F)]{8}-[0-9(a-f|A-F)]{4}-4[0-9(a-f|A-F)]{3}-[89ab][0-9(a-f|A-F)]{3}-[0-9(a-f|A-F)]{12}$'
+                      maxLength: 36
+                  required: true
+                  description: uuid der Klasse
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Klasse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: Klasse gibt es nicht
+                '409':
+                    description: conflict - In dieser Schule gibt es bereits eine Klasse mit dem gewünschten Namen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+        delete:
+            tags:
+                - Schule
+            summary: Klasse löschen
+            description: löscht die durch die klasseId definierte Klasse
+            operationId: klasseLoeschen
+            security:
+                - mpSession: []
+            parameters:
+                - in: path
+                  name: schuleId
+                  schema:
+                      type: string
+                      pattern: '^[A-Z0-9]*$'
+                      maxLength: 8
+                  required: true
+                  description: kuerzel der Schule
+                - in: path
+                  name: klasseId
+                  schema:
+                      type: string
+                      pattern: '^[0-9(a-f|A-F)]{8}-[0-9(a-f|A-F)]{4}-4[0-9(a-f|A-F)]{3}-[89ab][0-9(a-f|A-F)]{3}-[0-9(a-f|A-F)]{12}$'
+                      maxLength: 36
+                  required: true
+                  description: uuid der Klasse
+            responses:
+                '204':
+                    description: no content
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: keine Session oder Session abgelaufen
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '403':
+                    description: angemeldeter User darf die Schule und ihre abhängigen Entitäten nicht sehen.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '500':
+                    description: Serverfehler
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 components:
     securitySchemes:
         mpSession:
@@ -686,6 +1027,27 @@ components:
                 message:
                     type: string
                     example: Irgendein Fehler ist aufgetreten
+        Klasse:
+            type: object
+            required:
+                - uuid
+                - schulkuerzel
+                - name
+            properties:
+                uuid:
+                    type: string
+                    pattern: '^[0-9(a-f|A-F)]{8}-[0-9(a-f|A-F)]{4}-4[0-9(a-f|A-F)]{3}-[89ab][0-9(a-f|A-F)]{3}-[0-9(a-f|A-F)]{12}$'
+                    maxLength: 36
+                    description: global eindeutige ID der Klasse.
+                schulkuerzel:
+                    type: string
+                    pattern: '^[A-Z0-9]*$'
+                    maxLength: 8
+                    description: Kürzel der Schule, zu der die Klasse gehört.
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 55
         Klassenstufe:
             type: string
             enum:
@@ -697,6 +1059,15 @@ components:
                 - IKID
                 - EINS
                 - ZWEI
+        KlasseRequest:
+            type: object
+            required:
+                - name
+            properties:
+                name:
+                    type: string
+                    pattern: '^[\p{sc=Latin}\p{M}\p{N}\p{P}\p{S}\p{Zs}]*$'
+                    maxLength: 55
         Land:
             type: object
             required:

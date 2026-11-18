@@ -137,7 +137,7 @@ public class PrivatpersonAnlegenDelegateTest {
 
         // act
         final MinikaenguruRuntimeException exception = assertThrows(MinikaenguruRuntimeException.class,
-                () -> delegate.createWettbewerbsdurchfuehrendePrivatEntity());
+                () -> delegate.createAndSaveWettbewerbsdurchfuehrendePrivatEntity());
 
         // assert
         assertAll(() -> verify(kuerzelGeneratorService).generatePrivatteilnahmekuerzel(),

@@ -8,12 +8,22 @@ public class MinikaenguruConflictException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * MinikaenguruConflictException
+     * MinikaenguruConflictException.
      *
      * @param message String
      */
     public MinikaenguruConflictException(final String message) {
         super(message);
+    }
+
+    /**
+     * MinikaenguruConflictException.
+     *
+     * @param message String
+     * @param cause   Throwable
+     */
+    public MinikaenguruConflictException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 
 }

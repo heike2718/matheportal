@@ -32,13 +32,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "kinder", schema = "minikaenguru")
-@NamedQueries({ @NamedQuery(
-        name = KindEntity.COUNT_BY_TEILNAHMEKUERZEL,
-        query = "select count(k) from KindEntity k where k.teilnahmekuerzel = :teilnahmekuerzel") })
+@NamedQueries({
+        @NamedQuery(
+                name = KindEntity.COUNT_BY_TEILNAHMEKUERZEL,
+                query = "select count(k) from KindEntity k where k.teilnahmekuerzel = :teilnahmekuerzel"),
+        @NamedQuery(
+                name = KindEntity.FIND_KINDER_BY_KLASSE_ID,
+                query = "select k from KindEntity k where k.klasseId = :klasseId order by k.vorname, k.nachname") })
 @SuppressWarnings("CPD-START")
 public class KindEntity {
 
     public static final String COUNT_BY_TEILNAHMEKUERZEL = "KindEntity.COUNT_BY_TEILNAHMEKUERZEL";
+
+    public static final String FIND_KINDER_BY_KLASSE_ID = "KindEntity.FIND_KINDER_BY_KLASSE_ID";
 
     @Id
     @Column(name = "uuid", nullable = false, length = 36)
