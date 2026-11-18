@@ -5,8 +5,8 @@ import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext } from '../../model/schule.model';
-import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
 import { ANMELDESTATUS, TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
+import { teilnahmeAngemeldet } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchule';
 

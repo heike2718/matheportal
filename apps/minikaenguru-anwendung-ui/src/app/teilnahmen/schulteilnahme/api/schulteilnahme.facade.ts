@@ -2,16 +2,16 @@ import { inject, Injectable } from '@angular/core';
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { TeilnahmeActions } from '../data/+state/teilnahme.actions';
 import {
     selectAktuelleTeilnahmeLoaded,
     selectAngemeldet,
     selectTeilnahme,
     selectTeilnahmeLoadState,
-} from '../data/+state/teilnahme.selectors';
+} from '../data/+state/schulteilnahme.selectors';
+import { SchulteilnahmeActions } from '../data/+state/schulteilnahme.actions';
 
 @Injectable()
-export class TeilnahmeFacade {
+export class SchulteilnahmeFacade {
     readonly #store = inject(Store);
 
     readonly teilnahmeLoadState$: Observable<AUTHORIZED_RESOURCE_LOAD_STATE> =
@@ -23,15 +23,7 @@ export class TeilnahmeFacade {
 
     readonly aktuelleTeilnahme = this.#store.selectSignal(selectTeilnahme);
 
-    public aktuellePrivatteilnahmeVorbereiten(): void {
-        this.#store.dispatch(TeilnahmeActions.ensurePrivatteilnahmeLoaded());
-    }
-
     public aktuelleSchulteilnahmeVorbereiten(schulkuerzel: string): void {
-        this.#store.dispatch(TeilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel }));
-    }
-
-    public privatteilnahmeAnmelden(): void {
-        this.#store.dispatch(TeilnahmeActions.privatteilnahmeAnmelden());
+        this.#store.dispatch(SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel }));
     }
 }

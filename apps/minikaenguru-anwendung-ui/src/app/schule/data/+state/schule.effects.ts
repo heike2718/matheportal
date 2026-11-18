@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 import { Dialog } from '@angular/cdk/dialog';
-import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahme/model/teilnahme.model';
+import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahmen/model/teilnahme.model';
 import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
-import { schulteilnahmeAnmelden } from '../../../teilnahme/api/teilnahme-store.events';
+import { schulteilnahmeAnmelden } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 @Injectable()
 export class SchulenEffects {

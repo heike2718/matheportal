@@ -7,9 +7,9 @@ import { userLoggedOut } from '@matheportal/auth-api';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
-import { Teilnahme } from '../../../teilnahme/model/teilnahme.model';
+import { Teilnahme } from '../../../teilnahmen/model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
+import { teilnahmeAngemeldet } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 describe('schulenReducer', () => {
     const orte: Ort[] = [

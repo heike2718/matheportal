@@ -19,9 +19,9 @@ import {
     AuswertungsartDialogData,
     AuswertungsartDialogResult,
     AUSWERUNGSART,
-} from '../../../teilnahme/model/teilnahme.model';
-import { schulteilnahmeAnmelden } from '../../../teilnahme/api/teilnahme-store.events';
+} from '../../../teilnahmen/model/teilnahme.model';
 import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
+import { schulteilnahmeAnmelden } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();

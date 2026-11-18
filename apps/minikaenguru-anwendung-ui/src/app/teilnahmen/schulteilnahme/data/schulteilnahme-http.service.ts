@@ -1,39 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../config/minikaenguru-anwendung.configuration';
+import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { Auswertungsart, Person, Teilnahme } from '../../model/teilnahme.model';
 import { Observable } from 'rxjs';
-import { Auswertungsart, Person, Teilnahme } from '../model/teilnahme.model';
+import { paths } from '../../../generated/api-types';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
-import { paths } from '../../generated/api-types';
 
 @Injectable()
-export class TeilnahmeHttpService {
+export class SchulteilnahmeHttpService {
     #config = inject(MINIKAENGURU_ANWENDUNG_CONFIGURATION);
     #httpClient = inject(HttpClient);
-
-    /**
-     * Meldet die eingeloggte Privatperson zum aktuellen Wettbewerb an.
-     * @returns Observable auf Teilnahme
-     */
-    public privatAnmelden(): Observable<Teilnahme> {
-        const path: keyof paths = '/api/privatperson/me/aktuelle-teilnahme';
-        return this.#httpClient.post<Teilnahme>(this.#config.apiUrl + path, null, {
-            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
-            withCredentials: true,
-        });
-    }
-
-    /**
-     * Läd die Daten der aktuellen Teilnahme der eingeloggten Privatperson.
-     * @returns Observable auf Teilnahme
-     */
-    public loadAktuellePrivatteilnahme(): Observable<Teilnahme> {
-        const path: keyof paths = '/api/privatperson/me/aktuelle-teilnahme';
-        return this.#httpClient.get<Teilnahme>(this.#config.apiUrl + path, {
-            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
-            withCredentials: true,
-        });
-    }
 
     /**
      * Meldet die Schule zum aktuellen Wettbewerb an.
@@ -65,7 +41,7 @@ export class TeilnahmeHttpService {
     }
 
     /**
-     * Läd die Persoon, die diese Schule zum Wettbewerb angemeldet hat.
+     * Läd die Person, die diese Schule zum Wettbewerb angemeldet hat.
      * @param schulkuerzel string
      * @returns Observable auf Person
      */

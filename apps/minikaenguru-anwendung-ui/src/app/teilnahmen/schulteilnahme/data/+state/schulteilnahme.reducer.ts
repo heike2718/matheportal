@@ -1,51 +1,53 @@
 import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
-import { Teilnahme } from '../../model/teilnahme.model';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { userLoggedOut } from '@matheportal/auth-api';
-import { TeilnahmeActions } from './teilnahme.actions';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
-import { lehrpersonBerechtigungVerweigert, schuleAusgewaehlt } from '../../../lehrperson/api/lehrperson-store.events';
+import {
+    lehrpersonBerechtigungVerweigert,
+    schuleAusgewaehlt,
+} from '../../../../lehrperson/api/lehrperson-store.events';
+import { Teilnahme } from '../../../model/teilnahme.model';
+import { SchulteilnahmeActions } from './schulteilnahme.actions';
 
-const TEILNAHME_FEATURE_KEY = 'MKATeilnahme';
+const SCHULTEILNAHME_FEATURE_KEY = 'MKASchulteilnahme';
 
-export interface TeilnahmeState {
+export interface SchulteilnahmeState {
     readonly teilnahmeLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
     readonly teilnahme: Teilnahme | undefined;
     readonly anmeldendePersonLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
 }
 
-export const initialTeilnahmeState: TeilnahmeState = {
+export const initialSchulteilnahmeState: SchulteilnahmeState = {
     teilnahmeLoadState: 'not-loaded',
     teilnahme: undefined,
     anmeldendePersonLoadState: 'not-loaded',
 };
 
-export const teilnahmeFeature = createFeature({
-    name: TEILNAHME_FEATURE_KEY,
-    reducer: createReducer<TeilnahmeState>(
-        initialTeilnahmeState,
-        on(TeilnahmeActions.privatteilnahmeLaden, state => {
-            return state.teilnahmeLoadState === 'loaded' || state.teilnahmeLoadState === 'technical-error'
-                ? initialTeilnahmeState
-                : state;
-        }),
-        on(TeilnahmeActions.schulteilnahmeLaden, (state, { schulkuerzel }) => {
+export const schulteilnahmeFeature = createFeature({
+    name: SCHULTEILNAHME_FEATURE_KEY,
+    reducer: createReducer<SchulteilnahmeState>(
+        initialSchulteilnahmeState,
+        on(SchulteilnahmeActions.schulteilnahmeLaden, (state, { schulkuerzel }) => {
             return (state.teilnahmeLoadState === 'loaded' && state.teilnahme?.kuerzel !== schulkuerzel) ||
                 state.teilnahmeLoadState === 'technical-error'
-                ? initialTeilnahmeState
+                ? initialSchulteilnahmeState
                 : state;
         }),
-        on(TeilnahmeActions.teilnahmeGeladen, TeilnahmeActions.teilnahmeAngemeldet, (state, { teilnahme }) => ({
-            ...state,
-            teilnahme,
-            teilnahmeLoadState: 'loaded',
-        })),
-        on(TeilnahmeActions.teilnahmeLadenFailed, (state, { error }) => ({
+        on(
+            SchulteilnahmeActions.teilnahmeGeladen,
+            SchulteilnahmeActions.teilnahmeAngemeldet,
+            (state, { teilnahme }) => ({
+                ...state,
+                teilnahme,
+                teilnahmeLoadState: 'loaded',
+            })
+        ),
+        on(SchulteilnahmeActions.teilnahmeLadenFailed, (state, { error }) => ({
             ...state,
             teilnahme: undefined,
             teilnahmeLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
         })),
-        on(TeilnahmeActions.anmeldendePersonGeladen, (state, { person }) => {
+        on(SchulteilnahmeActions.anmeldendePersonGeladen, (state, { person }) => {
             if (state.teilnahme && state.teilnahme.kuerzel === person.schulkuerzel) {
                 return {
                     ...state,
@@ -55,7 +57,7 @@ export const teilnahmeFeature = createFeature({
             }
             return state;
         }),
-        on(TeilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
+        on(SchulteilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
             const neueTeilnahme = !state.teilnahme ? undefined : { ...state.teilnahme, angemeldetDurch: undefined };
 
             return {
@@ -64,8 +66,8 @@ export const teilnahmeFeature = createFeature({
                 anmeldendePersonLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
         }),
-        on(schuleAusgewaehlt, () => initialTeilnahmeState),
-        on(lehrpersonBerechtigungVerweigert, () => initialTeilnahmeState),
-        on(userLoggedOut, () => initialTeilnahmeState)
+        on(schuleAusgewaehlt, () => initialSchulteilnahmeState),
+        on(lehrpersonBerechtigungVerweigert, () => initialSchulteilnahmeState),
+        on(userLoggedOut, () => initialSchulteilnahmeState)
     ),
 });

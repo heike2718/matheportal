@@ -1,17 +1,13 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Auswertungsart, Person, Teilnahme } from '../../model/teilnahme.model';
-import { Durchfuehrungsart } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { Auswertungsart, Person, Teilnahme } from '../../../model/teilnahme.model';
 
-export const TeilnahmeActions = createActionGroup({
-    source: 'MKA Teilnahme',
+export const SchulteilnahmeActions = createActionGroup({
+    source: 'MKA Schulteilnahme',
     events: {
-        ensurePrivatteilnahmeLoaded: emptyProps(),
-        privatteilnahmeLaden: emptyProps(),
         ensureSchulteilnahmeLoaded: props<{ schulkuerzel: string }>(),
         schulteilnahmeLaden: props<{ schulkuerzel: string }>(),
         teilnahmeGeladen: props<{ teilnahme: Teilnahme }>(),
-        teilnahmeLadenFailed: props<{ durchfuehrungsart: Durchfuehrungsart; error: Error }>(),
-        privatteilnahmeAnmelden: emptyProps(),
+        teilnahmeLadenFailed: props<{ error: Error }>(),
         schulteilnahmeAnmelden: props<{ schulkuerzel: string; auswertungsart: Auswertungsart }>(),
         teilnahmeAngemeldet: props<{ teilnahme: Teilnahme }>(),
         teilnahmeAnmeldenFailed: props<{ error: Error }>(),

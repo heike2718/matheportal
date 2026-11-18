@@ -1,11 +1,11 @@
 import { createSelector } from '@ngrx/store';
-import { teilnahmeFeature } from './teilnahme.reducer';
+import { schulteilnahmeFeature } from './schulteilnahme.reducer';
 
-const { selectMKATeilnahmeState } = teilnahmeFeature;
+const { selectMKASchulteilnahmeState } = schulteilnahmeFeature;
 
-export const selectTeilnahmeLoadState = createSelector(selectMKATeilnahmeState, state => state.teilnahmeLoadState);
+export const selectTeilnahmeLoadState = createSelector(selectMKASchulteilnahmeState, state => state.teilnahmeLoadState);
 
-export const selectTeilnahme = createSelector(selectMKATeilnahmeState, state => state.teilnahme);
+export const selectTeilnahme = createSelector(selectMKASchulteilnahmeState, state => state.teilnahme);
 
 export const selectAktuelleTeilnahmeLoaded = createSelector(
     selectTeilnahmeLoadState,
@@ -15,6 +15,6 @@ export const selectAktuelleTeilnahmeLoaded = createSelector(
 export const selectAngemeldet = createSelector(selectTeilnahme, teilnahme => teilnahme !== undefined);
 
 export const selectAnmeldendePersonLoadState = createSelector(
-    selectMKATeilnahmeState,
+    selectMKASchulteilnahmeState,
     state => state.anmeldendePersonLoadState
 );

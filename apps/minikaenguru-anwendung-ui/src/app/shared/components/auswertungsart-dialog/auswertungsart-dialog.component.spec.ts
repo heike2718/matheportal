@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuswertungsartDialogComponent } from './auswertungsart-dialog.component';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahme/model/teilnahme.model';
+import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahmen/model/teilnahme.model';
 import { By } from '@angular/platform-browser';
 
 describe('AuswertungsartDialogComponent', () => {

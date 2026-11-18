@@ -1,16 +1,16 @@
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { Teilnahme } from '../model/teilnahme.model';
-import { TeilnahmeFacade } from './teilnahme.facade';
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
+import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
+import { Teilnahme } from '../../model/teilnahme.model';
+import { SchulteilnahmeFacade } from './schulteilnahme.facade';
 import {
     selectAktuelleTeilnahmeLoaded,
     selectAngemeldet,
     selectTeilnahme,
     selectTeilnahmeLoadState,
-} from '../data/+state/teilnahme.selectors';
-import { firstValueFrom } from 'rxjs';
-import { DURCHFUEHRUNGSART } from '../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { TeilnahmeActions } from '../data/+state/teilnahme.actions';
+} from '../data/+state/schulteilnahme.selectors';
+import { SchulteilnahmeActions } from '../data/+state/schulteilnahme.actions';
 
 describe('TeilnahmeFacade', () => {
     const teilnahme: Teilnahme = {
@@ -24,14 +24,14 @@ describe('TeilnahmeFacade', () => {
         kuerzel: 'S1234567',
     };
 
-    let facade: TeilnahmeFacade;
+    let facade: SchulteilnahmeFacade;
     let store: MockStore;
     let dispatchSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                TeilnahmeFacade,
+                SchulteilnahmeFacade,
                 provideMockStore({
                     initialState: {},
                     selectors: [
@@ -57,7 +57,7 @@ describe('TeilnahmeFacade', () => {
         });
 
         store = TestBed.inject(MockStore);
-        facade = TestBed.inject(TeilnahmeFacade);
+        facade = TestBed.inject(SchulteilnahmeFacade);
 
         dispatchSpy = vi.spyOn(store, 'dispatch');
     });
@@ -126,11 +126,14 @@ describe('TeilnahmeFacade', () => {
     });
 
     describe('methods', () => {
-        it('should dispatch the correct action on aktuellePrivatteilnahmeVorbereiten', () => {
-            facade.aktuellePrivatteilnahmeVorbereiten();
+        it('should dispatch the correct action on aktuelleSchulteilnahmeVorbereiten', () => {
+            const schulkuerzel = 'S1234567';
+            facade.aktuelleSchulteilnahmeVorbereiten(schulkuerzel);
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(TeilnahmeActions.ensurePrivatteilnahmeLoaded());
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel })
+            );
         });
     });
 });

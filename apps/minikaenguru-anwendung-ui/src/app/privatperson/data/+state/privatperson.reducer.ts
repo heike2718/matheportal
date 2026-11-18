@@ -4,8 +4,8 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import { userLoggedOut } from '@matheportal/auth-api';
 import { PrivatpersonActions } from './privatperson.actions';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
-import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
 import { ANMELDESTATUS, TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
+import { teilnahmeAngemeldet } from '../../../teilnahmen/privatteilnahme/api/privatteilnahme-store.events';
 
 export const PRIVATPERSON_FEATURE_KEY = 'MKAPrivatperson';
 
