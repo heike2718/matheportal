@@ -145,4 +145,45 @@ describe('SchulteilnahmeHttpService', () => {
             subscription.unsubscribe();
         }
     });
+
+    it('loadKlassen ruft den vereinbarten Pfad mit GET auf', () => {
+        const schulkuerzel = 'S1234567';
+        const apiUrl = 'https://example.test';
+        const expectedPath = '/api/schulen/S1234567/klassen';
+
+        const httpClientMock = {
+            get: vi.fn().mockReturnValue(of(teilnahme)),
+        };
+
+        TestBed.configureTestingModule({
+            providers: [
+                SchulteilnahmeHttpService,
+                { provide: HttpClient, useValue: httpClientMock },
+                {
+                    provide: MINIKAENGURU_ANWENDUNG_CONFIGURATION,
+                    useValue: { apiUrl },
+                },
+            ],
+        });
+
+        const service = TestBed.inject(SchulteilnahmeHttpService);
+
+        const subscription = service.loadKlassen(schulkuerzel).subscribe();
+
+        try {
+            expect(httpClientMock.get).toHaveBeenCalledExactlyOnceWith(
+                apiUrl + expectedPath,
+                expect.objectContaining({
+                    context: expect.any(HttpContext),
+                    withCredentials: true,
+                })
+            );
+
+            const options = httpClientMock.get.mock.calls[0][1];
+
+            expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
 });

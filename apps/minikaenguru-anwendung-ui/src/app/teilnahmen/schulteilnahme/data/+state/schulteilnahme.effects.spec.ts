@@ -545,7 +545,7 @@ describe('TeilnahmeEffects', () => {
                 httpFirst$.error(httpServerErrorResponse);
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
                 ]);
 
                 action$.next(SchulteilnahmeActions.anmeldendePersonLaden({ schulkuerzel }));
@@ -557,7 +557,7 @@ describe('TeilnahmeEffects', () => {
                 httpSecond$.complete();
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
                     SchulteilnahmeActions.anmeldendePersonGeladen({ person }),
                 ]);
             } finally {
@@ -574,7 +574,7 @@ describe('TeilnahmeEffects', () => {
             const emitted = await promise;
 
             expect(emitted).toEqual(
-                SchulteilnahmeActions.anmeldendePersonLadenFailed({ error: httpServerErrorResponse })
+                SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error: httpServerErrorResponse })
             );
 
             expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledOnce();

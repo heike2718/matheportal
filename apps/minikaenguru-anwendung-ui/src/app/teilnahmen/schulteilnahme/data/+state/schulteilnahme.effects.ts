@@ -96,7 +96,9 @@ export class SchulteilnahmeEffects {
                             person,
                         })
                     ),
-                    catchError((error: Error) => of(SchulteilnahmeActions.anmeldendePersonLadenFailed({ error })))
+                    catchError((error: Error) =>
+                        of(SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error }))
+                    )
                 )
             )
         )

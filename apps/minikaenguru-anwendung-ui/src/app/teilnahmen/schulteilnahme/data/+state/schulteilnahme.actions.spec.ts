@@ -1,4 +1,5 @@
 import { AUSWERUNGSART, Person, Teilnahme } from '../../../model/teilnahme.model';
+import { Klasse } from '../../model/klasse.model';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
 
 describe('SchulteilnahmeActions', () => {
@@ -129,11 +130,13 @@ describe('SchulteilnahmeActions', () => {
     });
 
     it('should create the anmeldendePersonLadenFailed action', () => {
+        const schulkuerzel = 'S1234567';
         const error = new Error('uiuiui');
-        const action = SchulteilnahmeActions.anmeldendePersonLadenFailed({ error });
+        const action = SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error });
 
         expect(action).toEqual({
             type: '[MKA Schulteilnahme] anmeldendePersonLadenFailed',
+            schulkuerzel,
             error,
         });
     });
@@ -148,6 +151,48 @@ describe('SchulteilnahmeActions', () => {
         expect(action).toEqual({
             type: '[MKA Schulteilnahme] anmeldendePersonGeladen',
             person,
+        });
+    });
+
+    it('should create the ensureKlassenGeladen action', () => {
+        const schulkuerzel = 'S1234567';
+        const action = SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] ensureKlassenGeladen',
+            schulkuerzel: 'S1234567',
+        });
+    });
+
+    it('should create the klassenLaden action', () => {
+        const schulkuerzel = 'S1234567';
+        const action = SchulteilnahmeActions.klassenLaden({ schulkuerzel });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klassenLaden',
+            schulkuerzel: 'S1234567',
+        });
+    });
+
+    it('should create the klassenLaden action', () => {
+        const klassen: Klasse[] = [
+            {
+                name: 'Tuxklasse',
+                schulkuerzel: 'S1234567',
+                uuid: 'abcdef',
+            },
+        ];
+        const action = SchulteilnahmeActions.klassenGeladen({ klassen });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klassenGeladen',
+            klassen: [
+                {
+                    name: 'Tuxklasse',
+                    schulkuerzel: 'S1234567',
+                    uuid: 'abcdef',
+                },
+            ],
         });
     });
 });

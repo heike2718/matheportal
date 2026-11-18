@@ -5,6 +5,7 @@ import { Auswertungsart, Person, Teilnahme } from '../../model/teilnahme.model';
 import { Observable } from 'rxjs';
 import { paths } from '../../../generated/api-types';
 import { ERROR_MESSAGE_HANDLED_LOCALLY } from '@matheportal/feedback-contracts';
+import { Klasse } from '../model/klasse.model';
 
 @Injectable()
 export class SchulteilnahmeHttpService {
@@ -49,6 +50,20 @@ export class SchulteilnahmeHttpService {
         const pathTemplate: keyof paths = '/api/schulen/{schuleId}/aktuelle-teilnahme/anmeldende-person';
         const path = pathTemplate.replace('{schuleId}', schulkuerzel);
         return this.#httpClient.get<Person>(this.#config.apiUrl + path, {
+            context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
+            withCredentials: true,
+        });
+    }
+
+    /**
+     * Läd die Klassen dieser Schule.
+     * @param schulkuerzel string
+     * @returns Observable auf ein Klasse-Array
+     */
+    public loadKlassen(schulkuerzel: string): Observable<Klasse[]> {
+        const pathTemplate: keyof paths = '/api/schulen/{schuleId}/klassen';
+        const path = pathTemplate.replace('{schuleId}', schulkuerzel);
+        return this.#httpClient.get<Klasse[]>(this.#config.apiUrl + path, {
             context: new HttpContext().set(ERROR_MESSAGE_HANDLED_LOCALLY, true),
             withCredentials: true,
         });

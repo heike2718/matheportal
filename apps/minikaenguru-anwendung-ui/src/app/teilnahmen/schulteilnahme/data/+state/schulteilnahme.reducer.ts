@@ -8,6 +8,7 @@ import {
 } from '../../../../lehrperson/api/lehrperson-store.events';
 import { Teilnahme } from '../../../model/teilnahme.model';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
+import { Klasse } from '../../model/klasse.model';
 
 const SCHULTEILNAHME_FEATURE_KEY = 'MKASchulteilnahme';
 
@@ -15,12 +16,16 @@ export interface SchulteilnahmeState {
     readonly teilnahmeLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
     readonly teilnahme: Teilnahme | undefined;
     readonly anmeldendePersonLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly klassen: Klasse[];
+    readonly klassenLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
 }
 
 export const initialSchulteilnahmeState: SchulteilnahmeState = {
     teilnahmeLoadState: 'not-loaded',
     teilnahme: undefined,
     anmeldendePersonLoadState: 'not-loaded',
+    klassen: [],
+    klassenLoadState: 'not-loaded',
 };
 
 export const schulteilnahmeFeature = createFeature({
@@ -46,6 +51,9 @@ export const schulteilnahmeFeature = createFeature({
             ...state,
             teilnahme: undefined,
             teilnahmeLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
+            anmeldendePersonLoadState: 'not-loaded',
+            klassen: [],
+            klassenLoadState: 'not-loaded',
         })),
         on(SchulteilnahmeActions.anmeldendePersonGeladen, (state, { person }) => {
             if (state.teilnahme && state.teilnahme.kuerzel === person.schulkuerzel) {
@@ -57,7 +65,10 @@ export const schulteilnahmeFeature = createFeature({
             }
             return state;
         }),
-        on(SchulteilnahmeActions.anmeldendePersonLadenFailed, (state, { error }) => {
+        on(SchulteilnahmeActions.anmeldendePersonLadenFailed, (state, { schulkuerzel, error }) => {
+            if (state.teilnahme === undefined || state.teilnahme.kuerzel !== schulkuerzel) {
+                return state;
+            }
             const neueTeilnahme = !state.teilnahme ? undefined : { ...state.teilnahme, angemeldetDurch: undefined };
 
             return {
