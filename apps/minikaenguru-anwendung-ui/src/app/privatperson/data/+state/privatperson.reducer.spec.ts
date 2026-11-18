@@ -7,7 +7,7 @@ import { PrivatpersonActions } from './privatperson.actions';
 import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
 import { Teilnahme } from '../../../teilnahmen/model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { teilnahmeAngemeldet } from '../../../teilnahmen/privatteilnahme/api/privatteilnahme-store.events';
+import { privatteilnahmeAngemeldet } from '../../../teilnahmen/privatteilnahme/api/privatteilnahme-store.events';
 
 describe('privatpersonReducer', () => {
     const wettbewerbskontext: PrivatpersonWettbewerbskontext = {
@@ -183,7 +183,7 @@ describe('privatpersonReducer', () => {
                 wettbewerbskontextLoadState: 'not-loaded',
             };
 
-            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = privatpersonFeature.reducer(previousState, privatteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toBe(previousState);
         });
@@ -197,7 +197,7 @@ describe('privatpersonReducer', () => {
                 wettbewerbskontextLoadState: 'loaded',
             };
 
-            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = privatpersonFeature.reducer(previousState, privatteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toEqual({
                 wettbewerbskontextLoadState: 'loaded',
@@ -220,7 +220,7 @@ describe('privatpersonReducer', () => {
                 wettbewerbskontextLoadState: 'loaded',
             };
 
-            const state = privatpersonFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = privatpersonFeature.reducer(previousState, privatteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toEqual({
                 wettbewerbskontextLoadState: 'loaded',
