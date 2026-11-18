@@ -101,7 +101,7 @@ public class SchuleResource implements SchuleApi {
             @Size(max = PatternConstants.MAX_SIZE_KUERZEL_SCHULKATALOG) final String schuleId,
             @Pattern(regexp = PatternConstants.REGEXP_UUID)
             @Size(max = PatternConstants.MAX_SIZE_UUID) final String klasseId,
-            @Valid @NotNull KlasseRequest klasseRequest) {
+            @Valid @NotNull final KlasseRequest klasseRequest) {
 
         return Response.ok(schuleService.klasseAendern(schuleId, klasseId, klasseRequest)).build();
     }
