@@ -77,6 +77,26 @@ export const schulteilnahmeFeature = createFeature({
                 anmeldendePersonLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
         }),
+        on(SchulteilnahmeActions.klassenGeladen, (state, { schulkuerzel, klassen }) => {
+            if (state.teilnahme && state.teilnahme.kuerzel === schulkuerzel) {
+                return {
+                    ...state,
+                    klassen: klassen,
+                    klassenLoadState: 'loaded',
+                };
+            }
+            return state;
+        }),
+        on(SchulteilnahmeActions.klassenLadenFailed, (state, { schulkuerzel, error }) => {
+            if (state.teilnahme === undefined || state.teilnahme.kuerzel !== schulkuerzel) {
+                return state;
+            }
+            return {
+                ...state,
+                klassen: [],
+                klassenLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
+            };
+        }),
         on(schuleAusgewaehlt, () => initialSchulteilnahmeState),
         on(lehrpersonBerechtigungVerweigert, () => initialSchulteilnahmeState),
         on(userLoggedOut, () => initialSchulteilnahmeState)

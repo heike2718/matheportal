@@ -21,7 +21,7 @@ export const SchulteilnahmeActions = createActionGroup({
         anmeldendePersonGeladen: props<{ person: Person }>(),
         ensureKlassenGeladen: props<{ schulkuerzel: string }>(),
         klassenLaden: props<{ schulkuerzel: string }>(),
-        klassenGeladen: props<{ klassen: Klasse[] }>(),
-        klassenLadenFailed: props<{ error: Error }>(),
+        klassenGeladen: props<{ schulkuerzel: string; klassen: Klasse[] }>(),
+        klassenLadenFailed: props<{ schulkuerzel: string; error: Error }>(),
     },
 });

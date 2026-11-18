@@ -174,7 +174,8 @@ describe('SchulteilnahmeActions', () => {
         });
     });
 
-    it('should create the klassenLaden action', () => {
+    it('should create the klassenGeladen action', () => {
+        const schulkuerzel = 'S1234567';
         const klassen: Klasse[] = [
             {
                 name: 'Tuxklasse',
@@ -182,10 +183,11 @@ describe('SchulteilnahmeActions', () => {
                 uuid: 'abcdef',
             },
         ];
-        const action = SchulteilnahmeActions.klassenGeladen({ klassen });
+        const action = SchulteilnahmeActions.klassenGeladen({ schulkuerzel, klassen });
 
         expect(action).toEqual({
             type: '[MKA Schulteilnahme] klassenGeladen',
+            schulkuerzel: 'S1234567',
             klassen: [
                 {
                     name: 'Tuxklasse',
@@ -193,6 +195,17 @@ describe('SchulteilnahmeActions', () => {
                     uuid: 'abcdef',
                 },
             ],
+        });
+    });
+
+    it('should create the klassenLadenFailed action', () => {
+        const schulkuerzel = 'S1234567';
+        const action = SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: new Error('uiuiui') });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klassenLadenFailed',
+            schulkuerzel: 'S1234567',
+            error: new Error('uiuiui'),
         });
     });
 });

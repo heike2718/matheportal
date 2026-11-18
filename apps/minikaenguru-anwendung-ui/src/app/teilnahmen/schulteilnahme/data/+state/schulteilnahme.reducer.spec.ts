@@ -85,20 +85,6 @@ describe('teilnahmeReducer', () => {
         });
     });
 
-    describe('userLoggedOut', () => {
-        it('should reset its state when logged out', () => {
-            const previousState: SchulteilnahmeState = {
-                teilnahme,
-                teilnahmeLoadState: 'loaded',
-                anmeldendePersonLoadState: 'not-loaded',
-                klassen,
-                klassenLoadState: 'loaded',
-            };
-
-            expect(schulteilnahmeFeature.reducer(previousState, userLoggedOut)).toBe(initialSchulteilnahmeState);
-        });
-    });
-
     describe('schulteilnahmeLaden', () => {
         const schulkuerzel = 'S1234567';
         it.each(['not-loaded', 'forbidden', 'unauthorized'] as const)(
@@ -294,7 +280,7 @@ describe('teilnahmeReducer', () => {
         });
     });
 
-    describe('anmeldendePerson tests', () => {
+    describe('anmeldendePersonGeladen', () => {
         it('should not change the state when teilnahme undefined', () => {
             const state = schulteilnahmeFeature.reducer(
                 initialSchulteilnahmeState,
@@ -406,7 +392,9 @@ describe('teilnahmeReducer', () => {
                 expect(state).toBe(previousState);
             }
         );
+    });
 
+    describe('anmeldendePersonLadenFailed', () => {
         it('should reset the anmeldende person and set the load state when anmeldendePersonLadenFailed with technical-error and the same schulkuerzel', () => {
             const person: Person = {
                 schulkuerzel: 'S1234567',
@@ -882,6 +870,543 @@ describe('teilnahmeReducer', () => {
         );
     });
 
+    describe('klassenGeladen', () => {
+        it('should not change the state when teilnahme undefined', () => {
+            const state = schulteilnahmeFeature.reducer(
+                initialSchulteilnahmeState,
+                SchulteilnahmeActions.klassenGeladen({ schulkuerzel: '7654321S', klassen })
+            );
+
+            expect(state).toBe(initialSchulteilnahmeState);
+        });
+
+        it('should set klassen and the load state when action has the sames schulkuerzel', () => {
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: { schulkuerzel: 'S1234567', fullName: 'Rita Reihe' },
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'not-loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenGeladen({ schulkuerzel: 'S1234567', klassen })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    angemeldetAm: '02.04.2026',
+                    angemeldetDurch: { schulkuerzel: 'S1234567', fullName: 'Rita Reihe' },
+                    anzahlKinder: 3,
+                    anzahlKlassen: 1,
+                    anzahlLoesungszettel: 2,
+                    auswertungsart: 'ONLINE',
+                    durchfuehrungsart: 'SCHULE',
+                    jahr: 2026,
+                    kuerzel: 'S1234567',
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            });
+        });
+
+        it('should not change the klassen and klassenLoadState when action has a different schulkuerzel', () => {
+            const previousState: SchulteilnahmeState = {
+                teilnahme,
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'not-loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenGeladen({ schulkuerzel: '7654321S', klassen })
+            );
+
+            expect(state).toBe(previousState);
+        });
+
+        it.each(['not-loaded', 'not-found', 'unauthorized', 'forbidden', 'technical-error'] as const)(
+            'should not change the klassen and the klassenLoadState when klassenLoadState %s and action has a different schulkuerzel',
+            klassenLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    teilnahme: {
+                        ...teilnahme,
+                        durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                        kuerzel: 'S1234567',
+                    },
+                    teilnahmeLoadState: 'loaded',
+                    anmeldendePersonLoadState: 'loaded',
+                    klassen: [],
+                    klassenLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenGeladen({ schulkuerzel: '7654321S', klassen })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+    });
+
+    describe('klassenLadenFailed', () => {
+        it('should reset klassen and set klassenLoadState when klassenLadenFailed with technical-error and the same schulkuerzel', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: 'S1234567',
+                    error: technicalErrorResponse,
+                })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'technical-error',
+            });
+        });
+
+        it('should reset the klassen and set the klassenLoadState when klassenLadenFailed with unauthorized and the same schulkuerzel', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: 'S1234567',
+                    error: unauthorizedErrorResponse,
+                })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    angemeldetAm: '02.04.2026',
+                    angemeldetDurch: person,
+                    anzahlKinder: 3,
+                    anzahlKlassen: 1,
+                    anzahlLoesungszettel: 2,
+                    auswertungsart: 'ONLINE',
+                    durchfuehrungsart: 'SCHULE',
+                    jahr: 2026,
+                    kuerzel: 'S1234567',
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'unauthorized',
+            });
+        });
+
+        it('should reset the klassen and set the klassenLoadState when klassenLadenFailed with forbidden and the same schulkuerzel', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: 'S1234567',
+                    error: forbiddenErrorResponse,
+                })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    angemeldetAm: '02.04.2026',
+                    angemeldetDurch: person,
+                    anzahlKinder: 3,
+                    anzahlKlassen: 1,
+                    anzahlLoesungszettel: 2,
+                    auswertungsart: 'ONLINE',
+                    durchfuehrungsart: 'SCHULE',
+                    jahr: 2026,
+                    kuerzel: 'S1234567',
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'forbidden',
+            });
+        });
+
+        it('should reset the klassen and set the klassenLoadState when klassenLadenFailed with not-found and the same schulkuerzel', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: 'S1234567',
+                    error: notFoundResponse,
+                })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    angemeldetAm: '02.04.2026',
+                    angemeldetDurch: person,
+                    anzahlKinder: 3,
+                    anzahlKlassen: 1,
+                    anzahlLoesungszettel: 2,
+                    auswertungsart: 'ONLINE',
+                    durchfuehrungsart: 'SCHULE',
+                    jahr: 2026,
+                    kuerzel: 'S1234567',
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'not-found',
+            });
+        });
+
+        it('should reset the klassen and set the klassenLoadState when klassenLadenFailed with unexpected error and the same schulkuerzel', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: 'S1234567',
+                    error: new Error('uiuiui'),
+                })
+            );
+
+            expect(state).toEqual({
+                teilnahme: {
+                    angemeldetAm: '02.04.2026',
+                    angemeldetDurch: person,
+                    anzahlKinder: 3,
+                    anzahlKlassen: 1,
+                    anzahlLoesungszettel: 2,
+                    auswertungsart: 'ONLINE',
+                    durchfuehrungsart: 'SCHULE',
+                    jahr: 2026,
+                    kuerzel: 'S1234567',
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'technical-error',
+            });
+        });
+
+        it('should ignore klassenLadenFailed with technical-error for another schulkuerzel (trifft verspätet ein)', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen: [],
+                klassenLoadState: 'not-loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: '7654321S',
+                    error: technicalErrorResponse,
+                })
+            );
+
+            expect(state).toBe(previousState);
+        });
+
+        it('should ignore klassenLadenFailed with unauthorized when it has another schulkuerzel (trifft verspätet ein)', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: '7654321S',
+                    error: unauthorizedErrorResponse,
+                })
+            );
+
+            expect(state).toBe(previousState);
+        });
+
+        it('should ignore klassenLadenFailed with forbidden when it has another schulkuerzel (trifft verspätet ein)', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: '7654321S',
+                    error: forbiddenErrorResponse,
+                })
+            );
+
+            expect(state).toBe(previousState);
+        });
+
+        it('should ignore klassenLadenFailed with unexpected error when it has another schulkuerzel (trifft verspätet ein)', () => {
+            const person: Person = {
+                schulkuerzel: 'S1234567',
+                fullName: 'Rita Reihe',
+            };
+
+            const previousState: SchulteilnahmeState = {
+                teilnahme: {
+                    ...teilnahme,
+                    durchfuehrungsart: DURCHFUEHRUNGSART.schule,
+                    kuerzel: 'S1234567',
+                    angemeldetDurch: person,
+                },
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            const state = schulteilnahmeFeature.reducer(
+                previousState,
+                SchulteilnahmeActions.klassenLadenFailed({
+                    schulkuerzel: '7654321S',
+                    error: new Error('uiuiui'),
+                })
+            );
+
+            expect(state).toBe(previousState);
+        });
+
+        it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
+            'should ignore klassenLadenFailed on unauthorized (trifft verspätet ein) when teilnahme undefined and teilnahmeLoadState is %s',
+            teilnahmeLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    ...initialSchulteilnahmeState,
+                    teilnahmeLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenLadenFailed({
+                        schulkuerzel: 'S1234567',
+                        error: unauthorizedErrorResponse,
+                    })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+
+        it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
+            'should ignore klassenLadenFailed on forbidden (trifft verspätet ein) when teilnahme undefined and teilnahmeLoadState is %s',
+            teilnahmeLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    ...initialSchulteilnahmeState,
+                    teilnahmeLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenLadenFailed({
+                        schulkuerzel: 'S1234567',
+                        error: forbiddenErrorResponse,
+                    })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+
+        it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
+            'should ignore klassenLadenFailed on not-found (trifft verspätet ein) when teilnahme undefined and teilnahmeLoadState is %s',
+            teilnahmeLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    ...initialSchulteilnahmeState,
+                    teilnahmeLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenLadenFailed({
+                        schulkuerzel: 'S1234567',
+                        error: notFoundResponse,
+                    })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+
+        it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
+            'should ignore klassenLadenFailed on technical-error (trifft verspätet ein) when teilnahme undefined and teilnahmeLoadState is %s',
+            teilnahmeLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    ...initialSchulteilnahmeState,
+                    teilnahmeLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenLadenFailed({
+                        schulkuerzel: 'S1234567',
+                        error: technicalErrorResponse,
+                    })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+
+        it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
+            'should ignore klassenLadenFailed on unexpected Error (trifft verspätet ein) when teilnahme undefined and teilnahmeLoadState is %s',
+            teilnahmeLoadState => {
+                const previousState: SchulteilnahmeState = {
+                    ...initialSchulteilnahmeState,
+                    teilnahmeLoadState,
+                };
+
+                const state = schulteilnahmeFeature.reducer(
+                    previousState,
+                    SchulteilnahmeActions.klassenLadenFailed({
+                        schulkuerzel: 'S1234567',
+                        error: new Error('uiuiui'),
+                    })
+                );
+
+                expect(state).toBe(previousState);
+            }
+        );
+    });
+
     describe('lehrpersonBerechtigungVerweigert', () => {
         const schulteilnahme: Teilnahme = {
             ...teilnahme,
@@ -974,5 +1499,19 @@ describe('teilnahmeReducer', () => {
                 expect(state).toBe(initialSchulteilnahmeState);
             }
         );
+    });
+
+    describe('userLoggedOut', () => {
+        it('should reset its state when logged out', () => {
+            const previousState: SchulteilnahmeState = {
+                teilnahme,
+                teilnahmeLoadState: 'loaded',
+                anmeldendePersonLoadState: 'not-loaded',
+                klassen,
+                klassenLoadState: 'loaded',
+            };
+
+            expect(schulteilnahmeFeature.reducer(previousState, userLoggedOut)).toBe(initialSchulteilnahmeState);
+        });
     });
 });
