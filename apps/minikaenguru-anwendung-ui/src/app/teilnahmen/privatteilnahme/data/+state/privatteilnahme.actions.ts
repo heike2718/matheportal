@@ -4,7 +4,7 @@ import { Teilnahme } from '../../../model/teilnahme.model';
 export const PrivatteilnahmeActions = createActionGroup({
     source: 'MKA Privatteilnahme',
     events: {
-        ensurePrivatteilnahmeLoaded: emptyProps(),
+        ensurePrivatteilnahmeGeladen: emptyProps(),
         privatteilnahmeLaden: emptyProps(),
         teilnahmeGeladen: props<{ teilnahme: Teilnahme }>(),
         teilnahmeLadenFailed: props<{ error: Error }>(),

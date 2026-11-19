@@ -3,11 +3,11 @@ import { Klasse } from '../../model/klasse.model';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
 
 describe('SchulteilnahmeActions', () => {
-    it('should create the ensureSchulteilnahmeLoaded action', () => {
-        const action = SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' });
+    it('should create the ensureSchulteilnahmeGeladen action', () => {
+        const action = SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel: 'S1234567' });
 
         expect(action).toEqual({
-            type: '[MKA Schulteilnahme] ensureSchulteilnahmeLoaded',
+            type: '[MKA Schulteilnahme] ensureSchulteilnahmeGeladen',
             schulkuerzel: 'S1234567',
         });
     });

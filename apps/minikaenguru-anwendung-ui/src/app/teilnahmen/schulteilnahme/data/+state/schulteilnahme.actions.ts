@@ -5,7 +5,7 @@ import { Klasse } from '../../model/klasse.model';
 export const SchulteilnahmeActions = createActionGroup({
     source: 'MKA Schulteilnahme',
     events: {
-        ensureSchulteilnahmeLoaded: props<{ schulkuerzel: string }>(),
+        ensureSchulteilnahmeGeladen: props<{ schulkuerzel: string }>(),
         schulteilnahmeLaden: props<{ schulkuerzel: string }>(),
         teilnahmeGeladen: props<{ teilnahme: Teilnahme }>(),
         teilnahmeLadenFailed: props<{ error: Error }>(),

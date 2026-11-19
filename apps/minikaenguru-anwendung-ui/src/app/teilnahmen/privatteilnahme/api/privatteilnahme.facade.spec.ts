@@ -130,7 +130,7 @@ describe('PrivatteilnahmeFacade', () => {
             facade.aktuellePrivatteilnahmeVorbereiten();
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded());
+            expect(dispatchSpy).toHaveBeenCalledWith(PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen());
         });
 
         it('should dispatch the correct action on privatteilnahmeAnmelden', () => {

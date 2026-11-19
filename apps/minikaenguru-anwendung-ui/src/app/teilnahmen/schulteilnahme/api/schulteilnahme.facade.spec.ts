@@ -132,7 +132,7 @@ describe('TeilnahmeFacade', () => {
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenCalledWith(
-                SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel })
+                SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel })
             );
         });
     });

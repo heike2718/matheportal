@@ -19,9 +19,9 @@ export class SchulteilnahmeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
 
-    readonly ensureSchulteilnahmeLoaded$ = createEffect(() =>
+    readonly ensureSchulteilnahmeGeladen$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(SchulteilnahmeActions.ensureSchulteilnahmeLoaded),
+            ofType(SchulteilnahmeActions.ensureSchulteilnahmeGeladen),
             withLatestFrom(this.#store.select(selectTeilnahme), this.#store.select(selectTeilnahmeLoadState)),
             filter(([{ schulkuerzel }, teilnahme, loadState]) => {
                 const andereSchule = teilnahme !== undefined && teilnahme.kuerzel !== schulkuerzel;
@@ -48,7 +48,7 @@ export class SchulteilnahmeEffects {
         );
     });
 
-    readonly teilnahmeAngemeldetOrGeladen$ = createEffect(() =>
+    readonly ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$ = createEffect(() =>
         this.#actions.pipe(
             ofType(SchulteilnahmeActions.teilnahmeAngemeldet, SchulteilnahmeActions.teilnahmeGeladen),
             map(action => ({
@@ -57,6 +57,18 @@ export class SchulteilnahmeEffects {
             })),
             filter(({ durchfuehrungsart }) => durchfuehrungsart === DURCHFUEHRUNGSART.schule),
             map(({ schulkuerzel }) => SchulteilnahmeActions.ensureAnmeldendePersonGeladen({ schulkuerzel }))
+        )
+    );
+
+    readonly ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchulteilnahmeActions.teilnahmeAngemeldet, SchulteilnahmeActions.teilnahmeGeladen),
+            map(action => ({
+                schulkuerzel: action.teilnahme.kuerzel,
+                durchfuehrungsart: action.teilnahme.durchfuehrungsart,
+            })),
+            filter(({ durchfuehrungsart }) => durchfuehrungsart === DURCHFUEHRUNGSART.schule),
+            map(({ schulkuerzel }) => SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel }))
         )
     );
 

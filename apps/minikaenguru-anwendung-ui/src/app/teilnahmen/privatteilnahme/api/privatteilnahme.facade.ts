@@ -24,7 +24,7 @@ export class PrivatteilnahmeFacade {
     readonly aktuelleTeilnahme = this.#store.selectSignal(selectTeilnahme);
 
     public aktuellePrivatteilnahmeVorbereiten(): void {
-        this.#store.dispatch(PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded());
+        this.#store.dispatch(PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen());
     }
 
     public privatteilnahmeAnmelden(): void {

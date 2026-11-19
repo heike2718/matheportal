@@ -24,6 +24,6 @@ export class SchulteilnahmeFacade {
     readonly aktuelleTeilnahme = this.#store.selectSignal(selectTeilnahme);
 
     public aktuelleSchulteilnahmeVorbereiten(schulkuerzel: string): void {
-        this.#store.dispatch(SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel }));
+        this.#store.dispatch(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel }));
     }
 }

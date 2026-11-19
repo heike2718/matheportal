@@ -92,7 +92,7 @@ describe('PrivatteilnahmeEffects', () => {
         vi.clearAllMocks();
     });
 
-    describe('ensurePrivatteilnahmeLoaded$', () => {
+    describe('ensurePrivatteilnahmeGeladen$', () => {
         it.each(['not-loaded', 'technical-error'] as const)(
             'should map to privatteilnahmeLaden when loadState %s',
             async loadState => {
@@ -101,12 +101,12 @@ describe('PrivatteilnahmeEffects', () => {
 
                 const emittedActions: Action[] = [];
 
-                const subscription = effects.ensurePrivatteilnahmeLoaded$.subscribe({
+                const subscription = effects.ensurePrivatteilnahmeGeladen$.subscribe({
                     next: action => emittedActions.push(action),
                 });
 
                 try {
-                    action$.next(PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded());
+                    action$.next(PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen());
 
                     expect(emittedActions).toEqual([PrivatteilnahmeActions.privatteilnahmeLaden()]);
                 } finally {
@@ -123,12 +123,12 @@ describe('PrivatteilnahmeEffects', () => {
 
                 const emittedActions: Action[] = [];
 
-                const subscription = effects.ensurePrivatteilnahmeLoaded$.subscribe({
+                const subscription = effects.ensurePrivatteilnahmeGeladen$.subscribe({
                     next: action => emittedActions.push(action),
                 });
 
                 try {
-                    action$.next(PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded());
+                    action$.next(PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen());
 
                     expect(emittedActions).toEqual([]);
                 } finally {

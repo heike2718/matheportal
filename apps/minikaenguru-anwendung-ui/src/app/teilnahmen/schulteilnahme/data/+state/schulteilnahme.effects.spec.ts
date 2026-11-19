@@ -97,12 +97,14 @@ describe('TeilnahmeEffects', () => {
         vi.clearAllMocks();
     });
 
-    describe('teilnahmeAngemeldetOrGeladen$', () => {
+    describe('ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$', () => {
         it('should map to ensureAnmeldendePersonGeladen when teilnahmeAngemeldet and durchfuehrungsart schule', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
+            const subscription = effects.ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(
+                action => {
+                    emittedActions.push(action);
+                }
+            );
 
             try {
                 action$.next(SchulteilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
@@ -117,9 +119,11 @@ describe('TeilnahmeEffects', () => {
 
         it('should not map to any action when teilnahmeAngemeldet and durchfuehrungsart privat', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
+            const subscription = effects.ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(
+                action => {
+                    emittedActions.push(action);
+                }
+            );
 
             const privatteilnahme: Teilnahme = { ...teilnahme, durchfuehrungsart: DURCHFUEHRUNGSART.privat };
 
@@ -134,9 +138,11 @@ describe('TeilnahmeEffects', () => {
 
         it('should map to ensureAnmeldendePersonGeladen when teilnahmeGeladen and durchfuehrungsart schule', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
-                emittedActions.push(action);
-            });
+            const subscription = effects.ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(
+                action => {
+                    emittedActions.push(action);
+                }
+            );
 
             try {
                 action$.next(SchulteilnahmeActions.teilnahmeGeladen({ teilnahme }));
@@ -151,7 +157,79 @@ describe('TeilnahmeEffects', () => {
 
         it('should not map to any action when teilnahmeGeladen and durchfuehrungsart privat', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.teilnahmeAngemeldetOrGeladen$.subscribe(action => {
+            const subscription = effects.ensureAnmeldendePersonGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(
+                action => {
+                    emittedActions.push(action);
+                }
+            );
+
+            const privatteilnahme: Teilnahme = { ...teilnahme, durchfuehrungsart: DURCHFUEHRUNGSART.privat };
+
+            try {
+                action$.next(SchulteilnahmeActions.teilnahmeGeladen({ teilnahme: privatteilnahme }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+    });
+
+    describe('ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$', () => {
+        it('should map to ensureKlassenGeladen when teilnahmeAngemeldet and durchfuehrungsart schule', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchulteilnahmeActions.teilnahmeAngemeldet({ teilnahme }));
+
+                expect(emittedActions).toEqual([
+                    SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel: 'S1234567' }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not map to any action when teilnahmeAngemeldet and durchfuehrungsart privat', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            const privatteilnahme: Teilnahme = { ...teilnahme, durchfuehrungsart: DURCHFUEHRUNGSART.privat };
+
+            try {
+                action$.next(SchulteilnahmeActions.teilnahmeAngemeldet({ teilnahme: privatteilnahme }));
+
+                expect(emittedActions).toEqual([]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should map to ensureKlassenGeladen when teilnahmeGeladen and durchfuehrungsart schule', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchulteilnahmeActions.teilnahmeGeladen({ teilnahme }));
+
+                expect(emittedActions).toEqual([
+                    SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel: 'S1234567' }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should not map to any action when teilnahmeGeladen and durchfuehrungsart privat', async () => {
+            const emittedActions: Action[] = [];
+            const subscription = effects.ensureKlassenGeladenOnTeilnahmeAngemeldetOrGeladen$.subscribe(action => {
                 emittedActions.push(action);
             });
 
@@ -167,7 +245,7 @@ describe('TeilnahmeEffects', () => {
         });
     });
 
-    describe('ensureSchulteilnahmeLoaded$', () => {
+    describe('ensureSchulteilnahmeGeladen$', () => {
         it.each(['not-loaded', 'technical-error'] as const)(
             'should map to schulteilnahmeLaden when loadState %s',
             async loadState => {
@@ -177,12 +255,12 @@ describe('TeilnahmeEffects', () => {
 
                 const emittedActions: Action[] = [];
 
-                const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+                const subscription = effects.ensureSchulteilnahmeGeladen$.subscribe({
                     next: action => emittedActions.push(action),
                 });
 
                 try {
-                    action$.next(SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
+                    action$.next(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel: 'S1234567' }));
 
                     expect(emittedActions).toEqual([
                         SchulteilnahmeActions.schulteilnahmeLaden({ schulkuerzel: 'S1234567' }),
@@ -200,12 +278,12 @@ describe('TeilnahmeEffects', () => {
 
             const emittedActions: Action[] = [];
 
-            const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+            const subscription = effects.ensureSchulteilnahmeGeladen$.subscribe({
                 next: action => emittedActions.push(action),
             });
 
             try {
-                action$.next(SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: 'S1234567' }));
+                action$.next(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel: 'S1234567' }));
 
                 expect(emittedActions).toEqual([]);
             } finally {
@@ -222,12 +300,12 @@ describe('TeilnahmeEffects', () => {
 
             const emittedActions: Action[] = [];
 
-            const subscription = effects.ensureSchulteilnahmeLoaded$.subscribe({
+            const subscription = effects.ensureSchulteilnahmeGeladen$.subscribe({
                 next: action => emittedActions.push(action),
             });
 
             try {
-                action$.next(SchulteilnahmeActions.ensureSchulteilnahmeLoaded({ schulkuerzel: schulkuerzelB }));
+                action$.next(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel: schulkuerzelB }));
 
                 expect(emittedActions).toEqual([
                     SchulteilnahmeActions.schulteilnahmeLaden({ schulkuerzel: '7654321S' }),

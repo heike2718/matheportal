@@ -2,11 +2,11 @@ import { Teilnahme } from '../../../model/teilnahme.model';
 import { PrivatteilnahmeActions } from './privatteilnahme.actions';
 
 describe('PrivatteilnahmeActions', () => {
-    it('should create the ensurePrivatteilnahmeLoaded action', () => {
-        const action = PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded();
+    it('should create the ensurePrivatteilnahmeGeladen action', () => {
+        const action = PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen();
 
         expect(action).toEqual({
-            type: '[MKA Privatteilnahme] ensurePrivatteilnahmeLoaded',
+            type: '[MKA Privatteilnahme] ensurePrivatteilnahmeGeladen',
         });
     });
 

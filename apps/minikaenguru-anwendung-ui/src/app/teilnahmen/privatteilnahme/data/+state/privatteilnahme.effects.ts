@@ -16,9 +16,9 @@ export class PrivatteilnahmeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #store = inject(Store);
 
-    readonly ensurePrivatteilnahmeLoaded$ = createEffect(() =>
+    readonly ensurePrivatteilnahmeGeladen$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(PrivatteilnahmeActions.ensurePrivatteilnahmeLoaded),
+            ofType(PrivatteilnahmeActions.ensurePrivatteilnahmeGeladen),
             withLatestFrom(this.#store.select(selectTeilnahmeLoadState)),
             filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
             map(() => PrivatteilnahmeActions.privatteilnahmeLaden())
