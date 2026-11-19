@@ -14,17 +14,19 @@
     min-width: 0;
     color: mp-theme.$mp-color-text-default;
 
-    &__header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: mp-theme.$mp-space-4;
-        margin-bottom: mp-theme.$mp-space-5;
+    &__back {
+        @include mp-theme.mp-action-secondary(minikaenguru);
 
-        > div {
-            min-width: 0;
-        }
+        margin-bottom: mp-theme.$mp-space-5;
+    }
+
+    &__back-icon {
+        @include mp-theme.mp-icon-size;
+    }
+
+    &__header {
+        min-width: 0;
+        margin-bottom: mp-theme.$mp-space-5;
     }
 
     &__title {

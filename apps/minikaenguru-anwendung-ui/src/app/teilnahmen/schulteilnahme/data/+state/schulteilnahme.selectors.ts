@@ -19,6 +19,11 @@ export const selectAnmeldendePersonLoadState = createSelector(
     state => state.anmeldendePersonLoadState
 );
 
+export const selectAnmeldendePersonGeladen = createSelector(
+    selectAnmeldendePersonLoadState,
+    loadState => loadState === 'loaded' || loadState === 'not-found'
+);
+
 export const selectKlassenLoadState = createSelector(selectMKASchulteilnahmeState, state => state.klassenLoadState);
 
 export const selectKlassen = createSelector(selectMKASchulteilnahmeState, state => state.klassen);

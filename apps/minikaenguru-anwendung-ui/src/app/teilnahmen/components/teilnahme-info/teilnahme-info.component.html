@@ -1,0 +1,60 @@
+<div class="teilnahme-info">
+    <header class="teilnahme-info__header">
+        <h2 class="teilnahme-info__title">Minikänguru {{ teilnahme().jahr }}</h2>
+
+        <p class="teilnahme-info__subtitle">
+            {{ teilnahme().durchfuehrungsart === 'SCHULE' ? 'Schulteilnahme' : 'Privatteilnahme' }}
+        </p>
+    </header>
+
+    <mat-card appearance="outlined" class="teilnahme-info__card">
+        <mat-card-header>
+            <mat-card-title>Teilnahme im Überblick</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+            <dl class="teilnahme-info__details">
+                <div class="teilnahme-info__detail">
+                    <dt class="teilnahme-info__label">Auswertungsart</dt>
+                    <dd class="teilnahme-info__value" data-testid="auswertungsart">
+                        {{ teilnahme().auswertungsart === 'ONLINE' ? 'Online-Auswertung' : 'Offline-Auswertung' }}
+                    </dd>
+                </div>
+
+                <div class="teilnahme-info__detail">
+                    <dt class="teilnahme-info__label">Angemeldet am</dt>
+                    <dd class="teilnahme-info__value" data-testid="angemeldet-am">
+                        {{ teilnahme().angemeldetAm }}
+                    </dd>
+                </div>
+
+                @if (teilnahme().angemeldetDurch; as person) {
+                    <div class="teilnahme-info__detail" data-testid="abschnitt-angemeldet-durch">
+                        <dt class="teilnahme-info__label">Angemeldet durch</dt>
+                        <dd class="teilnahme-info__value" aria-live="polite" data-testid="angemeldet-durch">
+                            {{ person.fullName }}
+                        </dd>
+                    </div>
+                }
+            </dl>
+
+            <dl class="teilnahme-info__counts">
+                @if (teilnahme().auswertungsart === 'ONLINE') {
+                    <div class="teilnahme-info__count">
+                        <dt class="teilnahme-info__label">Erfasste Kinder</dt>
+                        <dd class="teilnahme-info__number" data-testid="anzahl-kinder">
+                            {{ teilnahme().anzahlKinder }}
+                        </dd>
+                    </div>
+                }
+
+                <div class="teilnahme-info__count">
+                    <dt class="teilnahme-info__label">Erfasste Lösungszettel</dt>
+                    <dd class="teilnahme-info__number" data-testid="anzahl-loesungszettel">
+                        {{ teilnahme().anzahlLoesungszettel }}
+                    </dd>
+                </div>
+            </dl>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import {
     selectAktuelleTeilnahmeLoaded,
     selectAngemeldet,
+    selectAnmeldendePersonGeladen,
+    selectKlassen,
     selectTeilnahme,
     selectTeilnahmeLoadState,
 } from '../data/+state/schulteilnahme.selectors';
@@ -22,6 +24,10 @@ export class SchulteilnahmeFacade {
     readonly angemeldet = this.#store.selectSignal(selectAngemeldet);
 
     readonly aktuelleTeilnahme = this.#store.selectSignal(selectTeilnahme);
+
+    readonly anmeldendePersonGeladen = this.#store.selectSignal(selectAnmeldendePersonGeladen);
+
+    readonly klassen = this.#store.selectSignal(selectKlassen);
 
     public aktuelleSchulteilnahmeVorbereiten(schulkuerzel: string): void {
         this.#store.dispatch(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel }));

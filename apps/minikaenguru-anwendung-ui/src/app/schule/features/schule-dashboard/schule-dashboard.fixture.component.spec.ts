@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 import { WettbewerbFacade } from '../../../core/wettbewerb/api/wettbewerb.facade';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 
-describe('SchuleDashboardComponent', () => {
+describe('SchuleDashboardComponentTest with fixture', () => {
     const wettbewerb: Wettbewerb = {
         beginn: '01.01.2026',
         ende: '31.07.2026',
@@ -293,7 +293,7 @@ describe('SchuleDashboardComponent', () => {
                 By.css('[data-testid="wettbewerb-organisieren-description"]')
             );
             expect(organisierenDescriptionDe.nativeElement.textContent.trim()).toBe(
-                'Klassen, Kinder und Lösungszettel für den Wettbewerb 2026 erfassen und Urkunden ausdrucken'
+                'Klassen, Kinder und Lösungszettel erfassen und Urkunden ausdrucken oder Lösungszettel Ihrer Kinder für den Wettbewerb 2026 hochladen'
             );
 
             const organisierenButtonDe = fixture.debugElement.query(

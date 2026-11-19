@@ -1,24 +1,36 @@
 <div class="schule-dashboard">
+    @if (schulauswahlMoeglich()) {
+        <button
+            class="schule-dashboard__back"
+            type="button"
+            data-testid="schule-wechseln-btn"
+            (click)="schuleWechseln()">
+            <svg class="schule-dashboard__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                    d="M15 18l-6-6 6-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2" />
+            </svg>
+
+            <span>zurück zur Schulauswahl</span>
+        </button>
+    }
+
     @if (wettbewerbskontextLoaded()) {
         <header class="schule-dashboard__header">
             @if (schule()) {
-                <div>
-                    <h1 class="schule-dashboard__title">
-                        {{ schule()!.name }}
-                    </h1>
+                <h1 class="schule-dashboard__title">
+                    {{ schule()!.name }}
+                </h1>
 
-                    <p class="schule-dashboard__location">{{ schuleLocation() }}</p>
+                <p class="schule-dashboard__location">{{ schuleLocation() }}</p>
 
-                    <p data-testid="schule-dashboard-general-hint" class="schule-dashboard__hint">
-                        Hier organisieren Sie die Teilnahme dieser Schule am Minikänguru-Wettbewerb.
-                    </p>
-                </div>
-            }
-            @if (schulauswahlMoeglich()) {
-                <button mat-stroked-button type="button" data-testid="schule-wechseln-btn" (click)="schuleWechseln()">
-                    <mat-icon>swap_horiz</mat-icon>
-                    Schule wechseln
-                </button>
+                <p data-testid="schule-dashboard-general-hint" class="schule-dashboard__hint">
+                    Hier organisieren Sie die Teilnahme dieser Schule am Minikänguru-Wettbewerb.
+                </p>
             }
         </header>
 
@@ -69,8 +81,9 @@
                                     <h2 data-testid="wettbewerb-organisieren-header">Wettbewerb organisieren</h2>
 
                                     <p data-testid="wettbewerb-organisieren-description">
-                                        Klassen, Kinder und Lösungszettel für den Wettbewerb
-                                        {{ aktuellerWettbewerb().jahr }} erfassen und Urkunden ausdrucken
+                                        Klassen, Kinder und Lösungszettel erfassen und Urkunden ausdrucken oder
+                                        Lösungszettel Ihrer Kinder für den Wettbewerb
+                                        {{ aktuellerWettbewerb().jahr }} hochladen
                                     </p>
                                 </div>
 

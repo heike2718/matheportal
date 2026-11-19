@@ -1,0 +1,80 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.teilnahme-info {
+    @include mp-theme.mp-body-default;
+
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    color: mp-theme.$mp-color-text-default;
+
+    &__header {
+        min-width: 0;
+        margin-bottom: mp-theme.$mp-space-5;
+    }
+
+    &__title {
+        @include mp-theme.mp-section-title;
+
+        margin: 0;
+        color: mp-theme.mp-brand(minikaenguru);
+        overflow-wrap: anywhere;
+    }
+
+    &__subtitle {
+        @include mp-theme.mp-body-small;
+
+        margin: mp-theme.$mp-space-2 0 0;
+        color: mp-theme.$mp-color-text-muted;
+        overflow-wrap: anywhere;
+    }
+
+    &__card {
+        @include mp-theme.mp-material-card(minikaenguru);
+    }
+
+    &__details,
+    &__counts {
+        @include mp-theme.mp-card-grid(mp-theme.$mp-card-min-width-s);
+
+        margin: 0;
+    }
+
+    &__detail,
+    &__count {
+        min-width: 0;
+    }
+
+    &__label {
+        @include mp-theme.mp-body-small;
+
+        color: mp-theme.$mp-color-text-muted;
+        overflow-wrap: anywhere;
+    }
+
+    &__value {
+        margin: mp-theme.$mp-space-1 0 0;
+        overflow-wrap: anywhere;
+    }
+
+    &__counts {
+        margin-top: mp-theme.$mp-space-5;
+        padding-top: mp-theme.$mp-space-5;
+        border-top: mp-theme.$mp-border-width solid mp-theme.$mp-border-color-subtle;
+    }
+
+    &__number {
+        margin: mp-theme.$mp-space-2 0 0;
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-font-size-xxl;
+        font-weight: mp-theme.$mp-font-weight-bold;
+        line-height: mp-theme.$mp-line-height-tight;
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
+    }
+}
