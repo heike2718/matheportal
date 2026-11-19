@@ -6,11 +6,17 @@ import { mapToErrorContext } from '@matheportal/shared-utils';
 import { Store } from '@ngrx/store';
 import { SchulteilnahmeHttpService } from '../schulteilnahme-http.service';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
-import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadState } from './schulteilnahme.selectors';
+import {
+    selectAnmeldendePersonLoadState,
+    selectKlassenLoadState,
+    selectTeilnahme,
+    selectTeilnahmeLoadState,
+} from './schulteilnahme.selectors';
 import { Person, Teilnahme } from '../../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../../lehrperson/api/lehrperson-store.events';
 import { selectSchuleWettbewerbskontext } from '../../../../schule/api/public-schule.selectors';
+import { Klasse } from '../../model/klasse.model';
 
 @Injectable()
 export class SchulteilnahmeEffects {
@@ -98,6 +104,15 @@ export class SchulteilnahmeEffects {
         )
     );
 
+    readonly ensureKlassenGeladen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchulteilnahmeActions.ensureKlassenGeladen),
+            withLatestFrom(this.#store.select(selectKlassenLoadState)),
+            filter(([, loadState]) => loadState === 'not-loaded' || loadState === 'technical-error'),
+            map(([{ schulkuerzel }]) => SchulteilnahmeActions.klassenLaden({ schulkuerzel }))
+        )
+    );
+
     readonly anmeldendePersonLaden$ = createEffect(() =>
         this.#actions.pipe(
             ofType(SchulteilnahmeActions.anmeldendePersonLaden),
@@ -111,6 +126,23 @@ export class SchulteilnahmeEffects {
                     catchError((error: Error) =>
                         of(SchulteilnahmeActions.anmeldendePersonLadenFailed({ schulkuerzel, error }))
                     )
+                )
+            )
+        )
+    );
+
+    readonly klassenLaden$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchulteilnahmeActions.klassenLaden),
+            switchMap(({ schulkuerzel }) =>
+                this.#httpService.loadKlassen(schulkuerzel).pipe(
+                    map((klassen: Klasse[]) =>
+                        SchulteilnahmeActions.klassenGeladen({
+                            schulkuerzel,
+                            klassen,
+                        })
+                    ),
+                    catchError((error: Error) => of(SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error })))
                 )
             )
         )

@@ -11,10 +11,16 @@ import { DURCHFUEHRUNGSART } from '../../../../core/wettbewerbsdurchfuehrende/mo
 import { lehrpersonBerechtigungVerweigert } from '../../../../lehrperson/api/lehrperson-store.events';
 import { SchulteilnahmeHttpService } from '../schulteilnahme-http.service';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
-import { selectAnmeldendePersonLoadState, selectTeilnahme, selectTeilnahmeLoadState } from './schulteilnahme.selectors';
+import {
+    selectAnmeldendePersonLoadState,
+    selectKlassenLoadState,
+    selectTeilnahme,
+    selectTeilnahmeLoadState,
+} from './schulteilnahme.selectors';
 import { selectSchuleWettbewerbskontext } from '../../../../schule/api/public-schule.selectors';
 import { SchuleWettbewerbskontext } from '../../../../schule/model/schule.model';
 import { ANMELDESTATUS } from '../../../../core/model/wettbewerbskontext.model';
+import { Klasse } from '../../model/klasse.model';
 
 describe('TeilnahmeEffects', () => {
     let action$: Subject<Action>;
@@ -36,6 +42,7 @@ describe('TeilnahmeEffects', () => {
         loadAktuelleSchulteilnahme: ReturnType<typeof vi.fn>;
         schuleAnmelden: ReturnType<typeof vi.fn>;
         loadAnmeldendePerson: ReturnType<typeof vi.fn>;
+        loadKlassen: ReturnType<typeof vi.fn>;
     };
 
     let messagePublisherMock: { publishWarning: ReturnType<typeof vi.fn>; publishError: ReturnType<typeof vi.fn> };
@@ -69,6 +76,7 @@ describe('TeilnahmeEffects', () => {
             loadAktuelleSchulteilnahme: vi.fn(),
             schuleAnmelden: vi.fn(),
             loadAnmeldendePerson: vi.fn(),
+            loadKlassen: vi.fn(),
         };
 
         messagePublisherMock = {
@@ -534,6 +542,52 @@ describe('TeilnahmeEffects', () => {
         );
     });
 
+    describe('ensureKlassenGeladen$', () => {
+        const schulkuerzel = 'S1234567';
+
+        it.each(['not-loaded', 'technical-error'] as const)(
+            'should map to klassenLaden when teilnahmeGeladen and loadState %s',
+            loadState => {
+                store.overrideSelector(selectKlassenLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const subscription = effects.ensureKlassenGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel }));
+
+                    expect(emittedActions).toEqual([SchulteilnahmeActions.klassenLaden({ schulkuerzel })]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+
+        it.each(['loaded', 'not-found', 'unauthorized', 'forbidden'] as const)(
+            'should not map to klassenLaden when teilnahmeGeladen and loadState %s',
+            loadState => {
+                store.overrideSelector(selectKlassenLoadState, loadState);
+                store.refreshState();
+
+                const emittedActions: Action[] = [];
+                const subscription = effects.ensureKlassenGeladen$.subscribe({
+                    next: action => emittedActions.push(action),
+                });
+
+                try {
+                    action$.next(SchulteilnahmeActions.ensureKlassenGeladen({ schulkuerzel }));
+
+                    expect(emittedActions).toEqual([]);
+                } finally {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    });
+
     describe('anmeldendePersonLaden$', () => {
         const schulkuerzel = 'S1234567';
         const schulkuerzel2 = '7654321S';
@@ -657,6 +711,145 @@ describe('TeilnahmeEffects', () => {
 
             expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadAnmeldendePerson).toHaveBeenCalledWith(schulkuerzel);
+        });
+    });
+
+    describe('klassenLaden$', () => {
+        const schulkuerzel = 'S1234567';
+        const schulkuerzel2 = '7654321S';
+
+        const tuxklasse: Klasse = {
+            name: 'Tuxklasse',
+            schulkuerzel: 'S1234567',
+            uuid: 'aaaaaa',
+        };
+
+        const fuchsklasse: Klasse = {
+            name: 'Fuchsklasse',
+            schulkuerzel: 'S1234567',
+            uuid: 'bbbbbb',
+        };
+
+        const elsterklasse: Klasse = {
+            name: 'Elsterklasse',
+            schulkuerzel: '7654321S',
+            uuid: '999999',
+        };
+
+        const klassenSchuleA: Klasse[] = [tuxklasse, fuchsklasse];
+        const klassenSchuleB: Klasse[] = [elsterklasse];
+
+        it('should call the httpService and map to klassenGeladen when 200', async () => {
+            httpServiceMock.loadKlassen.mockReturnValueOnce(of(klassenSchuleA));
+
+            const promise = firstValueFrom(effects.klassenLaden$);
+
+            action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(SchulteilnahmeActions.klassenGeladen({ schulkuerzel, klassen: klassenSchuleA }));
+
+            expect(httpServiceMock.loadKlassen).toHaveBeenCalledOnce();
+            expect(httpServiceMock.loadKlassen).toHaveBeenCalledWith(schulkuerzel);
+        });
+
+        it('should switch to the latest action and cancel previous pending request (switchMap)', () => {
+            const httpFirst$ = new Subject<Klasse[]>();
+            const httpSecond$ = new Subject<Klasse[]>();
+
+            const firstRequestFinalized = vi.fn();
+
+            httpServiceMock.loadKlassen
+                .mockReturnValueOnce(httpFirst$.pipe(finalize(firstRequestFinalized)))
+                .mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.klassenLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
+
+                expect(firstRequestFinalized).not.toHaveBeenCalled();
+                expect(httpServiceMock.loadKlassen).toHaveBeenCalledTimes(1);
+                expect(httpServiceMock.loadKlassen).toHaveBeenNthCalledWith(1, schulkuerzel);
+
+                action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel: schulkuerzel2 }));
+
+                expect(firstRequestFinalized).toHaveBeenCalledOnce();
+                expect(httpServiceMock.loadKlassen).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadKlassen).toHaveBeenNthCalledWith(2, schulkuerzel2);
+
+                httpFirst$.next(klassenSchuleA);
+                httpFirst$.complete();
+
+                expect(emittedActions).toEqual([]);
+
+                httpSecond$.next(klassenSchuleB);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    SchulteilnahmeActions.klassenGeladen({ schulkuerzel: schulkuerzel2, klassen: klassenSchuleB }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should keep the effects stream alive after an error occurred', () => {
+            const httpFirst$ = new Subject<Klasse[]>();
+            const httpSecond$ = new Subject<Klasse[]>();
+
+            const schulkuerzel2 = '7654321S';
+
+            httpServiceMock.loadKlassen.mockReturnValueOnce(httpFirst$).mockReturnValueOnce(httpSecond$);
+
+            const emittedActions: Action[] = [];
+            const subscription = effects.klassenLaden$.subscribe(action => {
+                emittedActions.push(action);
+            });
+
+            try {
+                action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
+
+                httpFirst$.error(httpServerErrorResponse);
+
+                expect(emittedActions).toEqual([
+                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
+                ]);
+
+                action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel: schulkuerzel2 }));
+
+                expect(httpServiceMock.loadKlassen).toHaveBeenCalledTimes(2);
+                expect(httpServiceMock.loadKlassen).toHaveBeenLastCalledWith(schulkuerzel2);
+
+                httpSecond$.next(klassenSchuleB);
+                httpSecond$.complete();
+
+                expect(emittedActions).toEqual([
+                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.klassenGeladen({ schulkuerzel: schulkuerzel2, klassen: klassenSchuleB }),
+                ]);
+            } finally {
+                subscription.unsubscribe();
+            }
+        });
+
+        it('should call the httpService and map to klassenLadenFailed on error', async () => {
+            httpServiceMock.loadKlassen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+
+            const promise = firstValueFrom(effects.klassenLaden$);
+
+            action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
+            const emitted = await promise;
+
+            expect(emitted).toEqual(
+                SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse })
+            );
+
+            expect(httpServiceMock.loadKlassen).toHaveBeenCalledOnce();
+            expect(httpServiceMock.loadKlassen).toHaveBeenCalledWith(schulkuerzel);
         });
     });
 
