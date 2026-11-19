@@ -11,6 +11,7 @@ import {
     selectTeilnahmeLoadState,
 } from '../data/+state/schulteilnahme.selectors';
 import { SchulteilnahmeActions } from '../data/+state/schulteilnahme.actions';
+import { Klasse } from '../model/klasse.model';
 
 @Injectable()
 export class SchulteilnahmeFacade {
@@ -28,6 +29,10 @@ export class SchulteilnahmeFacade {
     readonly anmeldendePersonGeladen = this.#store.selectSignal(selectAnmeldendePersonGeladen);
 
     readonly klassen = this.#store.selectSignal(selectKlassen);
+
+    onKlasseSelected(klasse: Klasse): void {
+        this.#store.dispatch(SchulteilnahmeActions.klasseAusgewaehlt({ klasse }));
+    }
 
     public aktuelleSchulteilnahmeVorbereiten(schulkuerzel: string): void {
         this.#store.dispatch(SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel }));

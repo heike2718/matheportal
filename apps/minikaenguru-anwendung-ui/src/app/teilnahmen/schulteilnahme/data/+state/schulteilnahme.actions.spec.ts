@@ -208,4 +208,32 @@ describe('SchulteilnahmeActions', () => {
             error: new Error('uiuiui'),
         });
     });
+
+    it('should create the klasseAusgewaehlt action', () => {
+        const klasse: Klasse = {
+            name: 'Tuxklasse',
+            schulkuerzel: 'S1234567',
+            uuid: 'abcdef',
+        };
+        const action = SchulteilnahmeActions.klasseAusgewaehlt({ klasse });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAusgewaehlt',
+            klasse,
+        });
+    });
+
+    it('should create the klasseAusRouteErmittelt action', () => {
+        const klasse: Klasse = {
+            name: 'Tuxklasse',
+            schulkuerzel: 'S1234567',
+            uuid: 'abcdef',
+        };
+        const action = SchulteilnahmeActions.klasseAusRouteErmittelt({ klasse });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAusRouteErmittelt',
+            klasse,
+        });
+    });
 });

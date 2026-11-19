@@ -18,6 +18,7 @@ export interface SchulteilnahmeState {
     readonly anmeldendePersonLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
     readonly klassen: Klasse[];
     readonly klassenLoadState: AUTHORIZED_RESOURCE_LOAD_STATE;
+    readonly ausgewaehlteKlasse: Klasse | undefined;
 }
 
 export const initialSchulteilnahmeState: SchulteilnahmeState = {
@@ -26,6 +27,7 @@ export const initialSchulteilnahmeState: SchulteilnahmeState = {
     anmeldendePersonLoadState: 'not-loaded',
     klassen: [],
     klassenLoadState: 'not-loaded',
+    ausgewaehlteKlasse: undefined,
 };
 
 export const schulteilnahmeFeature = createFeature({
@@ -96,6 +98,12 @@ export const schulteilnahmeFeature = createFeature({
                 klassen: [],
                 klassenLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
+        }),
+        on(SchulteilnahmeActions.klasseAusRouteErmittelt, (state, { klasse }) => {
+            if (state.teilnahme === undefined || state.teilnahme.kuerzel !== klasse.schulkuerzel) {
+                return state;
+            }
+            return { ...state, ausgewaehlteKlasse: klasse };
         }),
         on(schuleAusgewaehlt, () => initialSchulteilnahmeState),
         on(lehrpersonBerechtigungVerweigert, () => initialSchulteilnahmeState),
