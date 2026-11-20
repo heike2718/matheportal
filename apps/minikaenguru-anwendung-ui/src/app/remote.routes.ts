@@ -31,6 +31,8 @@ import { privatteilnahmeDataProvider } from './teilnahmen/privatteilnahme/api/pr
 import { schulteilnahmeDataProvider } from './teilnahmen/schulteilnahme/api/schulteilnahme-data.provider';
 import { PrivatteilnahmeComponent } from './teilnahmen/privatteilnahme/features/privatteilnahme/privatteilnahme.component';
 import { SchulteilnahmeComponent } from './teilnahmen/schulteilnahme/features/schulteilnahme/schulteilnahme.component';
+import { mkaKlasseGuard } from './teilnahmen/schulteilnahme/api/mka-klasse.guard';
+import { KlasseDashboardComponent } from './teilnahmen/schulteilnahme/features/klasse-dashboard/klasse-dashboard.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -92,7 +94,18 @@ export const remoteRoutes: Routes = [
                             {
                                 path: portalRoutes.minikaenguruAnwendung.schulteilnahme,
                                 canActivate: [mkaSchulteilnahmeGuard()],
-                                component: SchulteilnahmeComponent,
+                                children: [
+                                    {
+                                        path: '',
+                                        pathMatch: 'full',
+                                        component: SchulteilnahmeComponent,
+                                    },
+                                    {
+                                        path: portalRoutes.minikaenguruAnwendung.klasse,
+                                        canActivate: [mkaKlasseGuard()],
+                                        component: KlasseDashboardComponent,
+                                    },
+                                ],
                             },
                         ],
                     },

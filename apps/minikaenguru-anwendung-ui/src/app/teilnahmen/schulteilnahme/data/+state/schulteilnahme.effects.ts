@@ -17,12 +17,15 @@ import { DURCHFUEHRUNGSART } from '../../../../core/wettbewerbsdurchfuehrende/mo
 import { lehrpersonBerechtigungVerweigert } from '../../../../lehrperson/api/lehrperson-store.events';
 import { selectSchuleWettbewerbskontext } from '../../../../schule/api/public-schule.selectors';
 import { Klasse } from '../../model/klasse.model';
+import { Router } from '@angular/router';
+import { portalRoutes } from '@matheportal/portal-navigation';
 
 @Injectable()
 export class SchulteilnahmeEffects {
     #actions = inject(Actions);
     #httpService = inject(SchulteilnahmeHttpService);
     #messagePublisher = inject(MESSAGE_PUBLISHER);
+    #router = inject(Router);
     #store = inject(Store);
 
     readonly ensureSchulteilnahmeGeladen$ = createEffect(() =>
@@ -175,6 +178,27 @@ export class SchulteilnahmeEffects {
                 tap(action => {
                     const errorContext = mapToErrorContext(action.error, false);
                     this.#messagePublisher.publishError(errorContext.message);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly navigateOnKlasseAusgewaehlt$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(SchulteilnahmeActions.klasseAusgewaehlt),
+                tap(({ klasse }) => {
+                    // void ignoriert das Promise vom router. Dann hängt es nicht blöd in der Gegend herum.
+                    void this.#router.navigate([
+                        '/',
+                        portalRoutes.minikaenguruAnwendung.root,
+                        portalRoutes.minikaenguruAnwendung.lehrperson,
+                        'schule',
+                        klasse.schulkuerzel,
+                        portalRoutes.minikaenguruAnwendung.schulteilnahme,
+                        'klasse',
+                        klasse.uuid,
+                    ]);
                 })
             ),
         { dispatch: false }

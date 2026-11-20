@@ -496,7 +496,7 @@ describe('LehrpersonEffects', () => {
         });
     });
 
-    describe('schuleAusgewaehlt$', () => {
+    describe('navigateOnSchuleAusgewaehlt$', () => {
         it('should navigate to lehrperson/schule ', async () => {
             const schule: Schule = {
                 kuerzel: 'S1234567',
@@ -513,7 +513,7 @@ describe('LehrpersonEffects', () => {
                 },
             };
 
-            const promise = firstValueFrom(effects.schuleAusgewaehlt$);
+            const promise = firstValueFrom(effects.navigateOnSchuleAusgewaehlt$);
 
             action$.next(LehrpersonActions.schuleAusgewaehlt({ schulkuerzel: schule.kuerzel }));
 

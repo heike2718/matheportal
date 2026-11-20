@@ -79,6 +79,17 @@ export const schulteilnahmeFeature = createFeature({
                 anmeldendePersonLoadState: mapErrorToAuthorizedResourceLoadState(error, true),
             };
         }),
+        on(SchulteilnahmeActions.klassenLaden, (state, { schulkuerzel }) => {
+            if (state.teilnahme == undefined || state.teilnahme.kuerzel !== schulkuerzel) {
+                if (state.klassenLoadState !== 'unauthorized') {
+                    return { ...state, klassen: [], klassenLoadState: 'not-loaded' };
+                }
+            }
+            if (state.klassenLoadState === 'forbidden' || state.klassenLoadState === 'unauthorized') {
+                return state;
+            }
+            return { ...state, klassen: [], klassenLoadState: 'not-loaded' };
+        }),
         on(SchulteilnahmeActions.klassenGeladen, (state, { schulkuerzel, klassen }) => {
             if (state.teilnahme && state.teilnahme.kuerzel === schulkuerzel) {
                 return {
@@ -88,6 +99,24 @@ export const schulteilnahmeFeature = createFeature({
                 };
             }
             return state;
+        }),
+        on(SchulteilnahmeActions.klasseAusgewaehlt, (state, { klasse }) => {
+            if (state.teilnahme === undefined || state.teilnahme.kuerzel !== klasse.schulkuerzel) {
+                return {
+                    ...state,
+                    klassen: [],
+                    klassenLoadState: 'not-loaded',
+                };
+            }
+
+            if (state.klassenLoadState === 'forbidden' || state.klassenLoadState === 'unauthorized') {
+                return state;
+            }
+            return {
+                ...state,
+                klassen: [],
+                klassenLoadState: 'not-loaded',
+            };
         }),
         on(SchulteilnahmeActions.klassenLadenFailed, (state, { schulkuerzel, error }) => {
             if (state.teilnahme === undefined || state.teilnahme.kuerzel !== schulkuerzel) {

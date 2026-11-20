@@ -34,8 +34,8 @@ describe('mkaSchulteilnahmeGuard', () => {
         return Promise.resolve(result as GuardResult);
     }
 
-    function setup(teilhameLoadState: AUTHORIZED_RESOURCE_LOAD_STATE, schulkuerzel: string | undefined) {
-        teilnahmeLoadStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(teilhameLoadState);
+    function setup(teilnahmeLoadState: AUTHORIZED_RESOURCE_LOAD_STATE, schulkuerzel: string | undefined) {
+        teilnahmeLoadStateSubject = new BehaviorSubject<AUTHORIZED_RESOURCE_LOAD_STATE>(teilnahmeLoadState);
 
         teilnahmeFacadeMock = {
             teilnahmeLoadState$: teilnahmeLoadStateSubject.asObservable(),
@@ -118,7 +118,7 @@ describe('mkaSchulteilnahmeGuard', () => {
         expect(teilnahmeFacadeMock.aktuelleSchulteilnahmeVorbereiten).toHaveBeenCalledOnce();
     });
 
-    it('should navigate to dashbiard lehrperson when schulkuerzel is undefined', async () => {
+    it('should navigate to dashboard lehrperson when schulkuerzel is undefined', async () => {
         const { router } = setup('not-loaded', undefined);
 
         const result = await TestBed.runInInjectionContext(() =>

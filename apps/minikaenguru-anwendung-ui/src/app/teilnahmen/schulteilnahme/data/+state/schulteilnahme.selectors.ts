@@ -29,3 +29,9 @@ export const selectKlassenLoadState = createSelector(selectMKASchulteilnahmeStat
 export const selectKlassen = createSelector(selectMKASchulteilnahmeState, state => state.klassen);
 
 export const selectAusgewaehlteKlasse = createSelector(selectMKASchulteilnahmeState, state => state.ausgewaehlteKlasse);
+
+export const selectKlassenLoadStateAndKlassen = createSelector(
+    selectKlassenLoadState,
+    selectKlassen,
+    (klassenLoadState, klassen) => ({ klassenLoadState, klassen })
+);
