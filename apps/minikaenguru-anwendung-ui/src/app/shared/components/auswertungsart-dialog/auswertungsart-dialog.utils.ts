@@ -1,4 +1,4 @@
-import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahme/model/teilnahme.model';
+import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahmen/model/teilnahme.model';
 
 export function getAktuelleAuswertungsart(data: AuswertungsartDialogData): string {
     if (data.auswertungsart === undefined) {

@@ -1,4 +1,4 @@
-import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahme/model/teilnahme.model';
+import { AuswertungsartDialogData, AUSWERUNGSART } from '../../../teilnahmen/model/teilnahme.model';
 import { getAktuelleAuswertungsart, getShowOfflineSection, getShowOnlineSection } from './auswertungsart-dialog.utils';
 
 describe('auswertungsart-dialog utils', () => {

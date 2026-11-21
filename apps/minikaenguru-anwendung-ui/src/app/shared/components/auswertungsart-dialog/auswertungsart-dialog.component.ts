@@ -3,7 +3,7 @@ import {
     AuswertungsartDialogData,
     AuswertungsartDialogResult,
     AUSWERUNGSART,
-} from '../../../teilnahme/model/teilnahme.model';
+} from '../../../teilnahmen/model/teilnahme.model';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

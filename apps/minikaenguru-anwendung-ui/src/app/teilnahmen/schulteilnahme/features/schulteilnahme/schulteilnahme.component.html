@@ -1,0 +1,23 @@
+<div class="schulteilnahme">
+    <a class="schulteilnahme__back" routerLink=".." data-testid="zur-schule-link">
+        <svg class="schulteilnahme__back-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2" />
+        </svg>
+
+        <span>zurück zur Schulübersicht</span>
+    </a>
+
+    @if (teilnahme(); as aktuelleTeilnahme) {
+        <mka-teilnahme-info [teilnahme]="aktuelleTeilnahme" />
+
+        @if (aktuelleTeilnahme.auswertungsart === 'ONLINE') {
+            <mka-klassen-list />
+        }
+    }
+</div>

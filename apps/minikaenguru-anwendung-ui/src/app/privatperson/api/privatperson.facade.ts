@@ -10,7 +10,7 @@ import {
     selectWettbewerbskontextLoadState,
 } from '../data/+state/privatperson.selectors';
 import { PrivatpersonActions } from '../data/+state/privatperson.actions';
-import { privatteilnahmeAnmelden } from '../../teilnahme/api/teilnahme-store.events';
+import { privatteilnahmeAnmelden } from '../../teilnahmen/privatteilnahme/api/privatteilnahme-store.events';
 
 @Injectable()
 export class PrivatpersonFacade {

@@ -81,7 +81,7 @@ export class LehrpersonEffects {
         { dispatch: false }
     );
 
-    readonly schuleAusgewaehlt$ = createEffect(
+    readonly navigateOnSchuleAusgewaehlt$ = createEffect(
         () =>
             this.#actions.pipe(
                 ofType(LehrpersonActions.schuleAusgewaehlt),
