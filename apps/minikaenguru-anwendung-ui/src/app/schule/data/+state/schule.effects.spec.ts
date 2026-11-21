@@ -20,8 +20,8 @@ import {
     AuswertungsartDialogResult,
     AUSWERUNGSART,
 } from '../../../teilnahmen/model/teilnahme.model';
-import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
 import { schulteilnahmeAnmelden } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
+import { AuswertungsartDialogComponent } from '../../features/auswertungsart-dialog/auswertungsart-dialog.component';
 
 describe('SchulenEffects', () => {
     const urlSerializer = new DefaultUrlSerializer();

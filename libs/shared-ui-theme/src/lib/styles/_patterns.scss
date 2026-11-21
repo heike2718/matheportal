@@ -154,3 +154,26 @@
         }
     }
 }
+
+// Gleich breite Aktionen nebeneinander, auf kleinen Ansichten untereinander.
+// Die Gruppe bestimmt das Layout, nicht die Farbgebung der Buttons.
+@mixin mp-action-group {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: tokens.$mp-space-3;
+    min-width: 0;
+
+    > button,
+    > a {
+        align-self: stretch;
+        min-width: 0;
+        width: 100%;
+    }
+
+    @media (width <= layout.$mp-breakpoint-medium) {
+        grid-auto-flow: row;
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

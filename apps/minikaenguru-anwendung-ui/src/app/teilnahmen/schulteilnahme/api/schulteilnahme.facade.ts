@@ -6,6 +6,7 @@ import {
     selectAktuelleTeilnahmeLoaded,
     selectAngemeldet,
     selectAnmeldendePersonGeladen,
+    selectAusgewaehlteKlasse,
     selectKlassen,
     selectKlassenLoadState,
     selectKlassenLoadStateAndKlassen,
@@ -37,7 +38,9 @@ export class SchulteilnahmeFacade {
 
     readonly klassen = this.#store.selectSignal(selectKlassen);
 
-    public onKlasseSelected(klasse: Klasse): void {
+    readonly ausgewaehlteKlasse = this.#store.selectSignal(selectAusgewaehlteKlasse);
+
+    public klasseAusgewaehlt(klasse: Klasse): void {
         this.#store.dispatch(SchulteilnahmeActions.klasseAusgewaehlt({ klasse }));
     }
 
@@ -51,5 +54,13 @@ export class SchulteilnahmeFacade {
 
     public klasseAusRouteErmittelt(klasse: Klasse) {
         this.#store.dispatch(SchulteilnahmeActions.klasseAusRouteErmittelt({ klasse }));
+    }
+
+    public klasseAnlegenRequested(): void {
+        console.log('action dispatchen, der einen Dialog zum Anlegen einer neuen Klasse öffnet');
+    }
+
+    public alleKlassenLoeschenRequested(): void {
+        console.log('action dispatchen, der einen Warndialog öffnet und ggf. das Löschen orchestriert');
     }
 }

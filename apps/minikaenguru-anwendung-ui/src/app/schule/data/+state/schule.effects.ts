@@ -11,8 +11,8 @@ import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 import { Dialog } from '@angular/cdk/dialog';
 import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahmen/model/teilnahme.model';
-import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
 import { schulteilnahmeAnmelden } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
+import { AuswertungsartDialogComponent } from '../../features/auswertungsart-dialog/auswertungsart-dialog.component';
 
 @Injectable()
 export class SchulenEffects {

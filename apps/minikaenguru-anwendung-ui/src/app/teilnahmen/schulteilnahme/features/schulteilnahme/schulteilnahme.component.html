@@ -17,7 +17,12 @@
         <mka-teilnahme-info [teilnahme]="aktuelleTeilnahme" />
 
         @if (aktuelleTeilnahme.auswertungsart === 'ONLINE') {
-            <mka-klassen-list />
+            <mka-klassen-list
+                [klassen]="klassen()"
+                (klasseSelected)="onKlasseSelected($event)"
+                (klassenlisteHochladen)="onKlassenlisteHochladen()"
+                (klasseAnlegen)="onKlasseAnlegen()"
+                (alleKlassenLoeschen)="onAlleKlassenLoeschen()"></mka-klassen-list>
         }
     }
 </div>

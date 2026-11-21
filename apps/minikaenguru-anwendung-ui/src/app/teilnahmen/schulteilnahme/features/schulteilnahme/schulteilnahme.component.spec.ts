@@ -36,6 +36,7 @@ describe('SchulteilnahmeComponent', () => {
 
     let schulteilnahmeFacadeMock: {
         aktuelleTeilnahme: Signal<Teilnahme | undefined>;
+        klasseAusgewaehlt: ReturnType<typeof vi.fn>;
     };
 
     function getZurSchuleLink(): HTMLAnchorElement {
@@ -69,6 +70,7 @@ describe('SchulteilnahmeComponent', () => {
 
         schulteilnahmeFacadeMock = {
             aktuelleTeilnahme: aktuelleTeilnahmeSignal,
+            klasseAusgewaehlt: vi.fn(),
         };
 
         await TestBed.configureTestingModule({

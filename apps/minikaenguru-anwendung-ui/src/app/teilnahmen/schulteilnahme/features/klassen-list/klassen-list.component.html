@@ -1,1 +1,35 @@
-<p>klassen-list works!</p>
+<div class="mka-klassen-list">
+    <p class="mka-klassen-list__result-count">Anzahl Klassen: {{ klassen().length }}</p>
+
+    <div class="mka-klassen-list__results">
+        @for (klasse of klassen(); track klasse.uuid) {
+            <mka-klasse-card [klasse]="klasse" (klasseSelected)="klasseSelected.emit(klasse)" />
+        }
+    </div>
+
+    <div class="mka-klassen-list__actions">
+        <button
+            type="button"
+            class="mka-klassen-list__action"
+            data-testid="btn-upload"
+            (click)="klassenlisteHochladen.emit()">
+            Klassenliste hochladen
+        </button>
+        <button
+            type="button"
+            class="mka-klassen-list__action"
+            data-testid="btn-neue-klasse"
+            (click)="klasseAnlegen.emit()">
+            Neue Klasse
+        </button>
+        @if (klassen().length > 0) {
+            <button
+                type="button"
+                class="mka-klassen-list__action mka-klassen-list__action--danger"
+                data-testid="btn-klassen-loeschen"
+                (click)="alleKlassenLoeschen.emit()">
+                Alle Klassen löschen
+            </button>
+        }
+    </div>
+</div>

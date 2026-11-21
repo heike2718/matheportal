@@ -54,7 +54,7 @@
                                 <div>
                                     <h2 data-testid="anmeldung-header">Anmeldung noch nicht möglich</h2>
 
-                                    <p data-testid="anmeldung-description">
+                                    <p data-testid="anmeldung-description" class="schule-dashboard__hint">
                                         Die Anmeldung ist ab
                                         {{ aktuellerWettbewerb().beginn }}
                                         möglich.
@@ -69,7 +69,7 @@
                                 <div>
                                     <h2 data-testid="anmeldung-header">Anmeldung nicht mehr möglich</h2>
 
-                                    <p data-testid="anmeldung-description">
+                                    <p data-testid="anmeldung-description" class="schule-dashboard__hint">
                                         Der Wettbewerb {{ aktuellerWettbewerb().jahr }} ist beendet.
                                     </p>
                                 </div>
@@ -80,7 +80,7 @@
                                 <div>
                                     <h2 data-testid="wettbewerb-organisieren-header">Wettbewerb organisieren</h2>
 
-                                    <p data-testid="wettbewerb-organisieren-description">
+                                    <p data-testid="wettbewerb-organisieren-description" class="schule-dashboard__hint">
                                         Klassen, Kinder und Lösungszettel erfassen und Urkunden ausdrucken oder
                                         Lösungszettel Ihrer Kinder für den Wettbewerb
                                         {{ aktuellerWettbewerb().jahr }} hochladen
@@ -101,7 +101,7 @@
                                 <div>
                                     <h2 data-testid="anmeldung-header">Schule noch nicht angemeldet</h2>
 
-                                    <p data-testid="anmeldung-description">
+                                    <p data-testid="anmeldung-description" class="schule-dashboard__hint">
                                         Die Schule kann jetzt zum Wettbewerb
                                         {{ aktuellerWettbewerb().jahr }} angemeldet werden.
                                     </p>
