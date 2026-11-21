@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Auswertungsart, Person, Teilnahme } from '../../../model/teilnahme.model';
-import { Klasse } from '../../model/klasse.model';
+import { Klasse, KlasseRequest } from '../../model/klasse.model';
 
 export const SchulteilnahmeActions = createActionGroup({
     source: 'MKA Schulteilnahme',
@@ -25,5 +25,9 @@ export const SchulteilnahmeActions = createActionGroup({
         klassenLadenFailed: props<{ schulkuerzel: string; error: Error }>(),
         klasseAusgewaehlt: props<{ klasse: Klasse }>(),
         klasseAusRouteErmittelt: props<{ klasse: Klasse }>(),
+        klasseAnlegenRequested: emptyProps(),
+        klasseAnlegen: props<{ schulkuerzel: string; klasseRequest: KlasseRequest }>(),
+        klasseAngelegt: props<{ klasse: Klasse }>(),
+        klasseAnlegenFailed: props<{ schulkuerzel: string; error: Error }>(),
     },
 });

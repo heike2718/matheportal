@@ -1,13 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { AUTHORIZED_RESOURCE_LOAD_STATE } from '@matheportal/shared-model';
 import { Person, Teilnahme } from '../../../model/teilnahme.model';
 import { Klasse } from '../../model/klasse.model';
-
-interface Fehlerfall {
-    readonly name: string;
-    readonly error: Error;
-    readonly loadState: AUTHORIZED_RESOURCE_LOAD_STATE;
-}
 
 export function createSchulteilnahmeTestdaten() {
     const teilnahme: Teilnahme = {
@@ -52,53 +45,66 @@ export function createSchulteilnahmeTestdaten() {
         },
     ];
 
-    const fehlerfaelle: Fehlerfall[] = [
-        {
-            name: 'unauthorized',
-            error: new HttpErrorResponse({
-                status: 401,
-                statusText: 'unauthorized',
-                error: 'boom',
-                url: '/schulen/',
-            }),
-            loadState: 'unauthorized',
-        },
-        {
-            name: 'forbidden',
-            error: new HttpErrorResponse({
-                status: 403,
-                statusText: 'forbidden',
-                error: 'boom',
-                url: '/schulen/',
-            }),
-            loadState: 'forbidden',
-        },
-        {
-            name: 'not-found',
-            error: new HttpErrorResponse({
-                status: 404,
-                statusText: 'Not Found',
-                error: 'boom',
-                url: '/schulen/',
-            }),
-            loadState: 'not-found',
-        },
-        {
-            name: 'technical-error',
-            error: new HttpErrorResponse({
-                status: 500,
-                statusText: 'Internal Server Error',
-                error: 'boom',
-                url: '/schulen/',
-            }),
-            loadState: 'technical-error',
-        },
-        {
-            name: 'unexpected error',
-            error: new Error('uiuiui'),
-            loadState: 'technical-error',
-        },
-    ];
+    const neueKlasse: Klasse = {
+        name: 'Luchsklasse',
+        schulkuerzel: 'S1234567',
+        uuid: 'eeeeee',
+    };
 
-    return { teilnahme, person, fremdePerson, klassen, klassenAndereSchule, fehlerfaelle };
+    const neueKlasseAndereSchule: Klasse = {
+        name: 'Lindenklasse',
+        schulkuerzel: '7654321S',
+        uuid: 'ffffff',
+    };
+
+    const fehler = {
+        http400: new HttpErrorResponse({
+            status: 400,
+            statusText: 'Bad Request',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http401: new HttpErrorResponse({
+            status: 401,
+            statusText: 'Unauthorized',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http403: new HttpErrorResponse({
+            status: 403,
+            statusText: 'Forbidden',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http404: new HttpErrorResponse({
+            status: 404,
+            statusText: 'Not Found',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http409: new HttpErrorResponse({
+            status: 409,
+            statusText: 'Conflict',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http500: new HttpErrorResponse({
+            status: 500,
+            statusText: 'Internal Server Error',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        unexpected: new Error('uiuiui'),
+    };
+
+    return {
+        teilnahme,
+        person,
+        fremdePerson,
+        klassen,
+        klassenAndereSchule,
+        neueKlasse,
+        neueKlasseAndereSchule,
+        fehler,
+    };
 }

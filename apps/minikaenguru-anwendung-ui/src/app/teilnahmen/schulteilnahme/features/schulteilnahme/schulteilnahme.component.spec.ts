@@ -1,12 +1,16 @@
 import { Component, DebugElement, signal, Signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { NavigationEnd, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { MockComponent, ngMocks } from 'ng-mocks';
 import { filter, firstValueFrom, take } from 'rxjs';
-import { SchulteilnahmeComponent } from './schulteilnahme.component';
+import { TeilnahmeInfoComponent } from '../../../components/teilnahme-info/teilnahme-info.component';
 import { AUSWERUNGSART, Teilnahme } from '../../../model/teilnahme.model';
 import { SchulteilnahmeFacade } from '../../api/schulteilnahme.facade';
-import { By } from '@angular/platform-browser';
+import { Klasse } from '../../model/klasse.model';
+import { KlassenListComponent } from '../klassen-list/klassen-list.component';
+import { SchulteilnahmeComponent } from './schulteilnahme.component';
 
 @Component({
     selector: 'mka-schule-dashboard-test',
@@ -26,17 +30,30 @@ describe('SchulteilnahmeComponent', () => {
         kuerzel: 'S1234567',
     };
 
+    const klassen: Klasse[] = [
+        {
+            uuid: 'K-1',
+            schulkuerzel: 'S1234567',
+            name: '1a',
+        },
+    ];
+
     const dashboardUrl = '/minikaenguru-anwendung/lehrperson/schule/S1234567';
     const teilnahmeUrl = `${dashboardUrl}/teilnahme`;
 
     let harness: RouterTestingHarness;
     let router: Router;
+    let component: SchulteilnahmeComponent;
 
     let aktuelleTeilnahmeSignal: WritableSignal<Teilnahme | undefined>;
+    let klassenSignal: WritableSignal<Klasse[]>;
 
     let schulteilnahmeFacadeMock: {
         aktuelleTeilnahme: Signal<Teilnahme | undefined>;
+        klassen: Signal<Klasse[]>;
         klasseAusgewaehlt: ReturnType<typeof vi.fn>;
+        klasseAnlegenRequested: ReturnType<typeof vi.fn>;
+        alleKlassenLoeschenRequested: ReturnType<typeof vi.fn>;
     };
 
     function getZurSchuleLink(): HTMLAnchorElement {
@@ -65,12 +82,26 @@ describe('SchulteilnahmeComponent', () => {
         return routeDebugElement;
     }
 
+    function getKlassenList(): DebugElement {
+        const klassenListDe = getRouteDebugElement().query(By.directive(KlassenListComponent));
+
+        if (klassenListDe === null) {
+            throw new Error('Die KlassenListComponent wurde nicht gerendert.');
+        }
+
+        return klassenListDe;
+    }
+
     beforeEach(async () => {
         aktuelleTeilnahmeSignal = signal(teilnahme);
+        klassenSignal = signal(klassen);
 
         schulteilnahmeFacadeMock = {
             aktuelleTeilnahme: aktuelleTeilnahmeSignal,
+            klassen: klassenSignal,
             klasseAusgewaehlt: vi.fn(),
+            klasseAnlegenRequested: vi.fn(),
+            alleKlassenLoeschenRequested: vi.fn(),
         };
 
         await TestBed.configureTestingModule({
@@ -107,11 +138,24 @@ describe('SchulteilnahmeComponent', () => {
                     useValue: schulteilnahmeFacadeMock,
                 },
             ],
-        }).compileComponents();
+        })
+            .overrideComponent(SchulteilnahmeComponent, {
+                remove: {
+                    imports: [TeilnahmeInfoComponent, KlassenListComponent],
+                },
+                add: {
+                    imports: [MockComponent(TeilnahmeInfoComponent), MockComponent(KlassenListComponent)],
+                },
+            })
+            .compileComponents();
 
         router = TestBed.inject(Router);
         harness = await RouterTestingHarness.create();
-        await harness.navigateByUrl(teilnahmeUrl, SchulteilnahmeComponent);
+        component = await harness.navigateByUrl(teilnahmeUrl, SchulteilnahmeComponent);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it('should link to the dashboard of the current school', () => {
@@ -139,43 +183,135 @@ describe('SchulteilnahmeComponent', () => {
         expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(SchuleDashboardTestComponent);
     });
 
-    it('should show the TeilnahmeInfoComponent', () => {
-        const routeDebugElement = getRouteDebugElement();
+    it('should pass the aktuelleTeilnahme to the TeilnahmeInfoComponent', () => {
+        const teilnahmeInfoDe = getRouteDebugElement().query(By.directive(TeilnahmeInfoComponent));
 
-        const teilnahmeInfoComponentDe = routeDebugElement.query(By.css('mka-teilnahme-info'));
-
-        expect(teilnahmeInfoComponentDe).toBeTruthy();
+        expect(teilnahmeInfoDe).toBeTruthy();
+        expect(ngMocks.input(teilnahmeInfoDe, 'teilnahme')).toEqual(teilnahme);
     });
 
-    it('should show the KlassenListComponent when Auswertungsart online', () => {
-        const routeDebugElement = getRouteDebugElement();
+    it('should update the TeilnahmeInfoComponent when aktuelleTeilnahme changes', () => {
+        const updatedTeilnahme: Teilnahme = {
+            ...teilnahme,
+            anzahlKinder: 5,
+        };
 
-        const klassenListComponentDe = routeDebugElement.query(By.css('mka-klassen-list'));
+        aktuelleTeilnahmeSignal.set(updatedTeilnahme);
+        harness.detectChanges();
 
-        expect(klassenListComponentDe).toBeTruthy();
+        const teilnahmeInfoDe = getRouteDebugElement().query(By.directive(TeilnahmeInfoComponent));
+
+        expect(teilnahmeInfoDe).toBeTruthy();
+        expect(ngMocks.input(teilnahmeInfoDe, 'teilnahme')).toEqual(updatedTeilnahme);
     });
 
-    it('should not show the KlassenListComponent when Auswertungsart online', () => {
-        aktuelleTeilnahmeSignal.set({ ...teilnahme, auswertungsart: AUSWERUNGSART.offline });
+    it('should show the KlassenListComponent with klassen when Auswertungsart is online', () => {
+        expect(ngMocks.input(getKlassenList(), 'klassen')).toEqual(klassen);
+    });
+
+    it('should update the KlassenListComponent when klassen change', () => {
+        const updatedKlassen: Klasse[] = [
+            ...klassen,
+            {
+                uuid: 'K-2',
+                schulkuerzel: 'S1234567',
+                name: '2b',
+            },
+        ];
+
+        klassenSignal.set(updatedKlassen);
+        harness.detectChanges();
+
+        expect(ngMocks.input(getKlassenList(), 'klassen')).toEqual(updatedKlassen);
+    });
+
+    it('should keep the KlassenListComponent visible when klassen are empty', () => {
+        klassenSignal.set([]);
+        harness.detectChanges();
+
+        expect(ngMocks.input(getKlassenList(), 'klassen')).toEqual([]);
+    });
+
+    it('should show the TeilnahmeInfoComponent but no KlassenListComponent when Auswertungsart is offline', () => {
+        const offlineTeilnahme: Teilnahme = {
+            ...teilnahme,
+            auswertungsart: AUSWERUNGSART.offline,
+        };
+
+        aktuelleTeilnahmeSignal.set(offlineTeilnahme);
         harness.detectChanges();
 
         const routeDebugElement = getRouteDebugElement();
+        const teilnahmeInfoDe = routeDebugElement.query(By.directive(TeilnahmeInfoComponent));
 
-        const klassenListComponentDe = routeDebugElement.query(By.css('mka-klassen-list'));
-
-        expect(klassenListComponentDe).toBe(null);
+        expect(teilnahmeInfoDe).toBeTruthy();
+        expect(ngMocks.input(teilnahmeInfoDe, 'teilnahme')).toEqual(offlineTeilnahme);
+        expect(routeDebugElement.query(By.directive(KlassenListComponent))).toBeNull();
     });
 
-    it('should neigther show the TeilnahmeInfoComponent nor the KlassenListComponent when aktuelleAuswertung is undefined', () => {
+    it('should show the KlassenListComponent again when Auswertungsart changes to online', () => {
+        aktuelleTeilnahmeSignal.set({
+            ...teilnahme,
+            auswertungsart: AUSWERUNGSART.offline,
+        });
+        harness.detectChanges();
+
+        expect(getRouteDebugElement().query(By.directive(KlassenListComponent))).toBeNull();
+
+        aktuelleTeilnahmeSignal.set(teilnahme);
+        harness.detectChanges();
+
+        expect(ngMocks.input(getKlassenList(), 'klassen')).toEqual(klassen);
+    });
+
+    it('should show neither child component but keep the back link when aktuelleTeilnahme is undefined', () => {
         aktuelleTeilnahmeSignal.set(undefined);
         harness.detectChanges();
 
         const routeDebugElement = getRouteDebugElement();
 
-        const teilnahmeInfoComponentDe = routeDebugElement.query(By.css('mka-teilnahme-info'));
-        expect(teilnahmeInfoComponentDe).toBe(null);
+        expect(routeDebugElement.query(By.directive(TeilnahmeInfoComponent))).toBeNull();
+        expect(routeDebugElement.query(By.directive(KlassenListComponent))).toBeNull();
+        expect(getZurSchuleLink().getAttribute('href')).toBe(dashboardUrl);
+    });
 
-        const klassenListComponentDe = routeDebugElement.query(By.css('mka-klassen-list'));
-        expect(klassenListComponentDe).toBe(null);
+    it('should show both child components when aktuelleTeilnahme becomes available', () => {
+        aktuelleTeilnahmeSignal.set(undefined);
+        harness.detectChanges();
+
+        aktuelleTeilnahmeSignal.set(teilnahme);
+        harness.detectChanges();
+
+        const teilnahmeInfoDe = getRouteDebugElement().query(By.directive(TeilnahmeInfoComponent));
+
+        expect(teilnahmeInfoDe).toBeTruthy();
+        expect(ngMocks.input(teilnahmeInfoDe, 'teilnahme')).toEqual(teilnahme);
+        expect(ngMocks.input(getKlassenList(), 'klassen')).toEqual(klassen);
+    });
+
+    it('should call klasseAusgewaehlt when the KlassenListComponent emits klasseSelected', () => {
+        ngMocks.output(getKlassenList(), 'klasseSelected').emit(klassen[0]);
+
+        expect(schulteilnahmeFacadeMock.klasseAusgewaehlt).toHaveBeenCalledExactlyOnceWith(klassen[0]);
+    });
+
+    it('should call klasseAnlegenRequested when the KlassenListComponent emits klasseAnlegen', () => {
+        ngMocks.output(getKlassenList(), 'klasseAnlegen').emit();
+
+        expect(schulteilnahmeFacadeMock.klasseAnlegenRequested).toHaveBeenCalledExactlyOnceWith();
+    });
+
+    it('should call alleKlassenLoeschenRequested when the KlassenListComponent emits alleKlassenLoeschen', () => {
+        ngMocks.output(getKlassenList(), 'alleKlassenLoeschen').emit();
+
+        expect(schulteilnahmeFacadeMock.alleKlassenLoeschenRequested).toHaveBeenCalledExactlyOnceWith();
+    });
+
+    it('should call the upload handler when the KlassenListComponent emits klassenlisteHochladen', () => {
+        const uploadSpy = vi.spyOn(component, 'onKlassenlisteHochladen').mockImplementation(() => undefined);
+
+        ngMocks.output(getKlassenList(), 'klassenlisteHochladen').emit();
+
+        expect(uploadSpy).toHaveBeenCalledExactlyOnceWith();
     });
 });

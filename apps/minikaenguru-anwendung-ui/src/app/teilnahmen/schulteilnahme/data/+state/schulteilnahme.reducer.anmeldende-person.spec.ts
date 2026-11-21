@@ -3,7 +3,7 @@ import { SchulteilnahmeActions } from './schulteilnahme.actions';
 import { createSchulteilnahmeTestdaten } from './schulteilnahme.reducer.testdaten';
 
 describe('schulteilnahmeReducer: anmeldende Person', () => {
-    const { teilnahme, person, fremdePerson, klassen, fehlerfaelle } = createSchulteilnahmeTestdaten();
+    const { teilnahme, person, fremdePerson, klassen, fehler } = createSchulteilnahmeTestdaten();
 
     describe('anmeldendePersonGeladen', () => {
         it('should not change the state when teilnahme undefined', () => {
@@ -105,9 +105,23 @@ describe('schulteilnahmeReducer: anmeldende Person', () => {
     });
 
     describe('anmeldendePersonLadenFailed', () => {
-        it.each(fehlerfaelle)(
-            'should clear the person and set the load state for $name and the same school',
-            ({ error, loadState }) => {
+        const fehlerBeimLaden = [
+            { name: 'HTTP 401', error: fehler.http401 },
+            { name: 'HTTP 403', error: fehler.http403 },
+            { name: 'HTTP 404', error: fehler.http404 },
+            { name: 'HTTP 500', error: fehler.http500 },
+            { name: 'unexpected error', error: fehler.unexpected },
+        ];
+
+        it.each([
+            { name: 'HTTP 401', error: fehler.http401, expectedLoadState: 'unauthorized' },
+            { name: 'HTTP 403', error: fehler.http403, expectedLoadState: 'forbidden' },
+            { name: 'HTTP 404', error: fehler.http404, expectedLoadState: 'not-found' },
+            { name: 'HTTP 500', error: fehler.http500, expectedLoadState: 'technical-error' },
+            { name: 'unexpected error', error: fehler.unexpected, expectedLoadState: 'technical-error' },
+        ] as const)(
+            'should clear the person and set the load state to $expectedLoadState for $name and the same school',
+            ({ error, expectedLoadState }) => {
                 const previousState: SchulteilnahmeState = {
                     teilnahme: { ...teilnahme, angemeldetDurch: person },
                     teilnahmeLoadState: 'loaded',
@@ -138,7 +152,7 @@ describe('schulteilnahmeReducer: anmeldende Person', () => {
                         kuerzel: 'S1234567',
                     },
                     teilnahmeLoadState: 'loaded',
-                    anmeldendePersonLoadState: loadState,
+                    anmeldendePersonLoadState: expectedLoadState,
                     klassen: [
                         {
                             name: 'Fuchsklasse',
@@ -157,14 +171,14 @@ describe('schulteilnahmeReducer: anmeldende Person', () => {
             }
         );
 
-        it.each(fehlerfaelle)('should ignore a late $name for another school', ({ name, error }) => {
+        it.each(fehlerBeimLaden)('should ignore a late $name for another school', ({ error }) => {
             const previousState: SchulteilnahmeState = {
                 teilnahme: { ...teilnahme, angemeldetDurch: person },
                 teilnahmeLoadState: 'loaded',
                 anmeldendePersonLoadState: 'loaded',
                 klassen,
                 klassenLoadState: 'loaded',
-                ausgewaehlteKlasse: name === 'unexpected error' ? klassen[0] : undefined,
+                ausgewaehlteKlasse: error === fehler.unexpected ? klassen[0] : undefined,
             };
 
             const state = schulteilnahmeFeature.reducer(
@@ -178,7 +192,7 @@ describe('schulteilnahmeReducer: anmeldende Person', () => {
             expect(state).toBe(previousState);
         });
 
-        describe.each(fehlerfaelle)('without teilnahme and $name', ({ error }) => {
+        describe.each(fehlerBeimLaden)('without teilnahme and $name', ({ error }) => {
             it.each(['not-loaded', 'unauthorized', 'forbidden', 'not-found', 'technical-error'] as const)(
                 'should ignore the error when teilnahmeLoadState is %s',
                 teilnahmeLoadState => {

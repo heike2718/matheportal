@@ -3,7 +3,7 @@ import { SchulteilnahmeActions } from './schulteilnahme.actions';
 import { createSchulteilnahmeTestdaten } from './schulteilnahme.reducer.testdaten';
 
 describe('schulteilnahmeReducer: Teilnahme', () => {
-    const { teilnahme, klassen, fehlerfaelle } = createSchulteilnahmeTestdaten();
+    const { teilnahme, klassen, fehler } = createSchulteilnahmeTestdaten();
 
     describe('schulteilnahmeLaden', () => {
         it.each(['not-loaded', 'forbidden', 'unauthorized'] as const)(
@@ -113,9 +113,15 @@ describe('schulteilnahmeReducer: Teilnahme', () => {
     });
 
     describe('teilnahmeLadenFailed', () => {
-        it.each(fehlerfaelle)(
-            'should reset participation data and set teilnahmeLoadState for $name',
-            ({ error, loadState }) => {
+        it.each([
+            { name: 'HTTP 401', error: fehler.http401, expectedLoadState: 'unauthorized' },
+            { name: 'HTTP 403', error: fehler.http403, expectedLoadState: 'forbidden' },
+            { name: 'HTTP 404', error: fehler.http404, expectedLoadState: 'not-found' },
+            { name: 'HTTP 500', error: fehler.http500, expectedLoadState: 'technical-error' },
+            { name: 'unexpected error', error: fehler.unexpected, expectedLoadState: 'technical-error' },
+        ] as const)(
+            'should reset participation data and set teilnahmeLoadState to $expectedLoadState for $name',
+            ({ error, expectedLoadState }) => {
                 const previousState: SchulteilnahmeState = {
                     teilnahme: undefined,
                     teilnahmeLoadState: 'not-loaded',
@@ -132,7 +138,7 @@ describe('schulteilnahmeReducer: Teilnahme', () => {
 
                 expect(state).toEqual({
                     teilnahme: undefined,
-                    teilnahmeLoadState: loadState,
+                    teilnahmeLoadState: expectedLoadState,
                     anmeldendePersonLoadState: 'not-loaded',
                     klassen: [],
                     klassenLoadState: 'not-loaded',

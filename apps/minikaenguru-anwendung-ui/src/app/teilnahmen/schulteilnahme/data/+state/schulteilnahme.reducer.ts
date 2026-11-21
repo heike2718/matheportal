@@ -134,6 +134,16 @@ export const schulteilnahmeFeature = createFeature({
             }
             return { ...state, ausgewaehlteKlasse: klasse };
         }),
+        on(SchulteilnahmeActions.klasseAngelegt, (state, { klasse }) => {
+            if (state.teilnahme === undefined || state.teilnahme.kuerzel !== klasse.schulkuerzel) {
+                return state;
+            }
+            return {
+                ...state,
+                teilnahme: { ...state.teilnahme, anzahlKlassen: state.teilnahme.anzahlKlassen + 1 },
+                klassen: [...state.klassen, klasse],
+            };
+        }),
         on(schuleAusgewaehlt, () => initialSchulteilnahmeState),
         on(lehrpersonBerechtigungVerweigert, () => initialSchulteilnahmeState),
         on(userLoggedOut, () => initialSchulteilnahmeState)

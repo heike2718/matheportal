@@ -1,6 +1,8 @@
 import { createSelector } from '@ngrx/store';
 import { schulteilnahmeFeature } from './schulteilnahme.reducer';
 
+const collator = new Intl.Collator('de-DE');
+
 const { selectMKASchulteilnahmeState } = schulteilnahmeFeature;
 
 export const selectTeilnahmeLoadState = createSelector(selectMKASchulteilnahmeState, state => state.teilnahmeLoadState);
@@ -26,7 +28,9 @@ export const selectAnmeldendePersonGeladen = createSelector(
 
 export const selectKlassenLoadState = createSelector(selectMKASchulteilnahmeState, state => state.klassenLoadState);
 
-export const selectKlassen = createSelector(selectMKASchulteilnahmeState, state => state.klassen);
+export const selectKlassen = createSelector(selectMKASchulteilnahmeState, state =>
+    [...state.klassen].sort((a, b) => collator.compare(a.name, b.name))
+);
 
 export const selectAusgewaehlteKlasse = createSelector(selectMKASchulteilnahmeState, state => state.ausgewaehlteKlasse);
 

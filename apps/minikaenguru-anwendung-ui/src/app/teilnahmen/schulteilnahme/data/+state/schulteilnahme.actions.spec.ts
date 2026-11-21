@@ -1,8 +1,14 @@
 import { AUSWERUNGSART, Person, Teilnahme } from '../../../model/teilnahme.model';
-import { Klasse } from '../../model/klasse.model';
+import { Klasse, KlasseRequest } from '../../model/klasse.model';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';
 
 describe('SchulteilnahmeActions', () => {
+    const klasse: Klasse = {
+        name: 'Tuxklasse',
+        schulkuerzel: 'S1234567',
+        uuid: 'abcdef',
+    };
+
     it('should create the ensureSchulteilnahmeGeladen action', () => {
         const action = SchulteilnahmeActions.ensureSchulteilnahmeGeladen({ schulkuerzel: 'S1234567' });
 
@@ -176,13 +182,7 @@ describe('SchulteilnahmeActions', () => {
 
     it('should create the klassenGeladen action', () => {
         const schulkuerzel = 'S1234567';
-        const klassen: Klasse[] = [
-            {
-                name: 'Tuxklasse',
-                schulkuerzel: 'S1234567',
-                uuid: 'abcdef',
-            },
-        ];
+        const klassen: Klasse[] = [klasse];
         const action = SchulteilnahmeActions.klassenGeladen({ schulkuerzel, klassen });
 
         expect(action).toEqual({
@@ -210,11 +210,6 @@ describe('SchulteilnahmeActions', () => {
     });
 
     it('should create the klasseAusgewaehlt action', () => {
-        const klasse: Klasse = {
-            name: 'Tuxklasse',
-            schulkuerzel: 'S1234567',
-            uuid: 'abcdef',
-        };
         const action = SchulteilnahmeActions.klasseAusgewaehlt({ klasse });
 
         expect(action).toEqual({
@@ -224,16 +219,55 @@ describe('SchulteilnahmeActions', () => {
     });
 
     it('should create the klasseAusRouteErmittelt action', () => {
-        const klasse: Klasse = {
-            name: 'Tuxklasse',
-            schulkuerzel: 'S1234567',
-            uuid: 'abcdef',
-        };
         const action = SchulteilnahmeActions.klasseAusRouteErmittelt({ klasse });
 
         expect(action).toEqual({
             type: '[MKA Schulteilnahme] klasseAusRouteErmittelt',
             klasse,
+        });
+    });
+
+    it('should create the klasseAnlegenRequested action', () => {
+        const action = SchulteilnahmeActions.klasseAnlegenRequested();
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAnlegenRequested',
+        });
+    });
+
+    it('should create the klasseAnlegen action', () => {
+        const klasseRequest: KlasseRequest = {
+            name: 'Luchsklasse',
+        };
+
+        const action = SchulteilnahmeActions.klasseAnlegen({ schulkuerzel: 'S1234567', klasseRequest });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAnlegen',
+            schulkuerzel: 'S1234567',
+            klasseRequest: {
+                name: 'Luchsklasse',
+            },
+        });
+    });
+
+    it('should create the klasseAngelegt action', () => {
+        const action = SchulteilnahmeActions.klasseAngelegt({ klasse });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAngelegt',
+            klasse,
+        });
+    });
+
+    it('should create the klasseAnlegenFailed action', () => {
+        const schulkuerzel = 'S1234567';
+        const action = SchulteilnahmeActions.klasseAnlegenFailed({ schulkuerzel, error: new Error('uiuiui') });
+
+        expect(action).toEqual({
+            type: '[MKA Schulteilnahme] klasseAnlegenFailed',
+            schulkuerzel: 'S1234567',
+            error: new Error('uiuiui'),
         });
     });
 });
