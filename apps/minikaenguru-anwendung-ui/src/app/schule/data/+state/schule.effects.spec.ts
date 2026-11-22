@@ -617,7 +617,7 @@ describe('SchulenEffects', () => {
         });
     });
 
-    describe('prepareSchulteilnahmeAnmelden$', () => {
+    describe('openDialogOnSchulteilnahmeAnmeldenRequested$', () => {
         let closed$: Subject<AuswertungsartDialogResult | undefined>;
 
         beforeEach(() => {
@@ -636,9 +636,9 @@ describe('SchulenEffects', () => {
                     gewaehlteAuswertungsart,
                 };
 
-                const promise = firstValueFrom(effects.prepareSchulteilnahmeAnmelden$);
+                const promise = firstValueFrom(effects.openDialogOnSchulteilnahmeAnmeldenRequested$);
 
-                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S12345678' }));
+                action$.next(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: 'S12345678' }));
                 closed$.next(result);
 
                 const emitted = await promise;
@@ -655,16 +655,16 @@ describe('SchulenEffects', () => {
                 gewaehlteAuswertungsart: AUSWERUNGSART.online,
             };
             const emittedActions: Action[] = [];
-            const subscription = effects.prepareSchulteilnahmeAnmelden$.subscribe(action => {
+            const subscription = effects.openDialogOnSchulteilnahmeAnmeldenRequested$.subscribe(action => {
                 emittedActions.push(action);
             });
 
             try {
-                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S1234567' }));
+                action$.next(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: 'S1234567' }));
 
                 expect(emittedActions).toEqual([]);
 
-                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: '7654321S' }));
+                action$.next(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: '7654321S' }));
 
                 expect(emittedActions).toEqual([]);
                 expect(dialogMock.open).toHaveBeenCalledTimes(1);
@@ -697,6 +697,31 @@ describe('SchulenEffects', () => {
                 expect(emittedActions).toEqual([
                     schulteilnahmeAnmelden({ schulkuerzel: 'S1234567', auswertungsart: AUSWERUNGSART.online }),
                 ]);
+
+                const secondClosed$ = new Subject<AuswertungsartDialogResult | undefined>();
+                dialogMock.open.mockReturnValue({ closed: secondClosed$ });
+
+                action$.next(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: '7654321S' }));
+
+                secondClosed$.next({ ...result, schulkuerzel: '7654321S' });
+                secondClosed$.complete();
+
+                expect(dialogMock.open).toHaveBeenCalledTimes(2);
+                expect(dialogMock.open).toHaveBeenLastCalledWith(
+                    AuswertungsartDialogComponent,
+                    expect.objectContaining({
+                        data: {
+                            schulkuerzel: '7654321S',
+                            auswertungsart: undefined,
+                            loesungszettelVorhanden: false,
+                        } satisfies AuswertungsartDialogData,
+                    })
+                );
+
+                expect(emittedActions).toEqual([
+                    schulteilnahmeAnmelden({ schulkuerzel: 'S1234567', auswertungsart: AUSWERUNGSART.online }),
+                    schulteilnahmeAnmelden({ schulkuerzel: '7654321S', auswertungsart: AUSWERUNGSART.online }),
+                ]);
             } finally {
                 subscription.unsubscribe();
             }
@@ -704,13 +729,14 @@ describe('SchulenEffects', () => {
 
         it('should open a dialog but dispatch no action when the dialog is cancelled', async () => {
             const emittedActions: Action[] = [];
-            const subscription = effects.prepareSchulteilnahmeAnmelden$.subscribe(action => {
+            const subscription = effects.openDialogOnSchulteilnahmeAnmeldenRequested$.subscribe(action => {
                 emittedActions.push(action);
             });
 
             try {
-                action$.next(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S12345678' }));
+                action$.next(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: 'S12345678' }));
                 closed$.next(undefined);
+                closed$.complete();
 
                 expect(emittedActions).toEqual([]);
             } finally {

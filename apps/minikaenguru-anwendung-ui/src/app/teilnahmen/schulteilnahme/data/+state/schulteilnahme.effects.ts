@@ -16,9 +16,12 @@ import { Person, Teilnahme } from '../../../model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { lehrpersonBerechtigungVerweigert } from '../../../../lehrperson/api/lehrperson-store.events';
 import { selectSchuleWettbewerbskontext } from '../../../../schule/api/public-schule.selectors';
-import { Klasse } from '../../model/klasse.model';
+import { Klasse, KlasseDialogData, KlasseDialogResult, KlasseRequest } from '../../model/klasse.model';
 import { Router } from '@angular/router';
 import { portalRoutes } from '@matheportal/portal-navigation';
+import { Dialog } from '@angular/cdk/dialog';
+import { KlasseDialogComponent } from '../../features/klasse-dialog/klasse-dialog.component';
+import { ErrorContext } from '@matheportal/shared-model';
 
 @Injectable()
 export class SchulteilnahmeEffects {
@@ -27,6 +30,7 @@ export class SchulteilnahmeEffects {
     #messagePublisher = inject(MESSAGE_PUBLISHER);
     #router = inject(Router);
     #store = inject(Store);
+    #dialog = inject(Dialog);
 
     readonly ensureSchulteilnahmeGeladen$ = createEffect(() =>
         this.#actions.pipe(
@@ -199,6 +203,62 @@ export class SchulteilnahmeEffects {
                         'klasse',
                         klasse.uuid,
                     ]);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    readonly openDialogOnKlasseAnlegenRequested$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchulteilnahmeActions.klasseAnlegenRequested),
+            exhaustMap(({ schulkuerzel }) => {
+                const dialogRef = this.#dialog.open<KlasseDialogResult>(KlasseDialogComponent, {
+                    width: '800px',
+                    maxWidth: 'calc(100vw - 24px)',
+                    maxHeight: 'calc(100dvh - 24px)',
+                    data: {
+                        schulkuerzel,
+                        name: '',
+                        submitButtonLabel: 'anlegen',
+                    } satisfies KlasseDialogData,
+                });
+
+                return dialogRef.closed.pipe(
+                    filter((result): result is KlasseDialogResult => result !== undefined),
+                    map(result =>
+                        SchulteilnahmeActions.klasseAnlegen({
+                            schulkuerzel: result.schulkuerzel,
+                            klasseRequest: { name: result.name } satisfies KlasseRequest,
+                        })
+                    )
+                );
+            })
+        )
+    );
+
+    readonly klasseAnlegen$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(SchulteilnahmeActions.klasseAnlegen),
+            exhaustMap(({ schulkuerzel, klasseRequest }) =>
+                this.#httpService.klasseAnlegen(schulkuerzel, klasseRequest).pipe(
+                    map(klasse => SchulteilnahmeActions.klasseAngelegt({ klasse })),
+                    catchError((error: Error) => of(SchulteilnahmeActions.klasseAnlegenFailed({ schulkuerzel, error })))
+                )
+            )
+        )
+    );
+
+    readonly klasseAnlegenFailed$ = createEffect(
+        () =>
+            this.#actions.pipe(
+                ofType(SchulteilnahmeActions.klasseAnlegenFailed),
+                tap(({ error }) => {
+                    const errorContext: ErrorContext = mapToErrorContext(error, false);
+                    if (errorContext.httpStatus === 409 || errorContext.httpStatus === 401) {
+                        this.#messagePublisher.publishWarning(errorContext.message);
+                    } else {
+                        this.#messagePublisher.publishError(errorContext.message);
+                    }
                 })
             ),
         { dispatch: false }

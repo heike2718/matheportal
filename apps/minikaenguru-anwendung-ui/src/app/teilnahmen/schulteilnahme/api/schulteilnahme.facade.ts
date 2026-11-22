@@ -56,8 +56,12 @@ export class SchulteilnahmeFacade {
         this.#store.dispatch(SchulteilnahmeActions.klasseAusRouteErmittelt({ klasse }));
     }
 
-    public klasseAnlegenRequested(): void {
-        console.log('action dispatchen, der einen Dialog zum Anlegen einer neuen Klasse öffnet');
+    public klasseAnlegenRequested(schulkuerzel: string | undefined): void {
+        if (schulkuerzel === undefined) {
+            // das sollte nicht auftreten, wenn die Orchestrierung des Kontexts korrekt implementiert ist.
+            return;
+        }
+        this.#store.dispatch(SchulteilnahmeActions.klasseAnlegenRequested({ schulkuerzel }));
     }
 
     public alleKlassenLoeschenRequested(): void {

@@ -15,26 +15,45 @@ export function createSchulteilnahmeEffectsTestdaten() {
         kuerzel: 'S1234567',
     };
 
-    const notFoundResponse = new HttpErrorResponse({
-        status: 404,
-        statusText: 'NotFound',
-        error: 'boom',
-        url: '/teilnahme',
-    });
-
-    const forbiddenResponse = new HttpErrorResponse({
-        status: 403,
-        statusText: 'forbidden',
-        error: 'boom',
-        url: '/teilnahme',
-    });
-
-    const httpServerErrorResponse = new HttpErrorResponse({
-        status: 500,
-        statusText: 'Internal Server Error',
-        error: 'boom',
-        url: '/teilnahme',
-    });
+    const fehler = {
+        http400: new HttpErrorResponse({
+            status: 400,
+            statusText: 'Bad Request',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http401: new HttpErrorResponse({
+            status: 401,
+            statusText: 'Unauthorized',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http403: new HttpErrorResponse({
+            status: 403,
+            statusText: 'Forbidden',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http404: new HttpErrorResponse({
+            status: 404,
+            statusText: 'Not Found',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http409: new HttpErrorResponse({
+            status: 409,
+            statusText: 'Conflict',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        http500: new HttpErrorResponse({
+            status: 500,
+            statusText: 'Internal Server Error',
+            error: 'boom',
+            url: '/schulen/',
+        }),
+        unexpected: new Error('uiuiui'),
+    };
 
     const klassen: Klasse[] = [
         {
@@ -57,5 +76,10 @@ export function createSchulteilnahmeEffectsTestdaten() {
         },
     ];
 
-    return { teilnahme, klassen, klassenAndereSchule, notFoundResponse, forbiddenResponse, httpServerErrorResponse };
+    return {
+        teilnahme,
+        klassen,
+        klassenAndereSchule,
+        fehler,
+    };
 }

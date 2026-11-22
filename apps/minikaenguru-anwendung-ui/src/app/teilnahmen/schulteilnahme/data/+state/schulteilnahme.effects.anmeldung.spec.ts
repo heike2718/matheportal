@@ -11,7 +11,7 @@ import { createSchulteilnahmeEffectsTestdaten } from './schulteilnahme.effects.t
 describe('SchulteilnahmeEffects: Anmeldung', () => {
     let context: ReturnType<typeof setupSchulteilnahmeEffectsTest>;
 
-    const { teilnahme, httpServerErrorResponse } = createSchulteilnahmeEffectsTestdaten();
+    const { teilnahme, fehler } = createSchulteilnahmeEffectsTestdaten();
 
     const schulkuerzel = 'S1234567';
     const auswertungsart: Auswertungsart = AUSWERUNGSART.offline;
@@ -216,10 +216,10 @@ describe('SchulteilnahmeEffects: Anmeldung', () => {
             try {
                 action$.next(SchulteilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
 
-                httpFirst$.error(httpServerErrorResponse);
+                httpFirst$.error(fehler.http500);
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: fehler.http500 }),
                 ]);
 
                 action$.next(
@@ -236,7 +236,7 @@ describe('SchulteilnahmeEffects: Anmeldung', () => {
                 httpSecond$.complete();
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: fehler.http500 }),
                     SchulteilnahmeActions.teilnahmeAngemeldet({ teilnahme }),
                 ]);
             } finally {
@@ -247,14 +247,14 @@ describe('SchulteilnahmeEffects: Anmeldung', () => {
         it('should call the httpService and map to teilnahmeAnmeldenFailed on error', async () => {
             const { action$, effects, httpServiceMock } = context;
 
-            httpServiceMock.schuleAnmelden.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+            httpServiceMock.schuleAnmelden.mockReturnValueOnce(throwError(() => fehler.http500));
 
             const promise = firstValueFrom(effects.schulteilnahmeAnmelden$);
 
             action$.next(SchulteilnahmeActions.schulteilnahmeAnmelden({ schulkuerzel, auswertungsart }));
             const emitted = await promise;
 
-            expect(emitted).toEqual(SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: httpServerErrorResponse }));
+            expect(emitted).toEqual(SchulteilnahmeActions.teilnahmeAnmeldenFailed({ error: fehler.http500 }));
 
             expect(httpServiceMock.schuleAnmelden).toHaveBeenCalledOnce();
         });

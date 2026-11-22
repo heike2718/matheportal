@@ -12,7 +12,7 @@ export const SchuleActions = createActionGroup({
         schulkollegiumLaden: props<{ schule: Schule }>(),
         schulkollegiumGeladen: props<{ schulkollegium: Schulkollegium }>(),
         schulkollegiumLadenFailed: props<{ error: Error }>(),
-        prepareSchulteilnahmeAnmelden: props<{ schulkuerzel: string }>(),
+        schulteilnahmeAnmeldenRequested: props<{ schulkuerzel: string }>(),
         wettbewerbOrganisieren: props<{ schulkuerzel: string }>(),
         schuldashboardVerlassen: emptyProps(),
     },

@@ -6,6 +6,7 @@ import { Auswertungsart, AUSWERUNGSART, Teilnahme } from '../../model/teilnahme.
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
 import { MINIKAENGURU_ANWENDUNG_CONFIGURATION } from '../../../config/minikaenguru-anwendung.configuration';
 import { SchulteilnahmeHttpService } from './schulteilnahme-http.service';
+import { Klasse, KlasseRequest } from '../model/klasse.model';
 
 describe('SchulteilnahmeHttpService', () => {
     const teilnahme: Teilnahme = {
@@ -18,6 +19,14 @@ describe('SchulteilnahmeHttpService', () => {
         jahr: 2027,
         kuerzel: 'S1234567',
     };
+
+    const klassen: Klasse[] = [
+        {
+            name: 'Fuchsklasse',
+            schulkuerzel: 'S1234567',
+            uuid: 'abcdef',
+        },
+    ];
 
     it('schuleAnmelden ruft den vereinbarten Pfad mit POST und Auswertungsart auf', () => {
         const schulkuerzel = 'S1234567';
@@ -152,7 +161,7 @@ describe('SchulteilnahmeHttpService', () => {
         const expectedPath = '/api/schulen/S1234567/klassen';
 
         const httpClientMock = {
-            get: vi.fn().mockReturnValue(of(teilnahme)),
+            get: vi.fn().mockReturnValue(of(klassen)),
         };
 
         TestBed.configureTestingModule({
@@ -181,6 +190,51 @@ describe('SchulteilnahmeHttpService', () => {
 
             const options = httpClientMock.get.mock.calls[0][1];
 
+            expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
+        } finally {
+            subscription.unsubscribe();
+        }
+    });
+
+    it('klasseAnlegen ruft den vereinbarten Pfad mit POST klasseRequest auf', () => {
+        const schulkuerzel = 'S1234567';
+        const klasseRequest: KlasseRequest = {
+            name: 'Fuchsklasse',
+        };
+
+        const apiUrl = 'https://example.test';
+        const expectedPath = '/api/schulen/S1234567/klassen';
+
+        const httpClientMock = {
+            post: vi.fn().mockReturnValue(of(klassen[0])),
+        };
+
+        TestBed.configureTestingModule({
+            providers: [
+                SchulteilnahmeHttpService,
+                { provide: HttpClient, useValue: httpClientMock },
+                {
+                    provide: MINIKAENGURU_ANWENDUNG_CONFIGURATION,
+                    useValue: { apiUrl },
+                },
+            ],
+        });
+
+        const service = TestBed.inject(SchulteilnahmeHttpService);
+
+        const subscription = service.klasseAnlegen(schulkuerzel, klasseRequest).subscribe();
+
+        try {
+            expect(httpClientMock.post).toHaveBeenCalledExactlyOnceWith(
+                apiUrl + expectedPath,
+                klasseRequest,
+                expect.objectContaining({
+                    context: expect.any(HttpContext),
+                    withCredentials: true,
+                })
+            );
+
+            const options = httpClientMock.post.mock.calls[0][2];
             expect(options.context.get(ERROR_MESSAGE_HANDLED_LOCALLY)).toBe(true);
         } finally {
             subscription.unsubscribe();

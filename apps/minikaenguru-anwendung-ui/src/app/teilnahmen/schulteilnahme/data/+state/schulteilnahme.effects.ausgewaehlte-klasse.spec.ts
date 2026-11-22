@@ -1,4 +1,3 @@
-import { Action } from '@ngrx/store';
 import { createSchulteilnahmeEffectsTestdaten } from './schulteilnahme.effects.testdaten';
 import { setupSchulteilnahmeEffectsTest } from './schulteilnahme.effects.testsetup';
 import { SchulteilnahmeActions } from './schulteilnahme.actions';

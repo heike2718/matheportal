@@ -25,7 +25,7 @@ export const SchulteilnahmeActions = createActionGroup({
         klassenLadenFailed: props<{ schulkuerzel: string; error: Error }>(),
         klasseAusgewaehlt: props<{ klasse: Klasse }>(),
         klasseAusRouteErmittelt: props<{ klasse: Klasse }>(),
-        klasseAnlegenRequested: emptyProps(),
+        klasseAnlegenRequested: props<{ schulkuerzel: string }>(),
         klasseAnlegen: props<{ schulkuerzel: string; klasseRequest: KlasseRequest }>(),
         klasseAngelegt: props<{ klasse: Klasse }>(),
         klasseAnlegenFailed: props<{ schulkuerzel: string; error: Error }>(),

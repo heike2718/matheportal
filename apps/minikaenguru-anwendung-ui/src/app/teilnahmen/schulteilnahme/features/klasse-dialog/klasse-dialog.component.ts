@@ -9,7 +9,7 @@ import {
     MINIKAENGURU_TEXT_VALIDATION_HINT,
     notBlankValidator,
 } from '@matheportal/shared-utils';
-import { KlasseDialogData, KlasseRequest } from '../../model/klasse.model';
+import { KlasseDialogData, KlasseDialogResult, KlasseRequest } from '../../model/klasse.model';
 
 @Component({
     imports: [ReactiveFormsModule, DialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
@@ -52,6 +52,11 @@ export class KlasseDialogComponent {
             ...this.form.getRawValue(),
         };
 
-        this.dialogRef.close(payload);
+        const dialogResult: KlasseDialogResult = {
+            schulkuerzel: this.data.schulkuerzel,
+            name: payload.name,
+        };
+
+        this.dialogRef.close(dialogResult);
     }
 }

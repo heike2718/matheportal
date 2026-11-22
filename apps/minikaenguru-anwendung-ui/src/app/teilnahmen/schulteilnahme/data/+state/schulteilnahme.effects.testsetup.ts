@@ -8,6 +8,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SchulteilnahmeEffects } from './schulteilnahme.effects';
 import { SchulteilnahmeHttpService } from '../schulteilnahme-http.service';
 import { DefaultUrlSerializer, Navigation, Router } from '@angular/router';
+import { Dialog } from '@angular/cdk/dialog';
+import { KlasseDialogResult } from '../../model/klasse.model';
 
 export function setupSchulteilnahmeEffectsTest() {
     vi.resetAllMocks();
@@ -21,6 +23,7 @@ export function setupSchulteilnahmeEffectsTest() {
         schuleAnmelden: vi.fn(),
         loadAnmeldendePerson: vi.fn(),
         loadKlassen: vi.fn(),
+        klasseAnlegen: vi.fn(),
     };
 
     const messagePublisherMock = {
@@ -39,6 +42,12 @@ export function setupSchulteilnahmeEffectsTest() {
     routerMock.parseUrl.mockImplementation(url => urlSerializer.parse(url));
     routerMock.url = '/minikaenguru-anwendung';
 
+    const dialogMock = {
+        open: vi.fn(),
+    };
+
+    const closed$: Subject<KlasseDialogResult | undefined> = new Subject<KlasseDialogResult | undefined>();
+
     TestBed.configureTestingModule({
         providers: [
             SchulteilnahmeEffects,
@@ -56,6 +65,11 @@ export function setupSchulteilnahmeEffectsTest() {
                 provide: Router,
                 useValue: routerMock,
             },
+
+            {
+                provide: Dialog,
+                useValue: dialogMock,
+            },
         ],
     });
 
@@ -64,5 +78,9 @@ export function setupSchulteilnahmeEffectsTest() {
 
     vi.clearAllMocks();
 
-    return { action$, effects, store, httpServiceMock, messagePublisherMock, routerMock };
+    dialogMock.open.mockReturnValue({
+        closed: closed$,
+    });
+
+    return { action$, effects, store, httpServiceMock, messagePublisherMock, routerMock, dialogMock, closed$ };
 }

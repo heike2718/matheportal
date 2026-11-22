@@ -298,7 +298,7 @@ describe('SchulteilnahmeComponent', () => {
     it('should call klasseAnlegenRequested when the KlassenListComponent emits klasseAnlegen', () => {
         ngMocks.output(getKlassenList(), 'klasseAnlegen').emit();
 
-        expect(schulteilnahmeFacadeMock.klasseAnlegenRequested).toHaveBeenCalledExactlyOnceWith();
+        expect(schulteilnahmeFacadeMock.klasseAnlegenRequested).toHaveBeenCalledExactlyOnceWith('S1234567');
     });
 
     it('should call alleKlassenLoeschenRequested when the KlassenListComponent emits alleKlassenLoeschen', () => {

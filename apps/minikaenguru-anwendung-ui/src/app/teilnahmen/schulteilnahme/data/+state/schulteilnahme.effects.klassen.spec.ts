@@ -11,7 +11,7 @@ import { createSchulteilnahmeEffectsTestdaten } from './schulteilnahme.effects.t
 describe('SchulteilnahmeEffects: Klassen', () => {
     let context: ReturnType<typeof setupSchulteilnahmeEffectsTest>;
 
-    const { teilnahme, httpServerErrorResponse } = createSchulteilnahmeEffectsTestdaten();
+    const { teilnahme, fehler } = createSchulteilnahmeEffectsTestdaten();
 
     beforeEach(() => {
         context = setupSchulteilnahmeEffectsTest();
@@ -244,10 +244,10 @@ describe('SchulteilnahmeEffects: Klassen', () => {
             try {
                 action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
 
-                httpFirst$.error(httpServerErrorResponse);
+                httpFirst$.error(fehler.http500);
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: fehler.http500 }),
                 ]);
 
                 action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel: schulkuerzel2 }));
@@ -259,7 +259,7 @@ describe('SchulteilnahmeEffects: Klassen', () => {
                 httpSecond$.complete();
 
                 expect(emittedActions).toEqual([
-                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse }),
+                    SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: fehler.http500 }),
                     SchulteilnahmeActions.klassenGeladen({ schulkuerzel: schulkuerzel2, klassen: klassenSchuleB }),
                 ]);
             } finally {
@@ -270,16 +270,14 @@ describe('SchulteilnahmeEffects: Klassen', () => {
         it('should call the httpService and map to klassenLadenFailed on error', async () => {
             const { action$, effects, httpServiceMock } = context;
 
-            httpServiceMock.loadKlassen.mockReturnValueOnce(throwError(() => httpServerErrorResponse));
+            httpServiceMock.loadKlassen.mockReturnValueOnce(throwError(() => fehler.http500));
 
             const promise = firstValueFrom(effects.klassenLaden$);
 
             action$.next(SchulteilnahmeActions.klassenLaden({ schulkuerzel }));
             const emitted = await promise;
 
-            expect(emitted).toEqual(
-                SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: httpServerErrorResponse })
-            );
+            expect(emitted).toEqual(SchulteilnahmeActions.klassenLadenFailed({ schulkuerzel, error: fehler.http500 }));
 
             expect(httpServiceMock.loadKlassen).toHaveBeenCalledOnce();
             expect(httpServiceMock.loadKlassen).toHaveBeenCalledWith(schulkuerzel);

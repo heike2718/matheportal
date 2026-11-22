@@ -24,7 +24,7 @@ export class SchulteilnahmeComponent {
     }
 
     onKlasseAnlegen(): void {
-        this.#schulteilnahmeFacade.klasseAnlegenRequested();
+        this.#schulteilnahmeFacade.klasseAnlegenRequested(this.teilnahme()?.kuerzel);
     }
 
     onAlleKlassenLoeschen(): void {

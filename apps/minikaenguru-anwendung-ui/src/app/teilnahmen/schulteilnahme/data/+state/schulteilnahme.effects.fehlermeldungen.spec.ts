@@ -9,7 +9,7 @@ import { createSchulteilnahmeEffectsTestdaten } from './schulteilnahme.effects.t
 describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
     let context: ReturnType<typeof setupSchulteilnahmeEffectsTest>;
 
-    const { notFoundResponse, forbiddenResponse, httpServerErrorResponse } = createSchulteilnahmeEffectsTestdaten();
+    const { fehler } = createSchulteilnahmeEffectsTestdaten();
 
     beforeEach(() => {
         context = setupSchulteilnahmeEffectsTest();
@@ -31,7 +31,7 @@ describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
             });
 
             try {
-                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: notFoundResponse }));
+                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: fehler.http404 }));
 
                 expect(messagePublisherMock.publishWarning).toHaveBeenCalledOnce();
                 expect(messagePublisherMock.publishWarning).toHaveBeenCalledWith(
@@ -54,7 +54,7 @@ describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
             });
 
             try {
-                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: forbiddenResponse }));
+                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: fehler.http403 }));
 
                 expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
                 expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
@@ -77,7 +77,7 @@ describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
             });
 
             try {
-                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: httpServerErrorResponse }));
+                action$.next(SchulteilnahmeActions.teilnahmeLadenFailed({ error: fehler.http500 }));
 
                 expect(messagePublisherMock.publishError).toHaveBeenCalledOnce();
                 expect(messagePublisherMock.publishError).toHaveBeenCalledWith(
@@ -106,7 +106,7 @@ describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
 
             action$.next(
                 SchulteilnahmeActions.teilnahmeAnmeldenFailed({
-                    error: notFoundResponse,
+                    error: fehler.http404,
                 })
             );
 
@@ -127,7 +127,7 @@ describe('SchulteilnahmeEffects: Fehlermeldungen', () => {
 
             action$.next(
                 SchulteilnahmeActions.teilnahmeAnmeldenFailed({
-                    error: httpServerErrorResponse,
+                    error: fehler.http500,
                 })
             );
 

@@ -9,6 +9,7 @@ describe('KlasseDialogComponent', () => {
     let fixture: ComponentFixture<KlasseDialogComponent>;
 
     const data: KlasseDialogData = {
+        schulkuerzel: 'S1234567',
         name: 'Fuchsklasse',
         submitButtonLabel: 'hallihallo',
     };
@@ -80,6 +81,7 @@ describe('KlasseDialogComponent', () => {
 
         expect(dialogRefMock.close).toHaveBeenCalledOnce();
         expect(dialogRefMock.close).toHaveBeenCalledWith({
+            schulkuerzel: 'S1234567',
             name: 'Tuxklasse',
         });
     });

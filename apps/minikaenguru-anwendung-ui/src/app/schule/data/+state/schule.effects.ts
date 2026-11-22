@@ -91,9 +91,9 @@ export class SchulenEffects {
         { dispatch: false }
     );
 
-    readonly prepareSchulteilnahmeAnmelden$ = createEffect(() =>
+    readonly openDialogOnSchulteilnahmeAnmeldenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(SchuleActions.prepareSchulteilnahmeAnmelden),
+            ofType(SchuleActions.schulteilnahmeAnmeldenRequested),
             exhaustMap(({ schulkuerzel }) => {
                 const dialogRef = this.#dialog.open<AuswertungsartDialogResult>(AuswertungsartDialogComponent, {
                     width: '800px',

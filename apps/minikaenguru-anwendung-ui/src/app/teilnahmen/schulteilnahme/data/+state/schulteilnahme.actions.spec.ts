@@ -228,10 +228,11 @@ describe('SchulteilnahmeActions', () => {
     });
 
     it('should create the klasseAnlegenRequested action', () => {
-        const action = SchulteilnahmeActions.klasseAnlegenRequested();
+        const action = SchulteilnahmeActions.klasseAnlegenRequested({ schulkuerzel: 'S1234567' });
 
         expect(action).toEqual({
             type: '[MKA Schulteilnahme] klasseAnlegenRequested',
+            schulkuerzel: 'S1234567',
         });
     });
 
