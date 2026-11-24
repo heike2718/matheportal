@@ -1,0 +1,10 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.klasse-dialog {
+    @include mp-theme.mp-form-dialog(minikaenguru);
+}

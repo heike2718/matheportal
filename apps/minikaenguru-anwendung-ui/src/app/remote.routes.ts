@@ -22,14 +22,17 @@ import { privatpersonDataProvider } from './privatperson/api/privatperson-data.p
 import { DurchfuehrungsartWaehlenComponent } from './start/durchfuehrungsart-waehlen/durchfuehrungsart-waehlen.component';
 import { LadefehlerComponent } from './start/ladefehler/ladefehler.component';
 import { mkaLehrpersonGuard } from './lehrperson/api/mka-lehrperson.guard';
-import { PrivatteilnahmeComponent } from './teilnahme/features/privatteilnahme/privatteilnahme.component';
-import { teilnahmeDataProvider } from './teilnahme/api/teilnahme-data.provider';
-import { mkaPrivatteilnahmeGuard } from './teilnahme/api/mka-privatteilnahme.guard';
 import { GuestInfoComponent } from './start/guest-info/guest-info.component';
-import { mkaSchulteilnahmeGuard } from './teilnahme/api/mka-schulteilnahme.guard';
-import { SchulteilnahmeComponent } from './teilnahme/features/schulteilnahme/schulteilnahme.component';
 import { LehrpersonDashboardComponent } from './lehrperson/features/lehrperson-dashboard/lehrperson-dashboard.component';
 import { PrivatpersonDashboardComponent } from './privatperson/features/privatperson-dashboard/privatperson-dashboard.component';
+import { mkaPrivatteilnahmeGuard } from './teilnahmen/privatteilnahme/api/mka-privatteilnahme.guard';
+import { mkaSchulteilnahmeGuard } from './teilnahmen/schulteilnahme/api/mka-schulteilnahme.guard';
+import { privatteilnahmeDataProvider } from './teilnahmen/privatteilnahme/api/privatteilnahme-data.provider';
+import { schulteilnahmeDataProvider } from './teilnahmen/schulteilnahme/api/schulteilnahme-data.provider';
+import { PrivatteilnahmeComponent } from './teilnahmen/privatteilnahme/features/privatteilnahme/privatteilnahme.component';
+import { SchulteilnahmeComponent } from './teilnahmen/schulteilnahme/features/schulteilnahme/schulteilnahme.component';
+import { mkaKlasseGuard } from './teilnahmen/schulteilnahme/api/mka-klasse.guard';
+import { KlasseDashboardComponent } from './teilnahmen/schulteilnahme/features/klasse-dashboard/klasse-dashboard.component';
 
 export const remoteRoutes: Routes = [
     {
@@ -91,7 +94,18 @@ export const remoteRoutes: Routes = [
                             {
                                 path: portalRoutes.minikaenguruAnwendung.schulteilnahme,
                                 canActivate: [mkaSchulteilnahmeGuard()],
-                                component: SchulteilnahmeComponent,
+                                children: [
+                                    {
+                                        path: '',
+                                        pathMatch: 'full',
+                                        component: SchulteilnahmeComponent,
+                                    },
+                                    {
+                                        path: portalRoutes.minikaenguruAnwendung.klasse,
+                                        canActivate: [mkaKlasseGuard()],
+                                        component: KlasseDashboardComponent,
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -122,7 +136,8 @@ export const remoteRoutes: Routes = [
             ...schuleDataProvider,
             ...lehrpersonDataProvider,
             ...privatpersonDataProvider,
-            ...teilnahmeDataProvider,
+            ...privatteilnahmeDataProvider,
+            ...schulteilnahmeDataProvider,
             ArbeitskontextHttpService,
         ],
     },

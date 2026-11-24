@@ -12,6 +12,7 @@ export const portalRoutes = {
         ladefehler: 'ladefehler',
         privatteilnahme: 'privatteilnahme',
         schulteilnahme: 'teilnahme',
+        klasse: 'klasse/:klasseId',
         unknown: '**',
     },
 

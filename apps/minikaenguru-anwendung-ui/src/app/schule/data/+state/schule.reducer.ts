@@ -5,8 +5,8 @@ import { userLoggedOut } from '@matheportal/auth-api';
 import { mapErrorToAuthorizedResourceLoadState } from '@matheportal/shared-utils';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext } from '../../model/schule.model';
-import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
 import { ANMELDESTATUS, TeilnahmeReferenz } from '../../../core/model/wettbewerbskontext.model';
+import { schulteilnahmeAngemeldet } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 export const SCHULEN_FEATURE_KEY = 'MKASchule';
 
@@ -77,7 +77,7 @@ export const schulenFeature = createFeature({
                 schulkollegiumLoadState: 'not-loaded',
             };
         }),
-        on(teilnahmeAngemeldet, (state, { teilnahme }) => {
+        on(schulteilnahmeAngemeldet, (state, { teilnahme }) => {
             if (state.wettbewerbskontext) {
                 if (state.wettbewerbskontext && state.wettbewerbskontext.schule.kuerzel !== teilnahme.kuerzel) {
                     return state;

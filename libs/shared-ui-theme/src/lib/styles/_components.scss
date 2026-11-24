@@ -21,6 +21,9 @@ $mp-icon-size-s: 20px;
 $mp-icon-size-m: 24px;
 $mp-icon-size-l: 32px;
 
+// Gemeinsame Palettenstufe für destruktive Aktionen.
+$mp-action-danger-hue: 700;
+
 // Bestehende öffentliche Namen.
 $mp-card-accent: functions.mp-accent(700);
 $mp-card-border: tokens.$mp-border-color-subtle;
@@ -191,6 +194,25 @@ $mp-card-border: tokens.$mp-border-color-subtle;
 
     &:active:not(:disabled) {
         background-color: functions.mp-brand-soft($context);
+    }
+}
+
+// Farbmodifier für destruktive Aktionen auf Basis von mp-action-primary.
+// Nach dem Primary-Stil einbinden, beispielsweise in einem BEM-Modifier.
+// Geometrie, Hover-Schatten und deaktivierte Darstellung bleiben erhalten.
+@mixin mp-action-danger {
+    &:not(:disabled) {
+        color: functions.mp-warn-contrast($mp-action-danger-hue);
+        background-color: functions.mp-warn($mp-action-danger-hue);
+        border-color: functions.mp-warn($mp-action-danger-hue);
+    }
+
+    &:focus-visible {
+        outline-color: functions.mp-warn($mp-action-danger-hue);
+    }
+
+    &:active:not(:disabled) {
+        box-shadow: inset 0 0 0 tokens.$mp-border-width functions.mp-warn-contrast($mp-action-danger-hue);
     }
 }
 

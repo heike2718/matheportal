@@ -186,7 +186,7 @@ describe('SchuleFacade', () => {
 
             expect(dispatchSpy).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenCalledWith(
-                SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel: 'S1234567' })
+                SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel: 'S1234567' })
             );
         });
 

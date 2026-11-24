@@ -1,0 +1,9 @@
+<button type="button" class="mka-klasse-card" (click)="klasseSelected.emit(klasse())">
+    <span class="mka-klasse-card__content">
+        <span class="mka-klasse-card__name">
+            {{ klasse().name }}
+        </span>
+    </span>
+
+    <span class="mka-klasse-card__arrow" aria-hidden="true"> › </span>
+</button>

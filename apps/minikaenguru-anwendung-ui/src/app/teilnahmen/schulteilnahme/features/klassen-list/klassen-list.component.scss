@@ -1,0 +1,18 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.mka-klassen-list {
+    @include mp-theme.mp-search-list(minikaenguru);
+
+    &__actions {
+        @include mp-theme.mp-action-group;
+    }
+
+    &__action--danger {
+        @include mp-theme.mp-action-danger;
+    }
+}

@@ -1,0 +1,54 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.mka-klasse-card {
+    @include mp-theme.mp-body-default;
+    @include mp-theme.mp-card-surface(minikaenguru);
+    @include mp-theme.mp-card-interaction(minikaenguru);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: mp-theme.$mp-space-3;
+    width: 100%;
+    padding: mp-theme.$mp-space-4;
+    text-align: left;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: mp-theme.$mp-space-1;
+        min-width: 0;
+    }
+
+    &__name {
+        @include mp-theme.mp-card-title-compact;
+
+        color: mp-theme.mp-brand(minikaenguru);
+        overflow-wrap: anywhere;
+    }
+
+    &__arrow {
+        color: mp-theme.mp-brand(minikaenguru);
+        font-size: mp-theme.$mp-icon-size-l;
+        font-weight: mp-theme.$mp-font-weight-regular;
+        line-height: mp-theme.$mp-line-height-tight;
+    }
+}
+
+@media (width <= mp-theme.$mp-breakpoint-compact) {
+    .mka-ort-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: mp-theme.$mp-space-2 mp-theme.$mp-space-3;
+        padding: mp-theme.$mp-space-3;
+
+        &__arrow {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+        }
+    }
+}

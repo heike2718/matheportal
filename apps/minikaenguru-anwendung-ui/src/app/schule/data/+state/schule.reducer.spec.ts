@@ -7,9 +7,9 @@ import { userLoggedOut } from '@matheportal/auth-api';
 import { lehrpersonBerechtigungVerweigert } from '../../../lehrperson/api/lehrperson-store.events';
 import { SchuleWettbewerbskontext, Schulkollegium } from '../../model/schule.model';
 import { ANMELDESTATUS } from '../../../core/model/wettbewerbskontext.model';
-import { Teilnahme } from '../../../teilnahme/model/teilnahme.model';
+import { Teilnahme } from '../../../teilnahmen/model/teilnahme.model';
 import { DURCHFUEHRUNGSART } from '../../../core/wettbewerbsdurchfuehrende/model/wettbewerbsdurchfuehrende.model';
-import { teilnahmeAngemeldet } from '../../../teilnahme/api/teilnahme-store.events';
+import { schulteilnahmeAngemeldet } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
 
 describe('schulenReducer', () => {
     const orte: Ort[] = [
@@ -364,7 +364,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'not-loaded',
             };
 
-            const state = schulenFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = schulenFeature.reducer(previousState, schulteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toBe(previousState);
         });
@@ -379,7 +379,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'not-loaded',
             };
 
-            const state = schulenFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = schulenFeature.reducer(previousState, schulteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toEqual({
                 wettbewerbskontextLoadState: 'loaded',
@@ -407,7 +407,7 @@ describe('schulenReducer', () => {
                 schulkollegiumLoadState: 'not-loaded',
             };
 
-            const state = schulenFeature.reducer(previousState, teilnahmeAngemeldet({ teilnahme }));
+            const state = schulenFeature.reducer(previousState, schulteilnahmeAngemeldet({ teilnahme }));
 
             expect(state).toEqual({
                 wettbewerbskontextLoadState: 'loaded',
@@ -442,7 +442,7 @@ describe('schulenReducer', () => {
 
             const state = schulenFeature.reducer(
                 previousState,
-                teilnahmeAngemeldet({ teilnahme: teilnahmeAndereSchule })
+                schulteilnahmeAngemeldet({ teilnahme: teilnahmeAndereSchule })
             );
 
             expect(state).toBe(previousState);

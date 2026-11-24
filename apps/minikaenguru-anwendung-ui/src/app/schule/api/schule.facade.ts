@@ -43,7 +43,7 @@ export class SchuleFacade {
     }
 
     public schulteilnahmeAnmelden(schulkuerzel: string): void {
-        this.#store.dispatch(SchuleActions.prepareSchulteilnahmeAnmelden({ schulkuerzel }));
+        this.#store.dispatch(SchuleActions.schulteilnahmeAnmeldenRequested({ schulkuerzel }));
     }
 
     public wettbewerbOrganisieren(schulkuerzel: string): void {

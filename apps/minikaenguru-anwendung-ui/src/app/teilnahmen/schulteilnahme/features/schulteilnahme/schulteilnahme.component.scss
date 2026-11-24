@@ -1,0 +1,23 @@
+@use 'mp-theme' as mp-theme;
+
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.schulteilnahme {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: mp-theme.$mp-space-5;
+    min-width: 0;
+
+    &__back {
+        @include mp-theme.mp-action-secondary(minikaenguru);
+
+        justify-self: start;
+    }
+
+    &__back-icon {
+        @include mp-theme.mp-icon-size;
+    }
+}

@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { schulenLadenVerweigert } from '../../../lehrperson/api/public-lehrperson.selectors';
 import { Dialog } from '@angular/cdk/dialog';
-import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahme/model/teilnahme.model';
-import { AuswertungsartDialogComponent } from '../../../shared/components/auswertungsart-dialog/auswertungsart-dialog.component';
-import { schulteilnahmeAnmelden } from '../../../teilnahme/api/teilnahme-store.events';
+import { AuswertungsartDialogData, AuswertungsartDialogResult } from '../../../teilnahmen/model/teilnahme.model';
+import { schulteilnahmeAnmelden } from '../../../teilnahmen/schulteilnahme/api/schulteilnahme-store.events';
+import { AuswertungsartDialogComponent } from '../../features/auswertungsart-dialog/auswertungsart-dialog.component';
 
 @Injectable()
 export class SchulenEffects {
@@ -91,9 +91,9 @@ export class SchulenEffects {
         { dispatch: false }
     );
 
-    readonly prepareSchulteilnahmeAnmelden$ = createEffect(() =>
+    readonly openDialogOnSchulteilnahmeAnmeldenRequested$ = createEffect(() =>
         this.#actions.pipe(
-            ofType(SchuleActions.prepareSchulteilnahmeAnmelden),
+            ofType(SchuleActions.schulteilnahmeAnmeldenRequested),
             exhaustMap(({ schulkuerzel }) => {
                 const dialogRef = this.#dialog.open<AuswertungsartDialogResult>(AuswertungsartDialogComponent, {
                     width: '800px',
